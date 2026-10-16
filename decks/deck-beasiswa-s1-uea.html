@@ -3,32 +3,40 @@
 <head>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
 <script>
-/* deck-guard-v1: hanya member terverifikasi yang boleh membuka deck ini */
+/* deck-guard-v2: hanya member terverifikasi yang boleh membuka deck ini */
 (function(){
   var HOME='https://wayangprint.github.io/web-beasiswa/';
   var URL='https://fjjdgybpglirsaozpvww.supabase.co';
   var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
-  try{ document.documentElement.style.visibility='hidden'; }catch(e){}
-  function lock(){
-    var html='<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">Deck ini khusus member</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">Daftar akun dan selesaikan pembayaran Rp50.000 untuk membuka 44 panduan beasiswa ini.</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></body></html>';
-    try{ document.open(); document.write(html); document.close(); }catch(e){}
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockPage(){
+    var t='Terkunci \u2014 Web Beasiswa';
+    var b='<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">Deck ini khusus member</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">Daftar akun dan selesaikan pembayaran Rp50.000 untuk membuka 44 panduan beasiswa ini.</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+    try{
+      de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+t+'</title></head><body style="margin:0;">'+b+'</body>';
+      de.style.display='';
+    }catch(e){}
   }
-  function unlock(){ try{ document.documentElement.style.visibility='visible'; }catch(e){} }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
   var done=false;
-  function fail(){ if(!done){ done=true; lock(); } }
+  function fail(){ if(!done){ done=true; lockPage(); } }
   setTimeout(fail, 9000);
-  try{
-    if(typeof supabase==='undefined'){ fail(); return; }
-    var client=supabase.createClient(URL, KEY);
-    client.auth.getSession().then(function(res){
-      var s=res && res.data && res.data.session;
-      if(!s){ fail(); return; }
-      client.from('profiles').select('verified').eq('id', s.user.id).maybeSingle().then(function(r){
-        if(done) return; done=true;
-        if(r && r.data && r.data.verified===true){ unlock(); } else { lock(); }
+  function init(){
+    try{
+      if(typeof supabase==='undefined'){ fail(); return; }
+      var client=supabase.createClient(URL, KEY);
+      client.auth.getSession().then(function(res){
+        var s=res && res.data && res.data.session;
+        if(!s){ fail(); return; }
+        client.from('profiles').select('verified').eq('id', s.user.id).maybeSingle().then(function(r){
+          if(done) return; done=true;
+          if(r && r.data && r.data.verified===true){ unlock(); } else { lockPage(); }
+        }).catch(function(){ fail(); });
       }).catch(function(){ fail(); });
-    }).catch(function(){ fail(); });
-  }catch(e){ fail(); }
+    }catch(e){ fail(); }
+  }
+  setTimeout(init, 60);
 })();
 </script>
 
