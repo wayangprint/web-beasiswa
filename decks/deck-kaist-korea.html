@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#1a1446" />
+  <link rel="icon" href="data:," />
+  <title>KAIST International Undergraduate Scholarship — Panduan S1</title>
+  <style>
+    :root{
+      color-scheme:light dark;
+      --navy:#1a1446;--navy2:#232a68;--violet:#7c3aed;--violet2:#9b5cff;
+      --bg:#eef0f8;--paper:#ffffff;--ink:#15172c;--muted:#565a72;--line:#dfe2ef;
+      --soft:#f6f5ff;--good:#0d766e;--warn:#9a4d05;--bad:#b42318;
+      --shadow:0 18px 55px rgba(23,20,65,.13);--radius:28px;
+    }
+    @media(prefers-color-scheme:dark){
+      :root{--bg:#0e1020;--paper:#17192b;--ink:#f6f5ff;--muted:#b8bbce;--line:#30334b;--soft:#211e3e;--good:#67d8c7;--warn:#ffc36d;--bad:#ff8d86;--shadow:0 20px 64px rgba(0,0,0,.34)}
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;overflow-x:hidden}
+    body{font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+    button,a{font:inherit}
+    button{color:inherit}
+    .app{min-height:100dvh;display:grid;grid-template-rows:5px 1fr auto}
+    .progress-track{background:color-mix(in srgb,var(--navy) 12%,transparent);position:relative;z-index:20}
+    .progress{height:100%;width:5%;background:linear-gradient(90deg,var(--navy2),var(--violet2));transition:width .32s ease}
+    .stage{padding:clamp(12px,2vw,26px);display:grid;place-items:center;min-height:0}
+    .slide{display:none;position:relative;width:min(1180px,100%);min-height:min(76vh,760px);max-height:calc(100dvh - 116px);overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(28px,5vw,72px);isolation:isolate}
+    .slide.active{display:flex;flex-direction:column;animation:enter .28s ease-out}
+    @keyframes enter{from{opacity:.25;transform:translateY(5px)}to{opacity:1;transform:none}}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+    .section-tag{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:linear-gradient(110deg,var(--navy2),var(--violet));color:white;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:clamp(40px,7vw,82px);line-height:.96;letter-spacing:-.055em;max-width:840px;margin:28px 0 24px}
+    h2{font-size:clamp(34px,5vw,64px);line-height:1.02;letter-spacing:-.045em;margin:22px 0 18px;max-width:950px}
+    h3{font-size:clamp(18px,2.2vw,25px);line-height:1.2;margin-bottom:8px}
+    .lead{font-size:clamp(18px,2vw,25px);line-height:1.5;color:var(--muted);max-width:850px}
+    .highlight{color:var(--violet)}
+    .cover{background:linear-gradient(145deg,#15103d 0%,#232a68 56%,#3b1b78 100%);color:#fff;border:none;overflow:hidden;justify-content:center}
+    .cover .lead{color:#d8d6ee;max-width:700px}.cover .section-tag{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.26)}
+    .blob{position:absolute;z-index:-1;border-radius:45% 55% 60% 40%;filter:saturate(115%)}
+    .blob.a{width:430px;height:430px;right:-120px;top:-110px;background:radial-gradient(circle at 35% 35%,#c9a7ff,#7c3aed 43%,#212766 72%);transform:rotate(19deg)}
+    .blob.b{width:260px;height:260px;right:170px;bottom:-150px;background:linear-gradient(135deg,#4f46e5,#a855f7);opacity:.58}
+    .cover-kicker{font-size:14px;font-weight:850;letter-spacing:.16em;text-transform:uppercase;color:#d9d5ff}
+    .cover-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.cover-meta span{padding:9px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}
+    .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .card{background:var(--soft);padding:22px;border-radius:20px;border:1px solid color-mix(in srgb,var(--violet) 12%,var(--line));min-width:0}
+    .card strong.big{display:block;font-size:clamp(32px,4vw,54px);line-height:1;color:var(--violet);letter-spacing:-.04em;margin-bottom:10px}
+    .card p,.card li{color:var(--muted);line-height:1.5;margin-bottom:0}
+    .icon{width:40px;height:40px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,var(--navy2),var(--violet));color:#fff;margin-bottom:18px}.icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
+    .checklist,.steps,.plain{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:12px}
+    .checklist li,.steps li,.plain li{position:relative;background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:16px 18px 16px 52px;line-height:1.45}
+    .checklist li:before{content:"✓";position:absolute;left:17px;top:14px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--good);color:#fff;font-weight:900}
+    .steps{counter-reset:step}.steps li{counter-increment:step;padding-left:64px}.steps li:before{content:counter(step);position:absolute;left:17px;top:13px;width:32px;height:32px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,var(--navy2),var(--violet));color:#fff;font-weight:900}
+    .plain li{padding-left:18px}
+    .note{margin-top:auto;padding-top:24px;color:var(--muted);font-size:13px;line-height:1.5}
+    .note a{color:var(--violet);font-weight:760;text-decoration-thickness:1px;text-underline-offset:3px}
+    .callout{padding:18px 20px;border-radius:18px;background:linear-gradient(105deg,color-mix(in srgb,var(--navy2) 10%,var(--paper)),color-mix(in srgb,var(--violet) 14%,var(--paper)));border:1px solid color-mix(in srgb,var(--violet) 23%,var(--line));font-size:clamp(16px,1.7vw,21px);line-height:1.45;margin-top:18px}
+    .warning{color:var(--warn);font-weight:850}.danger{color:var(--bad);font-weight:850}.good{color:var(--good);font-weight:850}
+    .amount{font-size:clamp(48px,8vw,96px);font-weight:900;letter-spacing:-.06em;line-height:.95;color:var(--violet);margin:20px 0 12px}
+    .amount small{font-size:.27em;letter-spacing:0;color:var(--muted);font-weight:750}
+    .split{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center;flex:1}
+    .meter{display:grid;gap:14px}.meter-row{display:grid;gap:7px}.meter-label{display:flex;justify-content:space-between;gap:10px;font-weight:760}.meter-bar{height:12px;border-radius:999px;background:var(--line);overflow:hidden}.meter-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--navy2),var(--violet));border-radius:inherit}
+    .timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}.timepoint{position:relative;padding:22px 18px;background:var(--soft);border-radius:18px;border-top:5px solid var(--violet)}.timepoint strong{display:block;font-size:21px;margin-bottom:7px}.timepoint p{color:var(--muted);line-height:1.45;margin:0}
+    .versus{display:grid;grid-template-columns:1fr 1fr;gap:16px}.versus .card:first-child{border-top:5px solid var(--good)}.versus .card:last-child{border-top:5px solid var(--warn)}
+    .video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:22px;overflow:hidden;background:#090a12;box-shadow:var(--shadow);margin-top:8px}.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+    .video-slide h2{font-size:clamp(30px,4vw,48px);margin-bottom:14px}.video-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.video-card{min-width:0;background:var(--soft);border:1px solid var(--line);border-radius:20px;padding:14px}.video-card .video-wrap{border-radius:14px;margin:0;box-shadow:none}.video-label{display:inline-block;margin:12px 0 6px;color:var(--violet);font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.video-title{font-size:15px;line-height:1.32;margin:0}.video-source{margin:7px 0 0;color:var(--muted);font-size:12px}.video-source a{color:var(--violet);font-weight:800;text-underline-offset:3px}
+    .cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:max-content;max-width:100%;padding:15px 20px;border-radius:16px;background:linear-gradient(100deg,var(--navy2),var(--violet));color:#fff;text-decoration:none;font-weight:850;box-shadow:0 10px 24px rgba(86,45,189,.25)}
+    .controls{display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 14px max(10px,env(safe-area-inset-bottom));position:relative;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent)}
+    .controls button{border:1px solid var(--line);background:var(--paper);min-height:42px;padding:0 16px;border-radius:14px;cursor:pointer;font-weight:780;box-shadow:0 5px 18px rgba(20,19,60,.07)}
+    .controls button:hover{border-color:var(--violet)}.controls button:focus-visible,.toc-close:focus-visible,.toc-item:focus-visible{outline:3px solid color-mix(in srgb,var(--violet) 45%,transparent);outline-offset:2px}.controls button:disabled{opacity:.38;cursor:not-allowed}
+    .counter{min-width:72px;text-align:center;font-weight:850;color:var(--muted)}
+    .toc-button{position:absolute;right:14px}
+    .toc{position:fixed;inset:0;z-index:100;background:rgba(10,9,29,.8);display:none;padding:clamp(14px,3vw,36px);overflow:auto;backdrop-filter:blur(10px)}.toc.open{display:block}
+    .toc-panel{width:min(1100px,100%);margin:auto;background:var(--paper);border:1px solid var(--line);border-radius:26px;padding:clamp(20px,4vw,42px);box-shadow:var(--shadow)}
+    .toc-head{display:flex;justify-content:space-between;align-items:center;gap:20px}.toc-head h2{font-size:clamp(30px,4vw,48px);margin:0}.toc-close{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--soft);cursor:pointer;font-size:24px}
+    .toc-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-top:24px}.toc-item{border:1px solid var(--line);background:var(--soft);border-radius:15px;padding:14px;text-align:left;cursor:pointer;min-height:86px;color:inherit}.toc-item:hover{border-color:var(--violet)}.toc-item span{display:block;color:var(--violet);font-weight:900;font-size:12px;margin-bottom:5px}.toc-item b{font-size:14px;line-height:1.25}
+    @media(max-width:760px){
+      .stage{padding:8px}.slide{border-radius:20px;padding:26px 20px;min-height:calc(100dvh - 82px);max-height:calc(100dvh - 76px)}
+      .grid,.grid.three,.split,.timeline,.versus,.video-grid{grid-template-columns:1fr}.grid{gap:10px}.card{padding:17px}.timeline{gap:10px}.toc-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .controls{justify-content:flex-start}.controls button{padding:0 12px}.controls .label{display:none}.toc-button{position:static;margin-left:auto}.amount{margin-top:12px}
+      h1{font-size:43px}.blob.a{width:320px;height:320px;right:-170px}.cover{justify-content:flex-end;padding-bottom:58px}
+    }
+    @media(max-height:690px) and (min-width:761px){.slide{min-height:calc(100dvh - 96px);padding:32px 42px}h2{font-size:42px}.card{padding:16px}.grid{gap:10px}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="progress-track" aria-hidden="true"><div class="progress" id="progress"></div></div>
+  <main class="stage" id="stage">
+    <section class="slide cover active" data-title="Cover">
+      <div class="blob a"></div><div class="blob b"></div>
+      <div class="cover-kicker">Panduan Beasiswa S1</div>
+      <h1>KAIST International Undergraduate Scholarship</h1>
+      <p class="lead">Belajar sains dan teknologi di Korea Selatan dengan kuliah penuh, dukungan hidup bulanan, dan proses beasiswa yang menyatu dengan admisi.</p>
+      <div class="cover-meta"><span>Korea Selatan</span><span>20 slide</span><span>Riset 15 Oktober 2026</span></div>
+    </section>
+
+    <section class="slide" data-title="Sekilas program">
+      <span class="section-tag">01 · Orientasi</span>
+      <h2>Satu aplikasi admisi, satu peluang beasiswa</h2>
+      <div class="grid three">
+        <article class="card"><div class="icon"><svg viewBox="0 0 24 24"><path d="M4 7h16v11H4zM8 7V4h8v3M8 18v2m8-2v2"/></svg></div><h3>Penyelenggara</h3><p>Korea Advanced Institute of Science and Technology (KAIST), Daejeon.</p></article>
+        <article class="card"><div class="icon"><svg viewBox="0 0 24 24"><path d="m3 10 9-5 9 5-9 5-9-5Zm4 2v5c3 2 7 2 10 0v-5"/></svg></div><h3>Jenjang</h3><p>Program sarjana internasional; pembelajaran berbahasa Inggris.</p></article>
+        <article class="card"><div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M5 17h14"/></svg></div><h3>Model beasiswa</h3><p>Otomatis dipertimbangkan saat diterima, dengan memilih “KAIST Scholarship”.</p></article>
+      </div>
+      <p class="note">Sumber: <a href="https://scholarshipsinstitute.com/kaist-undergraduate-scholarship-2026/" target="_blank" rel="noopener">Scholarships Institute — ringkasan terindeks</a> · Konfirmasi detail siklus di portal resmi KAIST.</p>
+    </section>
+
+    <section class="slide" data-title="Kenapa menarik">
+      <span class="section-tag">02 · Nilai Utama</span>
+      <h2>Tiga alasan KAIST patut masuk shortlist</h2>
+      <div class="grid three">
+        <article class="card"><strong class="big">8</strong><h3>semester kuliah</h3><p>Pembebasan biaya kuliah penuh selama masa normal studi empat tahun.</p></article>
+        <article class="card"><strong class="big">KRW 350K</strong><h3>setiap bulan</h3><p>Dukungan biaya hidup yang membantu, tetapi tetap perlu perencanaan anggaran.</p></article>
+        <article class="card"><strong class="big">1×</strong><h3>alur aplikasi</h3><p>Tidak ada formulir beasiswa terpisah; pilih opsi beasiswa di aplikasi admisi.</p></article>
+      </div>
+      <div class="callout">Nilai tambah besar: <strong>tidak ada ikatan dinas</strong>. Kamu tetap perlu menjaga IPK untuk mempertahankan dukungan.</div>
+      <p class="note">Sumber nilai: <a href="https://educatewithguide.com/2026/03/29/2026-2027-kaist-undergraduate-scholarship-for-international-undergraduate-students-south-korea/" target="_blank" rel="noopener">Educate With Guide</a> dan catatan riset KAIST, dibaca 15 Okt 2026.</p>
+    </section>
+
+    <section class="slide" data-title="Manfaat: biaya kuliah">
+      <span class="section-tag">03 · Cakupan</span>
+      <h2>Biaya kuliah: ditanggung penuh</h2>
+      <div class="amount">100% <small>tuition exemption</small></div>
+      <div class="split">
+        <div><p class="lead">Pembebasan biaya kuliah berlaku untuk <strong>8 semester</strong>, setara empat tahun studi sarjana.</p><div class="callout"><span class="good">Poin penting:</span> durasi manfaatnya jelas, sehingga rencana akademik empat tahun perlu disiplin sejak awal.</div></div>
+        <div class="meter"><div class="meter-row"><div class="meter-label"><span>Semester 1–8</span><span>Penuh</span></div><div class="meter-bar"><span style="width:100%"></span></div></div><div class="meter-row"><div class="meter-label"><span>Setelah 8 semester</span><span>Tidak terkonfirmasi</span></div><div class="meter-bar"><span style="width:0%"></span></div></div></div>
+      </div>
+      <p class="note">Sumber: <a href="https://schresult.com/news/kaist-international-undergraduate-scholarship-2026-fully-funded-south-korea" target="_blank" rel="noopener">Schresult — ringkasan terindeks</a>. Manfaat di luar 8 semester tidak diklaim dalam riset ini.</p>
+    </section>
+
+    <section class="slide" data-title="Manfaat: uang saku">
+      <span class="section-tag">04 · Cakupan</span>
+      <h2>Uang saku bulanan</h2>
+      <div class="amount">KRW 350.000 <small>/ bulan</small></div>
+      <p class="lead">Tunjangan ini adalah dukungan hidup bulanan. Riset tidak menetapkan bahwa nominal tersebut otomatis menutup seluruh biaya akomodasi dan kebutuhan pribadi.</p>
+      <div class="grid"><article class="card"><h3>Gunakan sebagai basis anggaran</h3><p>Prioritaskan kebutuhan wajib dan siapkan cadangan pribadi jika estimasi biaya hidupmu lebih tinggi.</p></article><article class="card"><h3>Jangan dibaca sebagai “semua biaya hidup”</h3><p>Klaim yang terkonfirmasi hanya nominal bulanan, bukan jaminan semua pengeluaran tertutup.</p></article></div>
+      <p class="note">Sumber nominal: <a href="https://scholarshipsinstitute.com/kaist-undergraduate-scholarship-2026/" target="_blank" rel="noopener">Scholarships Institute</a> · Catatan riset 15 Okt 2026.</p>
+    </section>
+
+    <section class="slide" data-title="Manfaat: perjalanan">
+      <span class="section-tag">05 · Cakupan</span>
+      <h2>Perjalanan: siapkan biaya sendiri</h2>
+      <div class="split"><div><div class="amount">Tidak <small>termasuk tiket pesawat</small></div><p class="lead">Riset tidak menemukan dukungan tiket internasional untuk KAIST International Undergraduate Scholarship.</p></div><div class="card"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3 12h18M15 5l6 7-6 7M9 5 3 12l6 7"/></svg></div><h3>Implikasi rencana</h3><p>Masukkan tiket keberangkatan dan kepulangan ke anggaran terpisah sebelum mendaftar.</p></div></div>
+      <p class="note">Sumber: <a href="https://educatewithguide.com/2026/03/29/2026-2027-kaist-undergraduate-scholarship-for-international-undergraduate-students-south-korea/" target="_blank" rel="noopener">Educate With Guide</a> · Tiket pesawat ditandai tidak ditanggung dalam catatan riset.</p>
+    </section>
+
+    <section class="slide" data-title="Manfaat: asuransi">
+      <span class="section-tag">06 · Cakupan</span>
+      <h2>Asuransi kesehatan nasional termasuk</h2>
+      <div class="grid"><article class="card"><strong class="big">✓</strong><h3>National health insurance</h3><p>Asuransi kesehatan nasional tercantum sebagai bagian dari cakupan.</p></article><article class="card"><strong class="big">—</strong><h3>Tunjangan lain</h3><p>Riset tidak mengonfirmasi buku, visa, dana riset, atau tunjangan tambahan lain. Jangan diasumsikan.</p></article></div>
+      <div class="callout">Baca ketentuan resmi saat siklus Fall 2027 terbit untuk mengetahui prosedur kepesertaan dan batas manfaat aktual.</div>
+      <p class="note">Sumber: <a href="https://schresult.com/news/kaist-international-undergraduate-scholarship-2026-fully-funded-south-korea" target="_blank" rel="noopener">Schresult</a> · Konfirmasi final di <a href="http://admission.kaist.ac.kr/international" target="_blank" rel="noopener">portal admisi KAIST</a>.</p>
+    </section>
+
+    <section class="slide" data-title="Yang tidak ditanggung">
+      <span class="section-tag">07 · Batas Cakupan</span>
+      <h2>Jangan lewatkan biaya yang tetap menjadi tanggunganmu</h2>
+      <ul class="plain">
+        <li><span class="danger">Tiket pesawat internasional</span> — tidak termasuk.</li>
+        <li><span class="danger">Akomodasi sebagai pos terpisah</span> — tidak tercantum; catatan riset hanya menyebut allowance dapat dipakai untuk biaya hidup.</li>
+        <li><span class="danger">Biaya aplikasi</span> — USD 80 atau KRW 80.000.</li>
+        <li><span class="warning">Pengeluaran di luar uang saku</span> — perlu ditutup dari sumber lain.</li>
+      </ul>
+      <div class="callout">Prinsip aman: anggap item yang tidak tertulis sebagai manfaat resmi sebagai <strong>belum ditanggung</strong>.</div>
+      <p class="note">Sumber biaya aplikasi dan batas cakupan: <a href="https://scholarshipsinstitute.com/kaist-undergraduate-scholarship-2026/" target="_blank" rel="noopener">Scholarships Institute</a> · Riset 15 Okt 2026.</p>
+    </section>
+
+    <section class="slide" data-title="Syarat kewarganegaraan & pendidikan">
+      <span class="section-tag">08 · Kelayakan</span>
+      <h2>Siapa yang bisa mendaftar?</h2>
+      <div class="grid"><article class="card"><div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div><h3>Pelamar internasional</h3><p>Berstatus non-Korea. Catatan riset menyebut warga berkewarganegaraan ganda Korea tidak termasuk.</p></article><article class="card"><div class="icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 9h8M8 13h5"/></svg></div><h3>Lulusan SMA</h3><p>Sudah lulus SMA atau akan lulus paling lambat Agustus pada tahun intake.</p></article></div>
+      <div class="callout">Pelamar Indonesia masuk kategori pelamar internasional, selama memenuhi status kewarganegaraan yang ditetapkan KAIST.</div>
+      <p class="note">Sumber: <a href="https://educatewithguide.com/2026/03/29/2026-2027-kaist-undergraduate-scholarship-for-international-undergraduate-students-south-korea/" target="_blank" rel="noopener">Educate With Guide</a>.</p>
+    </section>
+
+    <section class="slide" data-title="Syarat akademik & bahasa">
+      <span class="section-tag">09 · Kelayakan</span>
+      <h2>Akademik kuat, bahasa Inggris siap</h2>
+      <div class="grid"><article class="card"><h3>Saat mendaftar</h3><p>Riset menyebut <strong>akademik yang kuat</strong> dan kemahiran bahasa Inggris. Ambang skor bahasa tertentu tidak dikonfirmasi dalam sumber riset.</p></article><article class="card"><h3>Setelah menerima beasiswa</h3><p>Pertahankan <strong>IPK minimal 2,7 dari 4,3</strong> mulai tahun kedua.</p></article></div>
+      <div class="callout">Program diajarkan dalam bahasa Inggris; <strong>TOPIK tidak diwajibkan</strong> berdasarkan catatan riset.</div>
+      <p class="note">Sumber: <a href="https://schresult.com/news/kaist-international-undergraduate-scholarship-2026-fully-funded-south-korea" target="_blank" rel="noopener">Schresult</a>. Cek panduan intake untuk daftar tes dan bukti yang diterima.</p>
+    </section>
+
+    <section class="slide" data-title="Timeline & deadline">
+      <span class="section-tag">10 · Waktu</span>
+      <h2>Perkiraan jalur Fall 2027</h2>
+      <div class="timeline"><article class="timepoint"><strong>Sep–Okt 2026</strong><p>Perkiraan early track, mengikuti pola Fall 2026.</p></article><article class="timepoint"><strong>Nov 2026</strong><p>Perkiraan regular track mulai dibuka.</p></article><article class="timepoint"><strong>Jan 2027</strong><p>Perkiraan penutupan regular track.</p></article></div>
+      <div class="callout"><span class="warning">Belum tanggal resmi:</span> Fall 2027 diperkirakan mengikuti pola siklus sebelumnya. Verifikasi langsung di portal KAIST sebelum submit.</div>
+      <p class="note">Acuan pola: Fall 2026 Early 19 Sep–23 Okt 2025; Regular 6 Nov 2025–6 Jan 2026. Sumber: <a href="https://scholarshipsinstitute.com/kaist-undergraduate-scholarship-2026/" target="_blank" rel="noopener">Scholarships Institute</a>.</p>
+    </section>
+
+    <section class="slide" data-title="Cara daftar: langkah 1–2">
+      <span class="section-tag">11 · Proses</span>
+      <h2>Cara daftar — langkah 1 dan 2</h2>
+      <ol class="steps"><li><strong>Buka portal admisi internasional KAIST.</strong><br>Gunakan siklus dan track yang sesuai dengan intake tujuanmu.</li><li><strong>Mulai aplikasi sarjana internasional.</strong><br>Isi data admisi secara akurat dan ikuti panduan dokumen resmi yang tampil untuk siklus tersebut.</li></ol>
+      <div class="callout">Beasiswa tidak dimulai dari portal terpisah. Titik masuknya adalah <strong>aplikasi admisi KAIST</strong>.</div>
+      <p class="note">Sumber alur: <a href="http://admission.kaist.ac.kr/international" target="_blank" rel="noopener">KAIST International Admissions</a> dan catatan riset KAIST.</p>
+    </section>
+
+    <section class="slide" data-title="Cara daftar: langkah 3–4">
+      <span class="section-tag">12 · Proses</span>
+      <h2>Cara daftar — langkah 3 dan 4</h2>
+      <ol class="steps" style="counter-reset:step 2"><li><strong>Pilih “KAIST Scholarship”.</strong><br>Pilihan ini ada pada Statement of Financial Resources di aplikasi admisi.</li><li><strong>Lengkapi aplikasi dan biaya.</strong><br>Biaya aplikasi yang tercatat adalah USD 80 atau KRW 80.000.</li></ol>
+      <div class="callout"><span class="good">Tidak ada formulir beasiswa terpisah.</span> Kesempatan beasiswa menyatu dengan keputusan admisi.</div>
+      <p class="note">Sumber: <a href="https://educatewithguide.com/2026/03/29/2026-2027-kaist-undergraduate-scholarship-for-international-undergraduate-students-south-korea/" target="_blank" rel="noopener">Educate With Guide</a>.</p>
+    </section>
+
+    <section class="slide" data-title="Cara daftar: langkah 5">
+      <span class="section-tag">13 · Proses</span>
+      <h2>Cara daftar — langkah 5 & setelah submit</h2>
+      <ol class="steps" style="counter-reset:step 4"><li><strong>Kirim sebelum deadline resmi.</strong><br>Simpan bukti submit dan pantau kanal aplikasi yang disediakan KAIST.</li></ol>
+      <div class="grid"><article class="card"><h3>Jika diterima</h3><p>Beasiswa diberikan otomatis kepada penerima admisi yang memilih opsi KAIST Scholarship, sesuai catatan riset.</p></article><article class="card"><h3>Mulai tahun kedua</h3><p>Jaga IPK minimal 2,7/4,3 agar manfaat tetap berlanjut.</p></article></div>
+      <p class="note">Sumber mekanisme dan IPK: <a href="https://scholarshipsinstitute.com/kaist-undergraduate-scholarship-2026/" target="_blank" rel="noopener">Scholarships Institute</a>.</p>
+    </section>
+
+    <section class="slide" data-title="Checklist dokumen">
+      <span class="section-tag">14 · Persiapan</span>
+      <h2>Checklist persiapan dokumen</h2>
+      <ul class="checklist"><li>Bukti status pelamar internasional/non-Korea sesuai aturan KAIST.</li><li>Bukti kelulusan SMA, atau status akan lulus paling lambat Agustus pada tahun intake.</li><li>Rekam akademik yang menunjukkan kesiapan akademik kuat.</li><li>Bukti kemampuan bahasa Inggris sesuai format yang diterima pada panduan intake.</li><li>Statement of Financial Resources dengan opsi “KAIST Scholarship” dipilih.</li></ul>
+      <div class="callout"><span class="warning">Catatan:</span> daftar nama dokumen dan format legalisasi tidak terkonfirmasi dalam riset ini. Ikuti checklist resmi yang terbit di portal.</div>
+      <p class="note">Berdasarkan syarat yang terkonfirmasi di catatan riset KAIST; verifikasi dokumen final di <a href="http://admission.kaist.ac.kr/international" target="_blank" rel="noopener">portal resmi</a>.</p>
+    </section>
+
+    <section class="slide" data-title="Tips lolos">
+      <span class="section-tag">15 · Strategi</span>
+      <h2>Tingkatkan kualitas aplikasi tanpa mengarang</h2>
+      <div class="grid"><article class="card"><h3>Tunjukkan kesiapan akademik</h3><p>Karena riset menekankan akademik kuat, susun bukti prestasi secara konsisten dan mudah dibaca.</p></article><article class="card"><h3>Buat bahasa Inggris terlihat siap</h3><p>Pastikan seluruh bukti mengikuti format intake; jangan menebak ambang skor yang belum diumumkan.</p></article><article class="card"><h3>Pilih opsi beasiswa</h3><p>Periksa ulang Statement of Financial Resources sebelum submit.</p></article><article class="card"><h3>Siapkan rencana biaya awal</h3><p>Anggarkan tiket, aplikasi, dan akomodasi karena manfaatnya terbatas pada item terkonfirmasi.</p></article></div>
+      <p class="note">Tips diturunkan dari persyaratan dan cakupan yang terkonfirmasi; bukan kriteria seleksi tambahan.</p>
+    </section>
+
+    <section class="slide" data-title="Kesalahan umum">
+      <span class="section-tag">16 · Waspada</span>
+      <h2>Lima kesalahan yang mudah dihindari</h2>
+      <ul class="plain"><li>Mencari formulir beasiswa terpisah, padahal proses menyatu dengan admisi.</li><li>Lupa memilih “KAIST Scholarship” pada Statement of Financial Resources.</li><li>Menganggap tiket pesawat dan akomodasi otomatis ditanggung.</li><li>Memperlakukan perkiraan Sep 2026–Jan 2027 sebagai tanggal resmi.</li><li>Mengabaikan syarat IPK 2,7/4,3 mulai tahun kedua.</li></ul>
+      <div class="callout">Lakukan satu pemeriksaan final: <strong>status, deadline, opsi scholarship, biaya, dan dokumen</strong>.</div>
+      <p class="note">Dirangkum dari catatan riset KAIST, 15 Okt 2026.</p>
+    </section>
+
+    <section class="slide" data-title="Pro, kontra, dan kecocokan">
+      <span class="section-tag">17 · Keputusan</span>
+      <h2>Cocok untukmu?</h2>
+      <div class="versus"><article class="card"><h3>Pro</h3><ul class="plain"><li>Kuliah penuh 8 semester.</li><li>KRW 350.000 per bulan.</li><li>Asuransi kesehatan nasional.</li><li>Tanpa aplikasi beasiswa terpisah.</li><li>Tanpa ikatan dinas.</li></ul></article><article class="card"><h3>Kontra</h3><ul class="plain"><li>Tiket tidak ditanggung.</li><li>Akomodasi tidak tercantum terpisah.</li><li>Uang saku tergolong modest dalam laporan.</li><li>IPK minimum harus dijaga.</li><li>Biaya aplikasi tetap ada.</li></ul></article></div>
+      <div class="callout"><strong>Paling cocok</strong> untuk pelajar dengan akademik kuat, siap belajar dalam bahasa Inggris, dan memiliki rencana biaya awal di luar cakupan beasiswa.</div>
+      <p class="note">Penilaian pro/kontra berasal dari cakupan dan syarat yang terkonfirmasi dalam riset.</p>
+    </section>
+
+    <section class="slide video-slide" data-title="Video KAIST">
+      <span class="section-tag">18 · Tonton</span>
+      <h2>Empat perspektif tentang KAIST</h2>
+      <div class="video-grid">
+        <article class="video-card">
+          <div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/1mIrcGzMAis" title="KAIST Scholarship 2027 | Eligibility, Documents &amp; Application Process" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+          <span class="video-label">Cara mendaftar · 1</span>
+          <h3 class="video-title">KAIST Scholarship 2027 | Eligibility, Documents &amp; Application Process</h3>
+          <p class="video-source">Sumber: <a href="https://www.youtube.com/watch?v=1mIrcGzMAis" target="_blank" rel="noopener">YouTube</a></p>
+        </article>
+        <article class="video-card">
+          <div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/PkRy3FRdRU8" title="KAIST Scholarship Explained — 100% Tuition Waiver for International Students" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+          <span class="video-label">Cara mendaftar · 2</span>
+          <h3 class="video-title">KAIST Scholarship Explained — 100% Tuition Waiver for International Students</h3>
+          <p class="video-source">Sumber: <a href="https://www.youtube.com/watch?v=PkRy3FRdRU8" target="_blank" rel="noopener">YouTube</a></p>
+        </article>
+        <article class="video-card">
+          <div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/z9rSm8UNwmQ" title="[4K UHD] Korea Advanced Institute of Science and Technology (KAIST) Campus Tour" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+          <span class="video-label">Suasana &amp; fasilitas kampus</span>
+          <h3 class="video-title">[4K UHD] Korea Advanced Institute of Science and Technology (KAIST) Campus Tour</h3>
+          <p class="video-source">Sumber: <a href="https://www.youtube.com/watch?v=z9rSm8UNwmQ" target="_blank" rel="noopener">YouTube</a></p>
+        </article>
+        <article class="video-card">
+          <div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/E4XnaykFLNc" title="International Graduate Students at KAIST | EP 24 — Cerita Perjalanan Mahasiswa Internasional di KAIST" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+          <span class="video-label">Testimoni alumni</span>
+          <h3 class="video-title">International Graduate Students at KAIST | EP 24 — Cerita Perjalanan Mahasiswa Internasional di KAIST</h3>
+          <p class="video-source">Sumber: <a href="https://www.youtube.com/watch?v=E4XnaykFLNc" target="_blank" rel="noopener">YouTube</a></p>
+        </article>
+      </div>
+      <p class="note">Empat video eksternal YouTube. Isi video tidak digunakan sebagai sumber fakta dalam deck ini.</p>
+    </section>
+
+    <section class="slide cover" data-title="Penutup & link resmi">
+      <div class="blob a"></div><div class="blob b"></div>
+      <div class="cover-kicker">Langkah berikutnya</div>
+      <h1>Siapkan aplikasi yang kuat, lalu cek tanggal resminya.</h1>
+      <p class="lead">Mulai dari portal admisi internasional KAIST. Pastikan memilih “KAIST Scholarship”, menyiapkan biaya awal, dan memverifikasi semua persyaratan Fall 2027.</p>
+      <a class="cta" href="http://admission.kaist.ac.kr/international" target="_blank" rel="noopener">Buka portal resmi KAIST <span aria-hidden="true">↗</span></a>
+      <div class="cover-meta"><span>Kuliah penuh 8 semester</span><span>KRW 350.000/bulan</span><span>Tanpa ikatan dinas</span></div>
+    </section>
+  </main>
+
+  <nav class="controls" aria-label="Navigasi slide">
+    <button id="prev" type="button" aria-label="Slide sebelumnya">← <span class="label">Sebelumnya</span></button>
+    <div class="counter" id="counter" aria-live="polite">1 / 20</div>
+    <button id="next" type="button" aria-label="Slide berikutnya"><span class="label">Berikutnya</span> →</button>
+    <button id="tocBtn" class="toc-button" type="button" aria-haspopup="dialog">Daftar isi</button>
+  </nav>
+</div>
+
+<div class="toc" id="toc" role="dialog" aria-modal="true" aria-labelledby="tocTitle">
+  <div class="toc-panel"><div class="toc-head"><h2 id="tocTitle">Daftar isi</h2><button class="toc-close" id="tocClose" type="button" aria-label="Tutup daftar isi">×</button></div><div class="toc-grid" id="tocGrid"></div></div>
+</div>
+<script>
+(function(){
+  var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var index=0, prev=document.getElementById('prev'), next=document.getElementById('next');
+  var counter=document.getElementById('counter'), progress=document.getElementById('progress');
+  var toc=document.getElementById('toc'), tocBtn=document.getElementById('tocBtn'), tocClose=document.getElementById('tocClose'), tocGrid=document.getElementById('tocGrid');
+  function render(){
+    slides.forEach(function(s,i){s.classList.toggle('active',i===index); if(i===index){s.scrollTop=0;}});
+    counter.textContent=(index+1)+' / '+slides.length;
+    progress.style.width=((index+1)/slides.length*100)+'%';
+    prev.disabled=index===0; next.disabled=index===slides.length-1;
+    document.title=(index+1)+' / '+slides.length+' — '+slides[index].dataset.title;
+  }
+  function go(i){index=Math.max(0,Math.min(slides.length-1,i));render();}
+  slides.forEach(function(s,i){
+    var b=document.createElement('button');b.type='button';b.className='toc-item';b.innerHTML='<span>SLIDE '+(i+1)+'</span><b>'+s.dataset.title+'</b>';
+    b.addEventListener('click',function(){go(i);closeToc();});tocGrid.appendChild(b);
+  });
+  function openToc(){toc.classList.add('open');document.body.style.overflow='hidden';tocClose.focus();}
+  function closeToc(){toc.classList.remove('open');document.body.style.overflow='';tocBtn.focus();}
+  prev.addEventListener('click',function(){go(index-1)});next.addEventListener('click',function(){go(index+1)});
+  tocBtn.addEventListener('click',openToc);tocClose.addEventListener('click',closeToc);
+  toc.addEventListener('click',function(e){if(e.target===toc)closeToc();});
+  document.addEventListener('keydown',function(e){
+    if(toc.classList.contains('open')){if(e.key==='Escape')closeToc();return;}
+    if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();go(index+1)}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(index-1)}
+    if(e.key==='Home'){e.preventDefault();go(0)}
+    if(e.key==='End'){e.preventDefault();go(slides.length-1)}
+  });
+  var startX=0,startY=0;
+  document.getElementById('stage').addEventListener('touchstart',function(e){startX=e.changedTouches[0].clientX;startY=e.changedTouches[0].clientY},{passive:true});
+  document.getElementById('stage').addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-startX,dy=e.changedTouches[0].clientY-startY;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.5){go(index+(dx<0?1:-1));}},{passive:true});
+  render();
+})();
+</script>
+</body>
+</html>

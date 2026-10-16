@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#1a1446" />
+  <link rel="icon" href="data:," />
+  <title>Kuota Pemerintah Rusia — Panduan Beasiswa S1</title>
+  <style>
+    :root{
+      color-scheme: light dark;
+      --navy:#1a1446; --navy2:#232a68; --purple:#7c3aed; --purple2:#a855f7;
+      --ink:#16162a; --muted:#5d6075; --paper:#f6f7fb; --card:#ffffff; --line:#dde0ea;
+      --good:#0f8a62; --warn:#a65b10; --danger:#be3651; --soft:#eeeafd;
+      --shadow:0 18px 44px rgba(26,20,70,.13);
+    }
+    @media(prefers-color-scheme:dark){
+      :root{--ink:#f5f3ff;--muted:#c7c6d5;--paper:#111223;--card:#1a1b31;--line:#343650;--soft:#282346;--shadow:0 18px 44px rgba(0,0,0,.32);}
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--navy);color:var(--ink)}
+    button,a{font:inherit}
+    button{cursor:pointer}
+    .app{min-height:100dvh;display:grid;grid-template-rows:1fr auto;background:
+      radial-gradient(circle at 14% 12%,rgba(124,58,237,.28),transparent 28%),
+      linear-gradient(145deg,var(--navy),var(--navy2));padding:clamp(10px,2vw,24px);gap:14px}
+    .stage{width:min(1180px,100%);margin:auto;aspect-ratio:16/9;position:relative;overflow:hidden;border-radius:28px;background:var(--paper);box-shadow:0 28px 80px rgba(0,0,0,.38)}
+    .slide{position:absolute;inset:0;display:none;padding:clamp(28px,4.5vw,72px);background:var(--paper);overflow:auto}
+    .slide.active{display:flex;flex-direction:column;animation:appear .28s ease-out}
+    @keyframes appear{from{opacity:.4}to{opacity:1}}
+    @media(prefers-reduced-motion:reduce){.slide.active{animation:none}}
+    .section-pill{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:8px 15px;border-radius:999px;background:linear-gradient(90deg,var(--navy2),var(--purple));color:white;font-size:clamp(11px,1.15vw,15px);font-weight:800;letter-spacing:.03em;margin-bottom:clamp(14px,2vw,24px)}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:clamp(38px,6.6vw,88px);line-height:.93;letter-spacing:-.06em;max-width:900px;margin-bottom:20px}
+    h2{font-size:clamp(30px,4.1vw,56px);line-height:1;letter-spacing:-.045em;margin-bottom:clamp(18px,2.4vw,30px);max-width:960px}
+    h3{font-size:clamp(16px,1.7vw,23px);margin-bottom:8px;letter-spacing:-.02em}
+    p,li{font-size:clamp(14px,1.48vw,21px);line-height:1.48}
+    .lede{font-size:clamp(17px,2vw,27px);line-height:1.42;color:var(--muted);max-width:850px}
+    .cover{color:white;justify-content:center;overflow:hidden;background:linear-gradient(130deg,#11103c 0%,#232a68 56%,#5b21b6 100%)}
+    .cover:after{content:"";position:absolute;width:45vw;height:45vw;max-width:620px;max-height:620px;right:-12%;bottom:-45%;border-radius:46% 54% 62% 38%;background:radial-gradient(circle at 35% 25%,#c084fc,#7c3aed 45%,#32156e 72%);opacity:.72;transform:rotate(17deg)}
+    .cover>*{position:relative;z-index:1}
+    .cover .section-pill{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(8px)}
+    .cover .lede{color:#ebe9ff;max-width:680px}
+    .cover .mini{position:absolute;bottom:34px;left:clamp(28px,4.5vw,72px);font-weight:700;color:#d9d4ff}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,1.5vw,20px)}
+    .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:clamp(16px,2vw,26px);box-shadow:var(--shadow)}
+    .card p:last-child,.card ul:last-child{margin-bottom:0}
+    .metric{font-size:clamp(28px,4.2vw,58px);line-height:1;font-weight:900;letter-spacing:-.05em;color:var(--purple);margin-bottom:8px}
+    .muted{color:var(--muted)}
+    .good{color:var(--good)}.warn{color:var(--warn)}.danger{color:var(--danger)}
+    .big-quote{font-size:clamp(25px,3.8vw,52px);line-height:1.08;font-weight:850;letter-spacing:-.045em;max-width:950px}
+    .split{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(16px,3vw,40px);align-items:start}
+    ul.clean{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+    ul.clean li{position:relative;padding-left:28px}
+    ul.clean li:before{content:"";position:absolute;left:0;top:.58em;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--purple2),var(--navy2))}
+    .step{display:grid;grid-template-columns:56px 1fr;gap:16px;align-items:start}
+    .num{width:52px;height:52px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(145deg,var(--navy2),var(--purple));color:white;font-size:23px;font-weight:900;box-shadow:0 12px 24px rgba(124,58,237,.25)}
+    .source{margin-top:auto;padding-top:16px;font-size:12px;color:var(--muted)}
+    .source a{color:inherit;text-underline-offset:3px}
+    .callout{padding:16px 20px;border-radius:18px;background:var(--soft);font-weight:750;font-size:clamp(14px,1.45vw,20px);line-height:1.4}
+    .timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;position:relative}
+    .timeline:before{content:"";position:absolute;top:25px;left:16%;right:16%;height:4px;background:linear-gradient(90deg,var(--navy2),var(--purple));border-radius:9px}
+    .milestone{position:relative;padding-top:52px;text-align:center}
+    .milestone:before{content:"";position:absolute;top:15px;left:calc(50% - 12px);width:24px;height:24px;border-radius:50%;background:var(--purple);border:5px solid var(--paper);box-shadow:0 0 0 2px var(--purple)}
+    .video-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .video-grid.four{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    .video-card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+    .video{aspect-ratio:16/9;width:100%;border:0;display:block;background:#090918}
+    .video-meta{padding:12px 14px 14px}
+    .video-label{display:block;margin-bottom:6px;color:var(--purple);font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+    .video-title{font-size:clamp(13px,1.12vw,16px);line-height:1.28;margin:0 0 8px;font-weight:800;letter-spacing:-.01em}
+    .video-source{font-size:12px;color:var(--muted);margin:0}
+    .video-source a{color:inherit;text-underline-offset:3px}
+    @media(max-width:900px){.video-grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+    .action{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;padding:14px 20px;border-radius:16px;background:linear-gradient(100deg,var(--navy2),var(--purple));color:white;font-weight:850;box-shadow:0 12px 26px rgba(87,39,186,.25)}
+    .action.secondary{background:var(--card);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+    .chrome{width:min(1180px,100%);margin:auto;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;color:white}
+    .navbtn,.tocbtn{border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.1);color:white;border-radius:14px;padding:11px 15px;font-weight:800;min-height:44px}
+    .navbtn:disabled{opacity:.35;cursor:not-allowed}
+    .center-controls{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;min-width:0}
+    .counter{font-weight:850;font-variant-numeric:tabular-nums;white-space:nowrap}
+    .progress{height:8px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden}
+    .progress>span{display:block;height:100%;width:5%;background:linear-gradient(90deg,#64d8ff,#c084fc);border-radius:99px;transition:width .2s ease}
+    .toc{position:fixed;inset:0;background:rgba(8,7,27,.82);backdrop-filter:blur(12px);z-index:20;padding:clamp(18px,4vw,48px);display:none;overflow:auto;color:white}
+    .toc.open{display:block}
+    .toc-head{width:min(1180px,100%);margin:0 auto 20px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .toc-head h2{margin:0}
+    .toc-grid{width:min(1180px,100%);margin:auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .toc-item{text-align:left;border:1px solid rgba(255,255,255,.18);background:#222044;color:white;border-radius:18px;padding:16px;min-height:108px}
+    .toc-item strong{display:block;color:#c4b5fd;margin-bottom:8px}
+    .toc-item.current{background:linear-gradient(135deg,#37307d,#6d28d9);border-color:#c4b5fd}
+    :focus-visible{outline:3px solid #67e8f9;outline-offset:3px}
+    @media(max-width:800px){
+      .app{padding:8px;gap:8px}.stage{aspect-ratio:auto;min-height:calc(100dvh - 82px);border-radius:20px}
+      .slide{padding:26px 22px 32px}.grid,.grid.three,.split,.video-grid,.video-grid.four{grid-template-columns:1fr}.grid.three{gap:10px}
+      .card{border-radius:18px;padding:16px;box-shadow:none}.timeline{grid-template-columns:1fr}.timeline:before{display:none}.milestone{text-align:left;padding:0 0 0 38px}.milestone:before{top:4px;left:2px}
+      .cover:after{width:75vw;height:75vw;right:-28%;bottom:-18%;opacity:.42}.cover .mini{position:relative;left:auto;bottom:auto;margin-top:18px}
+      .chrome{grid-template-columns:auto 1fr auto;gap:7px}.navbtn{font-size:0;padding:10px 13px}.navbtn:first-child:after{content:"←";font-size:22px}.navbtn:last-child:after{content:"→";font-size:22px}.tocbtn{padding:10px 12px}.center-controls{grid-template-columns:auto 1fr;gap:8px}.center-controls .tocbtn{grid-column:1/-1;grid-row:2;width:100%}.toc-grid{grid-template-columns:repeat(2,1fr)}.toc-item{min-height:96px;padding:13px}
+      .video-grid{gap:12px}
+    }
+    @media(max-width:460px){.toc-grid{grid-template-columns:1fr}.grid.three{grid-template-columns:1fr}.stage{min-height:calc(100dvh - 92px)}h1{font-size:43px}.card p,.card li{font-size:15px}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <main class="stage" id="stage" aria-live="polite">
+    <section class="slide cover active" data-title="Cover">
+      <div class="section-pill">PANDUAN BEASISWA S1</div>
+      <h1>Kuota Pemerintah Rusia</h1>
+      <p class="lede">Kuliah penuh, tahun persiapan bahasa Rusia gratis jika diperlukan, uang saku negara, dan akses asrama berbiaya rendah.</p>
+      <p class="mini">Untuk pelajar Indonesia • Siklus 2027/28</p>
+    </section>
+
+    <section class="slide" data-title="Sekilas program">
+      <div class="section-pill">01 · ORIENTASI</div><h2>Satu jalur pemerintah, dua tahap seleksi</h2>
+      <div class="grid">
+        <article class="card"><div class="metric">S1 ✓</div><h3>Siapa penyelenggaranya?</h3><p>Kuota Pemerintah Federasi Rusia dikelola melalui Rossotrudnichestvo / Russian House dan Kementerian Sains & Pendidikan Tinggi Rusia.</p></article>
+        <article class="card"><div class="metric">2 tahap</div><h3>Bagaimana alurnya?</h3><p>Seleksi awal melalui Russian House atau kedutaan, lalu kandidat yang lolos masuk tahap penempatan universitas.</p></article>
+      </div>
+      <p class="source">Sumber: <a href="https://en.misis.ru/applicants/scholarships/quota/" target="_blank" rel="noopener">MISIS — Government quota</a></p>
+    </section>
+
+    <section class="slide" data-title="Kenapa menarik">
+      <div class="section-pill">02 · NILAI UTAMA</div><h2>Menarik karena biaya terbesar sudah diangkat</h2>
+      <div class="grid three">
+        <article class="card"><h3 class="good">Kuliah penuh</h3><p>Biaya pendidikan ditanggung selama masa program.</p></article>
+        <article class="card"><h3>Jembatan bahasa</h3><p>Tahun persiapan bahasa Rusia tersedia bila dibutuhkan.</p></article>
+        <article class="card"><h3>Asrama terjangkau</h3><p>Tempat asrama dijamin, dengan biaya yang tetap perlu dibayar.</p></article>
+      </div>
+      <div class="callout" style="margin-top:18px">Nilai utamanya bukan “semua gratis”, melainkan kuliah penuh dengan biaya hidup yang masih harus direncanakan.</div>
+      <p class="source">Sumber: <a href="https://en.misis.ru/applicants/scholarships/quota/" target="_blank" rel="noopener">MISIS</a></p>
+    </section>
+
+    <section class="slide" data-title="Biaya kuliah">
+      <div class="section-pill">03 · MANFAAT</div><h2>Biaya kuliah: ditanggung penuh</h2>
+      <div class="split"><div><p class="big-quote">Kamu bisa fokus pada penerimaan dan kesiapan studi—bukan mencari dana tuition setiap semester.</p></div><article class="card"><div class="metric">100%</div><h3>Tuition</h3><p>Cakupan berlaku untuk keseluruhan program gelar dalam jalur kuota.</p><p class="muted">Tetap cek durasi dan program final saat penempatan universitas.</p></article></div>
+      <p class="source">Sumber resmi universitas: <a href="https://en.misis.ru/applicants/scholarships/quota/" target="_blank" rel="noopener">MISIS — quota scholarship</a></p>
+    </section>
+
+    <section class="slide" data-title="Uang saku">
+      <div class="section-pill">04 · MANFAAT</div><h2>Ada uang saku negara—namun nilainya modest</h2>
+      <div class="grid"><article class="card"><h3 class="good">Yang ada</h3><p>Beasiswa mencakup uang saku akademik bulanan dengan standar mahasiswa Rusia.</p></article><article class="card"><h3 class="warn">Yang perlu dipahami</h3><p>Riset tidak mengonfirmasi angka tetap. Nilainya disebut sederhana dan tidak boleh dianggap cukup untuk seluruh biaya hidup.</p></article></div>
+      <div class="callout" style="margin-top:18px">Strategi aman: perlakukan uang saku sebagai kontribusi, bukan satu-satunya sumber biaya harian.</div>
+      <p class="source">Sumber: <a href="https://en.misis.ru/applicants/scholarships/quota/" target="_blank" rel="noopener">MISIS</a>; nilai uang saku dapat berubah.</p>
+    </section>
+
+    <section class="slide" data-title="Perjalanan">
+      <div class="section-pill">05 · MANFAAT</div><h2>Tiket pesawat tidak ditanggung</h2>
+      <div class="split"><div><p class="big-quote danger">Berangkat ke Rusia adalah pos biaya mandiri.</p><p class="lede">Siapkan dana perjalanan internasional dari Indonesia, termasuk kebutuhan yang mengikuti keberangkatan.</p></div><article class="card"><h3>Masuk anggaran pribadi</h3><ul class="clean"><li>Tiket pesawat internasional</li><li>Perjalanan lokal</li><li>Pengeluaran perjalanan lainnya</li></ul></article></div>
+      <p class="source">Rangkuman riset; cek biaya aktual sebelum membeli. Portal: <a href="https://www.education-in-russia.com" target="_blank" rel="noopener">Education in Russia</a></p>
+    </section>
+
+    <section class="slide" data-title="Asrama & kursus bahasa">
+      <div class="section-pill">06 · MANFAAT</div><h2>Dua dukungan praktis untuk masa adaptasi</h2>
+      <div class="grid"><article class="card"><div class="metric">1 tahun</div><h3>Persiapan bahasa Rusia</h3><p>Kursus persiapan tersedia tanpa biaya bila diperlukan sebelum program gelar.</p></article><article class="card"><div class="metric">₽2.500–3.769</div><h3>Asrama per bulan</h3><p>Kisaran biaya yang tercatat dalam riset. Tempat dijamin, tetapi asrama bukan gratis.</p></article></div>
+      <p class="source">Sumber resmi kuota: <a href="https://en.misis.ru/applicants/scholarships/quota/" target="_blank" rel="noopener">MISIS</a>. Biaya asrama dapat berbeda menurut kampus.</p>
+    </section>
+
+    <section class="slide" data-title="Yang tidak ditanggung">
+      <div class="section-pill">07 · REALITY CHECK</div><h2>Apa saja yang harus kamu biayai sendiri?</h2>
+      <div class="grid three"><article class="card"><h3>Perjalanan</h3><p>Tiket internasional dan transportasi lokal.</p></article><article class="card"><h3>Administrasi</h3><p>Visa serta penerjemahan dan legalisasi dokumen.</p></article><article class="card"><h3>Hidup sehari-hari</h3><p>Asuransi kesehatan, makanan, serta kebutuhan personal.</p></article></div>
+      <div class="callout" style="margin-top:18px">Tambahkan juga biaya asrama bulanan. Buat rencana dana sebelum menerima penempatan.</div>
+      <p class="source">Rangkuman riset program Rusia; konfirmasi ulang pada portal aplikasi dan universitas tujuan.</p>
+    </section>
+
+    <section class="slide" data-title="Syarat dasar">
+      <div class="section-pill">08 · SYARAT</div><h2>Kewarganegaraan & jenjang pendidikan</h2>
+      <div class="grid"><article class="card"><h3>Pelamar internasional</h3><p>Jalur ini terbuka bagi warga negara non-Rusia dari berbagai negara, termasuk pelamar Indonesia.</p></article><article class="card"><h3>Lulusan sekolah menengah</h3><p>Untuk jenjang sarjana, kandidat harus telah menyelesaikan pendidikan sekolah menengah.</p></article></div>
+      <p class="lede" style="margin-top:22px">Tidak ada ikatan wajib kembali ke Indonesia yang terkonfirmasi dalam riset.</p>
+      <p class="source">Sumber: <a href="https://en.misis.ru/applicants/scholarships/quota/" target="_blank" rel="noopener">MISIS</a></p>
+    </section>
+
+    <section class="slide" data-title="Akademik & bahasa">
+      <div class="section-pill">09 · SYARAT</div><h2>Nilai baik, motivasi kuat, siap diuji</h2>
+      <div class="split"><ul class="clean"><li>Rekam akademik yang baik menjadi dasar seleksi.</li><li>Motivation letter termasuk komponen yang perlu disiapkan.</li><li>Ada seleksi tes dan/atau wawancara melalui Russian House.</li></ul><article class="card"><h3>Belum lancar bahasa Rusia?</h3><p>Bukan otomatis penghalang: tersedia tahun persiapan bahasa bila dibutuhkan.</p><p class="muted">Syarat bahasa spesifik dapat bergantung pada program dan kampus penempatan.</p></article></div>
+      <p class="source">Sumber: catatan riset Russian Government Quota; detail program akhir wajib diverifikasi pada portal.</p>
+    </section>
+
+    <section class="slide" data-title="Timeline & deadline">
+      <div class="section-pill">10 · TIMELINE</div><h2>Dua tenggat yang perlu kamu kunci</h2>
+      <div class="timeline"><div class="milestone"><h3>Sejak Sep 2026</h3><p>Perkiraan pembukaan siklus kuota 2027/28.</p></div><div class="milestone"><h3>10 Des 2026</h3><p>Deadline portofolio S1 Open Doors—tercatat sedang buka saat deck dibuat.</p></div><div class="milestone"><h3>15 Jan 2027</h3><p>Target deadline jalur kuota untuk negara non-CIS.</p></div></div>
+      <div class="callout" style="margin-top:24px">Status kuota 2027/28 mengikuti pola yang dilaporkan; cek portal resmi sebelum submit.</div>
+      <p class="source">Sumber: <a href="https://en.misis.ru/applicants/scholarships/quota/" target="_blank" rel="noopener">MISIS</a> · <a href="https://od.globaluni.ru/en/" target="_blank" rel="noopener">Open Doors</a></p>
+    </section>
+
+    <section class="slide" data-title="Cara daftar 1–2">
+      <div class="section-pill">11 · CARA DAFTAR</div><h2>Langkah 1–2: mulai dari portal dan pilihan studi</h2>
+      <div class="grid"><article class="card step"><div class="num">1</div><div><h3>Buka portal resmi</h3><p>Mulai aplikasi di Education in Russia. Baca persyaratan yang sedang berlaku untuk Indonesia.</p></div></article><article class="card step"><div class="num">2</div><div><h3>Susun arah studi</h3><p>Tentukan bidang dan preferensi universitas dengan alasan akademik yang jelas.</p></div></article></div>
+      <p class="source">Portal aplikasi: <a href="https://www.education-in-russia.com" target="_blank" rel="noopener">education-in-russia.com</a></p>
+    </section>
+
+    <section class="slide" data-title="Cara daftar 3–4">
+      <div class="section-pill">12 · CARA DAFTAR</div><h2>Langkah 3–4: dokumen & seleksi awal</h2>
+      <div class="grid"><article class="card step"><div class="num">3</div><div><h3>Lengkapi berkas</h3><p>Unggah dokumen yang diminta portal, termasuk bukti pendidikan, nilai, dan motivation letter.</p></div></article><article class="card step"><div class="num">4</div><div><h3>Ikuti seleksi Russian House</h3><p>Persiapkan tes dan/atau wawancara. Tunjukkan kecocokan bidang, kesiapan adaptasi, dan tujuan studi.</p></div></article></div>
+      <p class="source">Alur dua tahap dirangkum dari riset Russian Government Quota; format seleksi dapat berubah.</p>
+    </section>
+
+    <section class="slide" data-title="Cara daftar 5">
+      <div class="section-pill">13 · CARA DAFTAR</div><h2>Langkah 5: penempatan universitas</h2>
+      <div class="split"><article class="card step"><div class="num">5</div><div><h3>Tunggu tahap penempatan</h3><p>Kandidat hasil shortlist kedutaan/Russian House diteruskan untuk penempatan universitas.</p></div></article><div><p class="big-quote">Setelah submit, pantau status resmi—jangan mengandalkan pesan dari pihak tidak dikenal.</p><p class="muted">Bila diterima, cek rincian program, bahasa, biaya asrama, visa, asuransi, dan waktu keberangkatan.</p></div></div>
+      <p class="source">Portal resmi: <a href="https://www.education-in-russia.com" target="_blank" rel="noopener">Education in Russia</a></p>
+    </section>
+
+    <section class="slide" data-title="Checklist dokumen">
+      <div class="section-pill">14 · PERSIAPAN</div><h2>Checklist berkas: mulai dari yang terkonfirmasi</h2>
+      <div class="grid"><article class="card"><h3>Inti yang disebut dalam riset</h3><ul class="clean"><li>Bukti kelulusan sekolah menengah</li><li>Rekam nilai akademik</li><li>Motivation letter</li></ul></article><article class="card"><h3>Verifikasi di portal</h3><ul class="clean"><li>Dokumen identitas/kewarganegaraan yang diminta</li><li>Format dan bahasa setiap berkas</li><li>Kebutuhan terjemahan atau legalisasi</li></ul></article></div>
+      <div class="callout" style="margin-top:18px">Riset mengonfirmasi biaya terjemahan/legalisasi tidak ditanggung. Jangan menerjemahkan sebelum mengecek format yang diterima.</div>
+      <p class="source">Rincian final harus mengikuti daftar dokumen pada portal resmi saat aplikasi.</p>
+    </section>
+
+    <section class="slide" data-title="Tips lolos">
+      <div class="section-pill">15 · STRATEGI</div><h2>Tiga cara membuat aplikasi lebih tajam</h2>
+      <div class="grid three"><article class="card"><h3>1. Konsisten</h3><p>Selaraskan nilai, pilihan bidang, dan alasan memilih Rusia dalam satu narasi.</p></article><article class="card"><h3>2. Spesifik</h3><p>Jelaskan apa yang ingin dipelajari dan mengapa bidang itu penting bagi rencanamu.</p></article><article class="card"><h3>3. Siap wawancara</h3><p>Latih jawaban ringkas tentang motivasi, kesiapan budaya, dan rencana akademik.</p></article></div>
+      <p class="source">Tips penyusunan aplikasi; bukan kriteria resmi atau jaminan kelulusan.</p>
+    </section>
+
+    <section class="slide" data-title="Kesalahan umum">
+      <div class="section-pill">16 · HINDARI</div><h2>Jangan jatuh di empat lubang ini</h2>
+      <div class="grid"><article class="card"><h3 class="danger">Mengira full ride total</h3><p>Kuliah penuh tidak berarti tiket, visa, asuransi, makan, dan asrama ikut gratis.</p></article><article class="card"><h3 class="danger">Menunda dokumen</h3><p>Terjemahan/legalisasi bisa memerlukan biaya dan waktu.</p></article><article class="card"><h3 class="danger">Motivasi generik</h3><p>“Ingin kuliah di luar negeri” belum menunjukkan arah studi.</p></article><article class="card"><h3 class="danger">Lewat jalur tak resmi</h3><p>Gunakan portal Education in Russia dan kanal Russian House/kedutaan.</p></article></div>
+      <p class="source">Rangkuman praktis berdasarkan cakupan dan alur yang terkonfirmasi dalam riset.</p>
+    </section>
+
+    <section class="slide" data-title="Pro, kontra, cocok untuk siapa">
+      <div class="section-pill">17 · PERTIMBANGAN</div><h2>Apakah jalur ini cocok untukmu?</h2>
+      <div class="grid three"><article class="card"><h3 class="good">Pro</h3><ul class="clean"><li>Tuition penuh</li><li>Ada persiapan bahasa</li><li>Akses asrama murah</li></ul></article><article class="card"><h3 class="danger">Kontra</h3><ul class="clean"><li>Travel mandiri</li><li>Uang saku modest</li><li>Biaya hidup tertentu ditanggung sendiri</li></ul></article><article class="card"><h3>Cocok untuk</h3><p>Pelajar dengan akademik baik, siap belajar bahasa Rusia, dan punya rencana dana untuk biaya yang tidak ditanggung.</p></article></div>
+      <p class="source">Penilaian berdasarkan cakupan program dalam research report 15 Okt 2026.</p>
+    </section>
+
+    <section class="slide" data-title="Video panduan">
+      <div class="section-pill">18 · VIDEO</div><h2>Empat perspektif sebelum mendaftar</h2>
+      <div class="video-grid four">
+        <article class="video-card">
+          <iframe class="video" src="https://www.youtube-nocookie.com/embed/ULiXHIYuDxc" title="BEASISWA S2 KE RUSIA TANPA TOEFL LOLOS ONE SHOT?!! (Panduan Pendaftaran Open Doors &amp; Kuota Rusia)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <div class="video-meta"><span class="video-label">Cara mendaftar · 1</span><h3 class="video-title">BEASISWA S2 KE RUSIA TANPA TOEFL LOLOS ONE SHOT?!! (Panduan Pendaftaran Open Doors &amp; Kuota Rusia)</h3><p class="video-source">Sumber: <a href="https://www.youtube.com/watch?v=ULiXHIYuDxc" target="_blank" rel="noopener">YouTube</a></p></div>
+        </article>
+        <article class="video-card">
+          <iframe class="video" src="https://www.youtube-nocookie.com/embed/-CVWSFFX7nc" title="Study in Russia for FREE! Open Doors Scholarship 2026–27 | Complete Application Guide" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <div class="video-meta"><span class="video-label">Cara mendaftar · 2</span><h3 class="video-title">Study in Russia for FREE! Open Doors Scholarship 2026–27 | Complete Application Guide</h3><p class="video-source">Sumber: <a href="https://www.youtube.com/watch?v=-CVWSFFX7nc" target="_blank" rel="noopener">YouTube</a></p></div>
+        </article>
+        <article class="video-card">
+          <iframe class="video" src="https://www.youtube-nocookie.com/embed/krWK5JPEfuo" title="Lomonosov Moscow State University: The Scientist Alley Garden Tour (Tur Kampus MGU)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <div class="video-meta"><span class="video-label">Suasana &amp; fasilitas kampus</span><h3 class="video-title">Lomonosov Moscow State University: The Scientist Alley Garden Tour (Tur Kampus MGU)</h3><p class="video-source">Sumber: <a href="https://www.youtube.com/watch?v=krWK5JPEfuo" target="_blank" rel="noopener">YouTube</a></p></div>
+        </article>
+        <article class="video-card">
+          <iframe class="video" src="https://www.youtube-nocookie.com/embed/sUZMdXD5ods" title="How I Got A Scholarship To Study in Russia FREE (Testimoni Penerima)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <div class="video-meta"><span class="video-label">Testimoni alumni</span><h3 class="video-title">How I Got A Scholarship To Study in Russia FREE (Testimoni Penerima)</h3><p class="video-source">Sumber: <a href="https://www.youtube.com/watch?v=sUZMdXD5ods" target="_blank" rel="noopener">YouTube</a></p></div>
+        </article>
+      </div>
+      <p class="source">Referensi tambahan dari YouTube. Selalu prioritaskan ketentuan pada portal resmi.</p>
+    </section>
+
+    <section class="slide" data-title="Mulai aplikasi">
+      <div class="section-pill">19 · LANGKAH BERIKUTNYA</div><h2>Kunci tenggat. Susun dokumen. Mulai sekarang.</h2>
+      <p class="big-quote">Kuota Rusia bisa menjadi jalur tuition penuh yang realistis—asal kamu menyiapkan biaya hidup secara jujur.</p>
+      <div class="actions"><a class="action" href="https://www.education-in-russia.com" target="_blank" rel="noopener">Buka portal resmi</a><a class="action secondary" href="https://od.globaluni.ru/en/" target="_blank" rel="noopener">Lihat Open Doors</a></div>
+      <div class="callout" style="margin-top:24px">Catat: 10 Des 2026 untuk portofolio S1 Open Doors · 15 Jan 2027 target deadline jalur kuota non-CIS.</div>
+      <p class="source">Status dan tenggat dapat berubah. Verifikasi sebelum mengirim aplikasi.</p>
+    </section>
+  </main>
+
+  <nav class="chrome" aria-label="Navigasi presentasi">
+    <button class="navbtn" id="prev" type="button">Sebelumnya</button>
+    <div class="center-controls"><span class="counter" id="counter">1 / 20</span><div class="progress" aria-hidden="true"><span id="progress"></span></div><button class="tocbtn" id="openToc" type="button">Daftar isi</button></div>
+    <button class="navbtn" id="next" type="button">Berikutnya</button>
+  </nav>
+</div>
+
+<div class="toc" id="toc" role="dialog" aria-modal="true" aria-labelledby="tocTitle">
+  <div class="toc-head"><h2 id="tocTitle">Daftar isi</h2><button class="tocbtn" id="closeToc" type="button">Tutup</button></div>
+  <div class="toc-grid" id="tocGrid"></div>
+</div>
+
+<script>
+(function(){
+  var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var current=0;
+  var prev=document.getElementById('prev'), next=document.getElementById('next');
+  var counter=document.getElementById('counter'), progress=document.getElementById('progress');
+  var toc=document.getElementById('toc'), tocGrid=document.getElementById('tocGrid');
+  slides.forEach(function(slide,i){
+    var b=document.createElement('button'); b.type='button'; b.className='toc-item';
+    b.innerHTML='<strong>'+String(i+1).padStart(2,'0')+'</strong><span>'+slide.getAttribute('data-title')+'</span>';
+    b.addEventListener('click',function(){show(i);closeToc();}); tocGrid.appendChild(b);
+  });
+  function show(i){
+    current=Math.max(0,Math.min(slides.length-1,i));
+    slides.forEach(function(s,n){s.classList.toggle('active',n===current);});
+    Array.prototype.forEach.call(tocGrid.children,function(b,n){b.classList.toggle('current',n===current);});
+    counter.textContent=(current+1)+' / '+slides.length;
+    progress.style.width=((current+1)/slides.length*100)+'%';
+    prev.disabled=current===0; next.disabled=current===slides.length-1;
+    slides[current].scrollTop=0;
+  }
+  function openToc(){toc.classList.add('open');document.getElementById('closeToc').focus();}
+  function closeToc(){toc.classList.remove('open');document.getElementById('openToc').focus();}
+  prev.addEventListener('click',function(){show(current-1);});
+  next.addEventListener('click',function(){show(current+1);});
+  document.getElementById('openToc').addEventListener('click',openToc);
+  document.getElementById('closeToc').addEventListener('click',closeToc);
+  toc.addEventListener('click',function(e){if(e.target===toc)closeToc();});
+  document.addEventListener('keydown',function(e){
+    if(toc.classList.contains('open')){if(e.key==='Escape')closeToc();return;}
+    if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();show(current+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(current-1);}
+    else if(e.key==='Home'){e.preventDefault();show(0);}
+    else if(e.key==='End'){e.preventDefault();show(slides.length-1);}
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>

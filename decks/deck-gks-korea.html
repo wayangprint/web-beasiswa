@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="data:," />
+  <title>GKS-U Korea Selatan — Panduan Beasiswa S1</title>
+  <style>
+    :root{
+      color-scheme: light dark;
+      --ink:#151731; --muted:#555d7e; --paper:#f5f7ff; --panel:#ffffff;
+      --navy:#1a1446; --navy2:#232a68; --violet:#7c3aed; --violet2:#a855f7;
+      --soft:#ece9ff; --line:#dfe3f2; --good:#0f8b6d; --warn:#b65c1e;
+      --shadow:0 18px 50px rgba(32,30,80,.13); --radius:26px;
+    }
+    @media(prefers-color-scheme:dark){
+      :root{--ink:#f4f3ff;--muted:#b9bfdb;--paper:#0c1027;--panel:#171b39;--soft:#292357;--line:#34395d;--good:#65d6ba;--warn:#ffb174;--shadow:0 18px 60px rgba(0,0,0,.38)}
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--paper);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:var(--ink)}
+    button,a{font:inherit}
+    button:focus-visible,a:focus-visible{outline:3px solid #b694ff;outline-offset:3px}
+    .deck{height:100dvh;display:grid;grid-template-rows:5px 1fr auto;background:
+      radial-gradient(circle at 90% 0%,color-mix(in srgb,var(--violet) 10%,transparent),transparent 34%),var(--paper)}
+    .progress{height:5px;background:var(--line)}
+    .progress span{display:block;height:100%;width:5%;background:linear-gradient(90deg,var(--navy2),var(--violet),#c548e7);transition:width .35s ease}
+    .stage{position:relative;overflow:hidden}
+    .slide{position:absolute;inset:0;display:none;overflow-y:auto;padding:clamp(24px,4vw,64px) clamp(20px,6vw,92px) 36px;animation:enter .28s ease both}
+    .slide.active{display:flex;align-items:center;justify-content:center}
+    @keyframes enter{from{opacity:.2;transform:translateX(14px)}to{opacity:1;transform:none}}
+    @media(prefers-reduced-motion:reduce){.slide,.progress span{animation:none;transition:none}}
+    .page{width:min(1160px,100%);margin:auto}
+    .section-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:linear-gradient(100deg,var(--navy2),var(--violet));color:white;font-size:clamp(12px,1.3vw,15px);font-weight:750;box-shadow:0 7px 24px rgba(94,52,190,.25)}
+    .slide-no{opacity:.7;font-variant-numeric:tabular-nums}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:clamp(42px,7.2vw,92px);line-height:.95;letter-spacing:-.055em;max-width:880px;margin-bottom:26px}
+    h2{font-size:clamp(32px,5vw,66px);line-height:1;letter-spacing:-.04em;margin:20px 0 20px;max-width:930px}
+    h3{font-size:clamp(19px,2.15vw,28px);letter-spacing:-.025em;margin-bottom:10px}
+    p,li{font-size:clamp(16px,1.75vw,22px);line-height:1.45}
+    .lead{font-size:clamp(19px,2.3vw,29px);line-height:1.42;color:var(--muted);max-width:850px}
+    .small{font-size:clamp(13px,1.2vw,16px);line-height:1.45;color:var(--muted)}
+    .muted{color:var(--muted)}
+    .cover{background:linear-gradient(145deg,#15113d 0%,#212765 56%,#641fb4 100%);color:#fff;overflow:hidden}
+    .cover .page{position:relative;z-index:2}
+    .cover .lead{color:#daddff;max-width:700px}
+    .cover .section-pill{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.23);box-shadow:none}
+    .blob{position:absolute;border-radius:999px;filter:blur(3px);opacity:.75;pointer-events:none}
+    .blob.one{width:38vw;height:38vw;min-width:330px;min-height:330px;right:-11vw;top:-12vw;background:radial-gradient(circle at 36% 34%,#d8b4fe,#7c3aed 49%,#2b1a64 70%)}
+    .blob.two{width:24vw;height:24vw;right:13vw;bottom:-13vw;background:linear-gradient(135deg,#14b8a6,#6332b5);opacity:.46}
+    .kickerline{display:flex;align-items:center;gap:14px;margin-top:30px;color:#c9cbf3;font-size:clamp(14px,1.4vw,18px)}
+    .kickerline span:first-child{width:58px;height:2px;background:#c4b5fd}
+    .grid{display:grid;gap:18px}
+    .grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(20px,2.4vw,32px);box-shadow:var(--shadow)}
+    .card.flat{box-shadow:none}
+    .card strong.big{display:block;font-size:clamp(30px,4.3vw,58px);line-height:1;color:var(--violet);letter-spacing:-.045em;margin-bottom:12px}
+    .card p:last-child,.card ul:last-child{margin-bottom:0}
+    .icon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--soft);color:var(--violet);margin-bottom:18px}
+    .icon svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .metric{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+    .metric b{font-size:clamp(44px,7vw,88px);line-height:.9;letter-spacing:-.065em;color:var(--violet)}
+    .metric span{font-size:clamp(18px,2vw,26px);font-weight:700;color:var(--muted)}
+    .callout{margin-top:22px;padding:18px 22px;border-radius:18px;background:var(--soft);font-size:clamp(15px,1.55vw,20px);line-height:1.45}
+    .callout strong{color:var(--violet)}
+    .list{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+    .list li{position:relative;padding-left:31px}
+    .list li:before{content:"";position:absolute;left:3px;top:.52em;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--navy2),var(--violet));box-shadow:0 0 0 5px color-mix(in srgb,var(--violet) 12%,transparent)}
+    .steps{counter-reset:step;display:grid;gap:14px}
+    .step{counter-increment:step;display:grid;grid-template-columns:50px 1fr;gap:16px;align-items:start;padding:18px;border:1px solid var(--line);background:var(--panel);border-radius:20px}
+    .step:before{content:counter(step);width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:white;background:linear-gradient(135deg,var(--navy2),var(--violet));font-weight:800}
+    .step h3{font-size:clamp(18px,1.9vw,24px);margin:1px 0 5px}
+    .step p{font-size:clamp(14px,1.45vw,18px);margin:0;color:var(--muted)}
+    .timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;position:relative;margin-top:26px}
+    .timeline:before{content:"";position:absolute;left:10%;right:10%;top:25px;height:3px;background:linear-gradient(90deg,var(--navy2),var(--violet));z-index:0}
+    .time{position:relative;text-align:center;z-index:1}
+    .dot{width:52px;height:52px;border:8px solid var(--paper);border-radius:50%;background:var(--violet);margin:0 auto 10px}
+    .time b{display:block;font-size:clamp(16px,1.8vw,23px)}
+    .time span{display:block;color:var(--muted);font-size:clamp(13px,1.3vw,17px)}
+    .compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .compare .card:first-child h3{color:var(--good)}.compare .card:last-child h3{color:var(--warn)}
+    .tagrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .tag{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:9px 13px;font-weight:700;font-size:clamp(13px,1.25vw,16px)}
+    .videos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:18px}
+    .video-card{background:var(--panel);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow)}
+    .ratio{aspect-ratio:16/9;background:#0b0b14}
+    iframe{width:100%;height:100%;border:0;display:block}
+    .video-card p{font-size:14px;color:var(--muted);margin:0;padding:12px 16px}
+    .video-source{display:block;margin-top:6px;font-size:12px;font-weight:700;color:var(--violet)}
+    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+    .primary-link,.secondary-link{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 20px;border-radius:15px;text-decoration:none;font-weight:800;font-size:clamp(15px,1.4vw,18px)}
+    .primary-link{background:linear-gradient(110deg,var(--navy2),var(--violet));color:#fff;box-shadow:0 12px 28px rgba(86,48,181,.25)}
+    .secondary-link{border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+    .source{margin-top:20px;font-size:13px;color:var(--muted)}
+    .source a{color:inherit}
+    .controls{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;padding:11px max(16px,env(safe-area-inset-right)) calc(11px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:color-mix(in srgb,var(--panel) 92%,transparent);border-top:1px solid var(--line)}
+    .navgroup{display:flex;gap:10px}.navgroup:last-child{justify-content:flex-end}
+    .btn{height:44px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);padding:0 15px;font-weight:750;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+    .btn:hover{background:var(--soft)}
+    .btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
+    .count{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted);min-width:72px;text-align:center}
+    .toc{position:fixed;inset:0;z-index:10;background:rgba(8,9,27,.7);padding:clamp(16px,4vw,54px);display:none;place-items:center}
+    .toc.open{display:grid}
+    .toc-panel{width:min(1050px,100%);max-height:90dvh;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:28px;padding:clamp(20px,3vw,34px);box-shadow:0 30px 90px rgba(0,0,0,.35)}
+    .toc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+    .toc-head h2{font-size:clamp(26px,3vw,38px);margin:0}
+    .toc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .toc-item{text-align:left;min-height:88px;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--ink);padding:14px;cursor:pointer}
+    .toc-item:hover,.toc-item.current{border-color:var(--violet);background:var(--soft)}
+    .toc-item small{display:block;color:var(--violet);font-weight:800;margin-bottom:5px}
+    .toc-item span{font-weight:750;line-height:1.25}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:780px){
+      .slide{padding:22px 18px 28px;align-items:flex-start!important}
+      .page{margin:auto 0}
+      .grid.two,.grid.three,.compare,.videos{grid-template-columns:1fr}
+      .card{border-radius:20px;padding:18px}
+      .grid.three .card{display:grid;grid-template-columns:48px 1fr;gap:14px}.grid.three .card .icon{grid-row:1/3;margin:0}.grid.three .card h3{margin:0}.grid.three .card p{grid-column:2}
+      .timeline{grid-template-columns:1fr;gap:12px;margin-top:16px}.timeline:before{left:25px;right:auto;top:20px;bottom:20px;width:3px;height:auto}.time{text-align:left;display:grid;grid-template-columns:52px 1fr;column-gap:14px;align-items:center}.dot{margin:0;border-color:var(--paper);grid-row:1/3}.time b,.time span{grid-column:2}
+      .videos{gap:12px}.ratio{aspect-ratio:16/9}
+      .toc-grid{grid-template-columns:1fr 1fr}.toc-item{min-height:78px}
+      .btn .label{display:none}.btn{padding:0 13px}.controls{grid-template-columns:1fr auto 1fr}
+      h2{margin-top:15px}
+    }
+    @media(max-width:430px){.toc-grid{grid-template-columns:1fr}.grid.three .card{display:block}.grid.three .card .icon{margin-bottom:12px}.slide{padding-top:18px}.controls{gap:6px}.navgroup{gap:6px}.btn{height:42px;border-radius:12px}.count{min-width:58px}}
+  </style>
+</head>
+<body>
+<main class="deck" aria-label="Presentasi GKS-U Korea Selatan">
+  <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+  <div class="stage" id="stage">
+    <section class="slide cover active" data-title="GKS-U Korea Selatan">
+      <div class="blob one"></div><div class="blob two"></div>
+      <div class="page">
+        <span class="section-pill">Panduan Beasiswa S1 <span class="slide-no">01</span></span>
+        <h1>GKS-U<br>Korea Selatan</h1>
+        <p class="lead">Kuliah, bahasa, dan pengalaman hidup di Korea dalam satu beasiswa pemerintah.</p>
+        <div class="kickerline"><span></span><strong>Global Korea Scholarship for Undergraduate Degrees</strong></div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Sekilas program">
+      <div class="page">
+        <span class="section-pill">Orientasi <span class="slide-no">02</span></span>
+        <h2>Satu program, dua tahap besar</h2>
+        <div class="grid two">
+          <article class="card"><strong class="big">1 tahun</strong><h3>Pelatihan bahasa Korea</h3><p class="muted">Tahap bahasa wajib sebelum memasuki studi gelar; biayanya ditanggung.</p></article>
+          <article class="card"><strong class="big">4–6 tahun</strong><h3>Program sarjana</h3><p class="muted">Durasi bergantung pada jurusan. Untuk program 4 tahun, total perjalanan biasanya sekitar 5 tahun.</p></article>
+        </div>
+        <p class="callout"><strong>Penyelenggara:</strong> NIIED di bawah Ministry of Education, Korea Selatan.</p>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Kenapa menarik">
+      <div class="page">
+        <span class="section-pill">Gambaran besar <span class="slide-no">03</span></span>
+        <h2>Lebih dari sekadar bebas uang kuliah</h2>
+        <div class="grid three">
+          <article class="card flat"><div class="icon"><svg viewBox="0 0 24 24"><path d="m3 10 9-5 9 5-9 5-9-5Z"/><path d="M7 12.5v4c3 2 7 2 10 0v-4"/></svg></div><h3>Paket menyeluruh</h3><p class="muted">Kuliah, biaya hidup, perjalanan, bahasa, dan asuransi masuk paket manfaat.</p></article>
+          <article class="card flat"><div class="icon"><svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div><h3>Jaringan global</h3><p class="muted">Siklus 2026 mengalokasikan 280 penerima dari 71 negara.</p></article>
+          <article class="card flat"><div class="icon"><svg viewBox="0 0 24 24"><path d="M8 12l3 3 5-6"/><path d="M12 22C7 19 4 15 4 9V5l8-3 8 3v4c0 6-3 10-8 13Z"/></svg></div><h3>Tanpa ikatan dinas</h3><p class="muted">Tidak ada kewajiban pulang atau bekerja untuk pihak tertentu setelah lulus.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Manfaat: biaya kuliah">
+      <div class="page">
+        <span class="section-pill">Cakupan biaya <span class="slide-no">04</span></span>
+        <h2>Biaya kuliah ditanggung penuh</h2>
+        <div class="card">
+          <div class="metric"><b>hingga KRW 5 juta</b><span>per semester</span></div>
+          <p class="lead">Dukungan ini menutup biaya pendidikan program sarjana sesuai ketentuan GKS-U.</p>
+          <div class="tagrow"><span class="tag">Full tuition</span><span class="tag">Selama masa program</span><span class="tag">Sesuai aturan penerima</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Manfaat: uang saku">
+      <div class="page">
+        <span class="section-pill">Biaya hidup <span class="slide-no">05</span></span>
+        <h2>Uang saku bulanan untuk hidup di Korea</h2>
+        <div class="card">
+          <div class="metric"><b>≈ KRW 1 juta</b><span>per bulan</span></div>
+          <p class="lead">Standar GKS-U yang dirangkum dalam riset. Beberapa sumber menyebut rentang lebih tinggi, sehingga nominal final harus dicek pada pedoman tahun berjalan.</p>
+        </div>
+        <p class="callout"><strong>Rencanakan anggaran.</strong> Semua pengeluaran pribadi di luar manfaat dan tunjangan yang ditetapkan tetap menjadi tanggung jawab penerima.</p>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Manfaat: tiket & perjalanan">
+      <div class="page">
+        <span class="section-pill">Mobilitas <span class="slide-no">06</span></span>
+        <h2>Perjalanan internasional ikut dipikirkan</h2>
+        <div class="grid two">
+          <article class="card"><div class="icon"><svg viewBox="0 0 24 24"><path d="M22 2 9 15M22 2l-7 20-4-9-9-4 20-7Z"/></svg></div><h3>Tiket pesawat ekonomi PP</h3><p class="muted">Perjalanan pergi menuju Korea dan kepulangan setelah program termasuk dalam cakupan.</p></article>
+          <article class="card"><div class="icon"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2"/></svg></div><h3>Settlement allowance</h3><p class="muted">Ada tunjangan kedatangan untuk membantu fase awal menetap; nominalnya mengikuti pedoman resmi.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Bahasa, asuransi & tunjangan">
+      <div class="page">
+        <span class="section-pill">Dukungan tambahan <span class="slide-no">07</span></span>
+        <h2>Bekal sebelum dan selama kuliah</h2>
+        <div class="grid three">
+          <article class="card flat"><h3>Bahasa Korea</h3><p class="muted">Pelatihan wajib selama 1 tahun; biaya program ditanggung.</p></article>
+          <article class="card flat"><h3>Asuransi kesehatan</h3><p class="muted">Perlindungan kesehatan termasuk dalam paket beasiswa.</p></article>
+          <article class="card flat"><h3>Tunjangan lain</h3><p class="muted">Ada dukungan riset/tesis, completion grant, dan bonus TOPIK 5/6 sekitar KRW 300 ribu.</p></article>
+        </div>
+        <p class="small">Jenis dan nominal manfaat mengikuti pedoman resmi pada siklus pendaftaran.</p>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Yang tidak ditanggung">
+      <div class="page">
+        <span class="section-pill">Batas cakupan <span class="slide-no">08</span></span>
+        <h2>Apa yang perlu kamu siapkan sendiri?</h2>
+        <div class="compare">
+          <article class="card"><h3>Ditanggung</h3><ul class="list"><li>Uang kuliah sesuai plafon</li><li>Uang saku bulanan</li><li>Tiket pesawat ekonomi PP</li><li>Bahasa, asuransi, dan tunjangan program</li></ul></article>
+          <article class="card"><h3>Tanggung jawab pribadi</h3><ul class="list"><li>Pengeluaran hidup yang melebihi tunjangan</li><li>Kebutuhan pribadi di luar komponen resmi</li><li>Selisih biaya yang tidak tercantum di pedoman</li></ul></article>
+        </div>
+        <p class="small">Riset tidak merinci semua biaya kecil satu per satu. Gunakan pedoman resmi tahun berjalan sebagai rujukan final.</p>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Syarat dasar">
+      <div class="page">
+        <span class="section-pill">Kelayakan <span class="slide-no">09</span></span>
+        <h2>Syarat dasar pelamar</h2>
+        <div class="grid three">
+          <article class="card flat"><strong class="big">ID</strong><h3>Kewarganegaraan</h3><p class="muted">Warga negara yang ditetapkan NIIED; Indonesia termasuk. Kedua orang tua juga harus warga negara asing, bukan Korea.</p></article>
+          <article class="card flat"><strong class="big">&lt;25</strong><h3>Usia</h3><p class="muted">Di bawah 25 tahun per 1 Maret pada tahun intake.</p></article>
+          <article class="card flat"><strong class="big">SMA</strong><h3>Pendidikan</h3><p class="muted">Lulus SMA/sederajat atau diperkirakan lulus sesuai batas waktu.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Nilai & ketentuan lain">
+      <div class="page">
+        <span class="section-pill">Kelayakan <span class="slide-no">10</span></span>
+        <h2>Ambang akademik dan batas lain</h2>
+        <div class="card">
+          <div class="metric"><b>≥80%</b><span>atau 20% teratas di kelas</span></div>
+          <ul class="list" style="margin-top:22px"><li>Belum memiliki gelar sarjana.</li><li>Belum pernah menempuh studi dengan beasiswa pemerintah Korea.</li><li>Memenuhi ketentuan program dan universitas yang dipilih.</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Timeline & deadline">
+      <div class="page">
+        <span class="section-pill">Jadwal <span class="slide-no">11</span></span>
+        <h2>Jendela 2026: 15 September–31 Oktober</h2>
+        <div class="timeline">
+          <div class="time"><div class="dot"></div><b>Sekitar September</b><span>Embassy Track</span></div>
+          <div class="time"><div class="dot"></div><b>Sekitar Oktober</b><span>University Track</span></div>
+          <div class="time"><div class="dot"></div><b>31 Oktober 2026</b><span>Akhir jendela yang diumumkan</span></div>
+        </div>
+        <p class="callout"><strong>Status perlu diverifikasi.</strong> Korea.net mengumumkan periode 15 Sep–31 Okt 2026, tetapi jadwal per jalur/instansi dapat berbeda. Cek Study in Korea untuk tanggal final.</p>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Cara daftar: langkah 1–2">
+      <div class="page">
+        <span class="section-pill">Alur pendaftaran <span class="slide-no">12</span></span>
+        <h2>Mulai dari jalur yang paling cocok</h2>
+        <div class="steps">
+          <article class="step"><div><h3>Baca pedoman resmi</h3><p>Pastikan syarat negara, usia, nilai, program studi, dan tenggat pada siklus berjalan.</p></div></article>
+          <article class="step"><div><h3>Pilih Embassy atau University Track</h3><p>Bandingkan mekanisme seleksi dan daftar kampus yang tersedia pada masing-masing jalur.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Cara daftar: langkah 3–4">
+      <div class="page">
+        <span class="section-pill">Alur pendaftaran <span class="slide-no">13</span></span>
+        <h2>Bangun aplikasi yang konsisten</h2>
+        <div class="steps" style="counter-reset:step 2">
+          <article class="step"><div><h3>Siapkan bukti kelayakan</h3><p>Kumpulkan bukti identitas, pendidikan, nilai, dan status kelulusan sesuai daftar resmi.</p></div></article>
+          <article class="step"><div><h3>Isi aplikasi dengan teliti</h3><p>Daftar melalui kanal dan format yang ditentukan untuk jalur pilihanmu; cocokkan setiap detail.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Cara daftar: langkah 5">
+      <div class="page">
+        <span class="section-pill">Alur pendaftaran <span class="slide-no">14</span></span>
+        <h2>Submit, lalu tetap siap</h2>
+        <div class="steps" style="counter-reset:step 4">
+          <article class="step"><div><h3>Kirim sebelum tenggat</h3><p>Jangan menunggu hari terakhir. Setelah submit, simpan salinan aplikasi dan pantau pengumuman resmi.</p></div></article>
+        </div>
+        <div class="grid two" style="margin-top:18px">
+          <article class="card flat"><h3>Setelah submit</h3><p class="muted">Periksa status aplikasi dan korespondensi dari jalur yang kamu pilih.</p></article>
+          <article class="card flat"><h3>Jika lanjut seleksi</h3><p class="muted">Gunakan dokumen yang sama sebagai dasar agar jawabanmu konsisten.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Checklist dokumen">
+      <div class="page">
+        <span class="section-pill">Persiapan <span class="slide-no">15</span></span>
+        <h2>Checklist sebelum mengirim</h2>
+        <div class="grid two">
+          <article class="card"><h3>Bukti wajib kelayakan</h3><ul class="list"><li>Identitas dan kewarganegaraan pelamar</li><li>Bukti kewarganegaraan orang tua</li><li>Ijazah atau bukti akan lulus SMA</li><li>Transkrip/nilai dan bukti peringkat bila digunakan</li></ul></article>
+          <article class="card"><h3>Verifikasi final</h3><ul class="list"><li>Format dokumen sesuai pedoman</li><li>Nama dan tanggal konsisten</li><li>Dokumen jalur tujuan lengkap</li><li>Versi pedoman dan tenggat terbaru sudah dicek</li></ul></article>
+        </div>
+        <p class="small">Daftar ini merangkum bukti untuk syarat yang terkonfirmasi dalam riset, bukan pengganti checklist resmi GKS-U.</p>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Tips lolos">
+      <div class="page">
+        <span class="section-pill">Strategi <span class="slide-no">16</span></span>
+        <h2>Buat penilai mudah melihat kesiapanmu</h2>
+        <div class="grid three">
+          <article class="card flat"><h3>Mulai dari bukti</h3><p class="muted">Petakan setiap syarat ke satu dokumen yang jelas dan mudah diverifikasi.</p></article>
+          <article class="card flat"><h3>Pilih jalur strategis</h3><p class="muted">Nilai kecocokan program, universitas, dan proses pada Embassy vs University Track.</p></article>
+          <article class="card flat"><h3>Jaga konsistensi</h3><p class="muted">Pastikan cerita akademik, pilihan jurusan, dan data formulir saling menguatkan.</p></article>
+        </div>
+        <p class="callout">GKS-U sangat kompetitif. Fokus pada aplikasi yang akurat, spesifik, dan terbukti—bukan sekadar panjang.</p>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Kesalahan umum">
+      <div class="page">
+        <span class="section-pill">Waspada <span class="slide-no">17</span></span>
+        <h2>Hal kecil yang bisa menggagalkan</h2>
+        <div class="grid two">
+          <article class="card"><ul class="list"><li>Mengandalkan jadwal umum tanpa cek tenggat jalur.</li><li>Keliru membaca batas usia per 1 Maret.</li><li>Mengirim nilai tanpa membuktikan ambang 80% atau peringkat.</li></ul></article>
+          <article class="card"><ul class="list"><li>Mencampur prosedur Embassy dan University Track.</li><li>Menganggap semua biaya pribadi otomatis ditanggung.</li><li>Menunggu hari terakhir untuk submit.</li></ul></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Pro, kontra & kecocokan">
+      <div class="page">
+        <span class="section-pill">Keputusan <span class="slide-no">18</span></span>
+        <h2>Apakah GKS-U cocok untukmu?</h2>
+        <div class="compare">
+          <article class="card"><h3>Kelebihan</h3><ul class="list"><li>Paket pendanaan sangat lengkap</li><li>Persiapan bahasa satu tahun</li><li>Dua jalur aplikasi</li><li>Tanpa ikatan dinas</li></ul></article>
+          <article class="card"><h3>Tantangan</h3><ul class="list"><li>Persaingan internasional ketat</li><li>Komitmen waktu panjang</li><li>Harus beradaptasi dengan bahasa dan budaya</li><li>Biaya pribadi tetap perlu dikendalikan</li></ul></article>
+        </div>
+        <p class="callout"><strong>Cocok untuk:</strong> pelajar SMA dengan rekam akademik kuat, siap belajar bahasa Korea, dan punya alasan jelas memilih jurusan serta Korea Selatan.</p>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Video GKS-U">
+      <div class="page">
+        <span class="section-pill">Tonton & pahami <span class="slide-no">19</span></span>
+        <h2>Kenali pengalaman dan prosesnya</h2>
+        <div class="videos"><article class="video-card"><div class="ratio"><iframe src="https://www.youtube-nocookie.com/embed/WJierbK8Kbc" title="Cara Mendaftar Beasiswa GKS U 2026 (Global Korea Scholarship) | Panduan Online Terbaru!" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><p><b>Cara mendaftar.</b> Cara Mendaftar Beasiswa GKS U 2026 (Global Korea Scholarship) | Panduan Online Terbaru!<span class="video-source">Sumber: YouTube</span></p></article><article class="video-card"><div class="ratio"><iframe src="https://www.youtube-nocookie.com/embed/l36zW-7C22g" title="2027 GKS-U: HOW TO LABEL AND ARRANGE YOUR DOCUMENTS FOR SUBMISSION" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><p><b>Cara mendaftar.</b> 2027 GKS-U: HOW TO LABEL AND ARRANGE YOUR DOCUMENTS FOR SUBMISSION<span class="video-source">Sumber: YouTube</span></p></article><article class="video-card"><div class="ratio"><iframe src="https://www.youtube-nocookie.com/embed/fUyyhwdtyLA" title="SNU autumn vlog | campus tour, library, student center | Seoul National University" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><p><b>Suasana &amp; fasilitas kampus.</b> SNU autumn vlog | campus tour, library, student center | Seoul National University<span class="video-source">Sumber: YouTube</span></p></article><article class="video-card"><div class="ratio"><iframe src="https://www.youtube-nocookie.com/embed/stM3nyNDV24" title="GKS Awardee Story | Adapting life in Korea (Awardee GKS di Korea University)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><p><b>Testimoni alumni.</b> GKS Awardee Story | Adapting life in Korea (Awardee GKS di Korea University)<span class="video-source">Sumber: YouTube</span></p></article></div>
+      </div>
+    </section>
+
+    <section class="slide cover" data-title="Mulai langkahmu">
+      <div class="blob one"></div><div class="blob two"></div>
+      <div class="page">
+        <span class="section-pill">Langkah berikutnya <span class="slide-no">20</span></span>
+        <h2 style="font-size:clamp(40px,6vw,78px);max-width:880px">Cek pedoman resmi. Pilih jalur. Mulai lebih awal.</h2>
+        <p class="lead">Jangan berhenti di slide ini—konfirmasi jadwal dan persyaratan siklus aktif langsung di portal resmi.</p>
+        <div class="cta"><a class="primary-link" href="https://www.studyinkorea.go.kr" target="_blank" rel="noopener noreferrer">Buka Study in Korea <span aria-hidden="true">↗</span></a><a class="secondary-link" href="https://www.korea.net/NewsFocus/Society/view?articleId=278471" target="_blank" rel="noopener noreferrer">Sumber pengumuman 2026</a></div>
+        <p class="source" style="color:#c8caf2">Rangkuman riset: 15 Oktober 2026. Nominal dan jadwal perlu dicocokkan dengan pedoman resmi tahun berjalan.</p>
+      </div>
+    </section>
+  </div>
+
+  <nav class="controls" aria-label="Navigasi slide">
+    <div class="navgroup"><button class="btn" id="prev" type="button" aria-label="Slide sebelumnya"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg><span class="label">Sebelumnya</span></button></div>
+    <button class="btn" id="tocBtn" type="button" aria-label="Buka daftar isi"><span class="label">Daftar isi</span><span aria-hidden="true">☰</span></button>
+    <div class="navgroup"><span class="count" id="count" aria-live="polite">1 / 20</span><button class="btn" id="next" type="button" aria-label="Slide berikutnya"><span class="label">Berikutnya</span><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button></div>
+  </nav>
+</main>
+
+<div class="toc" id="toc" role="dialog" aria-modal="true" aria-labelledby="tocTitle">
+  <div class="toc-panel">
+    <div class="toc-head"><h2 id="tocTitle">Daftar isi</h2><button class="btn" id="closeToc" type="button" aria-label="Tutup daftar isi">Tutup</button></div>
+    <div class="toc-grid" id="tocGrid"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var current=0;
+  var progress=document.getElementById('progress');
+  var count=document.getElementById('count');
+  var toc=document.getElementById('toc');
+  var tocGrid=document.getElementById('tocGrid');
+  var tocBtn=document.getElementById('tocBtn');
+  var closeToc=document.getElementById('closeToc');
+  var lastFocused=null;
+
+  slides.forEach(function(slide,i){
+    slide.setAttribute('aria-hidden',i===0?'false':'true');
+    var btn=document.createElement('button');
+    btn.type='button'; btn.className='toc-item';
+    btn.innerHTML='<small>'+String(i+1).padStart(2,'0')+'</small><span>'+slide.getAttribute('data-title')+'</span>';
+    btn.addEventListener('click',function(){show(i);hideToc();});
+    tocGrid.appendChild(btn);
+  });
+  var tocItems=Array.prototype.slice.call(document.querySelectorAll('.toc-item'));
+
+  function show(index){
+    current=Math.max(0,Math.min(slides.length-1,index));
+    slides.forEach(function(slide,i){
+      var active=i===current;
+      slide.classList.toggle('active',active);
+      slide.setAttribute('aria-hidden',active?'false':'true');
+      if(active){slide.scrollTop=0;}
+    });
+    tocItems.forEach(function(item,i){item.classList.toggle('current',i===current);});
+    count.textContent=(current+1)+' / '+slides.length;
+    progress.style.width=((current+1)/slides.length*100)+'%';
+    document.getElementById('prev').disabled=current===0;
+    document.getElementById('next').disabled=current===slides.length-1;
+  }
+  function showToc(){lastFocused=document.activeElement;toc.classList.add('open');tocItems[current].focus();}
+  function hideToc(){toc.classList.remove('open');if(lastFocused){lastFocused.focus();}}
+  document.getElementById('prev').addEventListener('click',function(){show(current-1);});
+  document.getElementById('next').addEventListener('click',function(){show(current+1);});
+  tocBtn.addEventListener('click',showToc); closeToc.addEventListener('click',hideToc);
+  toc.addEventListener('click',function(e){if(e.target===toc){hideToc();}});
+  document.addEventListener('keydown',function(e){
+    if(toc.classList.contains('open')){if(e.key==='Escape'){hideToc();}return;}
+    if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();show(current+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(current-1);}
+    else if(e.key==='Home'){e.preventDefault();show(0);}
+    else if(e.key==='End'){e.preventDefault();show(slides.length-1);}
+  });
+  var touchX=null;
+  document.getElementById('stage').addEventListener('touchstart',function(e){touchX=e.changedTouches[0].clientX;},{passive:true});
+  document.getElementById('stage').addEventListener('touchend',function(e){
+    if(touchX===null)return; var delta=e.changedTouches[0].clientX-touchX; touchX=null;
+    if(Math.abs(delta)>60){show(current+(delta<0?1:-1));}
+  },{passive:true});
+  show(0);
+})();
+</script>
+</body>
+</html>
