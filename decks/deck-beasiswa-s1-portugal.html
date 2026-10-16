@@ -3,25 +3,29 @@
 <head>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
 <script>
-/* deck-guard-v3: hanya member terverifikasi yang boleh membuka deck ini */
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
 (function(){
   var HOME='https://wayangprint.github.io/web-beasiswa/';
   var URL='https://fjjdgybpglirsaozpvww.supabase.co';
   var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
   var de=document.documentElement;
   try{ de.style.display='none'; }catch(e){}
-  var LOCK_BODY='<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">Deck ini khusus member</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">Daftar akun dan selesaikan pembayaran Rp50.000 untuk membuka 44 panduan beasiswa ini.</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
-  function doLock(){
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp50.000 untuk membuka 44 panduan beasiswa ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
     try{
       document.title='Terkunci \u2014 Web Beasiswa';
-      if(document.body){ document.body.innerHTML=LOCK_BODY; }
-      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+LOCK_BODY+'</body>'; }
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
       de.style.display='';
     }catch(e){}
   }
-  function lockPage(){
+  function lockPage(kind){
     var applied=false;
-    function apply(){ if(applied) return; applied=true; doLock(); }
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
     try{
       if(document.readyState==='loading'){
         document.addEventListener('DOMContentLoaded', apply);
@@ -31,21 +35,30 @@
   }
   function unlock(){ try{ de.style.display=''; }catch(e){} }
   var done=false;
-  function fail(){ if(!done){ done=true; lockPage(); } }
-  setTimeout(fail, 12000);
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
   function init(){
+    var client, uid;
     try{
-      if(typeof supabase==='undefined'){ fail(); return; }
-      var client=supabase.createClient(URL, KEY);
-      client.auth.getSession().then(function(res){
-        var s=res && res.data && res.data.session;
-        if(!s){ fail(); return; }
-        client.from('profiles').select('verified').eq('id', s.user.id).maybeSingle().then(function(r){
-          if(done) return; done=true;
-          if(r && r.data && r.data.verified===true){ unlock(); } else { lockPage(); }
-        }).catch(function(){ fail(); });
-      }).catch(function(){ fail(); });
-    }catch(e){ fail(); }
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
   }
   setTimeout(init, 60);
 })();
