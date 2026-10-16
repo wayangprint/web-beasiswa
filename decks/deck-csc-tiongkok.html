@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="data:," />
+  <title>Deck CSC Tiongkok</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink:#17173a; --muted:#5f6380; --paper:#f6f7fc; --surface:#ffffff;
+      --navy:#1a1446; --navy2:#232a68; --violet:#7c3aed; --violet2:#a855f7;
+      --line:#dfe2ef; --soft:#ece9ff; --good:#0e8066; --warn:#b75b13; --danger:#b43853;
+      --shadow:0 18px 50px rgba(35,42,104,.13); --radius:24px;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{--ink:#f2f1ff;--muted:#c2c4d9;--paper:#0f1024;--surface:#191b34;--line:#353858;--soft:#282253;--good:#69d5ba;--warn:#f3b06f;--danger:#ff8ca6;--shadow:0 18px 50px rgba(0,0,0,.28)}
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
+    body{min-height:100vh}
+    button,a{font:inherit}
+    button{color:inherit}
+    a{color:inherit}
+    .deck{min-height:100vh;display:grid;grid-template-rows:4px minmax(0,1fr) auto}
+    .progress-track{background:var(--line);position:relative;z-index:20}
+    .progress-fill{height:100%;width:5%;background:linear-gradient(90deg,var(--navy2),var(--violet),var(--violet2));transition:width .3s ease}
+    .stage{position:relative;min-height:0}
+    .slide{display:none;min-height:calc(100vh - 86px);padding:clamp(30px,5vw,72px) clamp(22px,6vw,92px) 42px;align-items:center;overflow:hidden}
+    .slide.active{display:flex;animation:slideIn .28s ease both}
+    @keyframes slideIn{from{opacity:.2;transform:translateX(14px)}to{opacity:1;transform:none}}
+    @media (prefers-reduced-motion:reduce){.slide.active{animation:none}.progress-fill{transition:none}}
+    .content{width:min(1120px,100%);margin:auto}
+    .split{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:clamp(28px,5vw,70px);align-items:center}
+    .section-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:linear-gradient(90deg,var(--navy2),var(--violet));color:#fff;font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:18px}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:clamp(3rem,7vw,6.7rem);line-height:.91;letter-spacing:-.065em;margin-bottom:24px;max-width:850px}
+    h2{font-size:clamp(2rem,4.6vw,4.5rem);line-height:.98;letter-spacing:-.05em;margin-bottom:22px;max-width:930px}
+    h3{font-size:clamp(1.05rem,1.8vw,1.42rem);line-height:1.15;margin-bottom:10px}
+    .lead{font-size:clamp(1.08rem,2vw,1.42rem);line-height:1.55;color:var(--muted);max-width:760px}
+    .big-number{font-size:clamp(4.7rem,12vw,9.2rem);font-weight:900;line-height:.8;letter-spacing:-.08em;color:var(--violet)}
+    .metric{font-size:clamp(1.7rem,4vw,3.4rem);font-weight:900;letter-spacing:-.04em;line-height:1}
+    .caption{font-size:.82rem;color:var(--muted);line-height:1.45}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}
+    .grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(18px,2.5vw,28px);box-shadow:var(--shadow)}
+    .card.flat{box-shadow:none}
+    .card p,.card li{color:var(--muted);line-height:1.55}
+    .card p:last-child{margin-bottom:0}
+    .icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--soft);color:var(--violet);margin-bottom:18px}
+    .icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .list{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:14px}
+    .list li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;line-height:1.55}
+    .check,.cross,.num{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:.78rem;font-weight:900;margin-top:1px}
+    .check{background:color-mix(in srgb,var(--good) 16%,transparent);color:var(--good)}
+    .cross{background:color-mix(in srgb,var(--danger) 14%,transparent);color:var(--danger)}
+    .num{background:var(--violet);color:#fff}
+    .callout{margin-top:26px;padding:18px 20px;border-radius:18px;background:var(--soft);color:var(--ink);font-weight:700;line-height:1.5}
+    .warning{background:color-mix(in srgb,var(--warn) 14%,var(--surface));color:var(--warn)}
+    .source{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px;font-size:.75rem;color:var(--muted)}
+    .source a{font-weight:750;text-decoration-thickness:1px;text-underline-offset:3px}
+    .compare{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px}
+    .compare .card:first-child{border-top:5px solid var(--good)}
+    .compare .card:last-child{border-top:5px solid var(--warn)}
+    .timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:32px}
+    .time{position:relative;padding:56px 18px 20px;background:var(--surface);border:1px solid var(--line);border-radius:20px}
+    .time:before{content:"";position:absolute;left:20px;top:23px;width:18px;height:18px;border-radius:50%;background:var(--violet);box-shadow:0 0 0 7px var(--soft)}
+    .time:not(:last-child):after{content:"";position:absolute;top:31px;left:45px;right:-16px;height:2px;background:var(--line)}
+    .time strong{display:block;margin-bottom:5px}
+    .route{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:16px;margin-top:30px}
+    .route .card{display:flex;flex-direction:column;justify-content:space-between}
+    .versus{align-self:center;font-weight:900;color:var(--violet)}
+    .steps{display:grid;gap:12px;margin-top:26px}
+    .step{display:grid;grid-template-columns:46px 1fr;gap:16px;padding:18px;background:var(--surface);border:1px solid var(--line);border-radius:20px;align-items:start}
+    .step .num{width:40px;height:40px}
+    .step p{margin:5px 0 0;color:var(--muted);line-height:1.45}
+    .video-slide{align-items:flex-start;padding-top:20px;padding-bottom:20px}
+    .video-slide .content{width:min(960px,100%)}
+    .video-slide h2{font-size:clamp(2rem,3.2vw,3.25rem);margin-bottom:10px}
+    .video-slide .lead{font-size:clamp(.95rem,1.4vw,1.08rem);line-height:1.4;margin-bottom:0}
+    .video-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+    .video{background:#090a18;border-radius:20px;overflow:hidden;box-shadow:var(--shadow);color:#fff}
+    .video iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+    .video-caption{padding:14px 16px 16px}
+    .video-source{display:block;margin-bottom:6px;color:#c7b8ff;font-size:.72rem;font-weight:850;letter-spacing:.06em;text-transform:uppercase}
+    .video-title{margin:0;font-size:.94rem;line-height:1.35;font-weight:750}
+    .cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:18px;padding:14px 20px;border-radius:999px;background:linear-gradient(90deg,var(--navy2),var(--violet));color:#fff;text-decoration:none;font-weight:850;box-shadow:0 12px 30px rgba(124,58,237,.28)}
+    .cover{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 56%,#43107e 100%);color:#fff;position:relative}
+    .cover:before,.cover:after{content:"";position:absolute;border-radius:50%;filter:blur(1px);pointer-events:none}
+    .cover:before{width:42vw;height:42vw;min-width:300px;min-height:300px;right:-11vw;top:-14vw;background:radial-gradient(circle at 35% 35%,#bf7cff 0 10%,#7c3aed 38%,transparent 69%);opacity:.82}
+    .cover:after{width:28vw;height:28vw;min-width:200px;min-height:200px;right:12vw;bottom:-14vw;background:radial-gradient(circle,#4e8dff,transparent 68%);opacity:.38}
+    .cover .content{position:relative;z-index:1}
+    .cover .lead{color:#dcdcff;max-width:620px}
+    .cover .section-pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22)}
+    .cover-note{display:flex;gap:18px;flex-wrap:wrap;margin-top:36px;color:#eeeaff;font-size:.85rem;font-weight:700}
+    .controlbar{position:sticky;bottom:0;z-index:30;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:12px clamp(14px,3vw,36px) max(12px,env(safe-area-inset-bottom));background:color-mix(in srgb,var(--surface) 92%,transparent);border-top:1px solid var(--line);backdrop-filter:blur(12px)}
+    .controls{display:flex;gap:8px}
+    .controlbar .controls:last-child{justify-content:flex-end}
+    .btn{min-height:44px;padding:10px 15px;border:1px solid var(--line);background:var(--surface);border-radius:999px;font-weight:800;cursor:pointer}
+    .btn.primary{background:var(--navy2);border-color:var(--navy2);color:#fff}
+    .btn:disabled{opacity:.35;cursor:not-allowed}
+    .counter{font-variant-numeric:tabular-nums;font-weight:900;color:var(--muted);min-width:72px;text-align:center}
+    .toc{position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(18px);display:none;padding:clamp(20px,5vw,60px);overflow:auto}
+    .toc.open{display:block}
+    .toc-head{display:flex;justify-content:space-between;align-items:center;gap:20px;max-width:1200px;margin:0 auto 22px}
+    .toc h2{margin:0;font-size:clamp(1.8rem,4vw,3.2rem)}
+    .toc-grid{max-width:1200px;margin:auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .toc-item{text-align:left;padding:16px;border-radius:18px;border:1px solid var(--line);background:var(--surface);min-height:110px;cursor:pointer;color:var(--ink)}
+    .toc-item:hover,.toc-item:focus-visible{outline:3px solid color-mix(in srgb,var(--violet) 42%,transparent);outline-offset:2px}
+    .toc-item b{display:block;color:var(--violet);font-size:.75rem;margin-bottom:8px}
+    .toc-item span{font-weight:800;line-height:1.3}
+    .nowrap{white-space:nowrap}
+    @media(max-width:820px){
+      .slide{min-height:calc(100vh - 82px);align-items:flex-start;padding-top:28px}
+      .split,.grid,.grid.two,.compare,.video-grid{grid-template-columns:1fr}
+      .timeline{grid-template-columns:1fr 1fr}
+      .time:not(:last-child):after{display:none}
+      .route{grid-template-columns:1fr}.versus{text-align:center}
+      .toc-grid{grid-template-columns:1fr 1fr}
+      .controlbar{grid-template-columns:1fr auto 1fr}.btn .label{display:none}
+      h1{font-size:clamp(3rem,15vw,4.8rem)}
+      .big-number{font-size:5rem}
+    }
+    @media(max-width:520px){
+      .slide{padding-left:18px;padding-right:18px;padding-bottom:28px}
+      .timeline,.toc-grid{grid-template-columns:1fr}
+      .card{border-radius:20px}
+      .toc{padding:18px}
+      .btn{padding:10px 12px}
+      .counter{min-width:58px}
+    }
+  </style>
+</head>
+<body>
+<div class="deck" aria-live="polite">
+  <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progress"></div></div>
+  <main class="stage" id="stage">
+    <section class="slide cover active" data-title="Cover">
+      <div class="content">
+        <span class="section-pill">Panduan Beasiswa S1</span>
+        <h1>Chinese Government Scholarship</h1>
+        <p class="lead">Kuliah di Tiongkok dengan dukungan biaya pendidikan, asrama, uang saku, dan asuransi—sambil tetap menyiapkan biaya penerbangan sendiri.</p>
+        <div class="cover-note"><span>CSC · Tiongkok</span><span>Jalur Kedutaan & universitas</span><span>Siklus acuan 2026–2027</span></div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Sekilas Program">
+      <div class="content split">
+        <div><span class="section-pill">01 · Orientasi</span><h2>Satu program, dua jalur utama</h2><p class="lead">Chinese Government Scholarship (CSC) membuka dukungan untuk studi S1 bagi pelamar internasional. Pelamar Indonesia dapat menelusuri jalur bilateral melalui Kedutaan Tiongkok atau jalur universitas.</p></div>
+        <div class="route"><div class="card flat"><h3>Type A</h3><p>Jalur bilateral melalui Kedutaan Tiongkok di Indonesia.</p></div><div class="versus">atau</div><div class="card flat"><h3>Type B</h3><p>Jalur melalui universitas yang berpartisipasi.</p></div></div>
+        <div class="source"><span>Sumber riset:</span><a href="http://zambia.ciss.org.cn/Article_Detail/45546" target="_blank" rel="noopener">CISS / ringkasan cakupan CSC</a></div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Kenapa Menarik">
+      <div class="content"><span class="section-pill">02 · Gambaran Besar</span><h2>Menutup komponen biaya terbesar</h2><div class="grid"><article class="card"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3 10 12 5l9 5-9 5-9-5Z"/><path d="M7 12v5c3 2 7 2 10 0v-5"/></svg></div><h3>Biaya kuliah penuh</h3><p>Komponen akademik utama ditanggung selama masa pendanaan.</p></article><article class="card"><div class="icon"><svg viewBox="0 0 24 24"><path d="M4 10h16v10H4z"/><path d="M7 10V7h10v3M8 15h8"/></svg></div><h3>Tempat tinggal</h3><p>Asrama kampus gratis atau subsidi akomodasi, sesuai skema.</p></article><article class="card"><div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg></div><h3>Dukungan bulanan</h3><p>Uang saku S1 CNY 2.500 per bulan.</p></article></div><div class="callout">Kekuatan CSC: biaya pendidikan, hunian, uang saku, dan asuransi berada dalam satu paket. Kelemahannya: tiket pesawat internasional tidak termasuk.</div></div>
+    </section>
+
+    <section class="slide" data-title="Manfaat: Biaya Kuliah">
+      <div class="content split"><div><span class="section-pill">03 · Cakupan</span><h2>Biaya kuliah ditanggung penuh</h2><p class="lead">CSC mencakup tuition untuk program yang disetujui. Durasi umumnya mengikuti program S1, sekitar 4–5 tahun, dengan kemungkinan tahun persiapan bahasa Tionghoa jika diwajibkan.</p><div class="callout">Pastikan program dan durasi yang dipilih tercantum dalam penawaran beasiswa universitas tujuan.</div></div><div class="card"><div class="big-number">100%</div><p class="metric">tuition</p><p>Komponen kuliah penuh tercakup dalam paket CSC.</p></div></div>
+    </section>
+
+    <section class="slide" data-title="Manfaat: Uang Saku">
+      <div class="content split"><div><span class="section-pill">04 · Cakupan</span><h2>Uang saku untuk kebutuhan harian</h2><p class="lead">Penerima jenjang S1 mendapat tunjangan bulanan untuk membantu biaya makan, transportasi lokal, dan kebutuhan pribadi.</p><div class="source"><a href="http://zambia.ciss.org.cn/Article_Detail/45546" target="_blank" rel="noopener">Cakupan CSC · CISS</a></div></div><div class="card"><div class="big-number">2.500</div><p class="metric">CNY / bulan</p><p class="caption">Nilai untuk penerima program sarjana menurut sumber riset yang dihimpun 15 Oktober 2026.</p></div></div>
+    </section>
+
+    <section class="slide" data-title="Manfaat: Perjalanan">
+      <div class="content split"><div><span class="section-pill">05 · Perjalanan</span><h2>Tiket internasional tidak ditanggung</h2><p class="lead">CSC tidak memasukkan tiket pesawat dari Indonesia ke Tiongkok maupun tiket pulang. Biaya ini perlu direncanakan sejak awal.</p><ul class="list"><li><span class="cross">×</span><span>Tiket pesawat internasional</span></li><li><span class="check">✓</span><span>Reimburse perjalanan antarkota saat registrasi/kelulusan tercantum dalam ringkasan cakupan—cek implementasi jalur Anda.</span></li></ul></div><div class="card"><h3>Siapkan dana kedatangan</h3><p>Buat pos terpisah untuk penerbangan, visa, transport bandara, dan biaya awal sebelum tunjangan pertama cair.</p><div class="callout warning">Jangan memasukkan tiket pesawat sebagai manfaat CSC saat menghitung total pembiayaan.</div></div></div>
+    </section>
+
+    <section class="slide" data-title="Manfaat: Asrama & Asuransi">
+      <div class="content"><span class="section-pill">06 · Cakupan</span><h2>Hunian kampus + perlindungan medis</h2><div class="grid two"><article class="card"><h3>Asrama</h3><p>Tempat tinggal di kampus disediakan gratis, atau diganti dengan subsidi akomodasi sesuai ketentuan skema/universitas.</p></article><article class="card"><h3>Asuransi kesehatan</h3><p>Comprehensive medical insurance senilai <strong>CNY 800 per tahun</strong>.</p></article></div><div class="callout">Riset juga mencatat subsidi kedatangan satu kali CNY 1.000–1.500. Konfirmasi komponen ini pada dokumen award jalur yang Anda pilih.</div><div class="source"><a href="http://zambia.ciss.org.cn/Article_Detail/45546" target="_blank" rel="noopener">CISS / CSC coverage terms</a></div></div>
+    </section>
+
+    <section class="slide" data-title="Yang Tidak Ditanggung">
+      <div class="content"><span class="section-pill">07 · Batas Cakupan</span><h2>Apa yang tetap menjadi tanggunganmu?</h2><div class="grid"><article class="card"><h3>Penerbangan</h3><p>Tiket internasional pergi dan pulang.</p></article><article class="card"><h3>Visa</h3><p>Biaya visa tidak masuk dalam cakupan yang dikonfirmasi.</p></article><article class="card"><h3>Kebutuhan tambahan</h3><p>Pengeluaran di luar uang saku, termasuk sebagian buku/material, kebutuhan pribadi, dan biaya tak terduga.</p></article></div><div class="callout warning">Buat dana cadangan. “Fully funded” di sini berarti paket utama tercakup, bukan semua pengeluaran tanpa batas.</div></div>
+    </section>
+
+    <section class="slide" data-title="Syarat Dasar">
+      <div class="content split"><div><span class="section-pill">08 · Kelayakan</span><h2>Dasar kelayakan S1</h2><ul class="list"><li><span class="check">✓</span><span>Bukan warga negara Tiongkok.</span></li><li><span class="check">✓</span><span>Lulusan sekolah menengah dengan rekam akademik yang baik.</span></li><li><span class="check">✓</span><span>Usia biasanya di bawah 25 tahun untuk jenjang S1.</span></li></ul></div><div class="card"><h3>“Biasanya” itu penting</h3><p>Batas usia dan definisi dokumen kelulusan dapat mengikuti pengumuman jalur kedutaan atau universitas. Gunakan ketentuan pada siklus yang sedang dibuka sebagai acuan final.</p></div></div>
+    </section>
+
+    <section class="slide" data-title="Syarat Akademik & Bahasa">
+      <div class="content"><span class="section-pill">09 · Kelayakan</span><h2>Bahasa program menentukan bukti bahasa</h2><div class="compare"><article class="card"><h3>Program berbahasa Tionghoa</h3><p>Banyak program S1 menggunakan bahasa Tionghoa dan mensyaratkan HSK. Level persisnya mengikuti universitas/program.</p></article><article class="card"><h3>Program berbahasa Inggris</h3><p>Pilihan terus bertambah. Sebagian program sering meminta TOEFL iBT 80+ atau IELTS 6.0+, tetapi syarat final harus dicek di halaman program.</p></article></div><div class="callout">Program S1 di Xiamen University dalam riset ini dicatat mayoritas berbahasa Tionghoa. Jangan mengasumsikan semua jurusan tersedia dalam bahasa Inggris.</div></div>
+    </section>
+
+    <section class="slide" data-title="Timeline & Deadline">
+      <div class="content"><span class="section-pill">10 · Timeline</span><h2>Mulai lebih awal, bukan saat portal hampir tutup</h2><div class="timeline"><div class="time"><strong>Okt–Nov 2026</strong><span class="caption">Riset program, bahasa, dan jalur.</span></div><div class="time"><strong>Des 2026</strong><span class="caption">Jendela tipikal mulai terbuka.</span></div><div class="time"><strong>Jan–Mar 2027</strong><span class="caption">Kumpulkan dan unggah dokumen.</span></div><div class="time"><strong>Apr 2027</strong><span class="caption">Batas akhir tipikal sebagian jalur.</span></div></div><div class="callout warning">Jendela ~Des 2026–Apr 2027 adalah pola umum. Deadline kedutaan dan tiap universitas bisa berbeda.</div></div>
+    </section>
+
+    <section class="slide" data-title="Cara Daftar: Langkah 1–2">
+      <div class="content"><span class="section-pill">11 · Aplikasi</span><h2>Langkah 1–2: tentukan jalur dan program</h2><div class="steps"><article class="step"><span class="num">1</span><div><h3>Pilih Type A atau Type B</h3><p>Bandingkan pengumuman Kedutaan Tiongkok di Indonesia dengan pilihan universitas yang membuka CSC.</p></div></article><article class="step"><span class="num">2</span><div><h3>Periksa jurusan, bahasa, dan durasi</h3><p>Pastikan S1 tersedia, medium pengantar sesuai kemampuanmu, dan persyaratan bahasa sudah jelas.</p></div></article></div><div class="callout">Alur ini adalah panduan kerja umum. Pengumuman resmi jalur yang dipilih tetap menjadi instruksi final.</div></div>
+    </section>
+
+    <section class="slide" data-title="Cara Daftar: Langkah 3–4">
+      <div class="content"><span class="section-pill">12 · Aplikasi</span><h2>Langkah 3–4: siapkan bukti dan akun</h2><div class="steps"><article class="step"><span class="num">3</span><div><h3>Susun dokumen sesuai daftar resmi</h3><p>Gunakan nama, format, terjemahan, dan legalisasi yang diminta. Jangan mengandalkan daftar generik dari blog.</p></div></article><article class="step"><span class="num">4</span><div><h3>Isi portal CSC dan kanal jalur</h3><p>Beberapa jalur universitas dapat meminta aplikasi kampus selain aplikasi CSC. Ikuti urutan yang dipublikasikan.</p></div></article></div></div>
+    </section>
+
+    <section class="slide" data-title="Cara Daftar: Langkah 5">
+      <div class="content split"><div><span class="section-pill">13 · Aplikasi</span><h2>Langkah 5: audit sebelum submit</h2><ul class="list"><li><span class="num">A</span><span>Cocokkan ejaan nama dengan paspor.</span></li><li><span class="num">B</span><span>Pastikan semua berkas bisa dibuka dan terbaca.</span></li><li><span class="num">C</span><span>Simpan salinan aplikasi dan bukti pengiriman.</span></li></ul></div><div class="card"><h3>Setelah submit</h3><p>Pantau kanal yang disebut dalam pengumuman untuk permintaan tambahan, hasil seleksi, dan instruksi penerimaan.</p><div class="callout warning">Jangan menyatakan lolos sebelum ada pemberitahuan resmi dari jalur yang memproses aplikasimu.</div></div></div>
+    </section>
+
+    <section class="slide" data-title="Checklist Dokumen">
+      <div class="content"><span class="section-pill">14 · Persiapan</span><h2>Checklist inti untuk mulai menyiapkan</h2><div class="grid two"><article class="card"><ul class="list"><li><span class="check">✓</span><span>Paspor / bukti kewarganegaraan non-Tiongkok</span></li><li><span class="check">✓</span><span>Ijazah atau bukti kelulusan sekolah menengah</span></li><li><span class="check">✓</span><span>Transkrip / rekam akademik</span></li></ul></article><article class="card"><ul class="list"><li><span class="check">✓</span><span>Bukti HSK untuk program bahasa Tionghoa, bila diminta</span></li><li><span class="check">✓</span><span>Bukti TOEFL/IELTS untuk program Inggris, bila diminta</span></li><li><span class="check">✓</span><span>Dokumen tambahan persis seperti daftar resmi jalur</span></li></ul></article></div><p class="caption" style="margin-top:18px">Daftar final dapat berbeda menurut jalur, universitas, dan siklus. Checklist ini hanya memuat item yang dapat diturunkan dari syarat yang terkonfirmasi dalam riset.</p></div>
+    </section>
+
+    <section class="slide" data-title="Tips Lolos">
+      <div class="content"><span class="section-pill">15 · Strategi</span><h2>Bangun aplikasi yang konsisten</h2><div class="grid"><article class="card"><h3>Mulai dari kecocokan</h3><p>Pilih jurusan dan bahasa yang realistis terhadap rekam akademik serta kemampuanmu.</p></article><article class="card"><h3>Tunjukkan arah</h3><p>Hubungkan studi pilihan dengan rencana akademik atau kontribusi setelah lulus—tanpa klaim yang tidak bisa dibuktikan.</p></article><article class="card"><h3>Jaga detail</h3><p>Gunakan data yang sama di portal CSC, aplikasi universitas, dan dokumen pendukung.</p></article></div><div class="callout">Strategi terbaik bukan membuat aplikasi “terlihat sempurna”, melainkan membuatnya mudah diverifikasi dan masuk akal.</div></div>
+    </section>
+
+    <section class="slide" data-title="Kesalahan Umum">
+      <div class="content"><span class="section-pill">16 · Hindari</span><h2>Empat kesalahan yang mudah dicegah</h2><div class="grid two"><article class="card"><h3>1. Salah menghitung biaya</h3><p>Mengira tiket pesawat dan visa ikut ditanggung.</p></article><article class="card"><h3>2. Salah bahasa program</h3><p>Memilih jurusan berbahasa Tionghoa tanpa memenuhi HSK.</p></article><article class="card"><h3>3. Hanya isi satu portal</h3><p>Melewatkan kanal universitas ketika jalur Type B meminta dua aplikasi.</p></article><article class="card"><h3>4. Mengikuti deadline umum</h3><p>Mengabaikan tanggal khusus kedutaan atau universitas.</p></article></div></div>
+    </section>
+
+    <section class="slide" data-title="Pro, Kontra & Kecocokan">
+      <div class="content"><span class="section-pill">17 · Evaluasi</span><h2>Apakah CSC cocok untukmu?</h2><div class="compare"><article class="card"><h3>Pro</h3><ul class="list"><li><span class="check">✓</span><span>Tuition penuh</span></li><li><span class="check">✓</span><span>Asrama atau subsidi akomodasi</span></li><li><span class="check">✓</span><span>CNY 2.500/bulan + asuransi</span></li><li><span class="check">✓</span><span>Tidak ada ikatan dinas yang terkonfirmasi</span></li></ul></article><article class="card"><h3>Kontra</h3><ul class="list"><li><span class="cross">×</span><span>Tiket internasional & visa tidak termasuk</span></li><li><span class="cross">×</span><span>Banyak program S1 berbahasa Tionghoa</span></li><li><span class="cross">×</span><span>Detail proses berbeda antarsalur dan kampus</span></li></ul></article></div><div class="callout">Cocok untuk pelajar yang siap belajar mandiri, fleksibel soal kota/kampus, dan memiliki rencana dana kedatangan.</div></div>
+    </section>
+
+    <section class="slide" data-title="Video Referensi">
+      <div class="content"><span class="section-pill">18 · Video</span><h2>Lihat gambaran aplikasinya</h2><p class="lead">Empat video berikut disematkan sebagai referensi pendamping. Cocokkan setiap detail dengan pengumuman resmi siklusmu.</p><div class="video-grid">
+        <article class="video"><iframe src="https://www.youtube-nocookie.com/embed/A73P4T-48hk" title="[PART 1] STEP BY STEP CARA DAFTAR BEASISWA KE CHINA | CSC Scholarship | FULL SCHOLARSHIP" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><div class="video-caption"><span class="video-source">YouTube · Cara mendaftar</span><p class="video-title">[PART 1] STEP BY STEP CARA DAFTAR BEASISWA KE CHINA | CSC Scholarship | FULL SCHOLARSHIP</p></div></article>
+        <article class="video"><iframe src="https://www.youtube-nocookie.com/embed/f1CRNry_KSg" title="Beasiswa S1 S2 S3 ke China, SEMUANYA GRATIS?? In Depth Interview Perbedaan CIS dan CGS/CSC" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><div class="video-caption"><span class="video-source">YouTube · Cara mendaftar</span><p class="video-title">Beasiswa S1 S2 S3 ke China, SEMUANYA GRATIS?? In Depth Interview Perbedaan CIS dan CGS/CSC</p></div></article>
+        <article class="video"><iframe src="https://www.youtube-nocookie.com/embed/-mP2qjLttHc" title="Inside China&#x27;s Most Prestigious University (Tur Kampus Tsinghua: asrama &amp; fasilitas)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><div class="video-caption"><span class="video-source">YouTube · Suasana &amp; fasilitas kampus</span><p class="video-title">Inside China&#x27;s Most Prestigious University (Tur Kampus Tsinghua: asrama &amp; fasilitas)</p></div></article>
+        <article class="video"><iframe src="https://www.youtube-nocookie.com/embed/y3R3m-hTBfY" title="Bagaimana Aku Dapat Beasiswa Chinese Government Scholarship? (Pengalaman Awardee)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><div class="video-caption"><span class="video-source">YouTube · Testimoni alumni</span><p class="video-title">Bagaimana Aku Dapat Beasiswa Chinese Government Scholarship? (Pengalaman Awardee)</p></div></article>
+      </div></div>
+    </section>
+
+    <section class="slide cover" data-title="Penutup">
+      <div class="content split"><div><span class="section-pill">19 · Langkah Berikutnya</span><h2>Mulai dari program, lalu pilih jalurnya.</h2><p class="lead">Buka portal resmi, catat jurusan S1 yang cocok, cek bahasa pengantar, lalu buat timeline mundur dari deadline jalurmu.</p><a class="cta" href="http://www.campuschina.org" target="_blank" rel="noopener">Buka Campus China <span aria-hidden="true">↗</span></a></div><div class="card" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff"><h3>3 tindakan hari ini</h3><ul class="list"><li><span class="num">1</span><span style="color:#eeeaff">Pilih Type A atau Type B</span></li><li><span class="num">2</span><span style="color:#eeeaff">Cari 3 program S1 yang cocok</span></li><li><span class="num">3</span><span style="color:#eeeaff">Petakan tes bahasa dan dokumen</span></li></ul></div></div>
+    </section>
+  </main>
+
+  <footer class="controlbar" aria-label="Navigasi presentasi">
+    <div class="controls"><button class="btn" id="prev" type="button" aria-label="Slide sebelumnya">← <span class="label">Sebelumnya</span></button></div>
+    <button class="btn counter" id="tocBtn" type="button" aria-haspopup="dialog" aria-controls="toc"><span id="counter">1 / 20</span></button>
+    <div class="controls"><button class="btn primary" id="next" type="button" aria-label="Slide berikutnya"><span class="label">Berikutnya</span> →</button></div>
+  </footer>
+</div>
+
+<div class="toc" id="toc" role="dialog" aria-modal="true" aria-labelledby="tocTitle">
+  <div class="toc-head"><h2 id="tocTitle">Daftar isi</h2><button class="btn" id="closeToc" type="button">Tutup</button></div>
+  <div class="toc-grid" id="tocGrid"></div>
+</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var current = 0;
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var counter = document.getElementById('counter');
+  var progress = document.getElementById('progress');
+  var toc = document.getElementById('toc');
+  var tocBtn = document.getElementById('tocBtn');
+  var closeToc = document.getElementById('closeToc');
+  var tocGrid = document.getElementById('tocGrid');
+
+  slides.forEach(function(slide, i){
+    var button = document.createElement('button');
+    button.className = 'toc-item';
+    button.type = 'button';
+    button.innerHTML = '<b>SLIDE ' + (i + 1) + '</b><span>' + slide.getAttribute('data-title') + '</span>';
+    button.addEventListener('click', function(){ show(i); setToc(false); });
+    tocGrid.appendChild(button);
+  });
+
+  function show(index){
+    current = Math.max(0, Math.min(slides.length - 1, index));
+    slides.forEach(function(slide, i){
+      slide.classList.toggle('active', i === current);
+      slide.setAttribute('aria-hidden', i === current ? 'false' : 'true');
+    });
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    progress.style.width = (((current + 1) / slides.length) * 100) + '%';
+    prev.disabled = current === 0;
+    next.disabled = current === slides.length - 1;
+    document.title = slides[current].getAttribute('data-title') + ' · CSC Tiongkok';
+    window.scrollTo(0,0);
+  }
+  function setToc(open){
+    toc.classList.toggle('open', open);
+    toc.setAttribute('aria-hidden', open ? 'false' : 'true');
+    if(open){ closeToc.focus(); } else { tocBtn.focus(); }
+  }
+  prev.addEventListener('click', function(){ show(current - 1); });
+  next.addEventListener('click', function(){ show(current + 1); });
+  tocBtn.addEventListener('click', function(){ setToc(true); });
+  closeToc.addEventListener('click', function(){ setToc(false); });
+  toc.addEventListener('click', function(e){ if(e.target === toc) setToc(false); });
+  document.addEventListener('keydown', function(e){
+    if(toc.classList.contains('open')){ if(e.key === 'Escape') setToc(false); return; }
+    if(e.key === 'ArrowRight' || e.key === 'PageDown'){ e.preventDefault(); show(current + 1); }
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); show(current - 1); }
+    else if(e.key === 'Home'){ e.preventDefault(); show(0); }
+    else if(e.key === 'End'){ e.preventDefault(); show(slides.length - 1); }
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>

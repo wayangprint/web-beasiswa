@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="data:," />
+  <title>Panduan BIM S1 Luar Negeri</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #16162a;
+      --muted: #5b6077;
+      --paper: #f4f5fb;
+      --surface: #ffffff;
+      --soft: #ececfa;
+      --line: #d9dced;
+      --navy: #1a1446;
+      --navy-2: #232a68;
+      --violet: #7c3aed;
+      --violet-2: #9f67ff;
+      --teal: #0f766e;
+      --rose: #be185d;
+      --amber: #a65b00;
+      --shadow: 0 18px 44px rgba(26,20,70,.12);
+      --radius: 24px;
+      --bar-h: 84px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f3f1ff;
+        --muted: #b9bed5;
+        --paper: #0b0d1b;
+        --surface: #15182c;
+        --soft: #202441;
+        --line: #303652;
+        --navy: #100b32;
+        --navy-2: #273177;
+        --violet: #9866ff;
+        --violet-2: #b99aff;
+        --teal: #5eead4;
+        --rose: #fb8fbd;
+        --amber: #ffc163;
+        --shadow: 0 18px 44px rgba(0,0,0,.3);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    button, a { font: inherit; }
+    button { color: inherit; }
+    .deck { height: 100%; position: relative; }
+    .progress-track {
+      position: fixed; z-index: 30; left: 0; top: 0; width: 100%; height: 5px;
+      background: color-mix(in srgb, var(--line) 70%, transparent);
+    }
+    .progress-fill {
+      display: block; width: 5%; height: 100%;
+      background: linear-gradient(90deg, var(--navy-2), var(--violet), #d946ef);
+      transition: width .35s ease;
+    }
+    .slides { height: calc(100% - var(--bar-h)); }
+    .slide {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+      padding: clamp(26px, 5vw, 68px) clamp(20px, 7vw, 100px) 34px;
+      background:
+        radial-gradient(circle at 93% 8%, color-mix(in srgb, var(--violet) 7%, transparent) 0 13%, transparent 13.5%),
+        var(--paper);
+    }
+    .slide.active { display: block; animation: reveal .36s ease both; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      .slide.active { animation: none; }
+      .progress-fill { transition: none; }
+    }
+    .wrap { width: min(1120px, 100%); min-height: 100%; margin: 0 auto; display: flex; flex-direction: column; justify-content: center; }
+    .cover {
+      color: #fff;
+      background:
+        radial-gradient(circle at 80% 25%, rgba(194,111,255,.48) 0 8%, transparent 28%),
+        radial-gradient(circle at 91% 75%, rgba(87,185,255,.20) 0 12%, transparent 35%),
+        linear-gradient(135deg, #151038 0%, #232a68 55%, #5521a7 100%);
+    }
+    .cover .wrap { position: relative; overflow: hidden; }
+    .cover .wrap::after {
+      content: ""; position: absolute; right: -8%; bottom: -28%; width: min(46vw, 520px); aspect-ratio: 1;
+      border: 2px solid rgba(255,255,255,.16); border-radius: 43% 57% 65% 35%; transform: rotate(18deg);
+    }
+    .cover-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .48fr); gap: clamp(24px, 7vw, 90px); align-items: center; position: relative; z-index: 1; }
+    .cover h1 { margin: 16px 0 16px; max-width: 820px; font-size: clamp(42px, 7vw, 92px); line-height: .93; letter-spacing: -.055em; }
+    .cover p { max-width: 650px; color: rgba(255,255,255,.82); font-size: clamp(17px, 2vw, 24px); line-height: 1.45; }
+    .cover-aside { padding: 28px 0 28px 32px; border-left: 1px solid rgba(255,255,255,.28); }
+    .cover-aside strong { display:block; font-size: clamp(58px, 7vw, 90px); line-height: .9; }
+    .cover-aside span { display:block; margin-top: 14px; color: rgba(255,255,255,.75); line-height: 1.45; }
+    .section-pill { display: inline-flex; width: fit-content; align-items: center; gap: 9px; padding: 8px 15px; border-radius: 999px; color: #fff; background: linear-gradient(95deg, var(--navy-2), var(--violet)); font-size: 13px; font-weight: 800; letter-spacing: .03em; }
+    .cover .section-pill { background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.25); }
+    .slide h2 { margin: 18px 0 12px; max-width: 900px; font-size: clamp(32px, 5vw, 64px); line-height: 1.02; letter-spacing: -.04em; }
+    .lead { margin: 0 0 28px; max-width: 820px; color: var(--muted); font-size: clamp(17px, 2vw, 22px); line-height: 1.52; }
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+    .card {
+      grid-column: span 4; padding: clamp(20px, 2.4vw, 30px); border-radius: var(--radius);
+      background: var(--surface); box-shadow: var(--shadow); border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+    }
+    .card.wide { grid-column: span 6; }
+    .card.full { grid-column: 1 / -1; }
+    .card.tint { background: linear-gradient(145deg, color-mix(in srgb, var(--violet) 11%, var(--surface)), var(--surface)); }
+    .card.dark { color: #fff; background: linear-gradient(145deg, var(--navy), var(--navy-2)); border: 0; }
+    .card.dark p { color: rgba(255,255,255,.76); }
+    .card h3 { margin: 0 0 10px; font-size: clamp(19px, 2vw, 25px); letter-spacing: -.02em; }
+    .card p { margin: 0; color: var(--muted); line-height: 1.55; }
+    .metric { display: block; margin: 8px 0 10px; color: var(--violet); font-size: clamp(36px, 4.8vw, 64px); line-height: 1; font-weight: 850; letter-spacing: -.05em; }
+    .icon {
+      width: 46px; height: 46px; display: grid; place-items: center; margin-bottom: 22px; border-radius: 14px;
+      background: color-mix(in srgb, var(--violet) 13%, var(--surface)); color: var(--violet);
+    }
+    .icon svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .split { display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(20px, 5vw, 60px); align-items: center; }
+    .list { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 12px; }
+    .list li { position: relative; padding-left: 29px; color: var(--muted); line-height: 1.45; }
+    .list li::before { content: ""; position: absolute; left: 0; top: .46em; width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, var(--navy-2), var(--violet)); box-shadow: 0 0 0 5px color-mix(in srgb, var(--violet) 11%, transparent); }
+    .step-list { counter-reset: steps; display: grid; gap: 14px; }
+    .step { counter-increment: steps; display: grid; grid-template-columns: 54px 1fr; gap: 16px; align-items: start; padding: 19px; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; }
+    .step::before { content: counter(steps, decimal-leading-zero); display: grid; place-items: center; width: 54px; height: 54px; border-radius: 17px; color: #fff; font-weight: 900; background: linear-gradient(145deg, var(--navy-2), var(--violet)); }
+    .step h3 { margin: 2px 0 5px; font-size: 20px; }
+    .step p { margin: 0; color: var(--muted); line-height: 1.45; }
+    .callout { padding: 18px 20px; margin-top: 20px; border-radius: 18px; background: color-mix(in srgb, var(--amber) 10%, var(--surface)); color: var(--ink); border: 1px solid color-mix(in srgb, var(--amber) 28%, var(--line)); line-height: 1.5; }
+    .callout strong { color: var(--amber); }
+    .quote { font-size: clamp(25px, 3.2vw, 40px); line-height: 1.22; letter-spacing: -.025em; }
+    .mini { color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .source { margin-top: 26px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .source a { color: var(--violet); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .stat-band { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .tag { display: inline-flex; padding: 8px 12px; border-radius: 999px; background: var(--soft); color: var(--ink); font-size: 13px; font-weight: 700; }
+    .tag.good { background: color-mix(in srgb, var(--teal) 13%, var(--surface)); color: var(--teal); }
+    .tag.warn { background: color-mix(in srgb, var(--amber) 13%, var(--surface)); color: var(--amber); }
+    .check-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    .check-item { padding: 16px 18px 16px 49px; position: relative; border-radius: 17px; background: var(--surface); border: 1px solid var(--line); font-weight: 700; line-height: 1.35; }
+    .check-item::before { content: "✓"; position: absolute; left: 17px; top: 15px; width: 23px; height: 23px; display:grid; place-items:center; border-radius: 50%; color: #fff; background: var(--violet); font-size: 13px; }
+    .two-tone { display: grid; grid-template-columns: 1fr 1fr; border-radius: 26px; overflow: hidden; box-shadow: var(--shadow); }
+    .tone { padding: clamp(24px, 4vw, 42px); }
+    .tone.pro { background: color-mix(in srgb, var(--teal) 12%, var(--surface)); }
+    .tone.con { background: color-mix(in srgb, var(--rose) 10%, var(--surface)); }
+    .tone h3 { margin: 0 0 15px; font-size: 25px; }
+    .video-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .video-card { overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); }
+    .video-shell { background: #05050b; padding: 8px; }
+    .video-shell iframe { display:block; width:100%; aspect-ratio:16/9; border:0; border-radius: 14px; }
+    .video-meta { padding: 16px 18px 18px; }
+    .video-label { display: inline-flex; margin-bottom: 9px; padding: 6px 9px; border-radius: 999px; background: var(--soft); color: var(--violet); font-size: 11px; font-weight: 850; letter-spacing: .04em; }
+    .video-meta h3 { margin: 0 0 10px; font-size: clamp(16px, 1.6vw, 20px); line-height: 1.3; letter-spacing: -.015em; }
+    .video-source { color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .video-source a { color: var(--violet); text-underline-offset: 3px; }
+    .nav {
+      position: fixed; z-index: 25; left: 0; bottom: 0; width: 100%; height: var(--bar-h);
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px;
+      padding: 14px max(18px, env(safe-area-inset-right)) calc(14px + env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+      background: color-mix(in srgb, var(--surface) 92%, transparent); border-top: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+    .nav-side { display: flex; gap: 10px; }
+    .nav-side:last-child { justify-content: flex-end; }
+    .nav-btn, .toc-btn {
+      min-height: 44px; padding: 0 17px; border: 1px solid var(--line); border-radius: 15px;
+      background: var(--surface); cursor: pointer; font-weight: 800;
+    }
+    .nav-btn.primary { color: #fff; border: 0; background: linear-gradient(110deg, var(--navy-2), var(--violet)); }
+    .nav-btn:disabled { opacity: .38; cursor: not-allowed; }
+    .counter { min-width: 78px; text-align: center; font-size: 14px; font-weight: 900; font-variant-numeric: tabular-nums; }
+    .toc {
+      position: fixed; z-index: 50; inset: 0; display: none; padding: clamp(18px,4vw,48px); background: rgba(10,8,35,.76); backdrop-filter: blur(16px);
+    }
+    .toc.open { display: flex; }
+    .toc-panel { width: min(1120px,100%); max-height: 100%; margin:auto; overflow:auto; padding: clamp(22px,4vw,40px); border-radius: 30px; background: var(--paper); box-shadow: 0 30px 80px rgba(0,0,0,.4); }
+    .toc-head { display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:22px; }
+    .toc-head h2 { margin:0; font-size: clamp(28px,4vw,46px); letter-spacing:-.04em; }
+    .close { width:44px; height:44px; border:1px solid var(--line); border-radius:50%; background:var(--surface); cursor:pointer; font-size:23px; }
+    .toc-grid { display:grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap:10px; }
+    .toc-item { text-align:left; min-height:92px; padding:14px; border-radius:16px; border:1px solid var(--line); background:var(--surface); cursor:pointer; }
+    .toc-item:hover, .toc-item.current { border-color: var(--violet); background: color-mix(in srgb,var(--violet) 8%,var(--surface)); }
+    .toc-item b { display:block; color:var(--violet); font-size:12px; margin-bottom:6px; }
+    .toc-item span { display:block; font-weight:800; line-height:1.25; }
+    @media (max-width: 820px) {
+      :root { --bar-h: 74px; }
+      .cover-grid, .split { grid-template-columns: 1fr; }
+      .cover-aside { border-left:0; border-top:1px solid rgba(255,255,255,.28); padding:24px 0 0; display:flex; align-items:flex-end; gap:18px; }
+      .cover-aside strong { font-size:54px; }
+      .card, .card.wide { grid-column: span 6; }
+      .toc-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .two-tone { grid-template-columns:1fr; }
+      .video-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .slide { padding: 28px 17px 24px; }
+      .slide h2 { font-size: 36px; }
+      .cover h1 { font-size: 48px; }
+      .card, .card.wide { grid-column: 1 / -1; border-radius: 20px; }
+      .check-grid { grid-template-columns:1fr; }
+      .step { grid-template-columns:46px 1fr; padding:15px; }
+      .step::before { width:46px; height:46px; border-radius:14px; }
+      .nav { grid-template-columns: auto 1fr; }
+      .counter { display:none; }
+      .nav-side:first-child { display:none; }
+      .toc-btn { justify-self:start; }
+      .nav-side:last-child { justify-self:end; }
+      .nav-btn, .toc-btn { padding: 0 13px; }
+      .toc-grid { grid-template-columns:1fr; }
+      .toc-item { min-height:74px; }
+    }
+  </style>
+</head>
+<body>
+<div class="deck" id="deck">
+  <div class="progress-track" aria-hidden="true"><span class="progress-fill" id="progress"></span></div>
+  <main class="slides" id="slides">
+    <section class="slide cover active" data-title="Cover">
+      <div class="wrap">
+        <div class="cover-grid">
+          <div>
+            <span class="section-pill">PANDUAN BEASISWA S1</span>
+            <h1>Beasiswa Indonesia Maju</h1>
+            <p>Jalur S1 luar negeri untuk talenta berprestasi Indonesia—dengan dukungan studi yang komprehensif dan komitmen pulang untuk berkontribusi.</p>
+            <div class="stat-band"><span class="tag" style="background:rgba(255,255,255,.13);color:#fff">Ringkasan riset • 15 Oktober 2026</span></div>
+          </div>
+          <div class="cover-aside">
+            <strong>BIM</strong>
+            <span>Pemerintah Indonesia<br>Kemendikbudristek melalui Puspresnas</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Sekilas program">
+      <div class="wrap">
+        <span class="section-pill">01 • ORIENTASI</span>
+        <h2>Sekilas program</h2>
+        <p class="lead">BIM mendukung talenta Indonesia berprestasi untuk menempuh S1 di luar negeri. Jalur yang dibahas di sini adalah <strong>bergelar S1 Luar Negeri</strong>.</p>
+        <div class="grid">
+          <article class="card"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3 10 12 5l9 5-9 5-9-5Z"/><path d="M7 12.5V17c3 2 7 2 10 0v-4.5"/></svg></div><h3>Pemberi beasiswa</h3><p>Kemendikbudristek melalui Pusat Prestasi Nasional (Puspresnas).</p></article>
+          <article class="card"><div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div><h3>Tujuan studi</h3><p>Perguruan tinggi luar negeri dengan LoA unconditional yang memenuhi ketentuan program.</p></article>
+          <article class="card tint"><div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 8h14M7 3h10M7 21h10"/></svg></div><h3>Profil pelamar</h3><p>WNI lulusan SMA dengan prestasi terkurasi Puspresnas dan kesiapan akademik global.</p></article>
+        </div>
+        <div class="source">Sumber: ringkasan riset 15 Okt 2026; <a href="https://dealls.com/pengembangan-karir/beasiswa-indonesia-maju" target="_blank" rel="noopener noreferrer">Dealls</a> dan <a href="https://blog.schoters.com/beasiswa-indonesia-maju" target="_blank" rel="noopener noreferrer">Schoters</a>.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Kenapa menarik">
+      <div class="wrap">
+        <span class="section-pill">02 • NILAI UTAMA</span>
+        <h2>Kenapa BIM menarik?</h2>
+        <p class="lead">Bukan sekadar potongan biaya kuliah. Paket dukungannya dirancang untuk menyentuh banyak kebutuhan studi lintas negara.</p>
+        <div class="split">
+          <div class="card dark"><span class="metric" style="color:#d8c7ff">8+</span><h3>komponen pendanaan</h3><p>Mulai biaya pendidikan sampai perjalanan, visa, asuransi, dan dana darurat—berdasarkan komponen yang disebut sumber riset.</p></div>
+          <div>
+            <ul class="list">
+              <li>Dukungan dari tahap keberangkatan hingga kepulangan.</li>
+              <li>Biaya akademik dan biaya hidup sama-sama masuk paket.</li>
+              <li>Seleksi menilai prestasi, kesiapan akademik, dan arah kontribusi.</li>
+              <li>Sangat relevan bagi pelajar SMA yang sudah membangun rekam prestasi kuat.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="source">Sumber cakupan: <a href="https://dealls.com/pengembangan-karir/beasiswa-indonesia-maju" target="_blank" rel="noopener noreferrer">Dealls</a>; <a href="https://blog.schoters.com/beasiswa-indonesia-maju" target="_blank" rel="noopener noreferrer">Schoters</a>. Nominal rinci per komponen tidak terverifikasi dalam riset.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Manfaat: biaya kuliah">
+      <div class="wrap">
+        <span class="section-pill">03 • MANFAAT</span>
+        <h2>Biaya pendidikan utama</h2>
+        <p class="lead">Komponen akademik inti yang disebut dalam sumber mencakup biaya kuliah dan biaya registrasi.</p>
+        <div class="grid">
+          <article class="card wide tint"><div class="icon"><svg viewBox="0 0 24 24"><path d="M4 10h16M5 10v8M9 10v8M15 10v8M19 10v8M3 18h18M12 4l9 4H3l9-4Z"/></svg></div><h3>SPP / tuition</h3><p>Biaya kuliah termasuk dalam cakupan BIM untuk jalur bergelar S1 Luar Negeri.</p></article>
+          <article class="card wide"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/><path d="M15 3v4h4M9 12h6M9 16h6"/></svg></div><h3>Biaya pendaftaran</h3><p>Registration fee disebut sebagai bagian dari paket pembiayaan.</p></article>
+          <article class="card full"><h3>Catatan penting</h3><p>Sumber riset tidak memuat plafon, kurs, mekanisme pembayaran, atau daftar biaya kampus yang dikecualikan. Verifikasi ketentuan tahun berjalan di booklet resmi saat tersedia.</p></article>
+        </div>
+        <div class="source">Sumber: <a href="https://dealls.com/pengembangan-karir/beasiswa-indonesia-maju" target="_blank" rel="noopener noreferrer">Dealls</a>; <a href="https://blog.schoters.com/beasiswa-indonesia-maju" target="_blank" rel="noopener noreferrer">Schoters</a>.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Manfaat: biaya hidup">
+      <div class="wrap">
+        <span class="section-pill">04 • MANFAAT</span>
+        <h2>Dukungan biaya hidup</h2>
+        <p class="lead">BIM mencantumkan tunjangan hidup bulanan—komponen krusial ketika belajar jauh dari rumah.</p>
+        <div class="split">
+          <div class="card dark"><span class="metric" style="color:#d8c7ff">Bulanan</span><h3>Tunjangan hidup</h3><p>Disediakan selama masa pendanaan sesuai ketentuan program. Besaran per negara/kota tidak terverifikasi dalam riset ini.</p></div>
+          <div class="card"><h3>Saat menyusun anggaran</h3><ul class="list"><li>Bandingkan dengan biaya sewa dan makan di kota tujuan.</li><li>Siapkan skenario kurs dan pengeluaran awal.</li><li>Tunggu booklet resmi untuk nominal, durasi, dan mekanisme pencairan.</li></ul></div>
+        </div>
+        <div class="callout"><strong>Jangan mengasumsikan nominal.</strong> Riset hanya mengonfirmasi adanya biaya hidup bulanan, bukan angka pastinya.</div>
+        <div class="source">Sumber: <a href="https://dealls.com/pengembangan-karir/beasiswa-indonesia-maju" target="_blank" rel="noopener noreferrer">Dealls</a>; <a href="https://blog.schoters.com/beasiswa-indonesia-maju" target="_blank" rel="noopener noreferrer">Schoters</a>.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Manfaat: tiket & perjalanan">
+      <div class="wrap">
+        <span class="section-pill">05 • MANFAAT</span>
+        <h2>Tiket dan perjalanan</h2>
+        <p class="lead">Paket mencantumkan transportasi serta tiket keberangkatan dan kepulangan.</p>
+        <div class="grid">
+          <article class="card"><span class="metric">Berangkat</span><h3>Tiket menuju negara studi</h3><p>Komponen keberangkatan termasuk dalam daftar manfaat.</p></article>
+          <article class="card"><span class="metric">Pulang</span><h3>Tiket kembali</h3><p>Komponen kepulangan juga disebut dalam paket.</p></article>
+          <article class="card tint"><span class="metric">Transit</span><h3>Transportasi</h3><p>Biaya transport disebutkan, tetapi jenis dan batasannya perlu dikonfirmasi di booklet resmi.</p></article>
+        </div>
+        <div class="source">Sumber: <a href="https://dealls.com/pengembangan-karir/beasiswa-indonesia-maju" target="_blank" rel="noopener noreferrer">Dealls</a>; <a href="https://blog.schoters.com/beasiswa-indonesia-maju" target="_blank" rel="noopener noreferrer">Schoters</a>. Kelas tiket, rute, dan limit belum terverifikasi.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Manfaat pendukung">
+      <div class="wrap">
+        <span class="section-pill">06 • MANFAAT</span>
+        <h2>Empat penyangga penting</h2>
+        <p class="lead">Komponen non-tuition ini membantu mengurangi biaya tersembunyi studi luar negeri.</p>
+        <div class="grid">
+          <article class="card"><h3>Buku</h3><p>Tunjangan buku tercantum dalam cakupan.</p></article>
+          <article class="card"><h3>Visa</h3><p>Biaya pengajuan visa disebut ditanggung.</p></article>
+          <article class="card"><h3>Asuransi kesehatan</h3><p>Proteksi kesehatan masuk paket manfaat.</p></article>
+          <article class="card wide tint"><h3>Dana darurat</h3><p>Dana keadaan darurat termasuk dalam komponen pembiayaan.</p></article>
+          <article class="card wide"><h3>Bantuan skripsi</h3><p>Sumber juga menyebut bantuan tesis/skripsi sebagai dukungan akademik.</p></article>
+        </div>
+        <div class="source">Sumber: <a href="https://dealls.com/pengembangan-karir/beasiswa-indonesia-maju" target="_blank" rel="noopener noreferrer">Dealls</a>; <a href="https://blog.schoters.com/beasiswa-indonesia-maju" target="_blank" rel="noopener noreferrer">Schoters</a>. Nilai dan tata cara klaim tidak terverifikasi.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Batas cakupan & komitmen">
+      <div class="wrap">
+        <span class="section-pill">07 • REALITAS PROGRAM</span>
+        <h2>Apa yang belum jelas?</h2>
+        <p class="lead">Riset mengonfirmasi komponen besar, tetapi belum menemukan daftar resmi biaya yang dikecualikan.</p>
+        <div class="two-tone">
+          <div class="tone con"><h3>Belum terverifikasi</h3><ul class="list"><li>Nominal dan plafon tiap komponen.</li><li>Ketentuan biaya tanggungan/keluarga.</li><li>Rincian pengeluaran pribadi di luar tunjangan.</li><li>Mekanisme reimburse dan kurs pembayaran.</li></ul></div>
+          <div class="tone pro"><h3>Komitmen penerima</h3><ul class="list"><li>Kembali ke Indonesia.</li><li>Berkontribusi untuk Indonesia.</li><li>Menjelaskan arah kontribusi dalam esai.</li><li>Detail kontraktual wajib dicek di booklet resmi.</li></ul></div>
+        </div>
+        <div class="callout"><strong>Jujur pada ketidakpastian:</strong> ekspektasi pulang dan berkontribusi terkonfirmasi di sumber sekunder; bentuk ikatan resminya belum terverifikasi karena portal resmi tidak terjangkau saat riset.</div>
+        <div class="source">Sumber: ringkasan riset & <a href="https://blog.schoters.com/beasiswa-indonesia-maju" target="_blank" rel="noopener noreferrer">Schoters</a>.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Syarat: WNI & LoA">
+      <div class="wrap">
+        <span class="section-pill">08 • SYARAT UTAMA</span>
+        <h2>WNI + LoA unconditional</h2>
+        <p class="lead">Dua fondasi yang harus ada sebelum masuk ke persyaratan prestasi dan tes.</p>
+        <div class="grid">
+          <article class="card wide dark"><h3>Warga Negara Indonesia</h3><p>Jalur BIM S1 Luar Negeri ditujukan bagi WNI.</p></article>
+          <article class="card wide tint"><h3>LoA tanpa syarat</h3><p>Unconditional Letter of Acceptance dari kampus luar negeri untuk program setara BSc Honours.</p></article>
+          <article class="card full"><h3>Dokumen pendidikan</h3><p>Lulusan SMA perlu menyiapkan ijazah atau SKL, rapor, dan transkrip sesuai ketentuan. Tidak ada batas usia yang disebut dalam sumber riset.</p></article>
+        </div>
+        <div class="source">Sumber syarat: <a href="http://skuling.id/beasiswa-indonesia-maju/" target="_blank" rel="noopener noreferrer">Skuling</a>; <a href="https://zonaliterasi.id/pendaftaran-program-beasiswa-indonesia-maju-segera-dibuka-inilah-syarat-syaratnya/" target="_blank" rel="noopener noreferrer">Zona Literasi</a>. Verifikasi ulang pada booklet resmi tahun berjalan.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Syarat: prestasi & tes">
+      <div class="wrap">
+        <span class="section-pill">09 • SYARAT UTAMA</span>
+        <h2>Tiga gerbang seleksi</h2>
+        <p class="lead">Prestasi adalah gerbang kunci; SAT dan bahasa Inggris memperlihatkan kesiapan akademik global.</p>
+        <div class="grid">
+          <article class="card"><span class="metric">Medali</span><h3>Prestasi</h3><p>Emas/perak/perunggu kompetisi nasional atau internasional yang dikurasi atau difasilitasi Puspresnas dalam 3 tahun terakhir.</p></article>
+          <article class="card"><span class="metric">≥1200</span><h3>SAT</h3><p>Ambang yang dilaporkan untuk pelamar S1 Luar Negeri.</p></article>
+          <article class="card tint"><span class="metric">6.5</span><h3>IELTS</h3><p>Atau TOEFL iBT ≥80 / PTE ≥58 berdasarkan sumber terbaru yang dirangkum.</p></article>
+        </div>
+        <div class="callout"><strong>Angka dapat berubah.</strong> Sumber lama mencantumkan ambang lebih rendah (iBT 72 / IELTS 5.5 / PTE 46). Gunakan angka di atas sebagai target minimum kerja, lalu verifikasi ketentuan terbaru saat booklet resmi terbit.</div>
+        <div class="source">Sumber: <a href="https://zonaliterasi.id/pendaftaran-program-beasiswa-indonesia-maju-segera-dibuka-inilah-syarat-syaratnya/" target="_blank" rel="noopener noreferrer">Zona Literasi</a>; <a href="http://skuling.id/beasiswa-indonesia-maju/" target="_blank" rel="noopener noreferrer">Skuling</a>.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Timeline & status">
+      <div class="wrap">
+        <span class="section-pill">10 • WAKTU</span>
+        <h2>Status pendaftaran</h2>
+        <p class="lead">Pada 15 Oktober 2026, media Indonesia melaporkan pendaftaran “segera dibuka”. Status ini belum dapat dikonfirmasi di portal resmi.</p>
+        <div class="step-list">
+          <div class="step"><div><h3>15 Oktober 2026</h3><p>Laporan media menyebut program akan segera dibuka.</p></div></div>
+          <div class="step"><div><h3>Portal resmi tidak terjangkau saat riset</h3><p><strong>beasiswa.kemdikbud.go.id</strong> mengalami kegagalan DNS dari lingkungan riset; jangan menganggapnya bukti portal ditutup.</p></div></div>
+          <div class="step"><div><h3>Langkah paling aman</h3><p>Pantau kanal resmi Kemendikbudristek dan Puspresnas untuk jadwal, booklet, serta perubahan syarat.</p></div></div>
+        </div>
+        <div class="source">Status bersumber dari <a href="https://zonaliterasi.id/pendaftaran-program-beasiswa-indonesia-maju-segera-dibuka-inilah-syarat-syaratnya/" target="_blank" rel="noopener noreferrer">Zona Literasi</a> yang mengutip laporan media; portal resmi tidak berhasil diverifikasi pada 15 Okt 2026.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Cara daftar: langkah 1–2">
+      <div class="wrap">
+        <span class="section-pill">11 • ALUR DAFTAR</span>
+        <h2>Mulai dari fondasi</h2>
+        <p class="lead">Urutan ini adalah panduan persiapan berbasis syarat yang dirangkum—bukan pengganti petunjuk resmi portal.</p>
+        <div class="step-list">
+          <div class="step"><div><h3>Petakan kelayakan prestasi</h3><p>Pastikan medali dan ajangmu masuk kategori kompetisi yang dikurasi/difasilitasi Puspresnas serta masih dalam rentang 3 tahun terakhir.</p></div></div>
+          <div class="step"><div><h3>Amankan LoA unconditional</h3><p>Targetkan kampus luar negeri, penuhi proses admission, dan dapatkan surat penerimaan tanpa syarat untuk program yang relevan.</p></div></div>
+        </div>
+        <div class="callout"><strong>Kerjakan paralel:</strong> admission kampus, persiapan SAT, dan tes bahasa memerlukan waktu panjang. Jangan menunggu portal beasiswa dibuka.</div>
+        <div class="source">Urutan persiapan disusun dari persyaratan dalam <a href="http://skuling.id/beasiswa-indonesia-maju/" target="_blank" rel="noopener noreferrer">Skuling</a> dan <a href="https://zonaliterasi.id/pendaftaran-program-beasiswa-indonesia-maju-segera-dibuka-inilah-syarat-syaratnya/" target="_blank" rel="noopener noreferrer">Zona Literasi</a>.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Cara daftar: langkah 3–4">
+      <div class="wrap">
+        <span class="section-pill">12 • ALUR DAFTAR</span>
+        <h2>Buktikan kesiapan akademik</h2>
+        <div class="step-list">
+          <div class="step"><div><h3>Kejar skor tes</h3><p>Persiapkan SAT ≥1200 dan sertifikat bahasa yang dilaporkan memenuhi ambang: IELTS ≥6.5, TOEFL iBT ≥80, atau PTE ≥58. Tetap cek angka terbaru.</p></div></div>
+          <div class="step"><div><h3>Bangun paket narasi</h3><p>Siapkan esai 1.000–1.500 kata dalam bahasa Inggris dan minimal satu rekomendasi akademik. Tunjukkan hubungan antara prestasi, studi, dan kontribusi.</p></div></div>
+        </div>
+        <div class="stat-band"><span class="tag">SAT ≥1200</span><span class="tag">IELTS ≥6.5</span><span class="tag">TOEFL iBT ≥80</span><span class="tag">PTE ≥58</span><span class="tag">Esai 1.000–1.500 kata</span></div>
+        <div class="source">Sumber persyaratan: <a href="https://zonaliterasi.id/pendaftaran-program-beasiswa-indonesia-maju-segera-dibuka-inilah-syarat-syaratnya/" target="_blank" rel="noopener noreferrer">Zona Literasi</a>; <a href="http://skuling.id/beasiswa-indonesia-maju/" target="_blank" rel="noopener noreferrer">Skuling</a>. Ambang tes dapat berubah per siklus.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Cara daftar: langkah 5">
+      <div class="wrap">
+        <span class="section-pill">13 • ALUR DAFTAR</span>
+        <h2>Submit, lalu siapkan diri</h2>
+        <p class="lead">Tahap pengajuan baru dimulai ketika kanal resmi mengumumkan siklus dan portal dapat diakses.</p>
+        <div class="split">
+          <div class="card tint"><span class="metric">05</span><h3>Unggah & kirim</h3><p>Masukkan data dan dokumen sesuai formulir resmi. Tinjau ulang kecocokan nama, tanggal, skor, dan masa berlaku sebelum submit.</p></div>
+          <div><h3>Setelah submit</h3><ul class="list"><li>Seleksi administrasi dan kurasi prestasi.</li><li>Tes substansi.</li><li>Wawancara.</li><li>Pantau pengumuman hanya melalui kanal resmi.</li></ul></div>
+        </div>
+        <div class="callout"><strong>Hindari tautan tiruan.</strong> Deck ini tidak memberi tombol daftar karena portal resmi tidak terjangkau saat riset. Pantau kanal resmi Kemendikbudristek/Puspresnas.</div>
+        <div class="source">Tahap seleksi dirangkum dari <a href="https://blog.schoters.com/beasiswa-indonesia-maju" target="_blank" rel="noopener noreferrer">Schoters</a> dan sumber riset BIM.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Checklist dokumen">
+      <div class="wrap">
+        <span class="section-pill">14 • PERSIAPAN</span>
+        <h2>Checklist dokumen</h2>
+        <p class="lead">Mulai kumpulkan sebelum pembukaan. Format dan masa berlaku final harus mengikuti booklet resmi terbaru.</p>
+        <div class="check-grid">
+          <div class="check-item">Bukti WNI & identitas</div>
+          <div class="check-item">LoA unconditional</div>
+          <div class="check-item">Ijazah / SKL</div>
+          <div class="check-item">Rapor & transkrip</div>
+          <div class="check-item">Bukti prestasi/medali</div>
+          <div class="check-item">Skor SAT</div>
+          <div class="check-item">Sertifikat bahasa Inggris</div>
+          <div class="check-item">Esai bahasa Inggris</div>
+          <div class="check-item">Rekomendasi akademik</div>
+          <div class="check-item">Surat sehat & bebas narkoba</div>
+          <div class="check-item">Rekomendasi Puspresnas</div>
+          <div class="check-item">Dokumen tambahan sesuai booklet</div>
+        </div>
+        <div class="source">Sumber: <a href="http://skuling.id/beasiswa-indonesia-maju/" target="_blank" rel="noopener noreferrer">Skuling</a>; <a href="https://zonaliterasi.id/pendaftaran-program-beasiswa-indonesia-maju-segera-dibuka-inilah-syarat-syaratnya/" target="_blank" rel="noopener noreferrer">Zona Literasi</a>.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Tips lolos">
+      <div class="wrap">
+        <span class="section-pill">15 • STRATEGI</span>
+        <h2>Menang bukan karena ramai</h2>
+        <p class="lead">Kekuatan aplikasi datang dari bukti yang konsisten, bukan daftar kegiatan yang panjang tanpa benang merah.</p>
+        <div class="grid">
+          <article class="card wide"><h3>Mulai dari “mengapa kamu”</h3><p>Jelaskan bagaimana prestasi membentuk cara berpikir dan kesiapanmu, bukan hanya menyebut nama lomba.</p></article>
+          <article class="card wide tint"><h3>Hubungkan kampus dengan dampak</h3><p>Tunjukkan alasan akademik memilih program dan masalah Indonesia yang ingin kamu bantu selesaikan.</p></article>
+          <article class="card"><h3>Target di atas minimum</h3><p>Ambang tes adalah pintu masuk, bukan jaminan lolos.</p></article>
+          <article class="card"><h3>Audit dokumen</h3><p>Cek konsistensi nama, tanggal, kategori lomba, dan terjemahan.</p></article>
+          <article class="card"><h3>Latihan wawancara</h3><p>Jawab spesifik, berbukti, dan selaras dengan esai.</p></article>
+        </div>
+        <div class="source">Tips merupakan strategi persiapan yang diturunkan dari komponen seleksi yang dirangkum; bukan kriteria resmi tambahan.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Kesalahan umum">
+      <div class="wrap">
+        <span class="section-pill">16 • HINDARI</span>
+        <h2>Kesalahan yang bisa dicegah</h2>
+        <div class="grid">
+          <article class="card"><h3>LoA masih bersyarat</h3><p>Mengira conditional offer sama dengan unconditional LoA.</p></article>
+          <article class="card"><h3>Prestasi tak sesuai</h3><p>Tidak memeriksa apakah ajang masuk kurasi/fasilitasi Puspresnas.</p></article>
+          <article class="card"><h3>Skor kedaluwarsa</h3><p>Melewatkan masa berlaku sertifikat tes.</p></article>
+          <article class="card wide tint"><h3>Esai terlalu generik</h3><p>Mengulang slogan kontribusi tanpa rencana yang dapat diuji, bidang yang jelas, atau bukti pengalaman.</p></article>
+          <article class="card wide"><h3>Mengandalkan kabar sekunder</h3><p>Menganggap “segera dibuka” sebagai tanggal resmi, atau memakai syarat tahun lama tanpa verifikasi.</p></article>
+        </div>
+        <div class="source">Catatan praktik berdasarkan syarat dan status pendaftaran dalam riset; verifikasi final di kanal resmi.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Pro, kontra & kecocokan">
+      <div class="wrap">
+        <span class="section-pill">17 • KEPUTUSAN</span>
+        <h2>Cocokkah BIM untukmu?</h2>
+        <div class="two-tone">
+          <div class="tone pro"><h3>Nilai plus</h3><ul class="list"><li>Cakupan pendanaan sangat komprehensif.</li><li>Ada dukungan perjalanan, visa, asuransi, dan darurat.</li><li>Berorientasi pada talenta berprestasi Indonesia.</li><li>Jalur jelas untuk menghubungkan studi dan kontribusi.</li></ul></div>
+          <div class="tone con"><h3>Tantangan</h3><ul class="list"><li>Prestasi terkurasi adalah gerbang khusus.</li><li>LoA unconditional harus sudah ada.</li><li>SAT dan bahasa menuntut persiapan dini.</li><li>Detail ikatan kembali belum terverifikasi dari booklet resmi.</li></ul></div>
+        </div>
+        <div class="callout"><strong>Paling cocok untuk:</strong> siswa berprestasi nasional/internasional yang sudah punya target studi kuat, siap mengejar LoA dan tes, serta mampu merumuskan kontribusi konkret untuk Indonesia.</div>
+        <div class="source">Kesimpulan kecocokan diturunkan dari syarat dan cakupan program dalam riset BIM.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Video BIM & kampus">
+      <div class="wrap">
+        <span class="section-pill">18 • VIDEO</span>
+        <h2>Panduan, kampus, dan cerita penerima</h2>
+        <p class="lead">Empat video pilihan: dua sosialisasi cara mendaftar BIM, satu tur lingkungan kampus, dan satu praktik baik penerima beasiswa.</p>
+        <div class="video-grid">
+          <article class="video-card">
+            <div class="video-shell"><iframe src="https://www.youtube-nocookie.com/embed/g8ieYn5VWhE" title="PELUNCURAN DAN SOSIALISASI BEASISWA INDONESIA MAJU 2022" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+            <div class="video-meta"><span class="video-label">CARA MENDAFTAR</span><h3>PELUNCURAN DAN SOSIALISASI BEASISWA INDONESIA MAJU 2022</h3><div class="video-source">Sumber: <a href="https://www.youtube.com/watch?v=g8ieYn5VWhE" target="_blank" rel="noopener noreferrer">Kemendikbud/Puspresnas di YouTube</a></div></div>
+          </article>
+          <article class="video-card">
+            <div class="video-shell"><iframe src="https://www.youtube-nocookie.com/embed/V3FHeo5ZeEw" title="Penjelasan Beasiswa Indonesia Maju untuk Kuliah di Luar Negeri" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+            <div class="video-meta"><span class="video-label">CARA MENDAFTAR</span><h3>Penjelasan Beasiswa Indonesia Maju untuk Kuliah di Luar Negeri</h3><div class="video-source">Sumber: <a href="https://www.youtube.com/watch?v=V3FHeo5ZeEw" target="_blank" rel="noopener noreferrer">Sosialisasi Puspresnas di YouTube</a></div></div>
+          </article>
+          <article class="video-card">
+            <div class="video-shell"><iframe src="https://www.youtube-nocookie.com/embed/DHgvF1dpk_g" title="University of Melbourne Campus Tour 2025" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+            <div class="video-meta"><span class="video-label">SUASANA &amp; FASILITAS KAMPUS</span><h3>University of Melbourne Campus Tour 2025</h3><div class="video-source">Sumber: <a href="https://www.youtube.com/watch?v=DHgvF1dpk_g" target="_blank" rel="noopener noreferrer">Kampus tujuan populer penerima BIM di YouTube</a></div></div>
+          </article>
+          <article class="video-card">
+            <div class="video-shell"><iframe src="https://www.youtube-nocookie.com/embed/vPlhaQHrRHs" title="Gapai Prestasi, Raih Beasiswa Indonesia Maju" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+            <div class="video-meta"><span class="video-label">TESTIMONI ALUMNI</span><h3>Gapai Prestasi, Raih Beasiswa Indonesia Maju</h3><div class="video-source">Sumber: <a href="https://www.youtube.com/watch?v=vPlhaQHrRHs" target="_blank" rel="noopener noreferrer">Cerita siswa penerima BIM di YouTube</a></div></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide cover" data-title="Penutup">
+      <div class="wrap">
+        <div class="cover-grid">
+          <div>
+            <span class="section-pill">19 • LANGKAH BERIKUTNYA</span>
+            <h2 style="color:#fff;font-size:clamp(42px,6.5vw,82px)">Mulai sebelum portal dibuka.</h2>
+            <p>Petakan prestasi, kejar LoA, siapkan SAT dan tes bahasa, lalu bangun esai kontribusi yang jujur dan spesifik.</p>
+            <div class="stat-band"><span class="tag" style="background:rgba(255,255,255,.13);color:#fff">Prestasi</span><span class="tag" style="background:rgba(255,255,255,.13);color:#fff">LoA</span><span class="tag" style="background:rgba(255,255,255,.13);color:#fff">SAT</span><span class="tag" style="background:rgba(255,255,255,.13);color:#fff">Bahasa</span><span class="tag" style="background:rgba(255,255,255,.13);color:#fff">Kontribusi</span></div>
+          </div>
+          <div class="cover-aside">
+            <strong>!</strong>
+            <span><b>Catatan verifikasi</b><br>Portal resmi beasiswa.kemdikbud.go.id tidak terjangkau saat riset pada 15 Oktober 2026. Status “segera dibuka” berasal dari laporan media, bukan konfirmasi portal. Pantau kanal resmi Kemendikbudristek/Puspresnas.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav" aria-label="Navigasi slide">
+    <div class="nav-side"><button class="nav-btn" id="prev" type="button" aria-label="Slide sebelumnya">← Sebelumnya</button></div>
+    <button class="toc-btn" id="tocOpen" type="button" aria-haspopup="dialog" aria-controls="toc">Daftar isi</button>
+    <div class="nav-side"><span class="counter" id="counter" aria-live="polite">1 / 20</span><button class="nav-btn primary" id="next" type="button" aria-label="Slide berikutnya">Berikutnya →</button></div>
+  </nav>
+
+  <div class="toc" id="toc" role="dialog" aria-modal="true" aria-labelledby="tocTitle">
+    <div class="toc-panel">
+      <div class="toc-head"><h2 id="tocTitle">Daftar isi</h2><button class="close" id="tocClose" type="button" aria-label="Tutup daftar isi">×</button></div>
+      <div class="toc-grid" id="tocGrid"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var index = 0;
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var counter = document.getElementById('counter');
+  var progress = document.getElementById('progress');
+  var toc = document.getElementById('toc');
+  var tocOpen = document.getElementById('tocOpen');
+  var tocClose = document.getElementById('tocClose');
+  var tocGrid = document.getElementById('tocGrid');
+  var tocButtons = [];
+
+  slides.forEach(function (slide, i) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'toc-item';
+    btn.innerHTML = '<b>' + String(i + 1).padStart(2, '0') + '</b><span>' + slide.getAttribute('data-title') + '</span>';
+    btn.addEventListener('click', function () { go(i); closeToc(); });
+    tocGrid.appendChild(btn);
+    tocButtons.push(btn);
+  });
+
+  function go(n) {
+    index = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (slide, i) {
+      slide.classList.toggle('active', i === index);
+      slide.setAttribute('aria-hidden', i === index ? 'false' : 'true');
+      if (i === index) slide.scrollTop = 0;
+    });
+    tocButtons.forEach(function (btn, i) { btn.classList.toggle('current', i === index); });
+    counter.textContent = (index + 1) + ' / ' + slides.length;
+    progress.style.width = ((index + 1) / slides.length * 100) + '%';
+    prev.disabled = index === 0;
+    next.disabled = index === slides.length - 1;
+    document.title = slides[index].getAttribute('data-title') + ' — BIM S1 Luar Negeri';
+  }
+  function openToc() { toc.classList.add('open'); tocClose.focus(); }
+  function closeToc() { toc.classList.remove('open'); tocOpen.focus(); }
+
+  prev.addEventListener('click', function () { go(index - 1); });
+  next.addEventListener('click', function () { go(index + 1); });
+  tocOpen.addEventListener('click', openToc);
+  tocClose.addEventListener('click', closeToc);
+  toc.addEventListener('click', function (e) { if (e.target === toc) closeToc(); });
+  document.addEventListener('keydown', function (e) {
+    if (toc.classList.contains('open')) {
+      if (e.key === 'Escape') closeToc();
+      return;
+    }
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(index + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(index - 1); }
+    if (e.key === 'Home') { e.preventDefault(); go(0); }
+    if (e.key === 'End') { e.preventDefault(); go(slides.length - 1); }
+  });
+  go(0);
+})();
+</script>
+</body>
+</html>

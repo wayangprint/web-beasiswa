@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="data:," />
+  <title>Stipendium Hungaricum — Panduan Beasiswa S1</title>
+  <style>
+    :root{
+      color-scheme:light dark;
+      --navy:#1a1446; --navy2:#232a68; --violet:#7c3aed; --violet2:#a855f7;
+      --ink:#17162a; --muted:#5d5b71; --paper:#f7f7fb; --card:#ffffff; --line:#deddec;
+      --soft:#eeeafd; --warm:#fff4dc; --warn:#9a4d00; --good:#176344;
+      --shadow:0 18px 54px rgba(26,20,70,.14);
+    }
+    @media (prefers-color-scheme:dark){
+      :root{--ink:#f7f5ff;--muted:#c9c5d8;--paper:#0e0c20;--card:#18152c;--line:#37324c;--soft:#252048;--warm:#342712;--warn:#ffbf70;--good:#70dfb6;--shadow:0 20px 60px rgba(0,0,0,.34)}
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--paper);color:var(--ink);overflow:hidden}
+    button,a,input{font:inherit}
+    button{border:0}
+    .app{height:100dvh;display:grid;grid-template-rows:6px 1fr auto;position:relative;background:var(--paper)}
+    .progress-track{background:rgba(124,58,237,.13)}
+    .progress{height:100%;width:5%;background:linear-gradient(90deg,var(--navy2),var(--violet),#c026d3);transition:width .35s ease}
+    .stage{min-height:0;position:relative;overflow:hidden}
+    .slide{position:absolute;inset:0;padding:clamp(22px,4.5vw,68px) clamp(20px,6vw,96px) 18px;overflow:auto;display:none;background:var(--paper)}
+    .slide.active{display:block;animation:reveal .28s ease both}
+    @keyframes reveal{from{opacity:.25;transform:translateX(12px)}to{opacity:1;transform:none}}
+    @media (prefers-reduced-motion:reduce){.slide.active{animation:none}.progress{transition:none}}
+    .slide-inner{width:min(1120px,100%);min-height:100%;margin:0 auto;display:flex;flex-direction:column;justify-content:center;padding-bottom:18px}
+    .section-pill{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 13px;color:#fff;background:linear-gradient(100deg,var(--navy2),var(--violet));font-size:12px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;margin-bottom:17px}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:clamp(46px,8vw,94px);line-height:.91;letter-spacing:-.055em;max-width:900px;margin-bottom:24px}
+    h2{font-size:clamp(34px,5.3vw,68px);line-height:.98;letter-spacing:-.045em;margin-bottom:26px;max-width:940px}
+    h3{font-size:clamp(18px,2.1vw,27px);line-height:1.08;margin-bottom:10px}
+    .lead{font-size:clamp(19px,2.1vw,29px);line-height:1.38;color:var(--muted);max-width:860px}
+    .small{font-size:13px;color:var(--muted);line-height:1.45}
+    .eyebrow{font-weight:850;color:var(--violet);font-size:clamp(14px,1.5vw,18px);margin-bottom:12px}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(12px,2vw,22px)}
+    .card{grid-column:span 4;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:clamp(18px,2.3vw,30px);box-shadow:var(--shadow)}
+    .card.wide{grid-column:span 6}.card.full{grid-column:1/-1}.card.accent{background:linear-gradient(145deg,var(--navy),var(--navy2));color:#fff;border:0}.card.accent p,.card.accent .small{color:#ddd8ff}
+    .num{font-size:clamp(32px,4.7vw,58px);font-weight:900;letter-spacing:-.045em;color:var(--violet);line-height:1;margin:8px 0 12px}
+    .accent .num{color:#d9c9ff}
+    .icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;margin-bottom:20px;background:var(--soft);color:var(--violet);font-weight:900}
+    .icon svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .list{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+    .list li{display:flex;gap:12px;align-items:flex-start;line-height:1.42}
+    .check,.cross,.stepno{flex:0 0 auto;width:27px;height:27px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:13px;background:var(--soft);color:var(--violet)}
+    .cross{background:var(--warm);color:var(--warn)}
+    .stepno{color:#fff;background:linear-gradient(135deg,var(--navy2),var(--violet))}
+    .callout{border-radius:22px;background:var(--warm);color:var(--ink);padding:18px 22px;border:1px solid color-mix(in srgb,var(--warn) 24%,transparent);margin-top:18px}
+    .callout strong{color:var(--warn)}
+    .source{margin-top:auto;padding-top:18px;font-size:11px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 16px}
+    .source a{color:inherit;text-underline-offset:3px}
+    .cover{background:linear-gradient(145deg,#120d39 0%,#232a68 61%,#6d28d9 145%);color:#fff;overflow:hidden}
+    .cover .slide-inner{position:relative;z-index:2;align-items:flex-start}
+    .cover:before,.cover:after{content:"";position:absolute;border-radius:50%;filter:blur(1px)}
+    .cover:before{width:min(58vw,720px);height:min(58vw,720px);right:-18vw;top:-23vw;background:radial-gradient(circle at 35% 35%,#c4b5fd 0,#7c3aed 33%,rgba(124,58,237,0) 70%);opacity:.7}
+    .cover:after{width:290px;height:290px;right:8%;bottom:-180px;background:linear-gradient(140deg,#f0abfc,#7c3aed);opacity:.45}
+    .cover .section-pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(10px)}
+    .cover .lead{color:#e7e3ff}
+    .cover-meta{display:flex;gap:11px;flex-wrap:wrap;margin-top:26px}.cover-meta span{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);border-radius:999px;padding:9px 13px;font-size:13px;font-weight:750}
+    .tag{display:inline-flex;border-radius:999px;padding:7px 11px;background:var(--soft);color:var(--violet);font-weight:800;font-size:12px}
+    .big-quote{font-size:clamp(28px,4.3vw,54px);line-height:1.08;font-weight:860;letter-spacing:-.035em;max-width:920px}
+    .two-col{display:grid;grid-template-columns:1.04fr .96fr;gap:24px;align-items:stretch}
+    .timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.timeline .node{position:relative;border-top:4px solid var(--violet);padding-top:15px}.timeline .node:nth-child(2){border-color:#8b5cf6}.timeline .node:nth-child(3){border-color:#a78bfa}.timeline .node:nth-child(4){border-color:#c4b5fd}.timeline b{display:block;margin-bottom:7px}
+    .formula{background:var(--navy);color:#fff;border-radius:22px;padding:20px;font-size:clamp(17px,2vw,24px);font-weight:780;text-align:center;margin:16px 0}
+    .calculator{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:8px}.field label{font-size:13px;font-weight:800;color:var(--muted)}.field input{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px 14px;background:var(--paper);color:var(--ink);font-weight:750}.result{grid-column:1/-1;border-radius:16px;background:var(--soft);padding:15px 18px;font-weight:800;color:var(--violet)}
+    .compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}.compare>div{border-radius:24px;padding:24px;background:var(--card);border:1px solid var(--line)}.compare .pro{border-top:5px solid #16a34a}.compare .con{border-top:5px solid #f59e0b}
+    .video-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.video-card{border-radius:22px;overflow:hidden;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}.video-card iframe{display:block;width:100%;aspect-ratio:16/9;border:0}.video-caption{padding:13px 16px}.video-type{display:block;color:var(--violet);font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}.video-title{display:block;font-size:13px;font-weight:780;line-height:1.35}.video-source{display:block;margin-top:7px;font-size:11px;color:var(--muted);font-weight:700}
+    .cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:999px;padding:15px 22px;color:#fff;text-decoration:none;background:linear-gradient(100deg,var(--navy2),var(--violet));font-weight:850;box-shadow:0 12px 30px rgba(124,58,237,.28)}
+    .nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:10px max(14px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));border-top:1px solid var(--line);background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(12px);z-index:10}
+    .nav-group{display:flex;gap:8px;align-items:center}.nav-group.end{justify-content:flex-end}.nav button{cursor:pointer;border-radius:999px;padding:10px 15px;background:var(--card);color:var(--ink);border:1px solid var(--line);font-weight:780}.nav button.primary{background:var(--navy);color:#fff;border-color:transparent}.nav button:disabled{opacity:.38;cursor:not-allowed}.count{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);font-weight:850}
+    .toc{position:fixed;inset:0;z-index:30;background:rgba(11,8,30,.72);backdrop-filter:blur(14px);display:none;padding:clamp(16px,4vw,54px);overflow:auto}.toc.open{display:block}.toc-panel{width:min(1180px,100%);margin:auto;background:var(--paper);border:1px solid var(--line);border-radius:28px;padding:clamp(20px,3vw,34px);box-shadow:0 30px 90px rgba(0,0,0,.4)}.toc-head{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:18px}.toc-head h2{font-size:clamp(27px,3vw,42px);margin:0}.toc-close{border-radius:999px!important;width:42px;height:42px;background:var(--card);color:var(--ink);border:1px solid var(--line);cursor:pointer}.toc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.toc-item{text-align:left;padding:14px;border-radius:16px;background:var(--card);color:var(--ink);border:1px solid var(--line);cursor:pointer;min-height:84px}.toc-item:hover,.toc-item:focus{border-color:var(--violet)}.toc-item.active{background:var(--soft);border-color:var(--violet)}.toc-item b{display:block;color:var(--violet);font-size:12px;margin-bottom:6px}.toc-item span{font-size:13px;line-height:1.25;font-weight:760}
+    .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+    @media(max-width:760px){
+      .slide{padding:22px 17px 12px}.slide-inner{justify-content:flex-start;padding-top:8px}.section-pill{margin-bottom:14px}.grid,.two-col,.compare,.video-grid{grid-template-columns:1fr}.card,.card.wide{grid-column:1/-1}.timeline{grid-template-columns:1fr 1fr}.calculator{grid-template-columns:1fr}.result{grid-column:1}.toc-grid{grid-template-columns:1fr 1fr}.nav{grid-template-columns:auto 1fr auto}.nav button{padding:9px 12px}.label-hide{display:none}.count{text-align:center}.source{padding-top:14px}.video-grid{gap:13px}.video-card iframe{aspect-ratio:16/9}
+    }
+    @media(max-width:430px){h2{font-size:34px}.card{padding:17px;border-radius:20px}.timeline{grid-template-columns:1fr}.toc-grid{grid-template-columns:1fr}.nav-group{gap:5px}.nav button{padding:9px 11px}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="progress-track" aria-hidden="true"><div class="progress" id="progress"></div></div>
+  <main class="stage" id="stage" aria-live="polite">
+    <section class="slide cover active" data-title="Cover">
+      <div class="slide-inner">
+        <div class="section-pill">Panduan Beasiswa S1 · Hungaria</div>
+        <div class="eyebrow" style="color:#d8ceff">Kuliah penuh. Strategi finansial tetap wajib.</div>
+        <h1>Stipendium<br>Hungaricum</h1>
+        <p class="lead">Pahami manfaat, celah biaya hidup, dua jalur pengajuan, dan langkah persiapan menuju tahun akademik 2027/28.</p>
+        <div class="cover-meta"><span>S1 · 2–4 tahun</span><span>Tuition penuh</span><span>Deadline sekitar 15 Jan 2027</span></div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Sekilas program"><div class="slide-inner">
+      <div class="section-pill">01 · Orientasi</div><h2>Sekilas program</h2>
+      <div class="grid">
+        <article class="card wide accent"><span class="tag" style="background:#ddd6fe;color:#3b1a82">Posisi jujur</span><div class="num">Tuition-full</div><p>Bukan otomatis “semua biaya hidup aman”. Beasiswa menanggung biaya kuliah, sementara dukungan bulanan bersifat kontribusi.</p></article>
+        <article class="card wide"><div class="icon">HU</div><h3>Penyelenggara</h3><p>Pemerintah Hungaria, dikelola Tempus Public Foundation.</p></article>
+        <article class="card"><h3>Jenjang</h3><p>S1/bachelor tersedia dengan durasi program sekitar 2–4 tahun.</p></article>
+        <article class="card"><h3>Indonesia</h3><p>Indonesia tercatat sebagai negara mitra bilateral melalui Sending Partner.</p></article>
+        <article class="card"><h3>Ikatan</h3><p>Tidak ada bonding yang tercatat dalam ringkasan riset.</p></article>
+      </div>
+      <div class="source"><a href="https://leapkite.com/opportunities/stipendium-hungaricum-scholarship/" target="_blank" rel="noopener">Sumber cakupan & siklus ↗</a><span>Riset diperbarui 15 Okt 2026</span></div>
+    </div></section>
+
+    <section class="slide" data-title="Kenapa menarik"><div class="slide-inner">
+      <div class="section-pill">02 · Nilai utama</div><h2>Kenapa menarik?</h2>
+      <div class="grid">
+        <article class="card"><div class="icon">01</div><h3>Biaya kuliah penuh</h3><p>Komponen terbesar pendidikan tertutup selama masa studi yang didanai.</p></article>
+        <article class="card"><div class="icon">02</div><h3>Banyak opsi berbahasa Inggris</h3><p>Tetap cek syarat bahasa pada program yang dipilih—tidak ada satu ambang universal.</p></article>
+        <article class="card"><div class="icon">03</div><h3>Tanpa biaya aplikasi</h3><p>Ringkasan riset mencatat tidak ada application fee untuk program ini.</p></article>
+        <article class="card full"><p class="big-quote">Menarik untuk pelajar yang kuat secara akademik—dan siap membuat rencana biaya hidup, bukan hanya rencana lolos.</p></article>
+      </div>
+      <div class="source"><a href="https://apply.stipendiumhungaricum.hu/" target="_blank" rel="noopener">Portal resmi pendaftaran ↗</a></div>
+    </div></section>
+
+    <section class="slide" data-title="Manfaat: biaya kuliah"><div class="slide-inner">
+      <div class="section-pill">03 · Manfaat</div><h2>Biaya kuliah: ditanggung penuh</h2>
+      <div class="two-col">
+        <article class="card full accent"><div class="num">100%</div><h3>Pembebasan biaya kuliah</h3><p>Scholarship memberi tuition exemption untuk program studi yang disetujui.</p></article>
+        <div>
+          <ul class="list">
+            <li><span class="check">✓</span><div><strong>Fokus pada program eligible.</strong><br><span class="small">Pastikan bidang dan kampus tersedia untuk Sending Partner Indonesia.</span></div></li>
+            <li><span class="check">✓</span><div><strong>Durasi mengikuti program.</strong><br><span class="small">Bachelor yang dirangkum berdurasi sekitar 2–4 tahun.</span></div></li>
+            <li><span class="cross">!</span><div><strong>Tuition-free ≠ cost-free.</strong><br><span class="small">Akomodasi, makan, transport lokal, dan kebutuhan pribadi tetap perlu dipetakan.</span></div></li>
+          </ul>
+        </div>
+      </div>
+      <div class="source"><a href="https://leapkite.com/opportunities/stipendium-hungaricum-scholarship/" target="_blank" rel="noopener">Sumber rincian manfaat ↗</a></div>
+    </div></section>
+
+    <section class="slide" data-title="Manfaat: uang saku"><div class="slide-inner">
+      <div class="section-pill">04 · Manfaat</div><h2>Uang saku: bantu, bukan menutup semua</h2>
+      <div class="grid">
+        <article class="card wide accent"><p class="small">Kontribusi bulanan</p><div class="num">HUF 43.700</div><h3>≈ €110 / bulan</h3></article>
+        <article class="card wide"><div class="icon">!</div><h3>Baca labelnya dengan benar</h3><p>Nilai ini adalah <strong>kontribusi</strong> terhadap biaya hidup selama 12 bulan, bukan jaminan seluruh kebutuhan bulanan terpenuhi.</p></article>
+        <article class="card full"><p class="big-quote">Strategi terbaik: hitung “top-up” sebelum mendaftar—bukan setelah tiba.</p></article>
+      </div>
+      <div class="source"><a href="https://leapkite.com/opportunities/stipendium-hungaricum-scholarship/" target="_blank" rel="noopener">Sumber nominal stipend ↗</a><span>Konversi euro bersifat perkiraan pada sumber riset.</span></div>
+    </div></section>
+
+    <section class="slide" data-title="Manfaat: perjalanan"><div class="slide-inner">
+      <div class="section-pill">05 · Manfaat</div><h2>Perjalanan: jangan anggap tiket PP pasti</h2>
+      <div class="two-col">
+        <article class="card full"><div class="icon">→</div><h3>Ada dukungan perjalanan</h3><p>Ringkasan riset menyebut travel allowance tunduk pada kebijakan program.</p></article>
+        <article class="card full accent"><div class="icon" style="background:#ffffff20;color:#fff">!</div><h3>Bukan tiket pulang-pergi terjamin</h3><p>Siapkan skenario biaya tiket internasional secara mandiri sampai panduan resmi 2027/28 menyatakan sebaliknya.</p></article>
+      </div>
+      <div class="callout"><strong>Prinsip aman:</strong> komponen yang belum tertulis tegas pada call resmi jangan dimasukkan sebagai dana pasti.</div>
+      <div class="source"><a href="https://www.feelworldwidefoundation.org/insights-ideas/stipendium-hungaricum-scholarship-programme-2026/2027" target="_blank" rel="noopener">Referensi siklus 2026/27 ↗</a></div>
+    </div></section>
+
+    <section class="slide" data-title="Asrama & asuransi"><div class="slide-inner">
+      <div class="section-pill">06 · Manfaat</div><h2>Asrama & asuransi</h2>
+      <div class="grid">
+        <article class="card wide accent"><p class="small">Pilih salah satu dukungan hunian</p><div class="num">Asrama</div><p>Tempat di dormitori tanpa biaya, jika tersedia.</p></article>
+        <article class="card wide"><p class="small">Atau kontribusi hunian</p><div class="num">HUF 40.000</div><p>per bulan—belum tentu menutup seluruh biaya sewa aktual.</p></article>
+        <article class="card full"><h3>Perlindungan kesehatan</h3><p>Asuransi kesehatan sesuai sistem Hungaria, ditambah perlindungan tambahan hingga <strong>HUF 65.000 per tahun</strong>.</p></article>
+      </div>
+      <div class="source"><a href="https://leapkite.com/opportunities/stipendium-hungaricum-scholarship/" target="_blank" rel="noopener">Sumber nominal hunian & asuransi ↗</a></div>
+    </div></section>
+
+    <section class="slide" data-title="Yang tidak ditanggung"><div class="slide-inner">
+      <div class="section-pill">07 · Anggaran</div><h2>Temukan defisitmu—pakai angka nyata</h2>
+      <div class="two-col">
+        <article class="card full">
+          <h3>Kalkulator top-up bulanan</h3>
+          <p class="small">Masukkan estimasi biaya hidup aktual dari kota/kampus tujuan. Pilih dukungan hunian hanya jika relevan.</p>
+          <div class="calculator">
+            <div class="field"><label for="budget">Total kebutuhan bulanan (HUF)</label><input id="budget" type="number" min="0" inputmode="numeric" placeholder="Isi setelah riset kota tujuan"></div>
+            <div class="field"><label for="housing">Dukungan hunian (HUF)</label><input id="housing" type="number" min="0" inputmode="numeric" value="0" placeholder="0 atau 40000"></div>
+            <div class="result" id="gapResult">Isi kebutuhan bulanan untuk menghitung top-up.</div>
+          </div>
+          <div class="formula">Top-up = kebutuhan aktual − 43.700 − dukungan hunian</div>
+        </article>
+        <article class="card full accent"><h3>Yang perlu kamu biayai</h3><ul class="list"><li><span class="cross">•</span>Makan & kebutuhan harian</li><li><span class="cross">•</span>Transport lokal</li><li><span class="cross">•</span>Biaya sewa yang melebihi bantuan</li><li><span class="cross">•</span>Tiket internasional jika tidak dikonfirmasi</li><li><span class="cross">•</span>Kebutuhan pribadi & dana darurat</li></ul></article>
+      </div>
+      <div class="source"><span>Nilai biaya hidup tidak diisi otomatis agar tidak mengarang; gunakan penawaran hunian dan harga kota tujuan.</span></div>
+    </div></section>
+
+    <section class="slide" data-title="Syarat dasar"><div class="slide-inner">
+      <div class="section-pill">08 · Kelayakan</div><h2>Syarat dasar</h2>
+      <div class="grid">
+        <article class="card"><div class="icon">ID</div><h3>Negara mitra</h3><p>Pelamar WNI mengikuti skema partner bilateral Indonesia.</p></article>
+        <article class="card"><div class="icon">18+</div><h3>Usia</h3><p>Setidaknya 18 tahun pada 31 Agustus tahun masuk.</p></article>
+        <article class="card"><div class="icon">S1</div><h3>Jenjang</h3><p>Memenuhi persyaratan masuk bachelor dari program tujuan.</p></article>
+        <article class="card full"><h3>Batas penting</h3><p>Pelamar dengan kewarganegaraan ganda Hungaria tidak memenuhi ketentuan yang dirangkum.</p></article>
+      </div>
+      <div class="source"><a href="https://leapkite.com/opportunities/stipendium-hungaricum-scholarship/" target="_blank" rel="noopener">Sumber kelayakan ↗</a></div>
+    </div></section>
+
+    <section class="slide" data-title="Akademik & bahasa"><div class="slide-inner">
+      <div class="section-pill">09 · Kelayakan</div><h2>Akademik & bahasa: ikuti program tujuan</h2>
+      <div class="two-col">
+        <article class="card full"><h3>Tidak ada satu angka universal</h3><p>Nilai minimum dan bukti bahasa mengikuti syarat kampus/program. Banyak program tersedia dalam bahasa Inggris, tetapi standar penerimaan dapat berbeda.</p></article>
+        <article class="card full accent"><h3>Urutan cek yang efisien</h3><ol class="list"><li><span class="stepno">1</span>Cek bidang yang eligible untuk Indonesia.</li><li><span class="stepno">2</span>Buka halaman program di portal.</li><li><span class="stepno">3</span>Catat bukti bahasa & dokumen akademik.</li><li><span class="stepno">4</span>Susun bukti sesuai format, bukan asumsi.</li></ol></article>
+      </div>
+      <div class="callout"><strong>Jangan menebak IELTS/TOEFL.</strong> Gunakan angka persis dari program yang kamu pilih saat call 2027/28 terbit.</div>
+      <div class="source"><a href="https://apply.stipendiumhungaricum.hu/" target="_blank" rel="noopener">Cari program & syarat di portal ↗</a></div>
+    </div></section>
+
+    <section class="slide" data-title="Timeline & deadline"><div class="slide-inner">
+      <div class="section-pill">10 · Timeline</div><h2>Targetkan 15 Januari 2027</h2>
+      <p class="lead">Call 2027/28 diperkirakan terbit pada musim gugur 2026, dengan deadline sekitar 15 Januari 2027. Jadikan ini target kerja—lalu cocokkan dengan pengumuman resmi.</p>
+      <div class="timeline">
+        <div class="node"><b>Sekarang</b><span class="small">Riset program, syarat bahasa, dan anggaran.</span></div>
+        <div class="node"><b>Call terbit</b><span class="small">Cek eligible fields + aturan Sending Partner.</span></div>
+        <div class="node"><b>≈ 15 Jan 2027</b><span class="small">Target deadline aplikasi 2027/28.</span></div>
+        <div class="node"><b>Setelah submit</b><span class="small">Pantau nominasi dan evaluasi kampus.</span></div>
+      </div>
+      <div class="callout"><strong>Status:</strong> tanggal 15 Januari 2027 adalah perkiraan berbasis pola siklus; verifikasi pada call resmi saat diterbitkan.</div>
+      <div class="source"><a href="https://leapkite.com/opportunities/stipendium-hungaricum-scholarship/" target="_blank" rel="noopener">Sumber prediksi siklus 2027/28 ↗</a></div>
+    </div></section>
+
+    <section class="slide" data-title="Cara daftar 1–2"><div class="slide-inner">
+      <div class="section-pill">11 · Cara daftar</div><h2>Langkah 1–2: dua jalur, satu strategi</h2>
+      <div class="grid">
+        <article class="card wide accent"><span class="stepno" style="background:#ffffff22">1</span><h3 style="margin-top:18px">Baca call & daftar eligible fields</h3><p>Pastikan program tersedia bagi Sending Partner Indonesia dan jenjang S1.</p></article>
+        <article class="card wide"><span class="stepno">2</span><h3 style="margin-top:18px">Mulai di portal Hungaria</h3><p>Buat aplikasi melalui portal resmi Stipendium Hungaricum dan ikuti bidang yang eligible.</p></article>
+        <article class="card full"><p class="big-quote">Portal Hungaria <em>dan</em> proses Sending Partner Indonesia sama-sama wajib.</p></article>
+      </div>
+      <div class="source"><a href="https://apply.stipendiumhungaricum.hu/" target="_blank" rel="noopener">Buka portal resmi ↗</a></div>
+    </div></section>
+
+    <section class="slide" data-title="Cara daftar 3–4"><div class="slide-inner">
+      <div class="section-pill">12 · Cara daftar</div><h2>Langkah 3–4: selaraskan berkas</h2>
+      <div class="two-col">
+        <article class="card full"><span class="stepno">3</span><h3 style="margin-top:18px">Lengkapi aplikasi online</h3><p>Isi data, pilihan studi, dan unggah dokumen sesuai format yang diminta portal.</p><p class="small">Pastikan nama, tanggal, dan riwayat pendidikan konsisten di semua dokumen.</p></article>
+        <article class="card full accent"><span class="stepno" style="background:#ffffff22">4</span><h3 style="margin-top:18px">Ikuti Sending Partner Indonesia</h3><p>Lengkapi proses nominasi nasional sesuai pengumuman partner Indonesia—jangan berhenti setelah submit portal.</p><p class="small">Tenggat partner dapat memiliki prosedur sendiri; cek call yang berlaku.</p></article>
+      </div>
+      <div class="source"><a href="https://apply.stipendiumhungaricum.hu/" target="_blank" rel="noopener">Portal aplikasi ↗</a><span>Proses partner harus diverifikasi pada pengumuman Indonesia.</span></div>
+    </div></section>
+
+    <section class="slide" data-title="Cara daftar 5"><div class="slide-inner">
+      <div class="section-pill">13 · Cara daftar</div><h2>Langkah 5: submit, simpan, pantau</h2>
+      <div class="grid">
+        <article class="card"><div class="icon">✓</div><h3>Submit dua proses</h3><p>Pastikan portal Hungaria dan jalur Sending Partner sama-sama selesai sebelum tenggat masing-masing.</p></article>
+        <article class="card"><div class="icon">↓</div><h3>Simpan bukti</h3><p>Arsipkan formulir, versi akhir dokumen, dan bukti pengiriman.</p></article>
+        <article class="card"><div class="icon">↻</div><h3>Pantau status</h3><p>Periksa pembaruan nominasi, evaluasi institusi, dan permintaan lanjutan.</p></article>
+        <article class="card full accent"><h3>Setelah submit</h3><p>Jangan ubah strategi menjadi “menunggu”. Siapkan wawancara/tes jika program meminta, rapikan dana top-up, dan jaga akses email aktif.</p></article>
+      </div>
+      <div class="source"><a href="https://apply.stipendiumhungaricum.hu/" target="_blank" rel="noopener">Portal resmi ↗</a></div>
+    </div></section>
+
+    <section class="slide" data-title="Checklist dokumen"><div class="slide-inner">
+      <div class="section-pill">14 · Dokumen</div><h2>Checklist kerja—cocokkan dengan call resmi</h2>
+      <div class="grid">
+        <article class="card wide"><ul class="list"><li><span class="check">□</span>Identitas & kewarganegaraan</li><li><span class="check">□</span>Ijazah/surat kelulusan</li><li><span class="check">□</span>Transkrip/rekam akademik</li><li><span class="check">□</span>Bukti bahasa sesuai program</li></ul></article>
+        <article class="card wide"><ul class="list"><li><span class="check">□</span>Motivation materials sesuai form</li><li><span class="check">□</span>Dokumen medis jika diminta</li><li><span class="check">□</span>Dokumen tambahan kampus/program</li><li><span class="check">□</span>Berkas Sending Partner Indonesia</li></ul></article>
+      </div>
+      <div class="callout"><strong>Penting:</strong> ini kategori persiapan, bukan daftar final 2027/28. Nama dokumen, format, dan batas unggah harus mengikuti call resmi.</div>
+      <div class="source"><a href="https://apply.stipendiumhungaricum.hu/" target="_blank" rel="noopener">Verifikasi di portal resmi ↗</a></div>
+    </div></section>
+
+    <section class="slide" data-title="Tips lolos"><div class="slide-inner">
+      <div class="section-pill">15 · Strategi</div><h2>Tips agar aplikasi terasa utuh</h2>
+      <div class="grid">
+        <article class="card"><div class="icon">1</div><h3>Fit dulu, narasi kemudian</h3><p>Pilih program yang benar-benar cocok dengan rekam akademik dan arah studi.</p></article>
+        <article class="card"><div class="icon">2</div><h3>Spesifik, bukan megah</h3><p>Tulis tujuan, bukti kesiapan, dan alasan memilih program dengan konkret.</p></article>
+        <article class="card"><div class="icon">3</div><h3>Dua jalur = dua checklist</h3><p>Pisahkan tugas portal dan Sending Partner agar tidak ada langkah terlewat.</p></article>
+        <article class="card wide"><h3>Bangun margin waktu</h3><p>Jangan menjadikan deadline sebagai jadwal kerja. Targetkan versi final jauh sebelum tenggat.</p></article>
+        <article class="card wide accent"><h3>Bawa rencana finansial</h3><p>Tunjukkan kesiapan realistis menghadapi top-up biaya hidup—ini bagian dari kesiapan studi.</p></article>
+      </div>
+    </div></section>
+
+    <section class="slide" data-title="Kesalahan umum"><div class="slide-inner">
+      <div class="section-pill">16 · Waspada</div><h2>Kesalahan yang paling mahal</h2>
+      <div class="grid">
+        <article class="card wide"><ul class="list"><li><span class="cross">×</span><div><strong>Hanya submit portal.</strong><br><span class="small">Mengabaikan proses Sending Partner Indonesia.</span></div></li><li><span class="cross">×</span><div><strong>Menganggap €110 cukup.</strong><br><span class="small">Tidak menghitung top-up berdasarkan kota tujuan.</span></div></li><li><span class="cross">×</span><div><strong>Menganggap tiket PP pasti.</strong><br><span class="small">Travel allowance masih tunduk kebijakan.</span></div></li></ul></article>
+        <article class="card wide accent"><ul class="list"><li><span class="cross">×</span><div><strong>Menebak syarat bahasa.</strong><br><span class="small">Setiap program bisa berbeda.</span></div></li><li><span class="cross">×</span><div><strong>Berkas tidak konsisten.</strong><br><span class="small">Nama, tanggal, dan riwayat pendidikan tidak selaras.</span></div></li><li><span class="cross">×</span><div><strong>Mulai terlalu dekat deadline.</strong><br><span class="small">Waktu koreksi dan verifikasi habis.</span></div></li></ul></article>
+      </div>
+    </div></section>
+
+    <section class="slide" data-title="Pro, kontra & kecocokan"><div class="slide-inner">
+      <div class="section-pill">17 · Keputusan</div><h2>Apakah ini cocok untukmu?</h2>
+      <div class="compare">
+        <div class="pro"><h3>Yang kuat</h3><ul class="list"><li><span class="check">✓</span>Tuition penuh</li><li><span class="check">✓</span>Stipend 12 bulan</li><li><span class="check">✓</span>Dukungan hunian</li><li><span class="check">✓</span>Asuransi kesehatan</li><li><span class="check">✓</span>Tidak ada application fee</li></ul></div>
+        <div class="con"><h3>Yang perlu disiapkan</h3><ul class="list"><li><span class="cross">!</span>Top-up biaya hidup</li><li><span class="cross">!</span>Dua proses aplikasi</li><li><span class="cross">!</span>Travel tidak pasti penuh</li><li><span class="cross">!</span>Syarat berbeda per program</li><li><span class="cross">!</span>Tanggal 2027/28 perlu verifikasi</li></ul></div>
+      </div>
+      <div class="callout"><strong>Cocok untuk:</strong> pelajar yang punya kecocokan akademik, disiplin dokumen, dan sumber top-up yang realistis.</div>
+    </div></section>
+
+    <section class="slide" data-title="Video pilihan"><div class="slide-inner">
+      <div class="section-pill">18 · Video</div><h2>Tonton sebelum finalisasi</h2>
+      <div class="video-grid">
+        <article class="video-card"><iframe src="https://www.youtube-nocookie.com/embed/INTBMofUyXU" title="HUNGARIAN SCHOLARSHIP — KNOW THIS BEFORE YOU APPLY — PART 1 (Panduan Mendaftar Stipendium Hungaricum)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><div class="video-caption"><span class="video-type">Cara mendaftar · 01</span><span class="video-title">HUNGARIAN SCHOLARSHIP — KNOW THIS BEFORE YOU APPLY — PART 1 (Panduan Mendaftar Stipendium Hungaricum)</span><span class="video-source">Sumber: YouTube</span></div></article>
+        <article class="video-card"><iframe src="https://www.youtube-nocookie.com/embed/y78ZiYIuebA" title="All About The ENTRANCE EXAM for the Stipendium Hungaricum Scholarship — Guide &amp; Tips" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><div class="video-caption"><span class="video-type">Cara mendaftar · 02</span><span class="video-title">All About The ENTRANCE EXAM for the Stipendium Hungaricum Scholarship — Guide &amp; Tips</span><span class="video-source">Sumber: YouTube</span></div></article>
+        <article class="video-card"><iframe src="https://www.youtube-nocookie.com/embed/UNNvApNYF0U" title="Szeged Hungary Walking Tour (Suasana Kota &amp; Universitas Szeged)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><div class="video-caption"><span class="video-type">Suasana &amp; fasilitas kampus</span><span class="video-title">Szeged Hungary Walking Tour (Suasana Kota &amp; Universitas Szeged)</span><span class="video-source">Sumber: YouTube</span></div></article>
+        <article class="video-card"><iframe src="https://www.youtube-nocookie.com/embed/XG-GF6RCuDM" title="Studies at the University of Pannonia (Veszprém, Hungary) — my Stipendium Hungaricum experience (Testimoni Penerima)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><div class="video-caption"><span class="video-type">Testimoni alumni</span><span class="video-title">Studies at the University of Pannonia (Veszprém, Hungary) — my Stipendium Hungaricum experience (Testimoni Penerima)</span><span class="video-source">Sumber: YouTube</span></div></article>
+      </div>
+      <p class="small" style="margin-top:14px">Video dapat berubah atau tidak tersedia bergantung kebijakan YouTube/pemilik video. Cocokkan semua detail dengan call resmi terbaru.</p>
+    </div></section>
+
+    <section class="slide cover" data-title="Penutup"><div class="slide-inner">
+      <div class="section-pill">19 · Mulai</div>
+      <div class="eyebrow" style="color:#d8ceff">Satu langkah hari ini</div>
+      <h1>Mulai dari<br>program yang cocok.</h1>
+      <p class="lead">Buka portal, pilih bidang yang eligible untuk Indonesia, lalu buat dua checklist: portal Hungaria dan Sending Partner.</p>
+      <a class="cta" href="https://apply.stipendiumhungaricum.hu/" target="_blank" rel="noopener">Buka portal resmi <span aria-hidden="true">↗</span></a>
+      <p class="small" style="color:#d8ceff;margin-top:20px">Terakhir diperbarui: 15 Oktober 2026 · Deadline 2027/28 sekitar 15 Januari 2027, menunggu konfirmasi call resmi.</p>
+    </div></section>
+  </main>
+
+  <nav class="nav" aria-label="Navigasi slide">
+    <div class="nav-group"><button id="tocBtn" type="button" aria-haspopup="dialog"><span class="label-hide">Daftar </span>Isi</button><button id="prevBtn" type="button" aria-label="Slide sebelumnya">← <span class="label-hide">Sebelumnya</span></button></div>
+    <div class="count" id="count">1 / 20</div>
+    <div class="nav-group end"><button id="nextBtn" type="button" class="primary"><span class="label-hide">Berikutnya</span> →</button></div>
+  </nav>
+</div>
+
+<div class="toc" id="toc" role="dialog" aria-modal="true" aria-labelledby="tocTitle">
+  <div class="toc-panel"><div class="toc-head"><h2 id="tocTitle">Daftar isi</h2><button class="toc-close" id="tocClose" aria-label="Tutup daftar isi">×</button></div><div class="toc-grid" id="tocGrid"></div></div>
+</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var index = 0;
+  var progress = document.getElementById('progress');
+  var count = document.getElementById('count');
+  var prev = document.getElementById('prevBtn');
+  var next = document.getElementById('nextBtn');
+  var toc = document.getElementById('toc');
+  var tocGrid = document.getElementById('tocGrid');
+  var tocBtn = document.getElementById('tocBtn');
+  var tocClose = document.getElementById('tocClose');
+  var lastFocus = null;
+
+  slides.forEach(function(slide,i){
+    var b = document.createElement('button');
+    b.className = 'toc-item';
+    b.type = 'button';
+    b.innerHTML = '<b>' + String(i+1).padStart(2,'0') + '</b><span>' + slide.getAttribute('data-title') + '</span>';
+    b.addEventListener('click',function(){go(i);closeToc();});
+    tocGrid.appendChild(b);
+  });
+
+  function go(n){
+    index = Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach(function(s,i){s.classList.toggle('active',i===index);});
+    Array.prototype.forEach.call(tocGrid.children,function(x,i){x.classList.toggle('active',i===index);});
+    progress.style.width = (((index+1)/slides.length)*100) + '%';
+    count.textContent = (index+1) + ' / ' + slides.length;
+    prev.disabled = index===0;
+    next.disabled = index===slides.length-1;
+    next.innerHTML = index===slides.length-1 ? '<span class="label-hide">Selesai</span> ✓' : '<span class="label-hide">Berikutnya</span> →';
+    slides[index].scrollTop = 0;
+  }
+  function openToc(){lastFocus=document.activeElement;toc.classList.add('open');document.body.style.overflow='hidden';tocClose.focus();}
+  function closeToc(){toc.classList.remove('open');if(lastFocus)lastFocus.focus();}
+  prev.addEventListener('click',function(){go(index-1);});
+  next.addEventListener('click',function(){if(index<slides.length-1)go(index+1);});
+  tocBtn.addEventListener('click',openToc);tocClose.addEventListener('click',closeToc);
+  toc.addEventListener('click',function(e){if(e.target===toc)closeToc();});
+  document.addEventListener('keydown',function(e){
+    if(toc.classList.contains('open')){if(e.key==='Escape')closeToc();return;}
+    if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();go(index+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(index-1);}
+    else if(e.key==='Home'){e.preventDefault();go(0);}
+    else if(e.key==='End'){e.preventDefault();go(slides.length-1);}
+  });
+
+  var budget=document.getElementById('budget');
+  var housing=document.getElementById('housing');
+  var result=document.getElementById('gapResult');
+  function fmt(n){return new Intl.NumberFormat('id-ID').format(Math.round(n));}
+  function calc(){
+    var b=Number(budget.value),h=Number(housing.value)||0;
+    if(!budget.value||b<=0){result.textContent='Isi kebutuhan bulanan untuk menghitung top-up.';return;}
+    var gap=Math.max(0,b-43700-h);
+    result.textContent = gap>0 ? 'Perkiraan top-up pribadi: HUF ' + fmt(gap) + ' / bulan' : 'Tidak ada top-up pada angka yang dimasukkan.';
+  }
+  budget.addEventListener('input',calc);housing.addEventListener('input',calc);
+  go(0);
+})();
+</script>
+</body>
+</html>

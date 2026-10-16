@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="data:," />
+  <title>Deck Beasiswa AS</title>
+  <style>
+    :root{
+      color-scheme:light dark;
+      --ink:#151430;--muted:#565773;--paper:#f5f6ff;--surface:#ffffff;--line:#dfe2f2;
+      --navy:#1a1446;--navy2:#232a68;--purple:#7c3aed;--purple2:#a855f7;--lilac:#efe8ff;
+      --red:#c93654;--red-bg:#fff0f3;--green:#127258;--green-bg:#e8f8f1;--gold:#9a6300;--gold-bg:#fff5da;
+      --shadow:0 20px 48px rgba(26,20,70,.13);--shadow-sm:0 8px 24px rgba(26,20,70,.09);
+    }
+    @media(prefers-color-scheme:dark){
+      :root{--ink:#f5f3ff;--muted:#c3c3db;--paper:#0d0e21;--surface:#17182e;--line:#30324e;--lilac:#2a2148;--red-bg:#351b29;--green-bg:#173229;--gold-bg:#392f18;--shadow:0 20px 48px rgba(0,0,0,.35);--shadow-sm:0 8px 24px rgba(0,0,0,.28)}
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--paper);color:var(--ink);overflow:hidden}
+    button{font:inherit}
+    .app{height:100dvh;display:grid;grid-template-rows:6px minmax(0,1fr) auto;background:var(--paper)}
+    .progress-track{background:color-mix(in srgb,var(--line) 80%,transparent);overflow:hidden}
+    .progress{height:100%;width:5%;background:linear-gradient(90deg,var(--navy2),var(--purple),var(--purple2));transition:width .32s ease}
+    .deck{position:relative;min-height:0;overflow:hidden}
+    .slide{position:absolute;inset:0;overflow-y:auto;display:none;padding:clamp(24px,4vw,56px) clamp(20px,6vw,84px) 112px;scrollbar-width:thin}
+    .slide.active{display:block;animation:reveal .28s ease-out}
+    @keyframes reveal{from{opacity:.3;transform:translateX(12px)}to{opacity:1;transform:none}}
+    @media(prefers-reduced-motion:reduce){.slide.active{animation:none}.progress{transition:none}}
+    .slide-inner{max-width:1180px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center}
+    .slide.cover{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 54%,#5521a5 100%);color:#fff;overflow:hidden}
+    .cover .slide-inner{position:relative;align-items:flex-start}
+    .cover .orb{position:absolute;border-radius:50%;pointer-events:none;filter:saturate(110%)}
+    .cover .orb.one{width:380px;height:380px;right:-80px;top:-80px;background:radial-gradient(circle at 35% 35%,#c084fc,#7c3aed 46%,transparent 70%);opacity:.68}
+    .cover .orb.two{width:260px;height:260px;right:210px;bottom:-100px;background:radial-gradient(circle at 50% 50%,#818cf8,transparent 67%);opacity:.5}
+    .cover h1{font-size:clamp(48px,8vw,104px);line-height:.91;letter-spacing:-.065em;margin:26px 0 22px;max-width:850px}
+    .cover .lead{font-size:clamp(18px,2.2vw,28px);line-height:1.45;max-width:670px;color:#ecebff;margin:0}
+    .tag,.section-pill{display:inline-flex;align-items:center;width:max-content;border-radius:999px;font-weight:800;letter-spacing:.02em}
+    .tag{padding:10px 16px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.23);color:#fff}
+    .section-pill{padding:8px 14px;background:linear-gradient(90deg,var(--navy2),var(--purple));color:#fff;font-size:13px;margin-bottom:18px}
+    .country-line{margin-top:30px;display:flex;gap:10px;align-items:center;font-weight:700;color:#d8d6ff}
+    .country-line:before{content:"";width:38px;height:3px;background:#c084fc;border-radius:2px}
+    h2{font-size:clamp(34px,5.2vw,66px);line-height:1;letter-spacing:-.045em;margin:0 0 18px;max-width:980px}
+    h3{font-size:clamp(18px,2vw,26px);line-height:1.15;letter-spacing:-.02em;margin:0 0 10px}
+    p{line-height:1.55}
+    .lede{font-size:clamp(17px,2vw,23px);line-height:1.5;color:var(--muted);max-width:850px;margin:0 0 26px}
+    .grid{display:grid;gap:18px}
+    .grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:clamp(18px,2.3vw,28px);box-shadow:var(--shadow-sm)}
+    .card.tint{background:var(--lilac);border-color:transparent}.card.alert{background:var(--red-bg);border-color:color-mix(in srgb,var(--red) 30%,var(--line))}.card.good{background:var(--green-bg);border-color:color-mix(in srgb,var(--green) 28%,var(--line))}.card.gold{background:var(--gold-bg);border-color:color-mix(in srgb,var(--gold) 26%,var(--line))}
+    .card p{margin:0;color:var(--muted)}
+    .metric{font-size:clamp(34px,5vw,62px);font-weight:900;letter-spacing:-.055em;line-height:1;margin:2px 0 12px;color:var(--purple)}
+    .eyebrow{font-size:12px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--purple);margin-bottom:12px}
+    ul.clean{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:10px}
+    ul.clean li{position:relative;padding-left:22px;line-height:1.45;color:var(--muted)}
+    ul.clean li:before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border-radius:50%;background:var(--purple)}
+    .compare{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch}
+    .vs{align-self:center;font-weight:900;color:var(--purple);background:var(--lilac);width:44px;height:44px;border-radius:50%;display:grid;place-items:center}
+    .step{display:grid;grid-template-columns:52px 1fr;gap:16px;align-items:flex-start}
+    .num{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(145deg,var(--navy2),var(--purple));color:#fff;font-size:22px;font-weight:900;box-shadow:var(--shadow-sm)}
+    .timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;position:relative;margin-top:8px}
+    .timeline:before{content:"";position:absolute;top:19px;left:10%;right:10%;height:3px;background:linear-gradient(90deg,var(--navy2),var(--purple2));z-index:0}
+    .phase{position:relative;z-index:1;text-align:center}
+    .dot{width:40px;height:40px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:4px solid var(--purple);font-weight:900;color:var(--purple)}
+    .phase p{font-size:14px;color:var(--muted);margin:6px 0 0}
+    .warning-band{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;background:var(--red);color:#fff;padding:24px 28px;border-radius:22px;box-shadow:var(--shadow)}
+    .warning-mark{width:64px;height:64px;border:3px solid #fff;border-radius:50%;display:grid;place-items:center;font-size:42px;font-weight:900}
+    .warning-band h3{font-size:clamp(24px,3vw,38px);margin:0 0 4px}.warning-band p{margin:0;color:#fff1f4}
+    .callout{margin-top:18px;padding:16px 20px;border-radius:16px;background:var(--lilac);font-weight:700;line-height:1.45}
+    .chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}.chip{padding:8px 12px;border-radius:999px;background:var(--lilac);color:var(--ink);font-size:14px;font-weight:750}
+    .source{font-size:12px;color:var(--muted);margin-top:22px;border-top:1px solid var(--line);padding-top:12px}
+    .video-heading{width:min(900px,100%);margin:26px auto 10px;display:flex;align-items:flex-start;justify-content:space-between;gap:14px;color:var(--muted);font-size:15px;line-height:1.45}
+    .video-heading:first-of-type{margin-top:18px}.video-heading strong{color:var(--ink)}
+    .video-source{flex:0 0 auto;border-radius:999px;background:var(--lilac);color:var(--purple);padding:5px 9px;font-size:12px;font-weight:850;text-decoration:none;white-space:nowrap}.video-source:hover{text-decoration:underline}.video-source:focus-visible{outline:3px solid #c084fc;outline-offset:2px}
+    .video-wrap{position:relative;aspect-ratio:16/9;width:min(900px,100%);margin:6px auto 0;border-radius:22px;overflow:hidden;box-shadow:var(--shadow);background:#0b0c18}
+    .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+    .big-quote{font-size:clamp(30px,5vw,62px);line-height:1.08;letter-spacing:-.045em;font-weight:850;max-width:1000px;margin:0}
+    .accent{color:var(--purple)}
+    .nav{position:relative;z-index:20;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding:12px max(18px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));background:color-mix(in srgb,var(--surface) 94%,transparent);border-top:1px solid var(--line)}
+    .nav-left,.nav-right{display:flex;gap:10px;align-items:center}.nav-right{justify-content:flex-end}
+    .nav-btn,.toc-btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:13px;padding:11px 15px;font-weight:800;cursor:pointer;box-shadow:var(--shadow-sm)}
+    .nav-btn.primary{background:linear-gradient(100deg,var(--navy2),var(--purple));color:#fff;border:0}.nav-btn:disabled{opacity:.38;cursor:not-allowed}.nav-btn:focus-visible,.toc-btn:focus-visible,.toc-item:focus-visible{outline:3px solid #c084fc;outline-offset:2px}
+    .counter{font-variant-numeric:tabular-nums;font-weight:900;color:var(--muted);min-width:68px;text-align:center}
+    .overlay{position:fixed;inset:0;z-index:50;background:rgba(9,8,27,.75);display:none;align-items:center;justify-content:center;padding:18px}.overlay.open{display:flex}
+    .toc-panel{width:min(980px,100%);max-height:min(88dvh,800px);overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:24px;box-shadow:0 30px 90px rgba(0,0,0,.35);padding:24px}
+    .toc-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}.toc-head h2{font-size:clamp(28px,4vw,46px);margin:0}.close{width:44px;height:44px;border:0;border-radius:50%;background:var(--surface);color:var(--ink);font-size:24px;cursor:pointer}
+    .toc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.toc-item{text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:16px;padding:14px;min-height:95px;cursor:pointer}.toc-item:hover{border-color:var(--purple)}.toc-item span{display:block;font-size:12px;color:var(--purple);font-weight:900;margin-bottom:7px}.toc-item strong{line-height:1.25;font-size:14px}
+    .final-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}.action{padding:18px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}.action b{display:block;color:var(--purple);font-size:26px;margin-bottom:6px}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:800px){
+      .grid.three,.grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}.compare{grid-template-columns:1fr}.vs{margin:auto}.timeline{grid-template-columns:1fr 1fr}.timeline:before{display:none}.toc-grid{grid-template-columns:repeat(2,1fr)}.final-actions{grid-template-columns:1fr}.nav{grid-template-columns:1fr auto}.nav-left{display:none}.counter{grid-column:2}.nav-right{grid-column:1;grid-row:1}.nav-right .nav-btn{padding:10px 12px}.nav-right{justify-content:flex-start}.toc-btn{margin-left:auto}
+    }
+    @media(max-width:560px){
+      .slide{padding:22px 16px 104px}.slide-inner{justify-content:flex-start}.cover .slide-inner{justify-content:center}.grid.two,.grid.three,.grid.four{grid-template-columns:1fr}.card{border-radius:18px;padding:18px}.warning-band{grid-template-columns:1fr}.warning-mark{width:48px;height:48px;font-size:30px}.timeline{grid-template-columns:1fr;text-align:left}.phase{text-align:left;display:grid;grid-template-columns:40px 1fr;column-gap:12px}.phase .dot{grid-row:1/3;margin:0}.phase h3{margin-top:4px}.phase p{grid-column:2}.toc-panel{padding:18px}.toc-grid{grid-template-columns:1fr}.cover h1{font-size:54px}.cover .orb.one{width:260px;height:260px;right:-120px}.nav-btn .long{display:none}.video-heading{flex-direction:column;gap:8px}.video-source{align-self:flex-start}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="progress-track" aria-hidden="true"><div class="progress" id="progress"></div></div>
+  <main class="deck" id="deck" aria-live="polite">
+    <section class="slide cover active" data-title="Beasiswa S1 Amerika Serikat">
+      <div class="slide-inner">
+        <div class="orb one"></div><div class="orb two"></div>
+        <span class="tag">Panduan Beasiswa S1</span>
+        <h1>Beasiswa S1<br>Amerika Serikat</h1>
+        <p class="lead">Membaca peta bantuan dana kampus, menyusun aplikasi yang tajam, dan tetap realistis menghadapi persaingan.</p>
+        <div class="country-line">Untuk pelajar SMA Indonesia · Siklus 2026–2027</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Peta opsi pendanaan">
+      <div class="slide-inner">
+        <span class="section-pill">Mulai dari peta</span><h2>Dua jalur utama: kebutuhan finansial atau prestasi</h2>
+        <div class="compare">
+          <article class="card tint"><div class="eyebrow">Need-based aid</div><h3>Kampus menilai kebutuhan keluarga</h3><p>Di sejumlah kampus elit, mahasiswa internasional yang diterima dapat memperoleh hingga 100% dari kebutuhan finansial yang terbukti.</p><ul class="clean"><li>Biasanya perlu dokumen finansial</li><li>CSS Profile digunakan untuk aid berbasis kebutuhan</li><li>Masuk kampusnya sendiri sangat selektif</li></ul></article>
+          <div class="vs">VS</div>
+          <article class="card"><div class="eyebrow">Merit scholarship</div><h3>Kampus menilai kekuatan profil</h3><p>Penghargaan diberikan karena akademik, kepemimpinan, dampak, atau talenta. Besaran sangat beragam, dari parsial sampai full ride.</p><ul class="clean"><li>Aturan berbeda per universitas</li><li>Sebagian otomatis, sebagian perlu aplikasi terpisah</li><li>Opsi parsial jauh lebih umum</li></ul></article>
+        </div>
+        <div class="source">Sumber: ringkasan riset US undergraduate options, 15 Oktober 2026.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Kenapa Amerika Serikat">
+      <div class="slide-inner">
+        <span class="section-pill">Konteks</span><h2>Yang menarik bukan satu “beasiswa nasional”, melainkan ekosistem kampus</h2>
+        <p class="lede">Pendanaan S1 internasional di AS bersifat institusional. Artinya, strategi terbaik adalah memilih kampus sekaligus menilai kebijakan aid-nya.</p>
+        <div class="grid three">
+          <article class="card"><div class="eyebrow">Pilihan</div><h3>Banyak jalur kampus</h3><p>Ada need-based aid, merit award, serta program bernama dengan kriteria berbeda.</p></article>
+          <article class="card tint"><div class="eyebrow">Fleksibilitas</div><h3>Bangun daftar berlapis</h3><p>Kombinasikan target sangat kompetitif dengan pilihan merit parsial yang lebih realistis.</p></article>
+          <article class="card gold"><div class="eyebrow">Tantangan</div><h3>Tidak ada satu portal tunggal</h3><p>Deadline, formulir, cakupan, dan syarat perlu diperiksa di situs kampus masing-masing.</p></article>
+        </div>
+        <div class="callout">Cara berpikir yang tepat: cari “kampus + kebijakan bantuan dana internasional”, bukan sekadar “beasiswa Amerika”.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Full ride berbasis kebutuhan">
+      <div class="slide-inner">
+        <span class="section-pill">Opsi full ride</span><h2>Need-based aid di kampus elit</h2>
+        <p class="lede">Jika diterima, beberapa kampus menyatakan memenuhi 100% kebutuhan finansial yang terbukti bagi mahasiswa internasional.</p>
+        <div class="grid three">
+          <article class="card tint"><h3>Need-blind dalam riset</h3><div class="chips"><span class="chip">Harvard</span><span class="chip">Princeton</span><span class="chip">Yale</span><span class="chip">MIT</span><span class="chip">Amherst</span><span class="chip">Dartmouth</span></div></article>
+          <article class="card"><h3>Kampus lain yang disebut</h3><div class="chips"><span class="chip">Stanford</span><span class="chip">Bowdoin</span><span class="chip">Brown</span></div><p style="margin-top:14px">Status dan kebijakan harus diperiksa kembali di situs financial aid kampus.</p></article>
+          <article class="card alert"><div class="metric">3–8%</div><h3>Gambaran tingkat diterima</h3><p>Rentang admit rate yang dirangkum riset untuk kampus-kampus ultra-selektif. Full funding mungkin, tetapi bukan jalur aman.</p></article>
+        </div>
+        <div class="source">Sumber: catatan riset indeks US undergraduate options; kebijakan dapat berubah per siklus.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Full ride bernama">
+      <div class="slide-inner">
+        <span class="section-pill">Program bernama</span><h2>Beberapa nama penting untuk ditelusuri</h2>
+        <div class="grid two">
+          <article class="card tint"><div class="eyebrow">Duke University</div><h3>Karsh International Scholarship</h3><p>Dirangkum sebagai merit full ride untuk mahasiswa internasional. Cek halaman resmi untuk cakupan dan proses tahun berjalan.</p></article>
+          <article class="card"><div class="eyebrow">Boston University</div><h3>Trustee Scholarship</h3><p>Dirangkum sebagai beasiswa biaya kuliah penuh. Biaya hidup tidak dinyatakan tercakup dalam riset ini.</p></article>
+          <article class="card"><div class="eyebrow">American University</div><h3>Emerging Global Leader</h3><p>Dirangkum mencakup biaya kuliah, kamar, dan makan; riset mencatat hanya 1 penghargaan.</p></article>
+          <article class="card gold"><div class="eyebrow">UW–Madison</div><h3>King-Morgridge Scholars</h3><p>Dirangkum sebagai full cost dengan tiket pesawat dan stipend untuk wilayah berkembang.</p></article>
+        </div>
+        <div class="source">Sumber: catatan riset indeks, dibaca 15 Oktober 2026. Detail resmi program perlu diverifikasi per siklus.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Opsi merit yang realistis">
+      <div class="slide-inner">
+        <span class="section-pill">Strategi realistis</span><h2>Mayoritas peluang adalah merit parsial</h2>
+        <div class="grid two">
+          <article class="card good"><div class="metric">US$2k–37k</div><h3>Rentang per tahun dalam riset</h3><p>Banyak universitas menawarkan penghargaan merit internasional dalam rentang ini. Nilai, kuota, dan pembaruan berbeda tiap kampus.</p></article>
+          <article class="card"><h3>Jangan menilai nominal sendirian</h3><ul class="clean"><li>Bandingkan dengan total biaya kehadiran</li><li>Cek apakah penghargaan dapat diperpanjang</li><li>Cek syarat IPK setelah diterima</li><li>Cari biaya yang tetap harus dibayar keluarga</li></ul></article>
+        </div>
+        <div class="callout">Target cerdas: satu daftar yang memuat aspirational full ride, merit kuat, dan pilihan yang tetap terjangkau setelah award.</div>
+        <div class="source">Sumber: catatan riset US undergraduate options, index-level confidence.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Fulbright bukan untuk S1">
+      <div class="slide-inner">
+        <span class="section-pill">Peringatan penting</span>
+        <div class="warning-band"><div class="warning-mark">!</div><div><h3>Fulbright / AMINEF bukan beasiswa S1</h3><p>Untuk pelamar Indonesia, program yang terkonfirmasi adalah Fulbright Master’s dan PhD. Tidak ada jalur undergraduate.</p></div></div>
+        <div class="grid two" style="margin-top:20px">
+          <article class="card"><h3>Master’s</h3><p>Mensyaratkan gelar S1 / bachelor. Jadi bukan pintu masuk bagi lulusan SMA.</p></article>
+          <article class="card"><h3>PhD</h3><p>Mensyaratkan jenjang sebelumnya. Fulbright juga mencantumkan komitmen kembali ke Indonesia.</p></article>
+        </div>
+        <div class="callout">Untuk S1, arahkan pencarian ke merit scholarship dan need-based aid milik universitas.</div>
+        <div class="source">Sumber resmi yang dirujuk riset: AMINEF, halaman Fulbright Master’s dan FAQ.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Biaya yang perlu disiapkan">
+      <div class="slide-inner">
+        <span class="section-pill">Hitung kebutuhan</span><h2>Jangan berhenti di “tuition”</h2>
+        <p class="lede">Riset ini tidak memuat angka biaya nasional yang dapat diverifikasi, jadi susun anggaran dari komponen biaya di setiap kampus.</p>
+        <div class="grid four">
+          <article class="card"><h3>Akademik</h3><p>Biaya kuliah dan biaya wajib kampus.</p></article>
+          <article class="card tint"><h3>Tempat tinggal</h3><p>Asrama atau sewa, makan, dan kebutuhan harian.</p></article>
+          <article class="card"><h3>Perjalanan</h3><p>Tiket internasional dan transport lokal.</p></article>
+          <article class="card gold"><h3>Administrasi</h3><p>Aplikasi, tes, dokumen, visa, dan asuransi bila diwajibkan.</p></article>
+        </div>
+        <div class="callout">Gunakan angka “cost of attendance” resmi kampus, lalu kurangi grant atau scholarship yang benar-benar ditawarkan.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Syarat umum">
+      <div class="slide-inner">
+        <span class="section-pill">Kesiapan profil</span><h2>Empat lapisan yang biasanya dinilai</h2>
+        <div class="grid four">
+          <article class="card"><div class="metric">01</div><h3>Akademik</h3><p>Transkrip dan kekuatan mata pelajaran sepanjang SMA.</p></article>
+          <article class="card tint"><div class="metric">02</div><h3>Konteks</h3><p>Kesempatan yang tersedia di sekolah dan bagaimana kamu memanfaatkannya.</p></article>
+          <article class="card"><div class="metric">03</div><h3>Kontribusi</h3><p>Aktivitas, kepemimpinan, pekerjaan, riset, atau dampak nyata.</p></article>
+          <article class="card gold"><div class="metric">04</div><h3>Cerita</h3><p>Esai dan rekomendasi yang menyatukan profil menjadi manusia utuh.</p></article>
+        </div>
+        <div class="source">Persyaratan spesifik berbeda per universitas; selalu rujuk halaman admissions resmi.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Akademik dan tes">
+      <div class="slide-inner">
+        <span class="section-pill">Tes & bukti akademik</span><h2>Jangan berasumsi satu aturan berlaku untuk semua kampus</h2>
+        <div class="grid two">
+          <article class="card"><h3>SAT / ACT</h3><p>Periksa apakah kampus tujuan mewajibkan, menerima opsional, atau memiliki kebijakan lain pada siklus pendaftaranmu.</p><div class="chips"><span class="chip">Kebijakan tes</span><span class="chip">Batas waktu skor</span><span class="chip">Pengiriman resmi</span></div></article>
+          <article class="card tint"><h3>TOEFL / IELTS</h3><p>Periksa bukti kemampuan bahasa yang diterima, syarat pengecualian, dan skor minimum langsung di kampus.</p><div class="chips"><span class="chip">Jenis tes</span><span class="chip">Minimum</span><span class="chip">Validity</span></div></article>
+        </div>
+        <div class="callout">Riset sumber tidak memverifikasi skor minimum umum. Jangan menyalin angka dari kampus lain.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Timeline dan deadline">
+      <div class="slide-inner">
+        <span class="section-pill">Siklus aplikasi</span><h2>Bangun mundur dari November–Januari</h2>
+        <p class="lede">Riset mencatat banyak aplikasi untuk masuk musim gugur 2027 berada di kisaran November–Januari.</p>
+        <div class="timeline">
+          <div class="phase"><div class="dot">1</div><h3>Riset</h3><p>Bandingkan aid, kecocokan akademik, dan biaya.</p></div>
+          <div class="phase"><div class="dot">2</div><h3>Siapkan</h3><p>Tes, aktivitas, rekomendasi, dan draf esai.</p></div>
+          <div class="phase"><div class="dot">3</div><h3>Early</h3><p>Cek Early Decision atau Early Action tiap kampus.</p></div>
+          <div class="phase"><div class="dot">4</div><h3>Regular</h3><p>Kunci daftar, formulir aid, lalu submit sebelum deadline resmi.</p></div>
+        </div>
+        <div class="callout">Early Decision dapat bersifat mengikat. Pelajari ketentuan kampus sebelum memilih jalur.</div>
+        <div class="source">Sumber: catatan riset mencatat jendela umum Nov–Jan; tanggal spesifik tidak diverifikasi dalam riset ini.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Cara daftar: langkah 1–2">
+      <div class="slide-inner">
+        <span class="section-pill">Proses aplikasi</span><h2>Langkah 1–2: daftar kampus dan pusatkan dokumen</h2>
+        <div class="grid two">
+          <article class="card step"><div class="num">1</div><div><h3>Bangun shortlist</h3><p>Pisahkan kampus berdasarkan kecocokan, tingkat selektivitas, kebijakan aid internasional, dan sisa biaya setelah award.</p></div></article>
+          <article class="card tint step"><div class="num">2</div><div><h3>Siapkan Common App</h3><p>Isi data utama secara konsisten, lalu cek bagian tambahan tiap kampus. Tidak semua kampus memakai pola yang sama.</p></div></article>
+        </div>
+        <div class="callout">Buat satu lembar kendali: kampus, jenis aid, formulir, deadline, rekomendasi, tes, dan status submit.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Cara daftar: langkah 3–4">
+      <div class="slide-inner">
+        <span class="section-pill">Proses aplikasi</span><h2>Langkah 3–4: buktikan kebutuhan dan lengkapi jalur merit</h2>
+        <div class="grid two">
+          <article class="card step"><div class="num">3</div><div><h3>Need-based: CSS Profile</h3><p>Untuk kampus yang memintanya, siapkan data finansial keluarga secara akurat dan konsisten dengan dokumen pendukung.</p></div></article>
+          <article class="card tint step"><div class="num">4</div><div><h3>Merit: cek aplikasi terpisah</h3><p>Tandai apakah award otomatis dipertimbangkan atau memerlukan esai, nominasi, atau deadline khusus.</p></div></article>
+        </div>
+        <div class="callout">Aturan financial aid berbeda per kampus. “Sudah daftar kuliah” tidak selalu berarti “sudah daftar beasiswa”.</div>
+        <div class="source">Sumber: catatan riset menyebut CSS Profile untuk need-based aid.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Cara daftar: langkah 5">
+      <div class="slide-inner">
+        <span class="section-pill">Proses aplikasi</span><h2>Langkah 5: submit, lalu jaga ritme</h2>
+        <div class="grid three">
+          <article class="card step"><div class="num">A</div><div><h3>Konfirmasi</h3><p>Pastikan portal menandai formulir dan dokumen sebagai diterima.</p></div></article>
+          <article class="card tint step"><div class="num">B</div><div><h3>Pantau</h3><p>Cek permintaan dokumen tambahan tanpa menunggu detik terakhir.</p></div></article>
+          <article class="card step"><div class="num">C</div><div><h3>Bandingkan</h3><p>Saat hasil datang, nilai total grant, syarat perpanjangan, dan sisa biaya.</p></div></article>
+        </div>
+        <div class="callout">Simpan salinan setiap formulir dan versi final esai untuk referensi.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Checklist dokumen">
+      <div class="slide-inner">
+        <span class="section-pill">Checklist</span><h2>Dokumen inti yang perlu kamu petakan</h2>
+        <div class="grid three">
+          <article class="card"><h3>Akademik</h3><ul class="clean"><li>Transkrip sekolah</li><li>Dokumen kelulusan bila tersedia</li><li>Hasil tes bila diminta</li></ul></article>
+          <article class="card tint"><h3>Narasi</h3><ul class="clean"><li>Esai utama</li><li>Esai tambahan kampus</li><li>Daftar aktivitas dan pencapaian</li></ul></article>
+          <article class="card"><h3>Pendukung</h3><ul class="clean"><li>Surat rekomendasi</li><li>Dokumen finansial untuk aid</li><li>Identitas dan dokumen lain sesuai kampus</li></ul></article>
+        </div>
+        <div class="source">Daftar ini adalah kerangka kerja; persyaratan resmi tetap mengikuti tiap universitas.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Tips esai">
+      <div class="slide-inner">
+        <span class="section-pill">Esai</span><p class="big-quote">Esai yang kuat bukan daftar prestasi. Ia menunjukkan <span class="accent">cara kamu berpikir</span>, memilih, dan tumbuh.</p>
+        <div class="grid three" style="margin-top:28px">
+          <article class="card"><h3>Spesifik</h3><p>Pilih satu momen nyata, bukan klaim umum tentang “ingin sukses”.</p></article>
+          <article class="card tint"><h3>Reflektif</h3><p>Jelaskan perubahan perspektif, bukan hanya apa yang terjadi.</p></article>
+          <article class="card"><h3>Konsisten</h3><p>Pastikan esai, aktivitas, dan rekomendasi saling menguatkan tanpa mengulang.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Kesalahan umum">
+      <div class="slide-inner">
+        <span class="section-pill">Hindari ini</span><h2>Lima kesalahan yang membuat strategi rapuh</h2>
+        <div class="grid two">
+          <article class="card alert"><h3>1 · Mengira Fulbright untuk S1</h3><p>Akibatnya waktu habis mengejar jalur yang tidak tersedia.</p></article>
+          <article class="card"><h3>2 · Hanya mengejar kampus 3–8%</h3><p>Tanpa opsi merit realistis, seluruh daftar menjadi terlalu berisiko.</p></article>
+          <article class="card"><h3>3 · Menyamakan full tuition dengan full ride</h3><p>Biaya hidup, perjalanan, asuransi, dan fee bisa tetap besar.</p></article>
+          <article class="card tint"><h3>4 · Melewatkan formulir aid terpisah</h3><p>Submit admission belum tentu menyelesaikan scholarship atau CSS Profile.</p></article>
+          <article class="card gold"><h3>5 · Mengandalkan informasi lama</h3><p>Kebijakan tes, deadline, dan nilai award dapat berubah tiap siklus.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Pro, kontra, dan kecocokan">
+      <div class="slide-inner">
+        <span class="section-pill">Keputusan</span><h2>Apakah jalur AS cocok untukmu?</h2>
+        <div class="grid three">
+          <article class="card good"><h3>Pro</h3><ul class="clean"><li>Full funding benar-benar ada</li><li>Opsi kampus sangat beragam</li><li>Merit award tersedia di banyak tempat</li></ul></article>
+          <article class="card alert"><h3>Kontra</h3><ul class="clean"><li>Full ride sangat kompetitif</li><li>Proses terfragmentasi per kampus</li><li>Banyak award hanya parsial</li></ul></article>
+          <article class="card tint"><h3>Cocok jika…</h3><ul class="clean"><li>Siap menulis aplikasi mendalam</li><li>Bersedia riset banyak kampus</li><li>Punya daftar berlapis dan rencana biaya</li></ul></article>
+        </div>
+        <div class="callout">Kunci strategi: ambisi tinggi, diversifikasi tinggi, dan verifikasi detail.</div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Video referensi">
+      <div class="slide-inner">
+        <span class="section-pill">Video referensi</span><h2>Empat video: cara daftar full-ride, kampus, dan testimoni</h2>
+        <p class="lede">Gunakan video sebagai titik awal, lalu verifikasi setiap program di situs resmi universitas.</p>
+        <p class="video-heading"><span><strong>1 · Cara daftar beasiswa:</strong> USA Fulbright Scholarship for International Students<br>panduan aplikasi Fulbright Foreign Student Program — portal resmi, syarat dokumen, dan tips lolos seleksi.</span><a class="video-source" href="https://www.youtube.com/watch?v=aWTEoLEbIpY" target="_blank" rel="noopener noreferrer" aria-label="Buka sumber video pertama di YouTube">Sumber · YouTube</a></p>
+        <div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/aWTEoLEbIpY" title="USA Fulbright Scholarship for International Students" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+        <p class="video-heading"><span><strong>2 · Cara daftar beasiswa:</strong> Get Your US Student Visa with This Fully Funded Scholarship! — Carleton College (Bachelor's)<br>panduan langkah-demi-langkah beasiswa fully funded jenjang S1 di Carleton College — aid penuh, tanpa application fee, tanpa IELTS, dan proses visa pelajar AS.</span><a class="video-source" href="https://www.youtube.com/watch?v=-eJaMbZxXPg" target="_blank" rel="noopener noreferrer" aria-label="Buka sumber video kedua di YouTube">Sumber · YouTube</a></p>
+        <div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/-eJaMbZxXPg" title="Get Your US Student Visa with This Fully Funded Scholarship! — Carleton College (Bachelor's)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+        <p class="video-heading"><span><strong>3 · Environment &amp; fasilitas kampus:</strong> Webster University USA Campus Tour — International Student Life Vlog<br>tur kampus Webster University — ruang kelas, gedung kampus, ruang mahasiswa, dan gambaran nyata kehidupan mahasiswa internasional di AS.</span><a class="video-source" href="https://www.youtube.com/watch?v=4mH-laqa8O4" target="_blank" rel="noopener noreferrer" aria-label="Buka sumber video ketiga di YouTube">Sumber · YouTube</a></p>
+        <div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/4mH-laqa8O4" title="Webster University USA Campus Tour — International Student Life Vlog" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+        <p class="video-heading"><span><strong>4 · Testimoni mahasiswa:</strong> Studying Abroad: A Day in the Life of Ade (Indonesia)<br>kesaksian Ade, mahasiswa Indonesia di George Mason University — kisahnya memilih kuliah di AS dan kesehariannya sebagai mahasiswa internasional.</span><a class="video-source" href="https://www.youtube.com/watch?v=kQ-kZav2kzk" target="_blank" rel="noopener noreferrer" aria-label="Buka sumber video keempat di YouTube">Sumber · YouTube</a></p>
+        <div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/kQ-kZav2kzk" title="Studying Abroad: A Day in the Life of Ade (Indonesia)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+      </div>
+    </section>
+
+    <section class="slide cover" data-title="Langkah berikutnya">
+      <div class="slide-inner">
+        <div class="orb one"></div><div class="orb two"></div>
+        <span class="tag">Mulai pekan ini</span><h2 style="font-size:clamp(46px,7vw,88px);max-width:900px">Bangun daftar, bukan harapan tunggal.</h2>
+        <p class="lead">Tiga langkah pertama untuk mengubah riset menjadi aplikasi.</p>
+        <div class="final-actions">
+          <div class="action"><b>01</b><strong>Pilih 12–15 kampus</strong><p style="margin:6px 0 0;color:var(--muted)">Bagi menjadi aspirational, merit realistis, dan terjangkau.</p></div>
+          <div class="action"><b>02</b><strong>Cek sumber resmi</strong><p style="margin:6px 0 0;color:var(--muted)">QuestBridge dan situs financial aid masing-masing universitas.</p></div>
+          <div class="action"><b>03</b><strong>Buat kalender</strong><p style="margin:6px 0 0;color:var(--muted)">Tandai admission, scholarship, CSS Profile, dan tes.</p></div>
+        </div>
+        <p style="margin:22px 0 0;color:#d8d6ff">Catatan tegas: tidak ada beasiswa federal AS untuk S1 internasional; Fulbright / AMINEF adalah jalur S2 dan S3.</p>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav" aria-label="Navigasi slide">
+    <div class="nav-left"><button class="toc-btn" id="tocOpen" type="button">Daftar isi</button></div>
+    <div class="counter" id="counter">1 / 20</div>
+    <div class="nav-right">
+      <button class="nav-btn" id="prev" type="button" aria-label="Slide sebelumnya">← <span class="long">Sebelumnya</span></button>
+      <button class="nav-btn primary" id="next" type="button" aria-label="Slide berikutnya"><span class="long">Berikutnya</span> →</button>
+      <button class="toc-btn" id="tocOpenMobile" type="button" aria-label="Buka daftar isi">Isi</button>
+    </div>
+  </nav>
+</div>
+
+<div class="overlay" id="toc" role="dialog" aria-modal="true" aria-labelledby="tocTitle">
+  <div class="toc-panel">
+    <div class="toc-head"><h2 id="tocTitle">Daftar isi</h2><button class="close" id="tocClose" type="button" aria-label="Tutup daftar isi">×</button></div>
+    <div class="toc-grid" id="tocGrid"></div>
+  </div>
+</div>
+<script>
+(function(){
+  var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total=slides.length,index=0;
+  var progress=document.getElementById('progress'),counter=document.getElementById('counter');
+  var prev=document.getElementById('prev'),next=document.getElementById('next');
+  var toc=document.getElementById('toc'),grid=document.getElementById('tocGrid');
+  function show(i){
+    index=Math.max(0,Math.min(total-1,i));
+    slides.forEach(function(s,n){s.classList.toggle('active',n===index);if(n===index)s.scrollTop=0});
+    counter.textContent=(index+1)+' / '+total;
+    progress.style.width=((index+1)/total*100)+'%';
+    prev.disabled=index===0;next.disabled=index===total-1;
+    document.title=slides[index].dataset.title+' · Deck Beasiswa AS';
+  }
+  slides.forEach(function(slide,n){
+    var b=document.createElement('button');b.type='button';b.className='toc-item';
+    b.innerHTML='<span>SLIDE '+(n+1)+'</span><strong>'+slide.dataset.title+'</strong>';
+    b.addEventListener('click',function(){show(n);closeToc()});grid.appendChild(b);
+  });
+  function openToc(){toc.classList.add('open');document.body.style.overflow='hidden';document.getElementById('tocClose').focus()}
+  function closeToc(){toc.classList.remove('open');document.body.style.overflow='';document.getElementById('tocOpen').focus()}
+  prev.addEventListener('click',function(){show(index-1)});next.addEventListener('click',function(){show(index+1)});
+  document.getElementById('tocOpen').addEventListener('click',openToc);document.getElementById('tocOpenMobile').addEventListener('click',openToc);document.getElementById('tocClose').addEventListener('click',closeToc);
+  toc.addEventListener('click',function(e){if(e.target===toc)closeToc()});
+  document.addEventListener('keydown',function(e){
+    if(toc.classList.contains('open')){if(e.key==='Escape')closeToc();return}
+    if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();show(index+1)}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(index-1)}
+    if(e.key==='Home'){e.preventDefault();show(0)}if(e.key==='End'){e.preventDefault();show(total-1)}
+  });
+  var x0=null;document.getElementById('deck').addEventListener('touchstart',function(e){x0=e.changedTouches[0].clientX},{passive:true});
+  document.getElementById('deck').addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>60)show(index+(dx<0?1:-1));x0=null},{passive:true});
+  show(0);
+})();
+</script>
+</body>
+</html>
