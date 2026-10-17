@@ -1,0 +1,2355 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#1a1446" />
+  <title>Web Beasiswa</title>
+  <meta property="og:title" content="Portal Beasiswa">
+  <meta property="og:description" content="Berisi ratusan panduan beasiswa dari jenjang S1 sampai dengan S3, baik dalam dan luar negeri.">
+  <meta property="og:image" content="https://wayangprint.github.io/web-beasiswa/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://wayangprint.github.io/web-beasiswa/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Portal Beasiswa">
+  <meta name="twitter:description" content="Berisi ratusan panduan beasiswa dari jenjang S1 sampai dengan S3, baik dalam dan luar negeri.">
+  <meta name="twitter:image" content="https://wayangprint.github.io/web-beasiswa/og-image.jpg">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --navy:#1a1446;
+      --navy-2:#281f62;
+      --purple:#7c3aed;
+      --purple-2:#6d28d9;
+      --blue:#2563eb;
+      --ink:#17133a;
+      --muted:#625e78;
+      --bg:#f7f7fb;
+      --surface:#ffffff;
+      --surface-2:#f0eff8;
+      --line:#dedcea;
+      --green:#15803d;
+      --green-bg:#dcfce7;
+      --shadow:0 18px 48px rgba(26,20,70,.10);
+      --shadow-sm:0 9px 24px rgba(26,20,70,.08);
+      --radius:24px;
+    }
+    @media (prefers-color-scheme:dark) {
+      :root {
+        --ink:#f4f1ff;
+        --muted:#b9b3ce;
+        --bg:#100d26;
+        --surface:#1b1738;
+        --surface-2:#26204b;
+        --line:#39315e;
+        --green:#86efac;
+        --green-bg:#153e2a;
+        --shadow:0 18px 48px rgba(0,0,0,.24);
+        --shadow-sm:0 9px 24px rgba(0,0,0,.18);
+      }
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      margin:0;
+      min-width:320px;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size:16px;
+      line-height:1.55;
+      -webkit-font-smoothing:antialiased;
+    }
+    button, input { font:inherit; }
+    button, a { -webkit-tap-highlight-color:transparent; }
+    button:focus-visible, a:focus-visible, input:focus-visible {
+      outline:3px solid color-mix(in srgb, var(--purple) 70%, white);
+      outline-offset:3px;
+    }
+    #app { min-height:100dvh; }
+    .page { width:min(1180px, calc(100% - 40px)); margin:0 auto; padding:34px 0 64px; }
+    .page.narrow { width:min(820px, calc(100% - 40px)); }
+    .topline { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:28px; }
+    .back {
+      display:inline-flex; align-items:center; gap:8px; border:0; background:transparent;
+      color:var(--purple); font-weight:800; padding:9px 0; text-decoration:none; cursor:pointer;
+    }
+    .mini-stat { color:var(--muted); font-size:.9rem; font-weight:650; }
+    .hero {
+      position:relative; overflow:hidden; min-height:360px; display:grid; align-items:end;
+      border-radius:34px; padding:clamp(34px, 7vw, 74px);
+      background:var(--navy); color:#fff; box-shadow:var(--shadow); isolation:isolate;
+    }
+    .hero::before {
+      content:""; position:absolute; width:420px; height:420px; border-radius:50%; right:-120px; top:-190px;
+      background:linear-gradient(145deg, rgba(124,58,237,.95), rgba(37,99,235,.74)); z-index:-1;
+    }
+    .hero::after {
+      content:""; position:absolute; width:240px; height:240px; border-radius:50%; right:170px; bottom:-160px;
+      border:42px solid rgba(255,255,255,.08); z-index:-1;
+    }
+    .hero-copy { max-width:760px; }
+    .pill {
+      display:inline-flex; align-items:center; gap:8px; padding:8px 13px; border-radius:999px;
+      font-weight:800; font-size:.83rem; line-height:1.2;
+    }
+    .pill.hero-pill { background:rgba(255,255,255,.13); color:#fff; border:1px solid rgba(255,255,255,.24); }
+    .hero h1 { margin:22px 0 12px; font-size:clamp(2.55rem, 8vw, 5.7rem); line-height:.93; letter-spacing:-.065em; max-width:760px; }
+    .hero p { margin:0; color:#dcd7fa; font-size:clamp(1.05rem, 2vw, 1.3rem); max-width:620px; }
+    .section-heading { display:flex; align-items:end; justify-content:space-between; gap:24px; margin:48px 0 20px; }
+    .section-heading h2, .page-title { margin:0; font-size:clamp(2rem, 5vw, 3.35rem); letter-spacing:-.045em; line-height:1.02; }
+    .section-heading p { margin:0; max-width:440px; color:var(--muted); }
+    .menu-grid { display:grid; grid-template-columns:repeat(12, 1fr); gap:18px; }
+    .menu-card {
+      grid-column:span 4; min-height:260px; display:flex; flex-direction:column; justify-content:space-between;
+      background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:var(--radius);
+      padding:26px; text-decoration:none; box-shadow:var(--shadow-sm); transition:transform .18s ease, border-color .18s ease;
+    }
+    .menu-card:nth-child(1), .menu-card:nth-child(2), .menu-card:nth-child(6), .menu-card:nth-child(7) { grid-column:span 6; }
+    .menu-card:hover { transform:translateY(-3px); border-color:color-mix(in srgb, var(--purple) 55%, var(--line)); }
+    .iconbox { width:56px; height:56px; display:grid; place-items:center; border-radius:18px; color:#fff; background:var(--purple); }
+    .iconbox svg { width:29px; height:29px; }
+    .menu-card:nth-child(2) .iconbox, .menu-card:nth-child(5) .iconbox, .menu-card:nth-child(7) .iconbox { background:var(--navy); }
+    .menu-card:nth-child(3) .iconbox { background:var(--blue); }
+    .menu-card h3 { margin:28px 0 7px; font-size:1.38rem; line-height:1.12; }
+    .menu-card p { margin:0; color:var(--muted); }
+    .card-action { display:flex; align-items:center; justify-content:space-between; gap:12px; color:var(--purple); font-weight:850; margin-top:24px; }
+    .card-action span:last-child { font-size:1.35rem; }
+    footer { padding:34px 0 10px; color:var(--muted); font-size:.9rem; text-align:center; }
+    .index-head { display:flex; align-items:end; justify-content:space-between; gap:24px; margin-bottom:28px; }
+    .index-head p { color:var(--muted); margin:12px 0 0; }
+    .count-pill { background:var(--surface-2); color:var(--purple); white-space:nowrap; }
+    .tools {
+      position:sticky; top:12px; z-index:4; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:14px;
+      background:color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter:blur(14px); padding:12px;
+      margin:0 -12px 24px; border-radius:20px;
+    }
+    .tools.search-only { grid-template-columns:1fr; }
+    .search { position:relative; }
+    .search svg { position:absolute; left:16px; top:50%; transform:translateY(-50%); width:20px; color:var(--muted); }
+    .search input {
+      width:100%; height:50px; border:1px solid var(--line); background:var(--surface); color:var(--ink);
+      border-radius:16px; padding:0 16px 0 46px; box-shadow:var(--shadow-sm);
+    }
+    .filters { display:flex; gap:7px; }
+    .chip {
+      border:1px solid var(--line); background:var(--surface); color:var(--muted); border-radius:999px;
+      padding:0 15px; height:50px; font-weight:800; cursor:pointer;
+    }
+    .chip[aria-pressed="true"] { background:var(--navy); color:#fff; border-color:var(--navy); }
+    .results-line { color:var(--muted); font-size:.93rem; margin:0 0 16px; }
+    .program-grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:16px; }
+    .program-card {
+      display:flex; flex-direction:column; min-height:238px; background:var(--surface); border:1px solid var(--line);
+      border-radius:22px; padding:21px; box-shadow:var(--shadow-sm); cursor:pointer; transition:border-color .18s ease, transform .18s ease;
+    }
+    .program-card:hover { transform:translateY(-2px); border-color:var(--purple); }
+    .program-top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .status { font-size:.76rem; padding:6px 10px; border-radius:999px; font-weight:900; letter-spacing:.01em; }
+    .status.full, .status.guide { background:#ede9fe; color:#5b21b6; }
+    .status.partial { background:#e7eef8; color:#334e73; }
+    @media (prefers-color-scheme:dark) {
+      .status.full, .status.guide { background:#3a2470; color:#d8c7ff; }
+      .status.partial { background:#27364a; color:#bdd1ee; }
+    }
+    .country { color:var(--muted); font-size:.82rem; font-weight:700; text-align:right; }
+    .program-card h3 { margin:18px 0 8px; font-size:1.08rem; line-height:1.3; }
+    .deck-name { color:var(--muted); font-size:.88rem; margin:0; }
+    .program-link { margin-top:auto; padding-top:20px; display:flex; align-items:center; justify-content:space-between; color:var(--purple); font-weight:850; }
+    .empty { padding:70px 20px; text-align:center; border:1px dashed var(--line); border-radius:22px; color:var(--muted); grid-column:1/-1; }
+    .pay-hero {
+      background:var(--navy); color:#fff; border-radius:28px; padding:clamp(28px,5vw,48px); margin-bottom:18px; position:relative; overflow:hidden;
+    }
+    .pay-hero::after { content:""; position:absolute; width:180px; height:180px; border-radius:50%; background:var(--purple); right:-70px; top:-80px; opacity:.65; }
+    .pay-hero h1 { position:relative; z-index:1; margin:16px 0 10px; font-size:clamp(1.8rem,5vw,3rem); letter-spacing:-.04em; line-height:1.05; max-width:650px; }
+    .pay-hero p { position:relative; z-index:1; margin:0; color:#dcd7fa; }
+    .checkout-layout { display:grid; grid-template-columns:.85fr 1.15fr; gap:18px; align-items:start; }
+    .price-card, .payment-card { background:var(--surface); border:1px solid var(--line); border-radius:24px; padding:26px; box-shadow:var(--shadow-sm); }
+    .price-label { color:var(--muted); font-size:.88rem; font-weight:700; }
+    .price { margin:5px 0 4px; font-size:2.55rem; letter-spacing:-.05em; font-weight:900; line-height:1; }
+    .once { color:var(--muted); margin:0; }
+    .benefits { margin:28px 0 0; padding:0; list-style:none; display:grid; gap:14px; }
+    .benefits li { display:flex; align-items:flex-start; gap:10px; }
+    .tick { width:22px; height:22px; flex:0 0 22px; display:grid; place-items:center; border-radius:50%; background:#ede9fe; color:#5b21b6; font-weight:900; font-size:.78rem; }
+    .tabs { display:grid; grid-template-columns:repeat(2,1fr); gap:6px; background:var(--surface-2); border-radius:15px; padding:5px; }
+    .tab { border:0; background:transparent; color:var(--muted); padding:11px 8px; border-radius:11px; font-weight:850; cursor:pointer; }
+    .tab[aria-selected="true"] { background:var(--surface); color:var(--purple); box-shadow:var(--shadow-sm); }
+    .method-panel { padding:24px 0 0; min-height:242px; }
+    .method-panel h2 { margin:0 0 8px; font-size:1.3rem; }
+    .method-panel > p { margin:0; color:var(--muted); }
+    .qris-placeholder, .va-placeholder {
+      margin-top:18px; min-height:122px; border:2px dashed var(--line); border-radius:18px; display:grid; place-items:center;
+      text-align:center; padding:22px; color:var(--muted); background:var(--surface-2);
+    }
+    .qris-placeholder { width:190px; min-height:190px; margin-inline:auto; }
+    .amount-row { display:flex; justify-content:space-between; gap:16px; padding:15px 0; border-bottom:1px solid var(--line); margin-bottom:18px; }
+    .amount-row strong { font-size:1.12rem; }
+    .bank-list { display:flex; flex-wrap:wrap; gap:8px; margin:18px 0; }
+    .bank-pill { position:relative; }
+    .bank-pill input { position:absolute; opacity:0; pointer-events:none; }
+    .bank-pill span { display:block; border:1px solid var(--line); border-radius:999px; padding:9px 14px; font-weight:800; color:var(--muted); cursor:pointer; }
+    .bank-pill input:checked + span { background:var(--navy); color:#fff; border-color:var(--navy); }
+    .pay-btn {
+      width:100%; border:0; background:var(--purple); color:#fff; border-radius:15px; min-height:54px;
+      padding:12px 20px; font-weight:900; cursor:pointer; box-shadow:0 12px 24px rgba(124,58,237,.24);
+    }
+    .pay-btn:hover { background:var(--purple-2); }
+    .demo-note { margin:13px 0 0; color:var(--muted); font-size:.85rem; text-align:center; }
+    .placeholder { min-height:70dvh; display:grid; place-items:center; text-align:center; }
+    .placeholder-box { max-width:640px; }
+    .placeholder-icon { width:84px; height:84px; display:grid; place-items:center; margin:0 auto 25px; border-radius:27px; background:var(--surface-2); color:var(--purple); }
+    .placeholder-icon svg { width:42px; height:42px; }
+    .placeholder h1 { margin:0 0 14px; font-size:clamp(2.4rem,7vw,4.8rem); letter-spacing:-.06em; line-height:.95; }
+    .placeholder p { color:var(--muted); font-size:1.07rem; }
+    .primary-link { display:inline-flex; align-items:center; justify-content:center; margin-top:24px; padding:13px 20px; border-radius:14px; background:var(--navy); color:#fff; text-decoration:none; font-weight:850; }
+    .success-mark { width:112px; height:112px; display:grid; place-items:center; margin:0 auto 28px; border-radius:50%; background:var(--green-bg); color:var(--green); font-size:4.1rem; font-weight:900; }
+    .demo-banner { display:inline-block; margin-top:14px; background:var(--surface-2); color:var(--muted); border-radius:999px; padding:7px 12px; font-size:.82rem; font-weight:750; }
+    .modal-backdrop { position:fixed; inset:0; z-index:30; display:grid; place-items:center; padding:22px; background:rgba(10,7,34,.66); }
+    .modal { width:min(440px,100%); background:var(--surface); color:var(--ink); border-radius:24px; padding:30px; box-shadow:0 30px 100px rgba(0,0,0,.35); text-align:center; }
+    .modal .success-mark { width:72px; height:72px; font-size:2.7rem; margin-bottom:18px; }
+    .modal h2 { margin:0 0 8px; }
+    .modal p { margin:0; color:var(--muted); }
+    .modal small { display:block; margin-top:18px; color:var(--muted); }
+
+    .account-bar { display:flex; justify-content:flex-end; align-items:center; gap:10px; margin-bottom:18px; min-height:42px; }
+    .account-name { color:var(--muted); font-size:.9rem; font-weight:800; max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .account-link, .account-button {
+      display:inline-flex; align-items:center; justify-content:center; min-height:42px; border:1px solid var(--line);
+      background:var(--surface); color:var(--ink); border-radius:13px; padding:8px 14px; text-decoration:none; font-weight:850; cursor:pointer;
+    }
+    .account-button { color:var(--purple); }
+    .topline .account-bar { margin:0 0 0 auto; min-height:auto; }
+    .auth-shell { display:grid; grid-template-columns:.8fr 1.2fr; gap:18px; align-items:stretch; }
+    .auth-intro { background:var(--navy); color:#fff; border-radius:28px; padding:34px; display:flex; flex-direction:column; justify-content:space-between; min-height:500px; overflow:hidden; position:relative; }
+    .auth-intro::after { content:""; position:absolute; width:230px; height:230px; border-radius:50%; background:var(--purple); right:-95px; bottom:-95px; opacity:.75; }
+    .auth-intro h1 { position:relative; z-index:1; margin:20px 0 12px; font-size:clamp(2.3rem,4.3vw,3.55rem); line-height:.98; letter-spacing:-.055em; overflow-wrap:anywhere; }
+    .auth-intro p { position:relative; z-index:1; margin:0; color:#dcd7fa; }
+    .auth-steps { position:relative; z-index:1; margin:32px 0 0; padding:0; list-style:none; display:grid; gap:13px; }
+    .auth-steps li { display:flex; align-items:center; gap:11px; color:#eeeaff; font-weight:700; }
+    .step-number { width:28px; height:28px; border-radius:50%; display:grid; place-items:center; background:rgba(255,255,255,.13); font-size:.82rem; }
+    .auth-card { background:var(--surface); border:1px solid var(--line); border-radius:28px; padding:clamp(24px,5vw,40px); box-shadow:var(--shadow-sm); }
+    .auth-tabs { display:grid; grid-template-columns:1fr 1fr; gap:6px; background:var(--surface-2); border-radius:15px; padding:5px; margin-bottom:28px; }
+    .auth-tab { border:0; background:transparent; color:var(--muted); padding:11px; border-radius:11px; font-weight:900; cursor:pointer; }
+    .auth-tab[aria-selected="true"] { background:var(--surface); color:var(--purple); box-shadow:var(--shadow-sm); }
+    .auth-card h2 { margin:0 0 6px; font-size:1.65rem; letter-spacing:-.025em; }
+    .auth-card > p { margin:0 0 22px; color:var(--muted); }
+    .form-grid { display:grid; gap:16px; }
+    .field { display:grid; gap:7px; }
+    .field span { font-size:.88rem; font-weight:850; }
+    .field input {
+      width:100%; height:52px; border:1px solid var(--line); border-radius:14px; background:var(--surface); color:var(--ink); padding:0 15px;
+    }
+    .field input[type="file"] { height:auto; min-height:52px; padding:12px; }
+    .form-help { color:var(--muted); font-size:.84rem; margin:-6px 0 0; }
+    .notice { border-radius:15px; padding:13px 15px; margin:0 0 18px; font-weight:750; }
+    .notice.info { background:var(--surface-2); color:var(--muted); }
+    .notice.error { background:#fee2e2; color:#991b1b; }
+    .notice.success { background:var(--green-bg); color:var(--green); }
+    @media (prefers-color-scheme:dark) { .notice.error { background:#4a2026; color:#fecaca; } }
+    .notice[hidden] { display:none; }
+    .member-unavailable { margin:0 0 18px; border:1px solid var(--line); }
+    .payment-stack { display:grid; gap:18px; }
+    .bank-accounts { display:grid; gap:10px; margin-top:18px; }
+    .bank-account { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; border:1px solid var(--line); border-radius:15px; padding:14px; }
+    .bank-account strong, .bank-account span { display:block; }
+    .bank-account span { color:var(--muted); font-size:.86rem; }
+    .copy-btn { border:1px solid var(--line); background:var(--surface-2); color:var(--purple); border-radius:11px; padding:9px 11px; font-weight:850; cursor:pointer; }
+    .qris-image { width:min(340px,100%); height:auto; object-fit:contain; display:block; margin:18px auto 0; border-radius:16px; background:#fff; padding:8px; box-shadow:0 8px 24px rgba(26,20,70,.08); }
+    .qris-merchant { margin:12px 0 0; text-align:center; color:var(--ink); font-weight:900; }
+    .proof-card { margin-top:18px; background:var(--surface); border:1px solid var(--line); border-radius:24px; padding:26px; box-shadow:var(--shadow-sm); }
+    .proof-card h2 { margin:0 0 7px; font-size:1.35rem; }
+    .proof-card > p { margin:0 0 20px; color:var(--muted); }
+    .status-card { margin-top:18px; background:var(--surface); border:1px solid var(--line); border-radius:24px; padding:26px; box-shadow:var(--shadow-sm); text-align:center; }
+    .verification-badge { display:inline-flex; align-items:center; justify-content:center; min-height:34px; border-radius:999px; padding:7px 13px; font-size:.84rem; font-weight:900; }
+    .verification-badge.waiting { background:#fef3c7; color:#92400e; }
+    .verification-badge.verified { background:var(--green-bg); color:var(--green); }
+    .continue-btn { display:flex; width:100%; align-items:center; justify-content:center; min-height:58px; margin-top:18px; border:0; border-radius:15px; background:var(--purple); color:#fff; font-weight:950; cursor:pointer; }
+    .continue-btn:disabled, .pay-btn:disabled { background:var(--surface-2); color:var(--muted); box-shadow:none; cursor:not-allowed; border:1px solid var(--line); }
+    .continue-help { margin:10px 0 0; color:var(--muted); font-size:.86rem; }
+    .deck-button { margin-top:auto; display:flex; width:100%; align-items:center; justify-content:center; min-height:44px; border:0; border-radius:13px; background:var(--purple); color:#fff; font-weight:900; cursor:pointer; }
+    .deck-button:disabled { background:var(--surface-2); color:var(--muted); border:1px solid var(--line); cursor:not-allowed; }
+    .program-card:has(.deck-button:not(:disabled)) { cursor:default; }
+    .upload-status { margin:12px 0 0; color:var(--muted); font-size:.88rem; font-weight:750; }
+    .upload-status.error { color:#b91c1c; }
+    .upload-status.success { color:var(--green); }
+    .hidden { display:none !important; }
+
+    @media (max-width:900px) {
+      .menu-card, .menu-card:nth-child(1), .menu-card:nth-child(2) { grid-column:span 6; }
+      .menu-card:last-child { grid-column:1/-1; }
+      .program-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .checkout-layout, .auth-shell { grid-template-columns:1fr; }
+      .auth-intro { min-height:340px; }
+    }
+    @media (max-width:640px) {
+      .page, .page.narrow { width:min(100% - 24px, 1180px); padding-top:18px; }
+      .hero { min-height:410px; border-radius:26px; padding:28px 24px; }
+      .hero h1 { font-size:3.25rem; }
+      .section-heading, .index-head { align-items:flex-start; flex-direction:column; }
+      .section-heading { margin-top:36px; }
+      .menu-grid { display:block; }
+      .menu-card { min-height:230px; margin-bottom:12px; border-radius:20px; }
+      .tools { grid-template-columns:1fr; top:0; margin-inline:-6px; padding:8px 6px 12px; border-radius:0 0 18px 18px; }
+      .filters { display:grid; grid-template-columns:repeat(3,1fr); }
+      .chip { height:44px; padding:0 10px; }
+      .program-grid { grid-template-columns:1fr; }
+      .program-card { min-height:210px; }
+      .pay-hero, .price-card, .payment-card { border-radius:20px; padding:22px; }
+      .tabs { grid-template-columns:1fr; }
+      .tab { text-align:left; padding-inline:14px; }
+      .qris-placeholder { width:170px; min-height:170px; }
+      .topline { margin-bottom:18px; flex-wrap:wrap; }
+      .topline .account-bar { width:100%; justify-content:flex-end; }
+      .auth-intro, .auth-card { border-radius:20px; }
+      .auth-intro { min-height:310px; padding:24px; }
+      .bank-account { grid-template-columns:1fr; }
+      .copy-btn { width:100%; }
+      .proof-card, .status-card { border-radius:20px; padding:22px; }
+      .mini-stat { display:none; }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      html { scroll-behavior:auto; }
+      *, *::before, *::after { animation:none !important; transition:none !important; }
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style id="premium-redesign">
+    :root {
+      --navy:#17153f;
+      --navy-2:#25215f;
+      --purple:#6d45d6;
+      --purple-2:#5934bf;
+      --blue:#3c70d9;
+      --ink:#18172c;
+      --muted:#66647a;
+      --bg:#f6f7fb;
+      --surface:#ffffff;
+      --surface-2:#f0eff7;
+      --surface-3:#e8e6f2;
+      --line:#deddea;
+      --line-strong:#c8c5dc;
+      --green:#137a4a;
+      --green-bg:#dff5e9;
+      --amber:#9a5c05;
+      --amber-bg:#fff2cf;
+      --shadow:0 22px 60px rgba(23,21,63,.09), 0 3px 12px rgba(23,21,63,.05);
+      --shadow-sm:0 12px 30px rgba(23,21,63,.07), 0 2px 7px rgba(23,21,63,.04);
+      --shadow-hover:0 28px 70px rgba(23,21,63,.14), 0 8px 20px rgba(23,21,63,.07);
+      --radius:22px;
+      --display:"DM Serif Display", Georgia, serif;
+      --body:"Manrope", ui-sans-serif, system-ui, sans-serif;
+      --ease:cubic-bezier(.2,.8,.2,1);
+    }
+    @media (prefers-color-scheme:dark) {
+      :root {
+        --ink:#f4f2fb;
+        --muted:#b8b4ca;
+        --bg:#0f0e22;
+        --surface:#191730;
+        --surface-2:#24213f;
+        --surface-3:#302b50;
+        --line:#393553;
+        --line-strong:#514a73;
+        --green:#7ee2ac;
+        --green-bg:#173e2c;
+        --amber:#ffd279;
+        --amber-bg:#4b3516;
+        --shadow:0 22px 60px rgba(0,0,0,.28), 0 3px 12px rgba(0,0,0,.18);
+        --shadow-sm:0 12px 30px rgba(0,0,0,.21), 0 2px 7px rgba(0,0,0,.14);
+        --shadow-hover:0 28px 70px rgba(0,0,0,.38), 0 8px 20px rgba(0,0,0,.23);
+      }
+    }
+    body {
+      background:
+        radial-gradient(circle at 8% 0%, color-mix(in srgb,var(--purple) 7%,transparent), transparent 28rem),
+        var(--bg);
+      font-family:var(--body);
+      font-size:15.5px;
+      line-height:1.65;
+      letter-spacing:-.008em;
+    }
+    h1,h2,h3,p { text-wrap:pretty; }
+    button,input { font-family:var(--body); }
+    button:focus-visible,a:focus-visible,input:focus-visible {
+      outline:3px solid color-mix(in srgb,var(--purple) 50%,white);
+      outline-offset:3px;
+    }
+    .page { width:min(1200px,calc(100% - 48px)); padding:24px 0 72px; }
+    .page.narrow { width:min(900px,calc(100% - 48px)); }
+    .site-nav,.topline {
+      position:sticky;
+      top:10px;
+      z-index:12;
+      min-height:64px;
+      margin:0 0 30px;
+      padding:10px 12px;
+      border:1px solid color-mix(in srgb,var(--line) 82%,transparent);
+      border-radius:18px;
+      background:color-mix(in srgb,var(--surface) 88%,transparent);
+      box-shadow:0 8px 28px rgba(23,21,63,.07);
+      backdrop-filter:blur(18px) saturate(130%);
+      -webkit-backdrop-filter:blur(18px) saturate(130%);
+    }
+    .site-nav { display:flex; align-items:center; gap:4px; }
+    .site-nav > a.site-brand {
+      display:inline-flex; align-items:center; gap:10px;
+      padding:4px 12px; margin-right:4px;
+      color:var(--ink); font-size:1rem; font-weight:850; letter-spacing:-.01em;
+    }
+    .site-nav > a.site-brand:hover { background:var(--surface-2); color:var(--ink); }
+    .site-nav > a {
+      color:var(--muted);
+      text-decoration:none;
+      font-size:.88rem;
+      font-weight:750;
+      padding:10px 13px;
+      border-radius:11px;
+      transition:background .2s var(--ease),color .2s var(--ease);
+    }
+    .site-nav > a:hover,.site-nav > a[aria-current="page"] { background:var(--surface-2); color:var(--ink); }
+    .site-nav .account-bar { margin:0 0 0 auto; }
+    .mobile-nav-toggle,.mobile-nav-menu { display:none; }
+    .topline { display:flex; align-items:center; gap:12px; }
+    .back { color:var(--ink); padding:9px 10px; border-radius:11px; transition:background .2s var(--ease),color .2s var(--ease); }
+    .back:hover { background:var(--surface-2); color:var(--purple); }
+    .mini-stat { margin-left:auto; }
+    .account-bar { min-height:42px; margin:0 0 18px; }
+    .topline .account-bar { width:auto; margin-left:auto; }
+    .account-name { font-size:.84rem; }
+    .account-link,.account-button {
+      min-height:42px;
+      border-radius:11px;
+      border-color:var(--line);
+      box-shadow:0 1px 3px rgba(23,21,63,.04);
+      transition:transform .18s var(--ease),background .18s var(--ease),border-color .18s var(--ease);
+    }
+    .account-link { background:var(--navy); color:#fff; border-color:var(--navy); }
+    .account-link:hover,.account-button:hover { transform:translateY(-1px); border-color:var(--purple); }
+    .hero {
+      min-height:540px;
+      align-items:center;
+      grid-template-columns:minmax(0,1fr) minmax(280px,.72fr);
+      gap:60px;
+      border-radius:30px;
+      padding:clamp(68px,7vw,92px) clamp(42px,6vw,78px);
+      background-image:url("assets/hero-beasiswa.jpg");
+      background-size:cover;
+      background-position:center;
+      box-shadow:0 34px 90px rgba(23,21,63,.25),inset 0 1px rgba(255,255,255,.12);
+      isolation:isolate;
+    }
+    .hero::before {
+      inset:0;
+      width:auto;
+      height:auto;
+      border-radius:inherit;
+      background:linear-gradient(90deg,rgba(10,9,30,.84) 0%,rgba(10,9,30,.62) 48%,rgba(10,9,30,.25) 100%);
+      z-index:-1;
+    }
+    .hero::after { display:none; }
+    .hero-copy { max-width:690px; position:relative; z-index:2; }
+    .hero h1 {
+      margin:0 0 18px;
+      font-family:var(--display);
+      font-weight:400;
+      font-size:clamp(3.35rem,6.7vw,5.9rem);
+      line-height:1.02;
+      letter-spacing:-.04em;
+    }
+    .hero p { color:#e2def8; font-size:clamp(1.02rem,1.7vw,1.22rem); line-height:1.65; }
+    .hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:30px; }
+    .hero-action {
+      display:inline-flex;
+      min-height:50px;
+      align-items:center;
+      justify-content:center;
+      border-radius:13px;
+      padding:0 20px;
+      text-decoration:none;
+      font-weight:800;
+      transition:transform .18s var(--ease),background .18s var(--ease),box-shadow .18s var(--ease);
+    }
+    .hero-action.primary { background:#fff; color:var(--navy); box-shadow:0 12px 32px rgba(0,0,0,.18); }
+    .hero-action.secondary { color:#fff; border:1px solid rgba(255,255,255,.24); background:rgba(255,255,255,.08); }
+    .hero-action:hover { transform:translateY(-2px); }
+    .hero-action.primary:hover { box-shadow:0 18px 38px rgba(0,0,0,.24); }
+    .section-heading { margin:64px 0 24px; align-items:flex-end; }
+    .section-heading h2,.page-title {
+      font-family:var(--display);
+      font-weight:400;
+      letter-spacing:-.025em;
+      line-height:1.02;
+    }
+    .section-heading h2 { font-size:clamp(2.35rem,4vw,3.6rem); }
+    .section-heading p { color:var(--muted); font-size:1rem; }
+    .menu-grid { gap:20px; }
+    .menu-card {
+      position:relative;
+      min-height:285px;
+      padding:28px;
+      border-radius:22px;
+      border-color:color-mix(in srgb,var(--line) 86%,transparent);
+      box-shadow:var(--shadow-sm);
+      overflow:hidden;
+      transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s var(--ease);
+    }
+    .menu-card::after {
+      content:"";
+      position:absolute;
+      width:120px;
+      height:120px;
+      right:-62px;
+      top:-62px;
+      border-radius:50%;
+      background:color-mix(in srgb,var(--purple) 9%,transparent);
+      transition:transform .24s var(--ease);
+    }
+    .menu-card:hover { transform:translateY(-5px); box-shadow:var(--shadow-hover); border-color:color-mix(in srgb,var(--purple) 35%,var(--line)); }
+    .menu-card:hover::after { transform:scale(1.25); }
+    .iconbox { width:54px; height:54px; border-radius:15px; background:linear-gradient(145deg,var(--purple),var(--purple-2)); box-shadow:0 10px 22px rgba(109,69,214,.25); }
+    .menu-card:nth-child(2) .iconbox,.menu-card:nth-child(5) .iconbox,.menu-card:nth-child(7) .iconbox { background:linear-gradient(145deg,var(--navy-2),var(--navy)); }
+    .menu-card:nth-child(3) .iconbox { background:linear-gradient(145deg,var(--blue),#2855ad); }
+    .menu-card h3 { font-size:1.3rem; letter-spacing:-.025em; }
+    .menu-card p { line-height:1.6; }
+    .card-action { font-size:.88rem; }
+    .card-action span:last-child { display:grid; place-items:center; width:32px; height:32px; border-radius:50%; background:var(--surface-2); transition:transform .2s var(--ease),background .2s var(--ease); }
+    .menu-card:hover .card-action span:last-child { transform:translateX(3px); background:color-mix(in srgb,var(--purple) 12%,var(--surface)); }
+    footer {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:20px;
+      margin-top:66px;
+      padding:28px 4px 8px;
+      border-top:1px solid var(--line);
+      text-align:center;
+    }
+    .index-head { margin:36px 0 30px; }
+    .index-head p { font-size:1rem; }
+    .count-pill { background:color-mix(in srgb,var(--purple) 9%,var(--surface)); color:var(--purple); border:1px solid color-mix(in srgb,var(--purple) 16%,var(--line)); }
+    .tools {
+      top:86px;
+      z-index:10;
+      gap:12px;
+      margin:0 0 24px;
+      padding:10px;
+      border:1px solid color-mix(in srgb,var(--line) 80%,transparent);
+      border-radius:18px;
+      background:color-mix(in srgb,var(--surface) 90%,transparent);
+      box-shadow:0 8px 28px rgba(23,21,63,.06);
+      backdrop-filter:blur(18px) saturate(130%);
+    }
+    .search input { height:52px; border-radius:13px; box-shadow:none; transition:border-color .18s var(--ease),box-shadow .18s var(--ease); }
+    .search input:focus { border-color:var(--purple); box-shadow:0 0 0 4px color-mix(in srgb,var(--purple) 10%,transparent); outline:0; }
+    .chip { height:52px; border-radius:12px; padding:0 18px; transition:background .18s var(--ease),color .18s var(--ease),border-color .18s var(--ease); }
+    .chip:hover { border-color:var(--line-strong); color:var(--ink); }
+    .chip[aria-pressed="true"] { background:var(--navy); box-shadow:0 8px 18px rgba(23,21,63,.16); }
+    .results-line { margin-bottom:14px; font-weight:650; }
+    .program-grid { gap:18px; }
+    .program-card {
+      min-height:260px;
+      padding:23px;
+      border-radius:20px;
+      border-color:color-mix(in srgb,var(--line) 90%,transparent);
+      box-shadow:var(--shadow-sm);
+      cursor:default;
+      transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s var(--ease);
+    }
+    .program-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-hover); border-color:color-mix(in srgb,var(--purple) 28%,var(--line)); }
+    .status { padding:6px 10px; border-radius:9px; letter-spacing:.015em; }
+    .status.full { background:color-mix(in srgb,var(--purple) 12%,var(--surface)); color:var(--purple-2); }
+    .status.partial { background:color-mix(in srgb,var(--blue) 10%,var(--surface)); color:color-mix(in srgb,var(--blue) 75%,var(--ink)); }
+    .country { font-size:.78rem; }
+    .program-card h3 { margin:20px 0 8px; font-size:1.08rem; line-height:1.42; letter-spacing:-.018em; }
+    .deck-name { font-size:.84rem; }
+    .deck-button {
+      min-height:46px;
+      border-radius:12px;
+      margin-top:24px;
+      transition:transform .18s var(--ease),background .18s var(--ease),box-shadow .18s var(--ease);
+    }
+    .deck-button:not(:disabled) { box-shadow:0 10px 22px rgba(109,69,214,.18); }
+    .deck-button:not(:disabled):hover { transform:translateY(-1px); background:var(--purple-2); }
+    .empty { background:var(--surface); }
+    .pill { border-radius:10px; }
+    .pay-hero,.auth-intro {
+      background:
+        linear-gradient(120deg,rgba(255,255,255,.05) 1px,transparent 1px) 0 0/24px 24px,
+        radial-gradient(circle at 88% 15%,rgba(131,91,245,.65),transparent 28%),
+        linear-gradient(135deg,#17143f,#292260);
+    }
+    .pay-hero { border-radius:26px; padding:48px; margin:0 0 20px; box-shadow:0 26px 70px rgba(23,21,63,.2); }
+    .pay-hero::after { display:none; }
+    .pay-hero h1 { font-family:var(--display); font-weight:400; font-size:clamp(2.65rem,5vw,4.1rem); letter-spacing:-.03em; }
+    .pay-hero p { font-size:1.02rem; }
+    .pill.hero-pill { border-radius:9px; font-size:.77rem; letter-spacing:.04em; }
+    .checkout-layout { gap:20px; }
+    .price-card,.payment-card,.proof-card,.status-card,.auth-card {
+      border-radius:22px;
+      border-color:color-mix(in srgb,var(--line) 88%,transparent);
+      box-shadow:var(--shadow-sm);
+    }
+    .price-card,.payment-card { padding:28px; }
+    .price-card { position:sticky; top:88px; }
+    .price { font-family:var(--display); font-weight:400; font-size:3rem; }
+    .benefits { border-top:1px solid var(--line); padding-top:24px; }
+    .tick { border-radius:7px; }
+    .tabs,.auth-tabs { padding:5px; border-radius:13px; }
+    .tab,.auth-tab { border-radius:9px; min-height:44px; transition:background .18s var(--ease),color .18s var(--ease),box-shadow .18s var(--ease); }
+    .tab[aria-selected="true"],.auth-tab[aria-selected="true"] { box-shadow:0 4px 12px rgba(23,21,63,.08); }
+    .method-panel { min-height:260px; }
+    .method-panel h2,.proof-card h2,.status-card h2 { letter-spacing:-.02em; }
+    .qris-image { border-radius:18px; box-shadow:0 14px 35px rgba(23,21,63,.12); }
+    .bank-account { border-radius:13px; padding:15px; background:color-mix(in srgb,var(--surface-2) 42%,var(--surface)); }
+    .copy-btn { border-radius:9px; transition:background .18s var(--ease),transform .18s var(--ease); }
+    .copy-btn:hover { background:var(--surface-3); transform:translateY(-1px); }
+    .proof-card,.status-card { margin-top:20px; padding:28px; }
+    .verification-badge { min-height:36px; border-radius:10px; }
+    .verification-badge.waiting { background:var(--amber-bg); color:var(--amber); }
+    .continue-btn,.pay-btn,.primary-link {
+      min-height:54px;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--purple),var(--purple-2));
+      box-shadow:0 12px 28px rgba(109,69,214,.24);
+      transition:transform .18s var(--ease),box-shadow .18s var(--ease),filter .18s var(--ease);
+    }
+    .continue-btn:not(:disabled):hover,.pay-btn:not(:disabled):hover,.primary-link:hover { transform:translateY(-2px); box-shadow:0 17px 34px rgba(109,69,214,.3); filter:saturate(1.08); }
+    .continue-btn:active,.pay-btn:active,.primary-link:active { transform:translateY(0); }
+    .continue-btn:disabled,.pay-btn:disabled,.deck-button:disabled {
+      background:linear-gradient(135deg,var(--surface-2),var(--surface-3));
+      color:var(--muted);
+      box-shadow:inset 0 1px rgba(255,255,255,.45),0 7px 18px rgba(23,21,63,.04);
+      border:1px solid var(--line);
+    }
+    .auth-shell { grid-template-columns:.88fr 1.12fr; gap:20px; }
+    .auth-intro { min-height:540px; border-radius:26px; padding:38px; box-shadow:0 26px 70px rgba(23,21,63,.18); }
+    .auth-intro::after { width:260px; height:260px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); }
+    .auth-intro h1 { font-family:var(--display); font-weight:400; font-size:clamp(2.75rem,4.5vw,4rem); letter-spacing:-.035em; }
+    .auth-steps { gap:0; }
+    .auth-steps li { position:relative; min-height:54px; }
+    .auth-steps li:not(:last-child)::after { content:""; position:absolute; left:14px; top:38px; width:1px; height:23px; background:rgba(255,255,255,.2); }
+    .step-number { border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.1); }
+    .auth-card { padding:clamp(28px,5vw,44px); }
+    .paywall-auth-card { width:100%; max-width:640px; margin:0 auto; }
+    .auth-card h2 { font-family:var(--display); font-weight:400; font-size:2.2rem; }
+    .field { gap:8px; }
+    .field span { font-size:.84rem; }
+    .field input { height:54px; border-radius:11px; background:color-mix(in srgb,var(--surface) 94%,var(--surface-2)); transition:border-color .18s var(--ease),box-shadow .18s var(--ease); }
+    .field input:focus { border-color:var(--purple); box-shadow:0 0 0 4px color-mix(in srgb,var(--purple) 10%,transparent); outline:0; }
+    .notice { border-radius:12px; }
+    .placeholder-icon { border-radius:22px; }
+    .placeholder h1 { font-family:var(--display); font-weight:400; letter-spacing:-.035em; }
+    .modal { border-radius:22px; }
+    @media (max-width:900px) {
+      .hero { grid-template-columns:1fr; min-height:500px; }
+      .hero::before { background:linear-gradient(90deg,rgba(10,9,30,.84) 0%,rgba(10,9,30,.64) 62%,rgba(10,9,30,.28) 100%); }
+      .price-card { position:static; }
+      .auth-intro { min-height:380px; }
+    }
+    @media (max-width:680px) {
+      .page,.page.narrow { width:min(100% - 24px,1200px); padding-top:12px; padding-bottom:50px; }
+      .site-nav,.topline { top:6px; min-height:56px; margin-bottom:20px; border-radius:15px; padding:7px; }
+      .site-nav { position:sticky; flex-wrap:wrap; }
+      .site-nav > a:not([aria-current="page"]) { display:none; }
+      .site-nav > a { padding:9px 10px; }
+      .site-nav > a.site-brand { display:inline-flex; padding:4px 8px; }
+      .site-nav .account-bar { margin-left:auto; }
+      .mobile-nav-toggle {
+        display:inline-flex; align-items:center; justify-content:center; min-height:42px; padding:8px 11px;
+        border:1px solid var(--line); border-radius:11px; background:var(--surface); color:var(--ink); font-weight:850; cursor:pointer;
+      }
+      .mobile-nav-toggle[aria-expanded="true"] { background:var(--surface-2); color:var(--purple); }
+      .mobile-nav-menu {
+        flex:0 0 100%; display:none; grid-template-columns:1fr 1fr; gap:6px; padding:7px 2px 1px;
+        border-top:1px solid var(--line);
+      }
+      .mobile-nav-menu.is-open { display:grid; }
+      .mobile-nav-menu a {
+        display:flex; align-items:center; min-height:44px; padding:8px 10px; border-radius:10px;
+        color:var(--muted); text-decoration:none; font-size:.82rem; font-weight:800; background:var(--surface-2);
+      }
+      .account-name { display:none; }
+      .hero { min-height:535px; display:flex; align-items:flex-end; padding:34px 25px; border-radius:24px; background-position:58% center; }
+      .hero::before { background:linear-gradient(0deg,rgba(10,9,30,.9) 0%,rgba(10,9,30,.52) 58%,rgba(10,9,30,.22) 100%); }
+      .hero h1 { font-size:clamp(3.5rem,17vw,5rem); }
+      .hero p { font-size:.98rem; }
+      .hero-actions { margin-top:24px; }
+      .hero-action { width:100%; }
+      .section-heading { margin-top:46px; align-items:flex-start; }
+      .section-heading h2 { font-size:2.65rem; }
+      .menu-grid { display:grid; grid-template-columns:1fr; gap:12px; }
+      .menu-card,.menu-card:nth-child(1),.menu-card:nth-child(2),.menu-card:last-child,.menu-card:nth-child(6),.menu-card:nth-child(7) { grid-column:1; min-height:225px; margin:0; border-radius:18px; padding:23px; }
+      footer { align-items:center; justify-content:center; margin-top:48px; }
+      .index-head { margin-top:28px; }
+      .index-head .page-title { font-size:2.7rem; }
+      .count-pill { white-space:normal; }
+      .tools { top:72px; grid-template-columns:1fr; margin-inline:0; border-radius:15px; padding:8px; }
+      .filters { display:grid; grid-template-columns:repeat(3,1fr); }
+      .chip { height:44px; padding:0 8px; border-radius:10px; }
+      .program-grid { gap:12px; }
+      .program-card { min-height:235px; border-radius:17px; padding:20px; }
+      .pay-hero { border-radius:21px; padding:30px 24px; }
+      .pay-hero h1 { font-size:2.9rem; }
+      .price-card,.payment-card,.proof-card,.status-card { border-radius:18px; padding:22px; }
+      .auth-intro,.auth-card { border-radius:20px; }
+      .auth-intro { min-height:365px; padding:27px; }
+      .auth-intro h1 { font-size:3rem; }
+      .auth-card { padding:24px; }
+      .bank-account { grid-template-columns:1fr; }
+      .copy-btn { width:100%; min-height:44px; }
+      .method-panel { min-height:0; }
+      .qris-image { width:min(290px,100%); }
+    }
+    @media (max-width:640px) {
+      .auth-shell,
+      .checkout-layout {
+        grid-template-columns:minmax(0,1fr);
+        width:100%;
+      }
+      .auth-intro,
+      .auth-card,
+      .price-card,
+      .payment-card {
+        width:100%;
+        min-width:0;
+      }
+      .auth-intro {
+        min-height:auto;
+        padding:22px;
+      }
+      .auth-intro h1 {
+        margin:16px 0 10px;
+        font-size:clamp(2.15rem,11vw,2.75rem);
+        line-height:1;
+        overflow-wrap:normal;
+        word-break:normal;
+        hyphens:none;
+      }
+      .auth-intro p,
+      .pay-hero h1,
+      .pay-hero p {
+        overflow-wrap:normal;
+        word-break:normal;
+        hyphens:none;
+      }
+      .notice {
+        overflow-wrap:anywhere;
+        word-break:break-word;
+      }
+      .auth-steps {
+        margin-top:24px;
+      }
+      .auth-steps li {
+        min-height:46px;
+      }
+      .auth-steps li:not(:last-child)::after {
+        height:16px;
+      }
+      .auth-card {
+        padding:22px;
+      }
+      .auth-card h2 {
+        font-size:1.9rem;
+      }
+      .pay-hero {
+        padding:26px 22px;
+      }
+      .pay-hero h1 {
+        font-size:2.55rem;
+      }
+      .price-card,
+      .payment-card {
+        padding:22px;
+      }
+      .field input,
+      .auth-tab,
+      .tab,
+      .pay-btn {
+        min-height:48px;
+      }
+      .program-grid {
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:6px;
+      }
+      .program-card {
+        min-width:0;
+        min-height:196px;
+        padding:9px 7px;
+        border-radius:12px;
+      }
+      .program-top {
+        flex-direction:column;
+        align-items:flex-start;
+        justify-content:flex-start;
+        gap:4px;
+        min-width:0;
+      }
+      .status {
+        max-width:100%;
+        padding:3px 5px;
+        border-radius:6px;
+        font-size:.58rem;
+        line-height:1.2;
+      }
+      .country {
+        width:100%;
+        color:var(--muted);
+        font-size:.6rem;
+        line-height:1.2;
+        text-align:left;
+        overflow:hidden;
+        display:-webkit-box;
+        -webkit-box-orient:vertical;
+        -webkit-line-clamp:2;
+      }
+      .program-card h3 {
+        margin:9px 0 7px;
+        font-size:.72rem;
+        line-height:1.28;
+        letter-spacing:-.012em;
+        overflow:hidden;
+        display:-webkit-box;
+        -webkit-box-orient:vertical;
+        -webkit-line-clamp:3;
+      }
+      .deck-name { display:none; }
+      .deck-button {
+        min-height:44px;
+        margin-top:auto;
+        padding:5px 3px;
+        border-radius:9px;
+        font-size:.66rem;
+        line-height:1.15;
+        white-space:normal;
+        overflow-wrap:anywhere;
+      }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      *,*::before,*::after { transition:none !important; }
+    }
+    /* Indeks: pencarian di tengah baris atas */
+    .topline-search .top-tools {
+      display:flex;
+      align-items:center;
+      flex:1 1 auto;
+      min-width:0;
+      max-width:520px;
+      margin-inline:auto;
+    }
+    .topline-search .top-tools .search {
+      flex:1 1 auto;
+      min-width:0;
+    }
+    .topline-search .account-bar { margin-left:0; }
+    @media (max-width:860px) {
+      .topline-search { flex-wrap:nowrap; gap:8px; }
+      .topline-search .back {
+        order:1; flex:0 0 auto; padding:8px 7px; font-size:0; line-height:1; white-space:nowrap;
+      }
+      .topline-search .back::after { content:"\2190"; font-size:1.05rem; font-weight:800; line-height:1; }
+      .topline-search .top-tools { order:2; flex:1 1 auto; min-width:0; max-width:none; margin:0; }
+      .topline-search .top-tools .search { flex:1 1 auto; min-width:0; max-width:none; margin:0; }
+      .topline-search .top-tools .search input { height:44px; min-width:0; padding-left:38px; font-size:.88rem; }
+      .topline-search .top-tools .search svg { left:12px; width:17px; }
+      .topline-search .account-bar { order:3; flex:0 0 auto; width:auto; margin:0; min-height:0; gap:6px; }
+      .topline-search .account-name { max-width:96px; }
+      .topline-search .account-link, .topline-search .account-button {
+        min-height:40px; padding:0 11px; font-size:.8rem; white-space:nowrap;
+      }
+    }
+    /* Halaman Komisi Saya (referral) */
+    .ref-card { background:var(--surface); border:1px solid color-mix(in srgb,var(--line) 88%,transparent); border-radius:22px; padding:26px; box-shadow:var(--shadow-sm); margin-bottom:18px; }
+    .ref-card h2 { margin:0 0 14px; font-size:1.25rem; letter-spacing:-.02em; }
+    .ref-link-row { display:flex; gap:10px; }
+    .ref-link-row input { flex:1 1 auto; min-width:0; height:50px; border:1px solid var(--line); border-radius:11px; background:color-mix(in srgb,var(--surface) 94%,var(--surface-2)); color:var(--ink); padding:0 14px; font-size:.92rem; }
+    .ref-link-row input:focus { border-color:var(--purple); box-shadow:0 0 0 4px color-mix(in srgb,var(--purple) 10%,transparent); outline:0; }
+    .ref-link-row .copy-btn { flex:0 0 auto; padding:0 18px; min-height:50px; }
+    .ref-help { margin:14px 0 0; color:var(--muted); font-size:.9rem; }
+    .komisi-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:18px; }
+    .komisi-stat { background:var(--surface); border:1px solid color-mix(in srgb,var(--line) 88%,transparent); border-radius:18px; padding:20px; box-shadow:var(--shadow-sm); }
+    .komisi-stat span { display:block; color:var(--muted); font-size:.8rem; font-weight:800; }
+    .komisi-stat strong { display:block; margin-top:6px; font-size:1.45rem; letter-spacing:-.03em; }
+    .komisi-list { display:grid; gap:10px; }
+    .komisi-item { display:flex; align-items:center; justify-content:space-between; gap:14px; border:1px solid var(--line); border-radius:13px; padding:13px 15px; background:color-mix(in srgb,var(--surface-2) 42%,var(--surface)); }
+    .komisi-item strong, .komisi-item span { display:block; }
+    .komisi-item > div > span { color:var(--muted); font-size:.84rem; }
+    .komisi-item-right { text-align:right; display:grid; justify-items:end; gap:5px; }
+    .komisi-item-right .verification-badge { min-height:28px; padding:4px 10px; font-size:.74rem; }
+    @media (max-width:640px) {
+      .komisi-summary { grid-template-columns:1fr; }
+      .ref-link-row { flex-direction:column; }
+      .ref-link-row .copy-btn { min-height:46px; width:100%; }
+      .ref-card { border-radius:18px; padding:22px; }
+    }
+    /* FAQ accordion (halaman utama) */
+    .faq-list {
+      background:linear-gradient(160deg, var(--navy-2), var(--navy));
+      border-radius:var(--radius); padding:6px clamp(16px, 3vw, 28px);
+      box-shadow:var(--shadow);
+    }
+    .faq-item { border-bottom:1px solid rgba(255,255,255,.14); }
+    .faq-item:last-child { border-bottom:0; }
+    .faq-q {
+      width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px;
+      background:transparent; border:0; color:#fff; text-align:left; cursor:pointer;
+      font-weight:400; font-size:.95rem; line-height:1.4; padding:20px 2px;
+    }
+    .faq-q:hover { color:#f3d489; }
+    .faq-chevron {
+      flex:none; width:30px; height:30px; display:grid; place-items:center; border-radius:50%;
+      border:1px solid rgba(227,176,75,.6); color:#e3b04b;
+      transition:transform .3s ease, background .3s ease;
+    }
+    .faq-chevron svg { width:15px; height:15px; display:block; }
+    .faq-item.open .faq-chevron { transform:rotate(180deg); background:rgba(227,176,75,.18); }
+    .faq-a { display:grid; grid-template-rows:0fr; transition:grid-template-rows .32s ease; }
+    .faq-a-inner { overflow:hidden; min-height:0; }
+    .faq-a p { margin:0; padding:0 2px 22px; color:#dcd8f5; line-height:1.65; max-width:760px; }
+    .faq-item.open .faq-a { grid-template-rows:1fr; }
+    @media (max-width:640px) {
+      .faq-q { font-size:.9rem; padding:17px 2px; }
+      .faq-a p { padding-bottom:19px; }
+    }
+    /* Artikel Beasiswa (halaman utama) */
+    .artikel-grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:18px; }
+    .artikel-card {
+      display:flex; flex-direction:column; min-height:190px; padding:24px;
+      background:linear-gradient(160deg, var(--navy-2), var(--navy));
+      color:#fff; text-decoration:none; border-radius:var(--radius);
+      box-shadow:var(--shadow-sm);
+      transition:transform .22s var(--ease), box-shadow .22s var(--ease);
+    }
+    .artikel-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-hover); }
+    .artikel-label {
+      display:inline-flex; align-self:flex-start; padding:5px 10px; border-radius:9px;
+      border:1px solid rgba(227,176,75,.55); color:#e3b04b;
+      font-size:.72rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+    }
+    .artikel-card h3 { margin:18px 0 0; font-size:1.13rem; line-height:1.38; letter-spacing:-.015em; }
+    .artikel-action {
+      margin-top:auto; padding-top:22px; display:flex; align-items:center; gap:9px;
+      color:#f3d489; font-weight:800; font-size:.9rem;
+    }
+    .artikel-action span:last-child { transition:transform .2s var(--ease); }
+    .artikel-card:hover .artikel-action span:last-child { transform:translateX(4px); }
+    .artikel-more-wrap { margin-top:22px; text-align:center; }
+    .artikel-more {
+      display:inline-flex; align-items:center; gap:9px; padding:13px 26px;
+      border:1px solid var(--gold, #e3b04b); border-radius:999px;
+      color:var(--navy); text-decoration:none; font-weight:800; font-size:.95rem;
+      transition:background .2s var(--ease), transform .2s var(--ease);
+    }
+    .artikel-more:hover { background:rgba(227,176,75,.14); transform:translateY(-2px); }
+    .artikel-more span:last-child { transition:transform .2s var(--ease); }
+    .artikel-more:hover span:last-child { transform:translateX(4px); }
+    @media (max-width:900px) { .artikel-grid { grid-template-columns:repeat(2, minmax(0,1fr)); } }
+    @media (max-width:640px) {
+      .artikel-grid { grid-template-columns:1fr; gap:12px; }
+      .artikel-card { min-height:0; padding:21px; border-radius:18px; }
+    }
+    /* Tombol WhatsApp mengambang (semua halaman) */
+    .wa-float {
+      position:fixed; right:18px; bottom:calc(18px + env(safe-area-inset-bottom, 0px));
+      z-index:60; width:56px; height:56px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      background:#25D366; color:#fff; text-decoration:none;
+      box-shadow:0 8px 24px rgba(18,140,70,.42), 0 2px 6px rgba(0,0,0,.22);
+      transition:transform .2s var(--ease), box-shadow .2s var(--ease);
+    }
+    .wa-float:hover { transform:translateY(-2px) scale(1.05); box-shadow:0 12px 30px rgba(18,140,70,.5), 0 3px 8px rgba(0,0,0,.24); }
+    .wa-float:active { transform:scale(.97); }
+    .wa-float svg { width:30px; height:30px; display:block; }
+    @media (max-width:640px) {
+      .wa-float { right:14px; bottom:calc(14px + env(safe-area-inset-bottom, 0px)); width:48px; height:48px; }
+      .wa-float svg { width:26px; height:26px; }
+    }
+  </style>
+</head>
+<body>
+  <main id="app" aria-live="polite"></main>
+  <a class="wa-float" href="https://wa.me/6282136050770?text=Halo%2C%20saya%20mau%20tanya%20tentang%20Portal%20Beasiswa." target="_blank" rel="noopener" aria-label="Chat WhatsApp — tanya tentang Portal Beasiswa">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+  </a>
+  <script>
+    (function loadSupabaseSdk() {
+      const sources = [
+        { name: 'jsDelivr', url: 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js' },
+        { name: 'unpkg', url: 'https://unpkg.com/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js' }
+      ];
+      const failures = [];
+      window.__supabaseSdkError = null;
+      window.__supabaseSdkPromise = new Promise(resolve => {
+        let sourceIndex = 0;
+        function tryNextSource() {
+          if (sourceIndex >= sources.length) {
+            window.__supabaseSdkError = new Error(`Supabase SDK gagal dimuat. ${failures.join(' ')}`);
+            resolve(null);
+            return;
+          }
+          const source = sources[sourceIndex++];
+          const script = document.createElement('script');
+          script.src = source.url;
+          script.async = false;
+          script.onload = () => {
+            if (window.supabase && typeof window.supabase.createClient === 'function') {
+              resolve(window.supabase);
+              return;
+            }
+            failures.push(`${source.name}: file termuat, tetapi window.supabase.createClient tidak tersedia.`);
+            script.remove();
+            tryNextSource();
+          };
+          script.onerror = () => {
+            failures.push(`${source.name}: gagal memuat ${source.url}.`);
+            script.remove();
+            tryNextSource();
+          };
+          document.head.append(script);
+        }
+        tryNextSource();
+      });
+    })();
+  </script>
+  <script>
+    const MAX_DEVICES = 5;
+    const DEVICE_ID_STORAGE_KEY = 'wb_device_id';
+
+    const PAYMENT_CONFIG = Object.freeze({
+      product: { name: 'Akses Semua Deck Beasiswa', priceIdr: 100000, currency: 'IDR' },
+      waNumber: '6282136050770',
+      qrisImage: 'assets/qris-maru-id.jpg',
+      qrisMerchantName: 'MARU.ID',
+      bankAccounts: [
+        { bank: 'Bank Mandiri', number: '9000005838900', name: 'Wahyuhadi' },
+        { bank: 'BLU by BCA Digital', number: '006502721229', name: 'Wahyuhadi' }
+      ]
+    });
+
+    // Project Supabase aktif untuk pendaftaran, login, dan verifikasi member.
+    // JANGAN PERNAH menempel service_role key di sini.
+    const SUPABASE_CONFIG = { url: 'https://fjjdgybpglirsaozpvww.supabase.co', anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU' };
+
+    function isSupabaseConfigured() {
+      return Boolean(
+        SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey &&
+        !SUPABASE_CONFIG.url.includes('PASTE_') &&
+        !SUPABASE_CONFIG.anonKey.includes('PASTE_')
+      );
+    }
+
+    const PROGRAMS = [{"country":"Turki","name":"Türkiye Burslari","type":"full","deck":"Deck Turkiye Burslari","deckSlug":"deck-turkiye-burslari","reason":"Tuition penuh, asrama, dan uang saku untuk makan/biaya hidup tercantum dalam paket."},{"country":"Brunei Darussalam","name":"Brunei Darussalam Government Scholarship (BDGS)","type":"full","deck":"Deck BDGS Brunei","deckSlug":"deck-bdgs-brunei","reason":"Tuition, asrama, tunjangan makan, dan tunjangan pribadi ditanggung."},{"country":"Malaysia","name":"Albukhary International University Scholarship","type":"full","deck":"Deck Albukhary Malaysia","deckSlug":"deck-albukhary-malaysia","reason":"Tuition, tempat tinggal kampus, dan dukungan rutin untuk makan/biaya hidup."},{"country":"Indonesia → luar negeri","name":"Beasiswa Indonesia Maju (BIM)","type":"full","deck":"Deck BIM Indonesia","deckSlug":"deck-bim-indonesia","reason":"Paket mencakup tuition, akomodasi, dan biaya hidup penerima."},{"country":"Tiongkok","name":"Chinese Government Scholarship (CSC)","type":"full","deck":"Deck CSC Tiongkok","deckSlug":"deck-csc-tiongkok","reason":"Tuition, asrama/subsidi akomodasi, dan stipend bulanan tersedia."},{"country":"Singapura","name":"NUS ASEAN Undergraduate Scholarship","type":"full","deck":"Deck NUS Singapura","deckSlug":"deck-nus-singapura","reason":"Tuition bersubsidi, tunjangan akomodasi, dan tunjangan hidup tercakup."},{"country":"Singapura","name":"NTU ASEAN Undergraduate Scholarship","type":"full","deck":"Deck NTU Singapura","deckSlug":"deck-ntu-singapura","reason":"Tuition bersubsidi, tunjangan akomodasi, dan tunjangan hidup tercakup."},{"country":"Hungaria","name":"Stipendium Hungaricum","type":"full","deck":"Deck Stipendium Hungaricum","deckSlug":"deck-stipendium-hungaricum","reason":"Tuition, dorm/kontribusi akomodasi, dan stipend bulanan tercantum."},{"country":"Italia","name":"DSU Toscana","type":"full","deck":"Deck Beasiswa S1 Italia","deckSlug":"deck-beasiswa-s1-italia","reason":"Jalur DSU regional mencakup pembebasan tuition, asrama, serta makan/dukungan hidup."},{"country":"Italia","name":"DSU Lombardia","type":"full","deck":"Deck Beasiswa S1 Italia","deckSlug":"deck-beasiswa-s1-italia","reason":"Jalur DSU regional mencakup pembebasan tuition, asrama, serta makan/dukungan hidup."},{"country":"Italia","name":"EDISU Piemonte","type":"full","deck":"Deck Beasiswa S1 Italia","deckSlug":"deck-beasiswa-s1-italia","reason":"Jalur DSU regional mencakup pembebasan tuition, asrama, serta makan/dukungan hidup."},{"country":"Italia","name":"LazioDiSCo","type":"full","deck":"Deck Beasiswa S1 Italia","deckSlug":"deck-beasiswa-s1-italia","reason":"Jalur DSU regional mencakup pembebasan tuition, asrama, serta makan/dukungan hidup."},{"country":"Italia","name":"ER.GO Emilia-Romagna","type":"full","deck":"Deck Beasiswa S1 Italia","deckSlug":"deck-beasiswa-s1-italia","reason":"Jalur DSU regional mencakup pembebasan tuition, asrama, serta makan/dukungan hidup."},{"country":"Amerika Serikat","name":"Emerging Global Leader Scholarship — American University","type":"full","deck":"Deck Beasiswa AS","deckSlug":"deck-beasiswa-as","reason":"Deck merinci tuition, kamar, dan makan sebagai komponen award."},{"country":"Azerbaijan","name":"Heydar Aliyev International Education Grant","type":"full","deck":"Deck Beasiswa S1 Azerbaijan","deckSlug":"deck-beasiswa-s1-azerbaijan","reason":"Tuition ditambah allowance untuk akomodasi dan kebutuhan harian."},{"country":"Azerbaijan","name":"Topchubashov Fellowship — ADA University","type":"full","deck":"Deck Beasiswa S1 Azerbaijan","deckSlug":"deck-beasiswa-s1-azerbaijan","reason":"Full tuition, asrama, dan stipend bulanan tercantum."},{"country":"Rumania","name":"Romanian Government Scholarship (MFA)","type":"full","deck":"Deck Beasiswa S1 Rumania","deckSlug":"deck-beasiswa-s1-rumania","reason":"Tuition, dukungan asrama, dan stipend bulanan tersedia."},{"country":"Rumania","name":"ARICE Scholarship","type":"full","deck":"Deck Beasiswa S1 Rumania","deckSlug":"deck-beasiswa-s1-rumania","reason":"Paket mencakup tuition, asrama, dan stipend; komponen awal tetap perlu dicek."},{"country":"Serbia","name":"World in Serbia","type":"full","deck":"Deck Beasiswa S1 Serbia","deckSlug":"deck-beasiswa-s1-serbia","reason":"Tuition, asrama dan makan, serta tunjangan bulanan; jalur WNI belum terkonfirmasi."},{"country":"Serbia","name":"Serbian Government Bilateral Scholarship","type":"full","deck":"Deck Beasiswa S1 Serbia","deckSlug":"deck-beasiswa-s1-serbia","reason":"Tuition, asrama dan makan, serta stipend tercantum; status mitra Indonesia belum jelas."},{"country":"Qatar","name":"Qatar University International Students Scholarship","type":"full","deck":"Deck Beasiswa S1 Qatar","deckSlug":"deck-beasiswa-s1-qatar","reason":"Tuition, asrama, dan uang bulanan 500 QAR masuk paket."},{"country":"Thailand","name":"ISE Chulalongkorn Full Scholarship","type":"full","deck":"Deck Beasiswa S1 Thailand","deckSlug":"deck-beasiswa-s1-thailand","reason":"Tuition/program fees, akomodasi, dan tunjangan bulanan ditanggung."},{"country":"Arab Saudi","name":"External Scholarship — Princess Nourah University","type":"full","deck":"Deck Beasiswa S1 Arab Saudi","deckSlug":"deck-beasiswa-s1-arab-saudi","reason":"Tuition, asrama kampus, serta makan/dukungan hidup dijelaskan dalam deck."},{"country":"Uni Emirat Arab","name":"AUS President’s Scholarship","type":"full","deck":"Deck Beasiswa S1 UEA","deckSlug":"deck-beasiswa-s1-uea","reason":"Tuition, asrama, dan tunjangan bulanan tercantum dalam paket."},{"country":"Taiwan","name":"TaiwanICDF Scholarship","type":"full","deck":"Deck Beasiswa S1 Taiwan","deckSlug":"deck-beasiswa-s1-taiwan","reason":"Paketnya mencakup tuition, akomodasi, dan biaya hidup; eligibility S1 WNI perlu verifikasi."},{"country":"Jepang","name":"MEXT Undergraduate","type":"partial","deck":"Deck MEXT Jepang","deckSlug":"deck-mext-jepang","reason":"Tuition dan stipend ada, tetapi asrama/akomodasi tidak dijamin sebagai benefit terpisah."},{"country":"Korea Selatan","name":"Global Korea Scholarship (GKS)","type":"partial","deck":"Deck GKS Korea","deckSlug":"deck-gks-korea","reason":"Tuition dan stipend ada, tetapi manfaat asrama khusus tidak tercantum."},{"country":"Korea Selatan","name":"KAIST International Scholarship","type":"partial","deck":"Deck KAIST Korea","deckSlug":"deck-kaist-korea","reason":"Tuition dan stipend tersedia; akomodasi penuh tidak menjadi benefit terpisah."},{"country":"Korea Selatan","name":"POSTECH International Track Scholarship","type":"partial","deck":"Deck POSTECH Korea","deckSlug":"deck-postech-korea","reason":"Dukungan tuition dan stipend ada; cakupan hunian penuh tidak jelas."},{"country":"Rusia","name":"Russian Government Quota","type":"partial","deck":"Deck Rusia Quota","deckSlug":"deck-rusia-quota","reason":"Tuition ditanggung, tetapi dorm berbayar dan biaya hidup tetap perlu disiapkan."},{"country":"Belanda","name":"NL Scholarship","type":"partial","deck":"Deck Holland Belanda","deckSlug":"deck-holland-belanda","reason":"Kontribusi €5.000 sekali bayar; bukan paket tuition, akomodasi, dan hidup penuh."},{"country":"Australia","name":"Monash International Leadership Scholarship","type":"partial","deck":"Deck Monash Australia","deckSlug":"deck-monash-australia","reason":"Menanggung 100% tuition, tanpa akomodasi dan biaya hidup."},{"country":"Australia","name":"UNSW International Student Award","type":"partial","deck":"Deck UNSW Australia","deckSlug":"deck-unsw-australia","reason":"Potongan tuition 15–20%; biaya akomodasi dan hidup tetap terpisah."},{"country":"Jepang","name":"Sophia University New Student Scholarship","type":"partial","deck":"Deck Sophia TIU Jepang","deckSlug":"deck-sophia-tiu-jepang","reason":"Dukungan biaya tahun pertama; akomodasi dan biaya hidup tidak ditanggung."},{"country":"Jepang","name":"TIU E-Track Tuition Reduction Scholarship","type":"partial","deck":"Deck Sophia TIU Jepang","deckSlug":"deck-sophia-tiu-jepang","reason":"Pengurangan tuition hingga empat tahun; hunian dan hidup tetap mandiri."},{"country":"Spanyol","name":"ESADE Scholarship","type":"partial","deck":"Deck Beasiswa S1 Spanyol","deckSlug":"deck-beasiswa-s1-spanyol","reason":"Potongan tuition; akomodasi dan biaya hidup tidak termasuk."},{"country":"Spanyol","name":"IE University Scholarship","type":"partial","deck":"Deck Beasiswa S1 Spanyol","deckSlug":"deck-beasiswa-s1-spanyol","reason":"Menutup sekitar 10–60% tuition, bukan paket biaya inti lengkap."},{"country":"Spanyol","name":"UIC Barcelona Scholarship","type":"partial","deck":"Deck Beasiswa S1 Spanyol","deckSlug":"deck-beasiswa-s1-spanyol","reason":"Dukungan tuition parsial; detail akomodasi dan biaya hidup tidak tercakup."},{"country":"Inggris","name":"UCL Global Undergraduate Scholarship","type":"partial","deck":"Deck Beasiswa S1 Inggris","deckSlug":"deck-beasiswa-s1-inggris","reason":"Ada paket tuition dan maintenance, tetapi akomodasi tidak dinyatakan sebagai komponen khusus."},{"country":"Inggris","name":"Warwick Undergraduate Global Excellence Scholarship","type":"partial","deck":"Deck Beasiswa S1 Inggris","deckSlug":"deck-beasiswa-s1-inggris","reason":"Full-fee/partial tuition; biaya hidup dan akomodasi tidak termasuk."},{"country":"Inggris","name":"Bristol Think Big Undergraduate Scholarship","type":"partial","deck":"Deck Beasiswa S1 Inggris","deckSlug":"deck-beasiswa-s1-inggris","reason":"Potongan tuition; bukan paket akomodasi dan hidup penuh."},{"country":"Irlandia","name":"UCD Global Excellence Scholarship","type":"partial","deck":"Deck Beasiswa S1 Irlandia","deckSlug":"deck-beasiswa-s1-irlandia","reason":"Waiver 50–100% tuition; akomodasi dan biaya hidup tidak termasuk."},{"country":"Kazakhstan","name":"Kazakhstan State Scholarship","type":"partial","deck":"Deck Beasiswa S1 Kazakhstan","deckSlug":"deck-beasiswa-s1-kazakhstan","reason":"Tuition dan stipend terbatas; akomodasi serta perjalanan tidak ditanggung."},{"country":"Kazakhstan","name":"Abay Kunanbayev Scholarship — Nazarbayev University","type":"partial","deck":"Deck Beasiswa S1 Kazakhstan","deckSlug":"deck-beasiswa-s1-kazakhstan","reason":"Dukungan merit ada, tetapi tiga komponen biaya inti tidak dirinci lengkap."},{"country":"Kazakhstan","name":"KIMEP Intellectual Olympiad Scholarship","type":"partial","deck":"Deck Beasiswa S1 Kazakhstan","deckSlug":"deck-beasiswa-s1-kazakhstan","reason":"Jalur kompetisi tuition; akomodasi dan biaya hidup tidak terbukti tercakup."},{"country":"Lithuania","name":"Vilnius University Tuition Waiver","type":"partial","deck":"Deck Beasiswa S1 Lithuania","deckSlug":"deck-beasiswa-s1-lithuania","reason":"Tuition waiver/admission scholarship tanpa paket akomodasi dan biaya hidup."},{"country":"Portugal","name":"University of Coimbra Merit Scholarship","type":"partial","deck":"Deck Beasiswa S1 Portugal","deckSlug":"deck-beasiswa-s1-portugal","reason":"Potongan tuition; biaya akomodasi dan hidup tetap perlu disiapkan."},{"country":"Swedia","name":"Lund University Global Scholarship","type":"partial","deck":"Deck Beasiswa S1 Swedia","deckSlug":"deck-beasiswa-s1-swedia","reason":"Waiver 25–100% tuition; akomodasi dan biaya hidup tidak ditanggung."},{"country":"Taiwan","name":"MOE Taiwan Scholarship","type":"partial","deck":"Deck Beasiswa S1 Taiwan","deckSlug":"deck-beasiswa-s1-taiwan","reason":"Tuition allowance dan stipend ada; akomodasi tidak menjadi benefit penuh."},{"country":"Taiwan","name":"NTHU International Student Scholarship","type":"partial","deck":"Deck Beasiswa S1 Taiwan","deckSlug":"deck-beasiswa-s1-taiwan","reason":"Tuition/stipend bergantung award; paket akomodasi tidak dijelaskan."},{"country":"Taiwan","name":"NTU International Scholarship","type":"partial","deck":"Deck Beasiswa S1 Taiwan","deckSlug":"deck-beasiswa-s1-taiwan","reason":"Dukungan tuition dan/atau stipend; akomodasi penuh tidak tercantum."},{"country":"Taiwan","name":"NCKU Distinguished International Student Scholarship","type":"partial","deck":"Deck Beasiswa S1 Taiwan","deckSlug":"deck-beasiswa-s1-taiwan","reason":"Tuition dan tunjangan bervariasi; akomodasi tidak menjadi komponen pasti."},{"country":"Taiwan","name":"NYCU–CHT Scholarship","type":"partial","deck":"Deck Beasiswa S1 Taiwan","deckSlug":"deck-beasiswa-s1-taiwan","reason":"Cakupan perlu verifikasi langsung; tiga biaya inti belum terbukti lengkap."},{"country":"Uzbekistan","name":"KIUT Entrance Grant","type":"partial","deck":"Deck Beasiswa S1 Uzbekistan","deckSlug":"deck-beasiswa-s1-uzbekistan","reason":"Entrance grant tersedia, tetapi status WNA dan tiga komponen biaya belum jelas."},{"country":"Denmark","name":"SDU Type A Scholarship","type":"partial","deck":"Deck Beasiswa S1 Denmark","deckSlug":"deck-beasiswa-s1-denmark","reason":"Full tuition waiver; biaya hidup dan akomodasi tetap perlu disiapkan."},{"country":"Finlandia","name":"Aalto University Excellence Scholarship","type":"partial","deck":"Deck Beasiswa S1 Finlandia","deckSlug":"deck-beasiswa-s1-finlandia","reason":"Waiver 50% atau 100% tuition, tanpa tunjangan hidup dan akomodasi."},{"country":"Finlandia","name":"University of Helsinki Tuition Fee Scholarship","type":"partial","deck":"Deck Beasiswa S1 Finlandia","deckSlug":"deck-beasiswa-s1-finlandia","reason":"Waiver 50% atau 100% tuition; hidup dan hunian tidak ditanggung."},{"country":"Italia","name":"Unibo Action","type":"partial","deck":"Deck Beasiswa S1 Italia","deckSlug":"deck-beasiswa-s1-italia","reason":"Dukungan merit tidak merinci paket tuition, asrama, dan makan sekaligus."},{"country":"Italia","name":"Bocconi International Award","type":"partial","deck":"Deck Beasiswa S1 Italia","deckSlug":"deck-beasiswa-s1-italia","reason":"Award tuition; akomodasi dan biaya hidup tidak terbukti tercakup."},{"country":"Italia","name":"Politecnico di Milano Merit Scholarship","type":"partial","deck":"Deck Beasiswa S1 Italia","deckSlug":"deck-beasiswa-s1-italia","reason":"Deck tidak menetapkan tiga komponen biaya inti untuk program ini."},{"country":"Italia","name":"University of Padova Scholarship","type":"partial","deck":"Deck Beasiswa S1 Italia","deckSlug":"deck-beasiswa-s1-italia","reason":"Waiver/stipend tidak disertai manfaat akomodasi yang jelas."},{"country":"Italia","name":"University of Pavia Scholarship","type":"partial","deck":"Deck Beasiswa S1 Italia","deckSlug":"deck-beasiswa-s1-italia","reason":"Cakupan program tidak menunjukkan tuition, akomodasi, dan hidup sekaligus."},{"country":"Thailand","name":"KMUTT International Scholarship Program (KISP)","type":"partial","deck":"Deck Beasiswa S1 Thailand","deckSlug":"deck-beasiswa-s1-thailand","reason":"Tuition dan stipend bulanan ada, tetapi akomodasi tidak tercantum terpisah."},{"country":"Thailand","name":"ISE Chulalongkorn Tuition Scholarship","type":"partial","deck":"Deck Beasiswa S1 Thailand","deckSlug":"deck-beasiswa-s1-thailand","reason":"Program fees dan asuransi ditanggung; paket hidup dan akomodasi tidak."},{"country":"Thailand","name":"Chula BBA Scholarship","type":"partial","deck":"Deck Beasiswa S1 Thailand","deckSlug":"deck-beasiswa-s1-thailand","reason":"Tahun pertama tuition/special fees, lalu parsial; tanpa paket hidup lengkap."},{"country":"Thailand","name":"MUIC Excellence Scholarship","type":"partial","deck":"Deck Beasiswa S1 Thailand","deckSlug":"deck-beasiswa-s1-thailand","reason":"Tuition waiver; akomodasi dan biaya hidup tidak dinyatakan tercakup."},{"country":"Thailand","name":"MUIC ASEAN Scholarship","type":"partial","deck":"Deck Beasiswa S1 Thailand","deckSlug":"deck-beasiswa-s1-thailand","reason":"Tuition waiver untuk pelamar ASEAN; akomodasi dan biaya hidup tidak tercakup."},{"country":"Arab Saudi","name":"External Scholarship — King Saud University","type":"partial","deck":"Deck Beasiswa S1 Arab Saudi","deckSlug":"deck-beasiswa-s1-arab-saudi","reason":"Deck menyebut opsi kampus, tetapi tidak merinci tiga biaya inti program ini."},{"country":"Arab Saudi","name":"External Scholarship — King Abdulaziz University","type":"partial","deck":"Deck Beasiswa S1 Arab Saudi","deckSlug":"deck-beasiswa-s1-arab-saudi","reason":"Deck menyebut opsi kampus, tetapi tidak merinci tiga biaya inti program ini."},{"country":"Arab Saudi","name":"External Scholarship — KFUPM","type":"partial","deck":"Deck Beasiswa S1 Arab Saudi","deckSlug":"deck-beasiswa-s1-arab-saudi","reason":"Deck menyebut opsi kampus, tetapi tidak merinci tiga biaya inti program ini."},{"country":"Uni Emirat Arab","name":"Tahnoon bin Zayed Scholarship — MBZUAI","type":"partial","deck":"Deck Beasiswa S1 UEA","deckSlug":"deck-beasiswa-s1-uea","reason":"Tuition dan financial support disebut, tetapi rincian akomodasi/hidup belum final."},{"country":"Uni Emirat Arab","name":"UAEU Chancellor’s Scholarship","type":"partial","deck":"Deck Beasiswa S1 UEA","deckSlug":"deck-beasiswa-s1-uea","reason":"Waiver 75–100% tuition; akomodasi dan biaya hidup tidak termasuk."},{"country":"Uni Emirat Arab","name":"Khalifa University International Undergraduate Scholarship","type":"partial","deck":"Deck Beasiswa S1 UEA","deckSlug":"deck-beasiswa-s1-uea","reason":"Merit tiers berfokus tuition; paket akomodasi dan hidup tidak lengkap."},{"country":"Qatar","name":"VCUarts Qatar Merit Scholarship","type":"partial","deck":"Deck Beasiswa S1 Qatar","deckSlug":"deck-beasiswa-s1-qatar","reason":"Opsi seni berbasis merit; deck tidak menunjukkan tiga komponen biaya inti."},{"country":"Amerika Serikat","name":"Karsh International Scholarship — Duke University","type":"partial","deck":"Deck Beasiswa AS","deckSlug":"deck-beasiswa-as","reason":"Disebut full ride, tetapi deck tidak merinci akomodasi dan makan secara terpisah."},{"country":"Amerika Serikat","name":"Trustee Scholarship — Boston University","type":"partial","deck":"Deck Beasiswa AS","deckSlug":"deck-beasiswa-as","reason":"Full tuition, tanpa biaya hidup dan akomodasi."},{"country":"Amerika Serikat","name":"King-Morgridge Scholars Program — UW–Madison","type":"partial","deck":"Deck Beasiswa AS","deckSlug":"deck-beasiswa-as","reason":"Disebut full cost, tetapi komponen kamar dan makan tidak dirinci dalam deck."},{"country":"Kanada","name":"Lester B. Pearson International Scholarship","type":"full","deck":"Deck Beasiswa S1 Kanada","deckSlug":"deck-beasiswa-s1-kanada","reason":"Beasiswa paling prestisius University of Toronto untuk S1 internasional; mencakup tuition, buku, biaya insidental, dan full residence support selama 4 tahun; ~37 penerima per tahun; wajib nominasi dari sekolah."},{"country":"Kanada","name":"UBC International Scholars Program","type":"full","deck":"Deck Beasiswa S1 Kanada","deckSlug":"deck-beasiswa-s1-kanada","reason":"Beasiswa need-and-merit University of British Columbia untuk S1; nilai proporsional dengan kebutuhan finansial, dapat mencakup full tuition + biaya hidup; renewable."},{"country":"India","name":"ICCR Scholarship (Atal Bihari Vajpayee)","type":"full","deck":"Deck Beasiswa S1 India","deckSlug":"deck-beasiswa-s1-india","reason":"Beasiswa pemerintah India via Indian Council for Cultural Relations; mencakup S1: full tuition + stipend bulanan INR 18.000 + tunjangan asrama; pendaftaran via portal a2ascholarships.iccr.gov.in."},{"country":"Brasil","name":"PEC-G Brasil","type":"partial","deck":"Deck Beasiswa S1 Brasil","deckSlug":"deck-beasiswa-s1-brasil","reason":"Program pemerintah Brasil untuk S1 di universitas negeri — bebas biaya kuliah, tetapi biaya hidup ditanggung sendiri; syarat bahasa Portugis (CELPE-Bras); catatan jujur: Indonesia belum ada dalam daftar 73 negara partisipan — konfirmasi ke Kedutaan Brasil."},{"country":"Maroko","name":"AMCI Moroccan Government Scholarship","type":"partial","deck":"Deck Beasiswa S1 Maroko","deckSlug":"deck-beasiswa-s1-maroko","reason":"Beasiswa pemerintah Maroko via AMCI untuk S1; stipend 1.750 MAD/bulan + tiket pesawat PP + asuransi kesehatan; bahasa pengantar utama Prancis."},{"country":"Vietnam","name":"Beasiswa S1 Vietnam (TDTU & VinUniversity)","type":"partial","deck":"Deck Beasiswa S1 Vietnam","deckSlug":"deck-beasiswa-s1-vietnam","reason":"Beasiswa kampus untuk S1: Ton Duc Thang University (tuition waiver 50–100% + asrama) dan VinUniversity (merit 50% s.d. full-ride); biaya hidup sebagian besar tanggung sendiri."}];
+
+    const S2_PROGRAMS = [
+      {country:'Indonesia',name:'LPDP Reguler S2',type:'full',deck:'Deck LPDP Reguler S2',deckSlug:'deck-s2-lpdp'},
+      {country:'Inggris',name:'Chevening Scholarship S2',type:'full',deck:'Deck Chevening Scholarship S2',deckSlug:'deck-s2-chevening'},
+      {country:'Amerika Serikat',name:"Fulbright Master's S2",type:'full',deck:"Deck Fulbright Master's S2",deckSlug:'deck-s2-fulbright'},
+      {country:'Australia',name:'Australia Awards Scholarship S2',type:'full',deck:'Deck Australia Awards Scholarship S2',deckSlug:'deck-s2-australia-awards'},
+      {country:'Jerman',name:'DAAD EPOS S2',type:'full',deck:'Deck DAAD EPOS S2',deckSlug:'deck-s2-daad'},
+      {country:'Jepang',name:'MEXT Pascasarjana',type:'full',deck:'Deck MEXT Pascasarjana',deckSlug:'deck-s2-mext'},
+      {country:'Korea Selatan',name:'GKS Pascasarjana',type:'full',deck:'Deck GKS Pascasarjana',deckSlug:'deck-s2-gks'},
+      {country:'Tiongkok',name:'CSC Pascasarjana',type:'full',deck:'Deck CSC Pascasarjana',deckSlug:'deck-s2-csc'},
+      {country:'Turki',name:'Türkiye Burslari Pascasarjana',type:'full',deck:'Deck Türkiye Burslari Pascasarjana',deckSlug:'deck-s2-turkiye-burslari'},
+      {country:'Prancis',name:'Eiffel Excellence S2',type:'partial',deck:'Deck Eiffel Excellence S2',deckSlug:'deck-s2-eiffel'},
+      {country:'Swedia',name:'Swedish Institute S2',type:'full',deck:'Deck Swedish Institute S2',deckSlug:'deck-s2-swedish-institute'},
+      {country:'Belanda',name:'NL Scholarship S2',type:'partial',deck:'Deck NL Scholarship S2',deckSlug:'deck-s2-nl-scholarship'},
+      {country:'Brunei Darussalam',name:'BDGS S2',type:'full',deck:'Deck BDGS S2',deckSlug:'deck-s2-bdgs'},
+      {country:'Singapura',name:'NUS Research Scholarship S2',type:'full',deck:'Deck NUS Research Scholarship S2',deckSlug:'deck-s2-nus'},
+      {country:'Malaysia',name:'Malaysia International Scholarship S2',type:'full',deck:'Deck Malaysia International Scholarship S2',deckSlug:'deck-s2-mis-malaysia'},
+      {country:'Hungaria',name:"Stipendium Hungaricum Master's",type:'full',deck:"Deck Stipendium Hungaricum Master's",deckSlug:'deck-s2-hungaricum'},
+      {country:'Rusia',name:'Russian Government Quota S2',type:'partial',deck:'Deck Russian Government Quota S2',deckSlug:'deck-s2-rusia'},
+      {country:'Denmark',name:'Danish Government Scholarship S2',type:'partial',deck:'Deck Danish Government Scholarship S2',deckSlug:'deck-s2-denmark'},
+      {country:'Finlandia',name:'Aalto Excellence S2',type:'partial',deck:'Deck Aalto Excellence S2',deckSlug:'deck-s2-finlandia'},
+      {country:'Lithuania',name:'VU Tuition Fee Waiver S2',type:'partial',deck:'Deck VU Tuition Fee Waiver S2',deckSlug:'deck-s2-lithuania'},
+      {country:'Thailand',name:'Chulalongkorn Graduate Scholarship S2',type:'full',deck:'Deck Chulalongkorn Graduate Scholarship S2',deckSlug:'deck-s2-thailand'},
+      {country:'Taiwan',name:'TaiwanICDF Scholarship S2',type:'full',deck:'Deck TaiwanICDF Scholarship S2',deckSlug:'deck-s2-taiwan'},
+      {country:'Kazakhstan',name:'Kazakhstan Government Scholarship S2',type:'full',deck:'Deck Kazakhstan Government Scholarship S2',deckSlug:'deck-s2-kazakhstan'},
+      {country:'Azerbaijan',name:'Heydar Aliyev Grant S2',type:'full',deck:'Deck Heydar Aliyev Grant S2',deckSlug:'deck-s2-azerbaijan'},
+      {country:'Rumania',name:'Romanian MFA Scholarship S2',type:'full',deck:'Deck Romanian MFA Scholarship S2',deckSlug:'deck-s2-rumania'},
+      {country:'Spanyol',name:'ESADE MSc Scholarships S2',type:'partial',deck:'Deck ESADE MSc Scholarships S2',deckSlug:'deck-s2-spanyol'},
+      {country:'Portugal',name:'Coimbra Incentive Scholarship S2',type:'partial',deck:'Deck Coimbra Incentive Scholarship S2',deckSlug:'deck-s2-portugal'},
+      {country:'Serbia',name:'World in Serbia S2',type:'full',deck:'Deck World in Serbia S2',deckSlug:'deck-s2-serbia'},
+      {country:'Qatar',name:'Qatar University Graduate Scholarships S2',type:'full',deck:'Deck Qatar University Graduate Scholarships S2',deckSlug:'deck-s2-qatar'},
+      {country:'UEA',name:'AUS Graduate Assistantship S2',type:'partial',deck:'Deck AUS Graduate Assistantship S2',deckSlug:'deck-s2-uea'},
+      {country:'Irlandia',name:'UCD Global Excellence S2',type:'partial',deck:'Deck UCD Global Excellence S2',deckSlug:'deck-s2-irlandia'},
+      {country:'Kanada',name:'McCall MacBain Scholarships S2',type:'full',deck:'Deck McCall MacBain Scholarships S2',deckSlug:'deck-s2-kanada'},
+      {country:'India',name:'ICCR Scholarship S2',type:'full',deck:'Deck ICCR Scholarship S2',deckSlug:'deck-s2-india'},
+      {country:'Maroko',name:'AMCI Moroccan Government Scholarship S2',type:'full',deck:'Deck AMCI Moroccan Government Scholarship S2',deckSlug:'deck-s2-maroko'},
+      {country:'Vietnam',name:'TDTU Graduate Scholarship S2',type:'partial',deck:'Deck TDTU Graduate Scholarship S2',deckSlug:'deck-s2-vietnam'},
+      {country:'Italia',name:'DSU Toscana Scholarship S2',type:'full',deck:'Deck DSU Toscana Scholarship S2',deckSlug:'deck-s2-italia'},
+      {country:'Arab Saudi',name:'KAUST Fellowship S2',type:'full',deck:'Deck KAUST Fellowship S2',deckSlug:'deck-s2-arab-saudi'}
+    ];
+
+    const S3_PROGRAMS = [
+      {country:'Turki',name:'Türkiye Burslari S3',type:'full',deck:'Panduan S3 Türkiye Burslari',deckSlug:'deck-s3-turkiye'},
+      {country:'Jepang',name:'MEXT S3',type:'full',deck:'Panduan S3 MEXT Jepang',deckSlug:'deck-s3-mext'},
+      {country:'Korea Selatan',name:'GKS S3',type:'full',deck:'Panduan S3 GKS Korea',deckSlug:'deck-s3-gks'},
+      {country:'Tiongkok',name:'CSC S3',type:'full',deck:'Panduan S3 CSC Tiongkok',deckSlug:'deck-s3-csc'},
+      {country:'Indonesia',name:'LPDP Doktor',type:'full',deck:'Panduan S3 LPDP Doktor',deckSlug:'deck-s3-indonesia'},
+      {country:'Singapura',name:'PhD NUS',type:'full',deck:'Panduan PhD NUS Singapura',deckSlug:'deck-s3-nus'},
+      {country:'Singapura',name:'PhD NTU',type:'full',deck:'Panduan PhD NTU Singapura',deckSlug:'deck-s3-ntu'},
+      {country:'Korea Selatan',name:'PhD KAIST',type:'full',deck:'Panduan PhD KAIST Korea',deckSlug:'deck-s3-kaist'},
+      {country:'Korea Selatan',name:'PhD POSTECH',type:'full',deck:'Panduan PhD POSTECH Korea',deckSlug:'deck-s3-postech'},
+      {country:'Hungaria',name:'Stipendium Hungaricum S3',type:'full',deck:'Panduan S3 Stipendium Hungaricum',deckSlug:'deck-s3-hungaria'},
+      {country:'Rusia',name:'Beasiswa Rusia S3',type:'full',deck:'Panduan S3 Beasiswa Rusia',deckSlug:'deck-s3-rusia'},
+      {country:'Belanda',name:'PhD Bergaji Belanda',type:'full',deck:'Panduan PhD Bergaji Belanda',deckSlug:'deck-s3-belanda'},
+      {country:'Denmark',name:'PhD Bergaji Denmark',type:'full',deck:'Panduan PhD Bergaji Denmark',deckSlug:'deck-s3-denmark'},
+      {country:'Finlandia',name:'PhD Bergaji Finlandia',type:'full',deck:'Panduan PhD Bergaji Finlandia',deckSlug:'deck-s3-finlandia'},
+      {country:'Lithuania',name:'PhD Lithuania',type:'full',deck:'Panduan PhD Lithuania',deckSlug:'deck-s3-lithuania'},
+      {country:'Australia',name:'PhD Monash',type:'full',deck:'Panduan PhD Monash Australia',deckSlug:'deck-s3-monash'},
+      {country:'Australia',name:'PhD UNSW',type:'full',deck:'Panduan PhD UNSW Australia',deckSlug:'deck-s3-unsw'},
+      {country:'Jepang',name:'Sophia University S3',type:'partial',deck:'Panduan S3 Sophia University Jepang',deckSlug:'deck-s3-sophia'},
+      {country:'Amerika Serikat',name:'Fulbright S3',type:'full',deck:'Panduan S3 Fulbright AS',deckSlug:'deck-s3-as'},
+      {country:'Jerman',name:'DAAD S3',type:'full',deck:'Panduan S3 DAAD Jerman',deckSlug:'deck-s3-jerman'},
+      {country:'Italia',name:'MAECI S3',type:'full',deck:'Panduan S3 MAECI Italia',deckSlug:'deck-s3-italia'},
+      {country:'Arab Saudi',name:'PhD KAUST',type:'full',deck:'Panduan PhD KAUST Arab Saudi',deckSlug:'deck-s3-arabsaudi'},
+      {country:'Thailand',name:'Chulalongkorn S3',type:'full',deck:'Panduan S3 Chulalongkorn Thailand',deckSlug:'deck-s3-thailand'},
+      {country:'Taiwan',name:'TaiwanICDF S3',type:'full',deck:'Panduan S3 TaiwanICDF Taiwan',deckSlug:'deck-s3-taiwan'},
+      {country:'Kazakhstan',name:'S3 Kazakhstan',type:'full',deck:'Panduan S3 Kazakhstan',deckSlug:'deck-s3-kazakhstan'},
+      {country:'Azerbaijan',name:'Heydar Aliyev S3',type:'full',deck:'Panduan S3 Heydar Aliyev Azerbaijan',deckSlug:'deck-s3-azerbaijan'},
+      {country:'Rumania',name:'S3 Rumania',type:'partial',deck:'Panduan S3 Rumania',deckSlug:'deck-s3-rumania'},
+      {country:'Spanyol',name:'PhD la Caixa',type:'full',deck:'Panduan PhD la Caixa Spanyol',deckSlug:'deck-s3-spanyol'},
+      {country:'Portugal',name:'PhD FCT',type:'full',deck:'Panduan PhD FCT Portugal',deckSlug:'deck-s3-portugal'},
+      {country:'Serbia',name:'World in Serbia S3',type:'full',deck:'Panduan S3 World in Serbia',deckSlug:'deck-s3-serbia'},
+      {country:'Qatar',name:'Qatar University S3',type:'full',deck:'Panduan S3 Qatar University',deckSlug:'deck-s3-qatar'},
+      {country:'Uni Emirat Arab',name:'PhD MBZUAI',type:'full',deck:'Panduan PhD MBZUAI UEA',deckSlug:'deck-s3-uea'},
+      {country:'Inggris',name:'DPhil Clarendon Oxford',type:'full',deck:'Panduan DPhil Clarendon Oxford',deckSlug:'deck-s3-inggris'},
+      {country:'Irlandia',name:'GOIPG S3',type:'full',deck:'Panduan S3 GOIPG Irlandia',deckSlug:'deck-s3-irlandia'},
+      {country:'Swedia',name:'PhD Bergaji Swedia',type:'full',deck:'Panduan PhD Bergaji Swedia',deckSlug:'deck-s3-swedia'},
+      {country:'Kanada',name:'PhD CGRS-D',type:'full',deck:'Panduan PhD CGRS-D Kanada',deckSlug:'deck-s3-kanada'},
+      {country:'India',name:'ICCR S3',type:'full',deck:'Panduan S3 ICCR India',deckSlug:'deck-s3-india'},
+      {country:'Maroko',name:'AMCI S3',type:'full',deck:'Panduan S3 AMCI Maroko',deckSlug:'deck-s3-maroko'},
+      {country:'Vietnam',name:'PhD TDTU',type:'partial',deck:'Panduan PhD TDTU Vietnam',deckSlug:'deck-s3-vietnam'}
+    ];
+
+    const PRA_PROGRAMS = [
+      {country:'Pra Beasiswa',name:'Checklist Dokumen & Timeline Persiapan Beasiswa',type:'guide',deck:'Deck Checklist Dokumen & Timeline',deckSlug:'deck-pra-checklist'},
+      {country:'Pra Beasiswa',name:'Cara Menulis Esai / Motivation Letter',type:'guide',deck:'Deck Esai / Motivation Letter',deckSlug:'deck-pra-esai'},
+      {country:'Pra Beasiswa',name:'Cara Menyusun CV untuk Beasiswa',type:'guide',deck:'Deck CV Beasiswa',deckSlug:'deck-pra-cv'},
+      {country:'Pra Beasiswa',name:'Panduan Surat Rekomendasi',type:'guide',deck:'Deck Surat Rekomendasi',deckSlug:'deck-pra-rekomendasi'},
+      {country:'Pra Beasiswa',name:'Panduan Lolos Wawancara Beasiswa',type:'guide',deck:'Deck Wawancara Beasiswa',deckSlug:'deck-pra-wawancara'},
+      {country:'Pra Beasiswa',name:'Cara Mendapatkan LoA dari Universitas',type:'guide',deck:'Deck Mendapatkan LoA',deckSlug:'deck-pra-loa'},
+      {country:'Pra Beasiswa',name:'Cara Memilih Negara & Universitas Tujuan',type:'guide',deck:'Deck Memilih Negara & Universitas',deckSlug:'deck-pra-pilih-negara'}
+    ];
+
+    const BAHASA_PROGRAMS = [
+      {country:'Persiapan Bahasa',name:'Panduan Lengkap IELTS untuk Beasiswa',type:'guide',deck:'Deck Panduan IELTS',deckSlug:'deck-bahasa-ielts'},
+      {country:'Persiapan Bahasa',name:'Panduan Lengkap TOEFL iBT untuk Beasiswa',type:'guide',deck:'Deck Panduan TOEFL iBT',deckSlug:'deck-bahasa-toefl'},
+      {country:'Persiapan Bahasa',name:'IELTS vs TOEFL vs Duolingo: Pilih yang Tepat',type:'guide',deck:'Deck Perbandingan Tes Bahasa Inggris',deckSlug:'deck-bahasa-perbandingan'},
+      {country:'Bahasa Jepang',name:'Panduan JLPT (Bahasa Jepang)',type:'guide',deck:'Deck Panduan JLPT',deckSlug:'deck-bahasa-jlpt'},
+      {country:'Bahasa Korea',name:'Panduan TOPIK (Bahasa Korea)',type:'guide',deck:'Deck Panduan TOPIK',deckSlug:'deck-bahasa-topik'},
+      {country:'Bahasa Mandarin',name:'Panduan HSK (Bahasa Mandarin)',type:'guide',deck:'Deck Panduan HSK',deckSlug:'deck-bahasa-hsk'},
+      {country:'Bahasa Jerman',name:'Panduan Bahasa Jerman (Goethe/TestDaF)',type:'guide',deck:'Deck Panduan Bahasa Jerman',deckSlug:'deck-bahasa-jerman'},
+      {country:'Bahasa Prancis',name:'Panduan DELF/DALF (Bahasa Prancis)',type:'guide',deck:'Deck Panduan Bahasa Prancis',deckSlug:'deck-bahasa-prancis'},
+      {country:'Bahasa Turki',name:'Panduan Bahasa Turki (TÖMER)',type:'guide',deck:'Deck Panduan Bahasa Turki',deckSlug:'deck-bahasa-turki'},
+      {country:'Belajar Mandiri',name:'Strategi Belajar Bahasa Asing Mandiri',type:'guide',deck:'Deck Strategi Belajar Mandiri',deckSlug:'deck-bahasa-mandiri'}
+    ];
+
+    const DN_PROGRAMS = [
+      {country:'Pemerintah · LPDP',name:'Panduan Lengkap Beasiswa LPDP',type:'guide',deck:'Deck Beasiswa LPDP',deckSlug:'deck-dn-lpdp'},
+      {country:'Kemendikbudristek',name:'Panduan Beasiswa Unggulan Kemendikbudristek',type:'guide',deck:'Deck Beasiswa Unggulan',deckSlug:'deck-dn-unggulan'},
+      {country:'Kemendikbudristek',name:'Panduan KIP Kuliah',type:'guide',deck:'Deck KIP Kuliah',deckSlug:'deck-dn-kip'},
+      {country:'Kemdiktisaintek',name:'Panduan Beasiswa Garuda 2027',type:'guide',deck:'Deck Beasiswa Garuda 2027',deckSlug:'deck-dn-garuda'},
+      {country:'Kemendikbudristek',name:'Panduan Beasiswa Pendidikan Indonesia (BPI)',type:'guide',deck:'Deck Beasiswa BPI',deckSlug:'deck-dn-bpi'},
+      {country:'Kementerian Agama',name:'Panduan Beasiswa Kemenag',type:'guide',deck:'Deck Beasiswa Kemenag',deckSlug:'deck-dn-kemenag'},
+      {country:'Pemerintah Daerah',name:'Panduan Beasiswa Pemda & Gubernur',type:'guide',deck:'Deck Beasiswa Pemda',deckSlug:'deck-dn-pemda'},
+      {country:'Swasta · Djarum Foundation',name:'Panduan Djarum Beasiswa Plus',type:'guide',deck:'Deck Djarum Beasiswa Plus',deckSlug:'deck-dn-djarum'},
+      {country:'Swasta · Tanoto Foundation',name:'Panduan Beasiswa Tanoto Foundation',type:'guide',deck:'Deck Beasiswa Tanoto',deckSlug:'deck-dn-tanoto'},
+      {country:'Swasta · KSE',name:'Panduan Beasiswa Karya Salemba Empat (KSE)',type:'guide',deck:'Deck Beasiswa KSE',deckSlug:'deck-dn-kse'},
+      {country:'Swasta · Sampoerna Foundation',name:'Panduan Beasiswa Sampoerna Foundation',type:'guide',deck:'Deck Beasiswa Sampoerna',deckSlug:'deck-dn-sampoerna'},
+      {country:'Bank Indonesia',name:'Panduan Beasiswa Bank Indonesia (GenBI)',type:'guide',deck:'Deck Beasiswa GenBI',deckSlug:'deck-dn-genbi'},
+      {country:'Swasta · VDMI',name:'Panduan Beasiswa VDMI',type:'guide',deck:'Deck Beasiswa VDMI',deckSlug:'deck-dn-vdmi'},
+      {country:'Swasta · BCA',name:'Panduan Beasiswa Bakti BCA',type:'guide',deck:'Deck Beasiswa Bakti BCA',deckSlug:'deck-dn-baktibca'},
+      {country:'BUMN',name:'Panduan Beasiswa BUMN',type:'guide',deck:'Deck Beasiswa BUMN',deckSlug:'deck-dn-bumn'}
+    ];
+
+    const GRANT_PROGRAMS = [
+      {country:'Pertukaran Mahasiswa',name:'Panduan IISMA',type:'guide',deck:'Deck IISMA',deckSlug:'deck-grant-iisma'},
+      {country:'Pertukaran Vokasi',name:'Panduan IISMAVO',type:'guide',deck:'Deck IISMAVO',deckSlug:'deck-grant-iismavo'},
+      {country:'Konferensi Internasional',name:'Panduan Travel Grant',type:'guide',deck:'Deck Travel Grant',deckSlug:'deck-grant-travel'},
+      {country:'Summit Internasional',name:'Panduan Youth Summit Fully Funded',type:'guide',deck:'Deck Youth Summit',deckSlug:'deck-grant-summit'},
+      {country:'Jerman',name:'Panduan Ausbildung Jerman',type:'guide',deck:'Deck Ausbildung Jerman',deckSlug:'deck-grant-ausbildung'},
+      {country:'Jerman · Belanda · AS',name:'Panduan Au Pair',type:'guide',deck:'Deck Au Pair',deckSlug:'deck-grant-aupair'},
+      {country:'Australia',name:'Panduan Working Holiday Visa Australia',type:'guide',deck:'Deck WHV Australia',deckSlug:'deck-grant-whv'},
+      {country:'Amerika Serikat',name:'Panduan Work & Travel USA / Camp Counselor',type:'guide',deck:'Deck Work & Travel USA',deckSlug:'deck-grant-worktravel'},
+      {country:'Jepang',name:'Panduan JET Programme Jepang',type:'guide',deck:'Deck JET Programme',deckSlug:'deck-grant-jet'},
+      {country:'Volunteer Internasional',name:'Panduan AIESEC Global Volunteer',type:'guide',deck:'Deck AIESEC Global Volunteer',deckSlug:'deck-grant-aiesec-volunteer'},
+      {country:'Magang Internasional',name:'Panduan AIESEC Global Talent',type:'guide',deck:'Deck AIESEC Global Talent',deckSlug:'deck-grant-aiesec-talent'},
+      {country:'Eropa',name:'Panduan Erasmus+',type:'guide',deck:'Deck Erasmus+',deckSlug:'deck-grant-erasmus'},
+      {country:'Sekolah Musim Internasional',name:'Panduan Summer/Winter School Luar Negeri',type:'guide',deck:'Deck Summer/Winter School',deckSlug:'deck-grant-summerschool'},
+      {country:'Kursus Singkat Internasional',name:'Panduan Short Course Luar Negeri',type:'guide',deck:'Deck Short Course',deckSlug:'deck-grant-shortcourse'}
+    ];
+
+    const DECK_URLS = Object.freeze({
+      'deck-turkiye-burslari': 'https://wayangprint.github.io/web-beasiswa/decks/deck-turkiye-burslari.html',
+      'deck-mext-jepang': 'https://wayangprint.github.io/web-beasiswa/decks/deck-mext-jepang.html',
+      'deck-gks-korea': 'https://wayangprint.github.io/web-beasiswa/decks/deck-gks-korea.html',
+      'deck-bdgs-brunei': 'https://wayangprint.github.io/web-beasiswa/decks/deck-bdgs-brunei.html',
+      'deck-csc-tiongkok': 'https://wayangprint.github.io/web-beasiswa/decks/deck-csc-tiongkok.html',
+      'deck-bim-indonesia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-bim-indonesia.html',
+      'deck-nus-singapura': 'https://wayangprint.github.io/web-beasiswa/decks/deck-nus-singapura.html',
+      'deck-ntu-singapura': 'https://wayangprint.github.io/web-beasiswa/decks/deck-ntu-singapura.html',
+      'deck-kaist-korea': 'https://wayangprint.github.io/web-beasiswa/decks/deck-kaist-korea.html',
+      'deck-postech-korea': 'https://wayangprint.github.io/web-beasiswa/decks/deck-postech-korea.html',
+      'deck-albukhary-malaysia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-albukhary-malaysia.html',
+      'deck-stipendium-hungaricum': 'https://wayangprint.github.io/web-beasiswa/decks/deck-stipendium-hungaricum.html',
+      'deck-rusia-quota': 'https://wayangprint.github.io/web-beasiswa/decks/deck-rusia-quota.html',
+      'deck-holland-belanda': 'https://wayangprint.github.io/web-beasiswa/decks/deck-holland-belanda.html',
+      'deck-monash-australia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-monash-australia.html',
+      'deck-unsw-australia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-unsw-australia.html',
+      'deck-sophia-tiu-jepang': 'https://wayangprint.github.io/web-beasiswa/decks/deck-sophia-tiu-jepang.html',
+      'deck-beasiswa-as': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-as.html',
+      'deck-jerman-tuition-free': 'https://wayangprint.github.io/web-beasiswa/decks/deck-jerman-tuition-free.html',
+      'deck-beasiswa-s1-italia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-italia.html',
+      'deck-beasiswa-s1-arab-saudi': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-arab-saudi.html',
+      'deck-beasiswa-s1-thailand': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-thailand.html',
+      'deck-beasiswa-s1-taiwan': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-taiwan.html',
+      'deck-beasiswa-s1-kazakhstan': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-kazakhstan.html',
+      'deck-beasiswa-s1-uzbekistan': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-uzbekistan.html',
+      'deck-beasiswa-s1-georgia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-georgia.html',
+      'deck-beasiswa-s1-azerbaijan': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-azerbaijan.html',
+      'deck-beasiswa-s1-rumania': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-rumania.html',
+      'deck-beasiswa-s1-spanyol': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-spanyol.html',
+      'deck-beasiswa-s1-portugal': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-portugal.html',
+      'deck-beasiswa-s1-serbia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-serbia.html',
+      'deck-beasiswa-s1-qatar': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-qatar.html',
+      'deck-beasiswa-s1-uea': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-uea.html',
+      'deck-beasiswa-s1-inggris': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-inggris.html',
+      'deck-beasiswa-s1-irlandia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-irlandia.html',
+      'deck-beasiswa-s1-denmark': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-denmark.html',
+      'deck-beasiswa-s1-swedia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-swedia.html',
+      'deck-beasiswa-s1-finlandia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-finlandia.html',
+      'deck-beasiswa-s1-lithuania': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-lithuania.html',
+      'deck-beasiswa-s1-kanada': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-kanada.html',
+      'deck-beasiswa-s1-india': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-india.html',
+      'deck-beasiswa-s1-brasil': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-brasil.html',
+      'deck-beasiswa-s1-maroko': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-maroko.html',
+      'deck-beasiswa-s1-vietnam': 'https://wayangprint.github.io/web-beasiswa/decks/deck-beasiswa-s1-vietnam.html',
+      'deck-s2-lpdp': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-lpdp.html',
+      'deck-s2-chevening': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-chevening.html',
+      'deck-s2-fulbright': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-fulbright.html',
+      'deck-s2-australia-awards': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-australia-awards.html',
+      'deck-s2-daad': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-daad.html',
+      'deck-s2-mext': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-mext.html',
+      'deck-s2-gks': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-gks.html',
+      'deck-s2-csc': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-csc.html',
+      'deck-s2-turkiye-burslari': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-turkiye-burslari.html',
+      'deck-s2-eiffel': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-eiffel.html',
+      'deck-s2-swedish-institute': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-swedish-institute.html',
+      'deck-s2-nl-scholarship': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-nl-scholarship.html',
+      'deck-s2-bdgs': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-bdgs.html',
+      'deck-s2-nus': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-nus.html',
+      'deck-s2-mis-malaysia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-mis-malaysia.html',
+      'deck-s2-hungaricum': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-hungaricum.html',
+      'deck-s2-rusia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-rusia.html',
+      'deck-s2-denmark': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-denmark.html',
+      'deck-s2-finlandia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-finlandia.html',
+      'deck-s2-lithuania': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-lithuania.html',
+      'deck-s2-thailand': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-thailand.html',
+      'deck-s2-taiwan': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-taiwan.html',
+      'deck-s2-kazakhstan': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-kazakhstan.html',
+      'deck-s2-azerbaijan': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-azerbaijan.html',
+      'deck-s2-rumania': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-rumania.html',
+      'deck-s2-spanyol': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-spanyol.html',
+      'deck-s2-portugal': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-portugal.html',
+      'deck-s2-serbia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-serbia.html',
+      'deck-s2-qatar': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-qatar.html',
+      'deck-s2-uea': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-uea.html',
+      'deck-s2-irlandia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-irlandia.html',
+      'deck-s2-kanada': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-kanada.html',
+      'deck-s2-india': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-india.html',
+      'deck-s2-maroko': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-maroko.html',
+      'deck-s2-vietnam': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-vietnam.html',
+      'deck-s2-italia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-italia.html',
+      'deck-s2-arab-saudi': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s2-arab-saudi.html',
+      'deck-s3-turkiye': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-turkiye.html',
+      'deck-s3-mext': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-mext.html',
+      'deck-s3-gks': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-gks.html',
+      'deck-s3-csc': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-csc.html',
+      'deck-s3-indonesia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-indonesia.html',
+      'deck-s3-nus': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-nus.html',
+      'deck-s3-ntu': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-ntu.html',
+      'deck-s3-kaist': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-kaist.html',
+      'deck-s3-postech': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-postech.html',
+      'deck-s3-hungaria': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-hungaria.html',
+      'deck-s3-rusia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-rusia.html',
+      'deck-s3-belanda': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-belanda.html',
+      'deck-s3-denmark': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-denmark.html',
+      'deck-s3-finlandia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-finlandia.html',
+      'deck-s3-lithuania': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-lithuania.html',
+      'deck-s3-monash': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-monash.html',
+      'deck-s3-unsw': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-unsw.html',
+      'deck-s3-sophia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-sophia.html',
+      'deck-s3-as': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-as.html',
+      'deck-s3-jerman': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-jerman.html',
+      'deck-s3-italia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-italia.html',
+      'deck-s3-arabsaudi': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-arabsaudi.html',
+      'deck-s3-thailand': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-thailand.html',
+      'deck-s3-taiwan': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-taiwan.html',
+      'deck-s3-kazakhstan': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-kazakhstan.html',
+      'deck-s3-azerbaijan': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-azerbaijan.html',
+      'deck-s3-rumania': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-rumania.html',
+      'deck-s3-spanyol': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-spanyol.html',
+      'deck-s3-portugal': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-portugal.html',
+      'deck-s3-serbia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-serbia.html',
+      'deck-s3-qatar': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-qatar.html',
+      'deck-s3-uea': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-uea.html',
+      'deck-s3-inggris': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-inggris.html',
+      'deck-s3-irlandia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-irlandia.html',
+      'deck-s3-swedia': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-swedia.html',
+      'deck-s3-kanada': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-kanada.html',
+      'deck-s3-india': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-india.html',
+      'deck-s3-maroko': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-maroko.html',
+      'deck-s3-vietnam': 'https://wayangprint.github.io/web-beasiswa/decks/deck-s3-vietnam.html',
+      'deck-pra-checklist': 'https://wayangprint.github.io/web-beasiswa/decks/deck-pra-checklist.html',
+      'deck-pra-esai': 'https://wayangprint.github.io/web-beasiswa/decks/deck-pra-esai.html',
+      'deck-pra-cv': 'https://wayangprint.github.io/web-beasiswa/decks/deck-pra-cv.html',
+      'deck-pra-rekomendasi': 'https://wayangprint.github.io/web-beasiswa/decks/deck-pra-rekomendasi.html',
+      'deck-pra-wawancara': 'https://wayangprint.github.io/web-beasiswa/decks/deck-pra-wawancara.html',
+      'deck-pra-loa': 'https://wayangprint.github.io/web-beasiswa/decks/deck-pra-loa.html',
+      'deck-pra-pilih-negara': 'https://wayangprint.github.io/web-beasiswa/decks/deck-pra-pilih-negara.html',
+      'deck-bahasa-ielts': 'https://wayangprint.github.io/web-beasiswa/decks/deck-bahasa-ielts.html',
+      'deck-bahasa-toefl': 'https://wayangprint.github.io/web-beasiswa/decks/deck-bahasa-toefl.html',
+      'deck-bahasa-perbandingan': 'https://wayangprint.github.io/web-beasiswa/decks/deck-bahasa-perbandingan.html',
+      'deck-bahasa-jlpt': 'https://wayangprint.github.io/web-beasiswa/decks/deck-bahasa-jlpt.html',
+      'deck-bahasa-topik': 'https://wayangprint.github.io/web-beasiswa/decks/deck-bahasa-topik.html',
+      'deck-bahasa-hsk': 'https://wayangprint.github.io/web-beasiswa/decks/deck-bahasa-hsk.html',
+      'deck-bahasa-jerman': 'https://wayangprint.github.io/web-beasiswa/decks/deck-bahasa-jerman.html',
+      'deck-bahasa-prancis': 'https://wayangprint.github.io/web-beasiswa/decks/deck-bahasa-prancis.html',
+      'deck-bahasa-turki': 'https://wayangprint.github.io/web-beasiswa/decks/deck-bahasa-turki.html',
+      'deck-bahasa-mandiri': 'https://wayangprint.github.io/web-beasiswa/decks/deck-bahasa-mandiri.html',
+      'deck-dn-lpdp': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-lpdp.html',
+      'deck-dn-unggulan': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-unggulan.html',
+      'deck-dn-kip': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-kip.html',
+      'deck-dn-garuda': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-garuda.html',
+      'deck-dn-bpi': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-bpi.html',
+      'deck-dn-kemenag': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-kemenag.html',
+      'deck-dn-pemda': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-pemda.html',
+      'deck-dn-djarum': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-djarum.html',
+      'deck-dn-tanoto': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-tanoto.html',
+      'deck-dn-kse': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-kse.html',
+      'deck-dn-sampoerna': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-sampoerna.html',
+      'deck-dn-genbi': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-genbi.html',
+      'deck-dn-vdmi': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-vdmi.html',
+      'deck-dn-baktibca': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-baktibca.html',
+      'deck-dn-bumn': 'https://wayangprint.github.io/web-beasiswa/decks/deck-dn-bumn.html',
+      'deck-grant-iisma': 'https://wayangprint.github.io/web-beasiswa/decks/deck-grant-iisma.html',
+      'deck-grant-iismavo': 'https://wayangprint.github.io/web-beasiswa/decks/deck-grant-iismavo.html',
+      'deck-grant-travel': 'https://wayangprint.github.io/web-beasiswa/decks/deck-grant-travel.html',
+      'deck-grant-summit': 'https://wayangprint.github.io/web-beasiswa/decks/deck-grant-summit.html',
+      'deck-grant-ausbildung': 'https://wayangprint.github.io/web-beasiswa/decks/deck-grant-ausbildung.html',
+      'deck-grant-aupair': 'https://wayangprint.github.io/web-beasiswa/decks/deck-grant-aupair.html',
+      'deck-grant-whv': 'https://wayangprint.github.io/web-beasiswa/decks/deck-grant-whv.html',
+      'deck-grant-worktravel': 'https://wayangprint.github.io/web-beasiswa/decks/deck-grant-worktravel.html',
+      'deck-grant-jet': 'https://wayangprint.github.io/web-beasiswa/decks/deck-grant-jet.html',
+      'deck-grant-aiesec-volunteer': 'https://wayangprint.github.io/web-beasiswa/decks/deck-grant-aiesec-volunteer.html',
+      'deck-grant-aiesec-talent': 'https://wayangprint.github.io/web-beasiswa/decks/deck-grant-aiesec-talent.html',
+      'deck-grant-erasmus': 'https://wayangprint.github.io/web-beasiswa/decks/deck-grant-erasmus.html',
+      'deck-grant-summerschool': 'https://wayangprint.github.io/web-beasiswa/decks/deck-grant-summerschool.html',
+      'deck-grant-shortcourse': 'https://wayangprint.github.io/web-beasiswa/decks/deck-grant-shortcourse.html'
+    }); // link publik deck; kartu member terverifikasi membuka tujuan masing-masing
+
+    const ICONS = {
+      cap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5L2 9Z"/><path d="M6 11.5V16c3 2.5 9 2.5 12 0v-4.5"/><path d="M22 9v6"/></svg>',
+      language:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h9M8.5 3v2M6 9c1.5 2.8 4.2 4.7 7.5 5.4"/><path d="M11 5c-.5 4.6-3.1 8.3-7 10"/><path d="m14 19 3-8 3 8M15 16h4"/></svg>',
+      compass:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/></svg>',
+      search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>',
+      clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'
+    };
+
+    const app = document.getElementById('app');
+    let activeQuery = '';
+    let activeAuthMode = 'signup';
+    let pendingRoute = '/s1/';
+    let pendingIndexRoute = '/s1/';
+    let pendingProgramSlug = '';
+    let currentSession = null;
+    let currentUser = null;
+    let currentProfile = null;
+    let latestVerification = null;
+    let paywallTimer = null;
+    let deviceValidationTimer = null;
+    let deviceCheckInFlight = null;
+    let lastDeviceCheckAt = 0;
+    let cachedDeviceId = '';
+    let pendingAuthNotice = '';
+    let authActionBusy = false;
+
+    let supabaseReady = false;
+    let supabaseConnectionError = null;
+    let sb = null;
+
+    function formatIdr(value) { return new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', maximumFractionDigits:0}).format(value); }
+    function navigate(path) {
+      const next = path.startsWith('#') ? path : `#${path}`;
+      if (window.location.hash === next) renderRoute();
+      else window.location.hash = next;
+    }
+    function element(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+    function iconNode(name, className='iconbox') {
+      const node = element('div', className);
+      node.innerHTML = ICONS[name] || ICONS.cap;
+      return node;
+    }
+    function translateAuthError(message='') {
+      if (message.includes('Invalid login credentials')) return 'Email atau password salah.';
+      if (message.includes('User already registered')) return 'Email sudah terdaftar, silakan masuk.';
+      if (/failed to fetch|load failed|networkerror|network request failed/i.test(message)) {
+        return `Koneksi ke server Supabase gagal: ${message}. Periksa koneksi internet atau pemblokiran jaringan, lalu coba lagi.`;
+      }
+      return message || 'Terjadi kesalahan. Silakan coba lagi.';
+    }
+    function memberUnavailableMessage() {
+      if (window.__supabaseSdkError) return window.__supabaseSdkError.message;
+      if (supabaseConnectionError) return `Koneksi ke server Supabase gagal: ${supabaseConnectionError.message}`;
+      return 'Layanan member belum siap karena Supabase SDK tidak tersedia.';
+    }
+    function profileName() {
+      return currentProfile?.username || currentUser?.user_metadata?.username || currentUser?.email || 'Member';
+    }
+    function clearPaywallPolling() {
+      if (paywallTimer) window.clearInterval(paywallTimer);
+      paywallTimer = null;
+    }
+    function getDeviceId() {
+      if (cachedDeviceId) return cachedDeviceId;
+      try { cachedDeviceId = localStorage.getItem(DEVICE_ID_STORAGE_KEY) || ''; } catch (error) {}
+      if (!cachedDeviceId) {
+        cachedDeviceId = crypto.randomUUID();
+        try { localStorage.setItem(DEVICE_ID_STORAGE_KEY,cachedDeviceId); } catch (error) {}
+      }
+      return cachedDeviceId;
+    }
+    function getDeviceLabel() {
+      const agent=navigator.userAgent || '';
+      let browser='Browser';
+      if (/Edg\//.test(agent)) browser='Edge';
+      else if (/OPR\//.test(agent)) browser='Opera';
+      else if (/CriOS\//.test(agent)) browser='Chrome';
+      else if (/Chrome\//.test(agent)) browser='Chrome';
+      else if (/FxiOS\//.test(agent)) browser='Firefox';
+      else if (/Firefox\//.test(agent)) browser='Firefox';
+      else if (/Safari\//.test(agent)) browser='Safari';
+      let platform='Perangkat';
+      if (/Android/.test(agent)) platform='Android';
+      else if (/iPhone|iPad|iPod/.test(agent)) platform='iOS';
+      else if (/Windows/.test(agent)) platform='Windows';
+      else if (/Macintosh|Mac OS X/.test(agent)) platform='macOS';
+      else if (/Linux/.test(agent)) platform='Linux';
+      return `${browser} · ${platform}`;
+    }
+    function clearDeviceValidation() {
+      if (deviceValidationTimer) window.clearInterval(deviceValidationTimer);
+      deviceValidationTimer=null;
+      deviceCheckInFlight=null;
+      lastDeviceCheckAt=0;
+    }
+    function startDeviceValidation() {
+      clearDeviceValidation();
+      if (!currentSession || !currentUser) return;
+      deviceValidationTimer=window.setInterval(()=>{ void checkDeviceValid(); },60000);
+    }
+    async function registerDevice() {
+      if (!sb || !currentSession || !currentUser) return true;
+      try {
+        const deviceId=getDeviceId();
+        const now=new Date().toISOString();
+        const {error:upsertError}=await sb.from('devices').upsert({
+          user_id:currentUser.id,
+          device_id:deviceId,
+          device_label:getDeviceLabel(),
+          last_seen:now
+        },{onConflict:'user_id,device_id'});
+        if (upsertError) return true;
+        const {data,error}=await sb.from('devices').select('device_id,last_seen').eq('user_id',currentUser.id).order('last_seen',{ascending:true});
+        if (error || !Array.isArray(data) || data.length<=MAX_DEVICES) return true;
+        const oldest=data.filter(device=>device.device_id!==deviceId).slice(0,data.length-MAX_DEVICES);
+        for (const device of oldest) {
+          const {error:deleteError}=await sb.from('devices').delete().eq('user_id',currentUser.id).eq('device_id',device.device_id);
+          if (deleteError) return true;
+        }
+      } catch (error) {}
+      return true;
+    }
+    async function checkDeviceValid() {
+      if (!sb || !currentSession || !currentUser) return true;
+      if (deviceCheckInFlight) return deviceCheckInFlight;
+      deviceCheckInFlight=(async()=>{
+        try {
+          const deviceId=getDeviceId();
+          const {data,error}=await sb.from('devices').select('device_id').eq('user_id',currentUser.id).eq('device_id',deviceId).maybeSingle();
+          if (error) return true;
+          if (!data) {
+            clearDeviceValidation();
+            try { await sb.auth.signOut(); } catch (error) {}
+            currentSession=null;
+            currentUser=null;
+            currentProfile=null;
+            latestVerification=null;
+            pendingAuthNotice='Sesi di perangkat ini telah berakhir karena akun dipakai di lebih dari 5 perangkat.';
+            navigate('/auth');
+            return false;
+          }
+          const {error:updateError}=await sb.from('devices').update({last_seen:new Date().toISOString()}).eq('user_id',currentUser.id).eq('device_id',deviceId);
+          if (updateError) return true;
+        } catch (error) {}
+        return true;
+      })();
+      try { return await deviceCheckInFlight; }
+      finally { deviceCheckInFlight=null; }
+    }
+    function checkDeviceValidThrottled() {
+      if (!currentSession || !currentUser) return;
+      const now=Date.now();
+      if (now-lastDeviceCheckAt<10000) return;
+      lastDeviceCheckAt=now;
+      void checkDeviceValid();
+    }
+    function memberActions() {
+      const wrap = element('div','account-bar');
+      if (currentUser) {
+        wrap.append(element('span','account-name',profileName()));
+        const komisiLink = element('a','account-button','Komisi');
+        komisiLink.href = '#/komisi/';
+        wrap.append(komisiLink);
+        const out = element('button','account-button','Keluar');
+        out.type = 'button';
+        out.addEventListener('click', async () => {
+          clearDeviceValidation();
+          if (sb) await sb.auth.signOut();
+          currentSession = null; currentUser = null; currentProfile = null; latestVerification = null;
+          navigate('/');
+        });
+        wrap.append(out);
+      } else {
+        const link = element('a','account-link','Masuk / Daftar');
+        link.href = '#/auth';
+        wrap.append(link);
+      }
+      return wrap;
+    }
+    function siteNav() {
+      const nav = element('nav','site-nav');
+      nav.setAttribute('aria-label','Navigasi utama');
+      const destinations = [['#/','Halaman Utama']];
+      destinations.forEach(([href,label],index)=>{
+        const link=element('a','',label); link.href=href; if(index===0) link.setAttribute('aria-current','page'); nav.append(link);
+      });
+      const menuButton = element('button','mobile-nav-toggle','Menu');
+      menuButton.type='button'; menuButton.setAttribute('aria-expanded','false'); menuButton.setAttribute('aria-controls','mobile-main-menu');
+      const mobileMenu = element('div','mobile-nav-menu'); mobileMenu.id='mobile-main-menu';
+      destinations.slice(1).forEach(([href,label])=>{ const link=element('a','',label); link.href=href; mobileMenu.append(link); });
+      menuButton.addEventListener('click',()=>{
+        const open=menuButton.getAttribute('aria-expanded')==='true';
+        menuButton.setAttribute('aria-expanded',String(!open)); mobileMenu.classList.toggle('is-open',!open);
+      });
+      mobileMenu.addEventListener('click',()=>{ menuButton.setAttribute('aria-expanded','false'); mobileMenu.classList.remove('is-open'); });
+      if (destinations.length > 1) nav.append(menuButton, mobileMenu);
+      nav.append(memberActions());
+      return nav;
+    }
+    function footerNode() {
+      const foot=element('footer');
+      foot.append(element('span','', '© 2026 Portal Beasiswa'));
+      return foot;
+    }
+    function topLine(backText, backHref, statText='') {
+      const top = element('div','topline');
+      if (backText) { const back = element('a','back',backText); back.href = backHref; top.append(back); }
+      if (statText) top.append(element('span','mini-stat',statText));
+      top.append(memberActions());
+      return top;
+    }
+
+    async function fetchProfile() {
+      if (!sb || !currentUser) return null;
+      const { data, error } = await sb.from('profiles').select('verified,username,referral_code').eq('id', currentUser.id).single();
+      if (error) {
+        currentProfile = { verified:false, username:currentUser.user_metadata?.username || currentUser.email || 'Member', referral_code:'' };
+        return currentProfile;
+      }
+      currentProfile = { verified:data.verified === true, username:data.username || currentUser.user_metadata?.username || 'Member', referral_code:data.referral_code || '' };
+      return currentProfile;
+    }
+
+    async function fetchLatestVerification() {
+      if (!sb || !currentUser) return null;
+      const { data, error } = await sb.from('verifikasi').select('status,created_at').eq('user_id', currentUser.id).order('created_at', { ascending:false }).limit(1);
+      if (error) return null;
+      latestVerification = data?.[0] || null;
+      return latestVerification;
+    }
+
+    async function fetchKomisiSummary() {
+      if (!sb || !currentUser) return null;
+      const { data, error } = await sb.rpc('get_komisi_saya');
+      if (error) return null;
+      const row = Array.isArray(data) ? data[0] : data;
+      return row || null;
+    }
+
+    async function fetchKomisiHistory() {
+      if (!sb || !currentUser) return [];
+      const { data, error } = await sb.rpc('get_riwayat_komisi');
+      if (error || !Array.isArray(data)) return [];
+      return data;
+    }
+
+    async function fetchBankData() {
+      if (!sb || !currentUser) return null;
+      const { data, error } = await sb.from('profiles').select('bank_name,bank_account').eq('id', currentUser.id).single();
+      if (error || !data) return null;
+      return data;
+    }
+
+    function formatKomisiDate(value) {
+      if (!value) return '';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+      return date.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+    }
+
+    async function komisiView() {
+      if (!currentUser) { navigate('/auth'); return; }
+      if (!currentProfile?.referral_code) await fetchProfile();
+      app.innerHTML = '';
+      const page = element('div','page narrow');
+      page.append(topLine('← Kembali','#/'));
+      const head = element('header','index-head');
+      const titleWrap = element('div');
+      titleWrap.append(
+        element('h1','page-title','Komisi Saya'),
+        element('p','','Bagikan link referral kamu. Tiap teman yang daftar dan terverifikasi, kamu dapat Rp25.000.')
+      );
+      head.append(titleWrap); page.append(head);
+
+      page.append(element('div','notice info','Komisi direkap seminggu sekali dan ditransfer setiap Senin jam 12.00 WIB ke rekening yang terdaftar di bawah.'));
+
+      const refCard = element('section','ref-card');
+      refCard.append(element('h2','','Link Referral Kamu'));
+      const refCode = currentProfile?.referral_code || '';
+      if (refCode) {
+        const refLink = `https://wayangprint.github.io/web-beasiswa/#/r/${refCode}`;
+        const row = element('div','ref-link-row');
+        const input = document.createElement('input');
+        input.type = 'text'; input.readOnly = true; input.value = refLink;
+        input.setAttribute('aria-label','Link referral kamu');
+        input.addEventListener('focus', () => input.select());
+        const copy = element('button','copy-btn','Salin Link'); copy.type = 'button';
+        copy.addEventListener('click', async () => {
+          try { await navigator.clipboard.writeText(refLink); copy.textContent = 'Tersalin ✓'; }
+          catch (error) { input.focus(); input.select(); copy.textContent = 'Pilih & salin manual'; }
+          window.setTimeout(() => { copy.textContent = 'Salin Link'; }, 1800);
+        });
+        row.append(input, copy); refCard.append(row);
+        refCard.append(element('p','ref-help','Komisi Rp25.000 tercatat otomatis setelah temanmu terverifikasi pembayarannya. Pencairan komisi dilakukan manual oleh admin.'));
+      } else {
+        refCard.append(element('p','ref-help','Kode referral kamu belum tersedia. Coba muat ulang halaman ini beberapa saat lagi.'));
+      }
+      page.append(refCard);
+
+      const summary = element('section','komisi-summary');
+      summary.setAttribute('aria-label','Ringkasan komisi');
+      const statNodes = [['Komisi Menunggu','menunggu'],['Sudah Dibayar','dibayar'],['Teman Bergabung','teman']].map(([label,key]) => {
+        const card = element('div','komisi-stat');
+        const valueNode = element('strong','','Memuat…');
+        card.append(element('span','',label), valueNode);
+        summary.append(card);
+        return { key, valueNode };
+      });
+      page.append(summary);
+
+      const historyCard = element('section','ref-card');
+      historyCard.append(element('h2','','Riwayat Komisi'));
+      const historyList = element('div','komisi-list');
+      historyList.append(element('p','ref-help','Memuat riwayat…'));
+      historyCard.append(historyList);
+      page.append(historyCard);
+
+      const bankCard = element('section','ref-card');
+      bankCard.append(element('h2','','Data Rekening Pencairan'));
+      const bankForm = element('form','form-grid');
+      const bankNameField = element('label','field');
+      const bankNameInput = document.createElement('input');
+      bankNameInput.type = 'text'; bankNameInput.name = 'bank_name';
+      bankNameInput.placeholder = 'BCA, Mandiri, BRI, DANA, OVO...';
+      bankNameInput.setAttribute('autocomplete','off');
+      bankNameField.append(element('span','','Nama Bank'), bankNameInput);
+      const bankAccountField = element('label','field');
+      const bankAccountInput = document.createElement('input');
+      bankAccountInput.type = 'text'; bankAccountInput.name = 'bank_account';
+      bankAccountInput.placeholder = 'Nomor rekening atau nomor e-wallet';
+      bankAccountInput.setAttribute('autocomplete','off');
+      bankAccountField.append(element('span','','Nomor Rekening / E-wallet'), bankAccountInput);
+      const bankNotice = element('div','notice'); bankNotice.hidden = true; bankNotice.setAttribute('role','status'); bankNotice.style.margin = '0';
+      const bankSave = element('button','continue-btn','Simpan Data Bank'); bankSave.type = 'submit'; bankSave.style.marginTop = '2px';
+      bankForm.append(bankNameField, bankAccountField, bankSave, bankNotice);
+      bankForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const bankName = bankNameInput.value.trim();
+        const bankAccount = bankAccountInput.value.trim();
+        bankNotice.hidden = false;
+        if (!bankName || !bankAccount) {
+          bankNotice.className = 'notice error';
+          bankNotice.textContent = 'Isi nama bank dan nomor rekening / e-wallet terlebih dahulu.';
+          return;
+        }
+        if (!sb || !currentUser) {
+          bankNotice.className = 'notice error';
+          bankNotice.textContent = 'Layanan belum siap. Coba muat ulang halaman ini.';
+          return;
+        }
+        bankSave.disabled = true; bankSave.textContent = 'Menyimpan…';
+        const { error } = await sb.from('profiles').update({ bank_name: bankName, bank_account: bankAccount }).eq('id', currentUser.id);
+        bankSave.disabled = false; bankSave.textContent = 'Simpan Data Bank';
+        if (error) {
+          bankNotice.className = 'notice error';
+          bankNotice.textContent = 'Gagal menyimpan data bank. Coba lagi.';
+          return;
+        }
+        bankNotice.className = 'notice success';
+        bankNotice.textContent = 'Data bank tersimpan.';
+      });
+      bankCard.append(bankForm);
+      page.append(bankCard, footerNode());
+      app.append(page);
+
+      const [summaryData, historyData, bankData] = await Promise.all([fetchKomisiSummary(), fetchKomisiHistory(), fetchBankData()]);
+      if (!document.body.contains(page)) return;
+      if (bankData) {
+        if (bankData.bank_name) bankNameInput.value = bankData.bank_name;
+        if (bankData.bank_account) bankAccountInput.value = bankData.bank_account;
+      }
+      statNodes.forEach(({ key, valueNode }) => {
+        if (!summaryData) { valueNode.textContent = '—'; return; }
+        if (key === 'menunggu') valueNode.textContent = formatIdr(Number(summaryData.total_menunggu) || 0);
+        else if (key === 'dibayar') valueNode.textContent = formatIdr(Number(summaryData.total_dibayar) || 0);
+        else valueNode.textContent = String(Number(summaryData.jumlah_referral) || 0);
+      });
+      historyList.innerHTML = '';
+      if (!historyData.length) {
+        historyList.append(element('p','ref-help','Belum ada komisi. Bagikan link referral kamu untuk mulai mendapatkan komisi.'));
+      } else {
+        historyData.forEach(row => {
+          const item = element('div','komisi-item');
+          const detail = element('div');
+          detail.append(element('strong','', row.username_teman || 'Teman'), element('span','', formatKomisiDate(row.created_at)));
+          const right = element('div','komisi-item-right');
+          const paid = String(row.status || '').toLowerCase().includes('bayar');
+          right.append(
+            element('strong','', formatIdr(Number(row.amount) || 25000)),
+            element('span', `verification-badge ${paid ? 'verified' : 'waiting'}`, paid ? 'Dibayar' : 'Menunggu')
+          );
+          item.append(detail, right); historyList.append(item);
+        });
+      }
+    }
+
+    function homeView() {
+      const items = [
+        {title:'Beasiswa S1', desc:'83 program beasiswa S1 luar negeri: Full & Partial.', route:'#/s1/', icon:'cap'},
+        {title:'Beasiswa S2', desc:'37 program beasiswa magister populer: 26 Full & 11 Partial', route:'#/s2/', icon:'cap'},
+        {title:'Beasiswa S3', desc:'39 program beasiswa doktoral luar negeri: 36 Full & 3 Partial', route:'#/s3/', icon:'cap'},
+        {title:'Persiapan Bahasa', desc:'10 panduan IELTS, TOEFL iBT, JLPT, TOPIK, HSK, bahasa Eropa, dan strategi belajar mandiri.', route:'#/bahasa/', icon:'language'},
+        {title:'Pra Beasiswa', desc:'7 panduan untuk menyiapkan dokumen, esai, CV, rekomendasi, wawancara, LoA, dan pilihan studi.', route:'#/pra/', icon:'compass'},
+        {title:'Beasiswa Dalam Negeri', desc:'15 panduan beasiswa dalam negeri untuk S1, S2, dan S3: LPDP, Beasiswa Unggulan, KIP Kuliah, Garuda 2027, dan lainnya.', route:'#/dalam-negeri/', icon:'cap'},
+        {title:'Grant', desc:'14 panduan program grant dan mobilitas: IISMA, travel grant, Ausbildung, Au Pair, Erasmus+, summer school, dan lainnya.', route:'#/grant/', icon:'compass'}
+      ];
+      app.innerHTML = '';
+      const page = element('div','page');
+      page.append(siteNav());
+      const hero = element('section','hero');
+      const copy = element('div','hero-copy');
+      copy.innerHTML = '<h1>Portal Beasiswa</h1><p>Panduan lengkap beasiswa luar &amp; dalam negeri — dari persiapan bahasa, dokumen, sampai lolos seleksi. 166 panduan: S1, S2, S3, beasiswa dalam negeri, grant, student exchange, dan program kerja ke luar negeri.</p><div class="hero-actions"><a class="hero-action primary" href="https://wayangprint.github.io/web-beasiswa/sampel/mext-jepang.html" target="_blank" rel="noopener">🎓 Lihat Sampel Gratis</a></div>';
+      hero.append(copy); page.append(hero);
+      const head = element('div','section-heading'); head.id='pilih';
+      head.innerHTML = '<div><h2>Mulai dari tujuanmu</h2></div><p>Pilih jenjang atau tahap persiapan yang ingin kamu pelajari.</p>';
+      page.append(head);
+      const grid = element('section','menu-grid'); grid.setAttribute('aria-label','Menu utama beasiswa');
+      items.forEach(item => {
+        const card = element('a','menu-card'); card.href = item.route;
+        const top = element('div'); top.append(iconNode(item.icon), element('h3','',item.title), element('p','',item.desc));
+        const action = element('div','card-action'); action.innerHTML = '<span>Buka</span><span aria-hidden="true">→</span>';
+        card.append(top,action); grid.append(card);
+      });
+      const faqItems = [
+        ['Apakah benar cukup bayar sekali Rp100.000?', 'Ya. Sekali bayar Rp100.000, kamu dapat akses ke seluruh 166+ panduan selamanya. Tidak ada biaya bulanan atau perpanjangan.'],
+        ['Bagaimana cara mengakses panduan setelah membayar?', 'Daftar akun, pilih metode pembayaran (QRIS, transfer bank, atau e-wallet), lalu upload bukti pembayaran. Setelah kami verifikasi (maksimal 1x24 jam), akunmu langsung aktif dan semua deck bisa dibuka.'],
+        ['Berapa lama masa akses saya?', 'Selamanya. Tidak ada batas waktu. Kamu juga otomatis dapat panduan baru yang kami tambahkan di kemudian hari.'],
+        ['Saya masih SMA, apakah panduan ini cocok?', 'Sangat cocok. Ada panduan S1 untuk lulusan SMA, panduan persiapan bahasa (IELTS, TOEFL, JLPT, dll), plus 7 panduan pra-beasiswa: dari pilih negara, esai, CV, sampai wawancara.'],
+        ['Apakah ada panduan untuk S2 dan S3 juga?', 'Ada. 37 panduan beasiswa S2 dan 39 panduan beasiswa S3, lengkap dengan syarat, jadwal, dan strategi lolos seleksi.'],
+        ['Metode pembayaran apa saja yang tersedia?', 'QRIS, transfer bank (Mandiri, BCA Digital/BLU), dan e-wallet. Semua atas nama Wahyuhadi.'],
+        ['Apakah bisa diakses lewat HP?', 'Bisa. Seluruh website dan deck panduan sudah dioptimalkan untuk HP, tablet, dan laptop.'],
+        ['Bagaimana jika saya punya pertanyaan lain?', 'Hubungi kami via WhatsApp di 0821-3605-0770.']
+      ];
+      const faqSection = element('section','faq-section');
+      const faqHead = element('div','section-heading');
+      faqHead.innerHTML = '<div><h2>Pertanyaan yang Sering Diajukan</h2></div>';
+      faqSection.append(faqHead);
+      const faqList = element('div','faq-list');
+      faqItems.forEach(([question, answer]) => {
+        const item = element('div','faq-item');
+        const btn = element('button','faq-q');
+        btn.type = 'button';
+        btn.setAttribute('aria-expanded','false');
+        btn.innerHTML = '<span></span><span class="faq-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>';
+        btn.querySelector('span').textContent = question;
+        const ans = element('div','faq-a');
+        const ansInner = element('div','faq-a-inner');
+        ansInner.append(element('p','',answer));
+        ans.append(ansInner);
+        btn.addEventListener('click', () => {
+          const wasOpen = item.classList.contains('open');
+          faqList.querySelectorAll('.faq-item.open').forEach(openItem => {
+            openItem.classList.remove('open');
+            openItem.querySelector('.faq-q').setAttribute('aria-expanded','false');
+          });
+          if (!wasOpen) {
+            item.classList.add('open');
+            btn.setAttribute('aria-expanded','true');
+          }
+        });
+        item.append(btn, ans);
+        faqList.append(item);
+      });
+      faqSection.append(faqList);
+      // Urutan artikel: terbaru di paling atas. Homepage hanya menampilkan
+      // MAKSIMAL 6 artikel terbaru; sisanya diakses lewat tombol "Lihat Semua Artikel".
+      const artikelItems = [
+        ['Cara Daftar Beasiswa MEXT S1 2027: Syarat & Panduan Lengkap', 'https://wayangprint.github.io/web-beasiswa/artikel/artikel-mext-s1-2027.html'],
+        ['7 Kesalahan Fatal yang Bikin Gagal Lolos Beasiswa LPDP', 'https://wayangprint.github.io/web-beasiswa/artikel/artikel-kesalahan-lpdp.html'],
+        ['15 Beasiswa S1 Luar Negeri Fully Funded 2027', 'https://wayangprint.github.io/web-beasiswa/artikel/artikel-beasiswa-s1-fully-funded.html'],
+        ['Tips Lolos Wawancara Beasiswa: 10 Pertanyaan yang Pasti Keluar', 'https://wayangprint.github.io/web-beasiswa/artikel/artikel-wawancara-beasiswa.html'],
+        ['Skor IELTS untuk Beasiswa: Berapa Minimal & Cara Mencapainya', 'https://wayangprint.github.io/web-beasiswa/artikel/artikel-persiapan-ielts-beasiswa.html']
+      ];
+      const artikelHomepage = artikelItems.slice(0, 6);
+      const artikelSection = element('section','artikel-section');
+      const artikelHead = element('div','section-heading');
+      artikelHead.innerHTML = '<div><h2>Artikel Beasiswa</h2></div><p>Bacaan gratis seputar beasiswa: syarat, strategi lolos seleksi, dan persiapan bahasa.</p>';
+      artikelSection.append(artikelHead);
+      const artikelGrid = element('div','artikel-grid'); artikelGrid.setAttribute('aria-label','Daftar artikel beasiswa');
+      artikelHomepage.forEach(([title, url]) => {
+        const card = element('a','artikel-card'); card.href = url; card.target = '_blank'; card.rel = 'noopener';
+        const top = element('div');
+        top.append(element('span','artikel-label','Artikel'), element('h3','',title));
+        const action = element('div','artikel-action');
+        action.innerHTML = '<span>Baca artikel</span><span aria-hidden="true">→</span>';
+        card.append(top, action); artikelGrid.append(card);
+      });
+      artikelSection.append(artikelGrid);
+      const artikelMoreWrap = element('div','artikel-more-wrap');
+      const artikelMore = element('a','artikel-more');
+      artikelMore.href = 'https://wayangprint.github.io/web-beasiswa/artikel/';
+      artikelMore.target = '_blank'; artikelMore.rel = 'noopener';
+      artikelMore.innerHTML = '<span>Lihat Semua Artikel</span><span aria-hidden="true">→</span>';
+      artikelMoreWrap.append(artikelMore);
+      artikelSection.append(artikelMoreWrap);
+      page.append(grid, faqSection, artikelSection, footerNode()); app.append(page);
+    }
+
+    function authView() {
+      app.innerHTML = '';
+      const page = element('div','page narrow');
+      page.append(topLine('← Kembali',pendingProgramSlug?`#${pendingIndexRoute}`:'#/'));
+      const shell = element('section','auth-shell');
+      const intro = element('div','auth-intro');
+      intro.innerHTML = '<div><span class="pill hero-pill">Akses Member</span><h1>Satu akun untuk semua panduan.</h1><p>Daftar, kirim bukti pembayaran, lalu tunggu verifikasi admin.</p></div><ol class="auth-steps"><li><span class="step-number">1</span> Buat akun member</li><li><span class="step-number">2</span> Bayar dan unggah bukti</li><li><span class="step-number">3</span> Akses terbuka setelah diverifikasi</li></ol>';
+      const card = element('div','auth-card');
+      const tabs = element('div','auth-tabs'); tabs.setAttribute('role','tablist'); tabs.setAttribute('aria-label','Daftar atau masuk');
+      [['signup','Daftar'],['login','Masuk']].forEach(([mode,label]) => {
+        const tab = element('button','auth-tab',label); tab.type='button'; tab.dataset.mode=mode; tab.setAttribute('role','tab'); tab.setAttribute('aria-selected',String(activeAuthMode===mode));
+        tab.addEventListener('click',()=>{activeAuthMode=mode; authView();}); tabs.append(tab);
+      });
+      card.append(tabs);
+      if (!supabaseReady) card.append(element('div','notice info member-unavailable',memberUnavailableMessage()));
+      const title = element('h2','',activeAuthMode==='signup'?'Daftar member':'Masuk ke akun');
+      const desc = element('p','',activeAuthMode==='signup'?'Gunakan email aktif untuk membuat akun baru.':'Masukkan email dan password yang sudah terdaftar.');
+      const notice = element('div','notice'); notice.hidden=true; notice.setAttribute('role','status');
+      const form = element('form','form-grid');
+      if (activeAuthMode==='signup') {
+        const username = buildField('Username','text','username','Nama pengguna'); username.input.autocomplete='username'; form.append(username.label);
+      }
+      const email = buildField('Email','email','email','nama@email.com'); email.input.autocomplete='email';
+      const password = buildField('Password','password','password','Minimal 6 karakter'); password.input.autocomplete=activeAuthMode==='signup'?'new-password':'current-password';
+      form.append(email.label,password.label);
+      if (activeAuthMode==='signup') form.append(element('p','form-help','Password minimal 6 karakter.'));
+      const submit = element('button','pay-btn',activeAuthMode==='signup'?'Daftar':'Masuk'); submit.type='submit'; submit.disabled=!supabaseReady; form.append(submit);
+      form.addEventListener('submit',event=>handleAuthSubmit(event,notice,submit));
+      card.append(title,desc,notice,form); shell.append(intro,card); page.append(shell,footerNode()); app.append(page);
+      if (pendingAuthNotice) {
+        const message=pendingAuthNotice;
+        pendingAuthNotice='';
+        showNotice(notice,'error',message);
+      }
+    }
+
+    function buildField(labelText,type,name,placeholder) {
+      const label = element('label','field'); label.append(element('span','',labelText));
+      const input = document.createElement('input'); input.type=type; input.name=name; input.placeholder=placeholder; input.required=true; label.append(input);
+      return {label,input};
+    }
+
+    function inlinePaywallAuthCard(unavailable=false) {
+      const card=element('section','auth-card paywall-auth-card');
+      const tabs=element('div','auth-tabs'); tabs.setAttribute('role','tablist'); tabs.setAttribute('aria-label','Daftar atau masuk');
+      [['signup','Daftar'],['login','Masuk']].forEach(([mode,label])=>{
+        const tab=element('button','auth-tab',label); tab.type='button'; tab.dataset.mode=mode; tab.setAttribute('role','tab'); tab.setAttribute('aria-selected',String(activeAuthMode===mode));
+        tab.addEventListener('click',()=>{activeAuthMode=mode; paywallView(unavailable);}); tabs.append(tab);
+      });
+      card.append(tabs);
+      if (unavailable) card.append(element('div','notice info member-unavailable',memberUnavailableMessage()));
+      card.append(
+        element('h2','',activeAuthMode==='signup'?'Daftar untuk melanjutkan':'Masuk untuk melanjutkan'),
+        element('p','',activeAuthMode==='signup'?'Buat akun member tanpa meninggalkan halaman pembayaran.':'Masuk untuk melanjutkan pembayaran atau membuka deck yang sudah aktif.')
+      );
+      const notice=element('div','notice'); notice.hidden=true; notice.setAttribute('role','status');
+      const form=element('form','form-grid');
+      if (activeAuthMode==='signup') {
+        const username=buildField('Username','text','username','Nama pengguna'); username.input.autocomplete='username'; form.append(username.label);
+      }
+      const email=buildField('Email','email','email','nama@email.com'); email.input.autocomplete='email';
+      const password=buildField('Password','password','password','Minimal 6 karakter'); password.input.autocomplete=activeAuthMode==='signup'?'new-password':'current-password';
+      form.append(email.label,password.label);
+      if (activeAuthMode==='signup') form.append(element('p','form-help','Password minimal 6 karakter.'));
+      const submit=element('button','pay-btn',activeAuthMode==='signup'?'Daftar & Lanjutkan':'Masuk & Lanjutkan'); submit.type='submit'; submit.disabled=unavailable || !supabaseReady;
+      form.append(submit); form.addEventListener('submit',event=>handleAuthSubmit(event,notice,submit)); card.append(notice,form);
+      if (pendingAuthNotice) { const message=pendingAuthNotice; pendingAuthNotice=''; showNotice(notice,'error',message); }
+      return card;
+    }
+
+    async function handleAuthSubmit(event, notice, submit) {
+      event.preventDefault();
+      if (!sb) { showNotice(notice,'info',memberUnavailableMessage()); return; }
+      const form = event.currentTarget;
+      const values = Object.fromEntries(new FormData(form));
+      const email = String(values.email || '').trim();
+      const password = String(values.password || '');
+      const username = String(values.username || '').trim();
+      if (!email || !password || (activeAuthMode==='signup' && !username)) { showNotice(notice,'error','Semua kolom wajib diisi.'); return; }
+      if (activeAuthMode==='signup' && password.length < 6) { showNotice(notice,'error','Password minimal 6 karakter.'); return; }
+      submit.disabled=true; submit.textContent=activeAuthMode==='signup'?'Mendaftarkan…':'Memproses…'; authActionBusy=true;
+      try {
+        if (activeAuthMode==='signup') {
+          const metadata = { username };
+          try { const refCode = (localStorage.getItem('wb_ref_code') || '').trim().toUpperCase(); if (refCode) metadata.referral_code = refCode; } catch (storageError) {}
+          const { data, error } = await sb.auth.signUp({ email, password, options:{ data:metadata } });
+          if (error) throw error;
+          try { localStorage.removeItem('wb_ref_code'); } catch (storageError) {}
+          if (!data.session) {
+            showNotice(notice,'success','Pendaftaran berhasil! Cek email kamu untuk verifikasi, lalu masuk.'); form.reset(); return;
+          }
+          currentSession=data.session; currentUser=data.user; await registerDevice(); startDeviceValidation(); await fetchProfile(); await routeAfterAuth();
+        } else {
+          const { data, error } = await sb.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          currentSession=data.session; currentUser=data.user; await registerDevice(); startDeviceValidation(); await fetchProfile(); await routeAfterAuth();
+        }
+      } catch (error) {
+        showNotice(notice,'error',translateAuthError(error.message));
+      } finally {
+        authActionBusy=false;
+        if (document.body.contains(submit)) { submit.disabled=!supabaseReady; submit.textContent=activeAuthMode==='signup'?'Daftar':'Masuk'; }
+      }
+    }
+
+    function showNotice(node,type,message) { node.className=`notice ${type}`; node.textContent=message; node.hidden=false; }
+    function openDeckForSlug(slug, newTab=false) {
+      const deckUrl=DECK_URLS[slug];
+      if (!deckUrl) { navigate(pendingIndexRoute); return; }
+      if (newTab) window.open(deckUrl,'_blank','noopener,noreferrer');
+      else window.location.assign(deckUrl);
+    }
+    async function routeAfterAuth() {
+      const profile = currentProfile || await fetchProfile();
+      if (profile?.verified && pendingProgramSlug) { openDeckForSlug(pendingProgramSlug); return; }
+      if (profile?.verified) { navigate(pendingRoute || pendingIndexRoute); return; }
+      navigate(pendingProgramSlug?`/paywall?program=${encodeURIComponent(pendingProgramSlug)}`:'/paywall');
+    }
+
+    function indexView(options) {
+      const {programs,level,stat,countText,indexRoute,showFilters=true,indexTitle=`Indeks Beasiswa ${level}`,description='Temukan program berdasarkan negara atau nama beasiswa.',searchPlaceholder='Cari beasiswa / negara...',itemLabel='program'}=options;
+      app.innerHTML='';
+      pendingIndexRoute=indexRoute;
+      const page = element('div','page');
+      const top = topLine('← Kembali','#/');
+      top.classList.add('topline-search');
+      const search = element('label','search'); search.innerHTML=ICONS.search;
+      const input = document.createElement('input'); input.type='search'; input.placeholder=searchPlaceholder; input.autocomplete='off'; input.setAttribute('aria-label',searchPlaceholder); input.value=activeQuery; search.append(input);
+      const topTools = element('div','top-tools'); topTools.append(search);
+      const accountNode = top.querySelector('.account-bar');
+      if (accountNode) top.insertBefore(topTools,accountNode); else top.append(topTools);
+      page.append(top);
+      const head = element('header','index-head');
+      const titleWrap = element('div'); titleWrap.append(element('h1','page-title',indexTitle),element('p','',description));
+      const count = element('span','pill count-pill',countText); head.append(titleWrap,count); page.append(head);
+      const resultLine=element('p','results-line'); const grid=element('section','program-grid'); grid.setAttribute('aria-label',showFilters?`Daftar beasiswa ${level}`:`Daftar ${indexTitle}`);
+      input.addEventListener('input',()=>{activeQuery=input.value; renderPrograms(grid,resultLine,programs,indexRoute,itemLabel);}); page.append(resultLine,grid,footerNode()); app.append(page); renderPrograms(grid,resultLine,programs,indexRoute,itemLabel);
+    }
+
+    function renderPrograms(grid, resultLine, programs, indexRoute, itemLabel='program') {
+      const query=activeQuery.trim().toLocaleLowerCase('id');
+      const rows=programs.filter(program=>(!query||program.name.toLocaleLowerCase('id').includes(query)||program.country.toLocaleLowerCase('id').includes(query)));
+      resultLine.textContent=`Menampilkan ${rows.length} dari ${programs.length} ${itemLabel}`; grid.innerHTML='';
+      if (!rows.length) { grid.append(element('div','empty',`Tidak ada ${itemLabel} yang cocok. Coba kata kunci lain.`)); return; }
+      rows.forEach(program=>{
+        const card=element('article','program-card');
+        const statusLabel=program.type==='full'?'Full':program.type==='partial'?'Partial':'Panduan';
+        const row=element('div','program-top'); row.append(element('span',`status ${program.type}`,statusLabel),element('span','country',program.country));
+        const heading=element('h3','',program.name); const deck=element('p','deck-name',program.deck);
+        const deckUrl=DECK_URLS[program.deckSlug]; const unlocked=currentProfile?.verified===true;
+        const button=element('button','deck-button',deckUrl?(unlocked?'Buka Deck':'Buka akses'):'Segera hadir'); button.type='button'; button.disabled=!deckUrl;
+        if (deckUrl) button.addEventListener('click',()=>{
+          pendingProgramSlug=program.deckSlug;
+          pendingIndexRoute=indexRoute;
+          navigate(`/paywall?program=${encodeURIComponent(program.deckSlug)}`);
+        });
+        card.append(row,heading,deck,button); grid.append(card);
+      });
+    }
+
+    function parseRoute() {
+      const raw=(window.location.hash || '#/').slice(1); const [path,query='']=raw.split('?');
+      return {path:path || '/', params:new URLSearchParams(query)};
+    }
+
+    function renderPaymentMethod(panel,method) {
+      panel.innerHTML='';
+      if (method==='qris') {
+        panel.append(element('h2','', 'Bayar dengan QRIS'),element('p','', 'Pindai QRIS dari aplikasi bank atau dompet digital.'));
+        if (PAYMENT_CONFIG.qrisImage) { const image=document.createElement('img'); image.className='qris-image'; image.src=PAYMENT_CONFIG.qrisImage; image.alt=`Kode QRIS ${PAYMENT_CONFIG.qrisMerchantName} untuk pembayaran akses member`; panel.append(image,element('p','qris-merchant',PAYMENT_CONFIG.qrisMerchantName)); }
+        else panel.append(element('div','qris-placeholder','QRIS segera dipasang'));
+      } else if (method==='bank') {
+        panel.append(element('h2','', 'Transfer Bank'),element('p','', 'Transfer sesuai nominal ke rekening berikut.'));
+        const list=element('div','bank-accounts');
+        PAYMENT_CONFIG.bankAccounts.forEach(account=>{
+          const item=element('div','bank-account'); const detail=element('div'); detail.append(element('strong','',`${account.bank} · ${account.number}`),element('span','',`a.n. ${account.name}`));
+          const copy=element('button','copy-btn','Salin Nomor'); copy.type='button'; copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(account.number); copy.textContent='Tersalin ✓'; window.setTimeout(()=>copy.textContent='Salin Nomor',1500);}catch(error){copy.textContent='Gagal menyalin';}}); item.append(detail,copy); list.append(item);
+        }); panel.append(list);
+      }
+      const amount=element('div','amount-row'); amount.append(element('span','', 'Total'),element('strong','',formatIdr(PAYMENT_CONFIG.product.priceIdr))); panel.append(amount);
+    }
+
+    function paywallView(unavailable=false) {
+      app.innerHTML='';
+      const page=element('div','page narrow'); page.append(topLine(pendingProgramSlug?'← Kembali ke Indeks':'← Kembali ke Halaman Utama',pendingProgramSlug?`#${pendingIndexRoute}`:'#/'));
+      const hero=element('header','pay-hero'); hero.append(element('span','pill hero-pill','Verifikasi Manual'),element('h1','', 'Aktifkan akses semua deck'),element('p','', `Sekali bayar ${formatIdr(PAYMENT_CONFIG.product.priceIdr)}, akses semua deck selamanya.`)); page.append(hero);
+      if (!currentUser) {
+        page.append(inlinePaywallAuthCard(unavailable),footerNode()); app.append(page);
+        return;
+      }
+      if (unavailable) page.append(element('div','notice info member-unavailable',memberUnavailableMessage()));
+      const layout=element('div','checkout-layout');
+      const price=element('aside','price-card'); price.innerHTML=`<div class="price-label">Sekali bayar</div><div class="price">${formatIdr(PAYMENT_CONFIG.product.priceIdr)}</div><p class="once">Akses semua deck beasiswa.</p><ul class="benefits"><li><span class="tick">✓</span><span>44 deck S1 lengkap</span></li><li><span class="tick">✓</span><span>Satu verifikasi untuk seluruh halaman</span></li><li><span class="tick">✓</span><span>Akses selamanya</span></li></ul>`;
+      const payment=element('section','payment-card'); const tabs=element('div','tabs'); tabs.setAttribute('role','tablist'); tabs.setAttribute('aria-label','Metode pembayaran');
+      const panel=element('div','method-panel'); let method='qris';
+      [['qris','QRIS'],['bank','Transfer Bank']].forEach(([id,label],index)=>{const tab=element('button','tab',label); tab.type='button'; tab.dataset.method=id; tab.setAttribute('role','tab'); tab.setAttribute('aria-selected',String(index===0)); tab.addEventListener('click',()=>{method=id; tabs.querySelectorAll('.tab').forEach(item=>item.setAttribute('aria-selected',String(item.dataset.method===id))); renderPaymentMethod(panel,method);}); tabs.append(tab);});
+      payment.append(tabs,panel); layout.append(price,payment); page.append(layout); renderPaymentMethod(panel,method);
+
+      const proof=element('section','proof-card'); proof.append(element('h2','', 'Kirim Bukti Pembayaran'),element('p','', 'Unggah screenshot atau foto bukti pembayaran. Maksimal 5 MB.'));
+      if (!currentUser && !unavailable) proof.append(element('div','notice info','Daftar atau masuk sebagai member sebelum mengirim bukti pembayaran.'));
+      const form=element('form','form-grid'); const fileField=buildField('File bukti pembayaran','file','proof','Pilih gambar'); fileField.input.accept='image/*'; fileField.input.disabled=unavailable || !currentUser;
+      const upload=element('button','pay-btn','Kirim Bukti'); upload.type='submit'; upload.disabled=unavailable || !currentUser; const uploadStatus=element('p','upload-status',''); uploadStatus.setAttribute('role','status'); form.append(fileField.label,upload,uploadStatus); form.addEventListener('submit',event=>uploadProof(event,fileField.input,upload,uploadStatus)); proof.append(form); page.append(proof);
+
+      const statusCard=element('section','status-card'); statusCard.append(element('h2','', 'Status Akses'));
+      const badge=element('span','verification-badge waiting','Menunggu verifikasi admin'); const continueButton=element('button','continue-btn','Lanjutkan'); continueButton.type='button';
+      continueButton.addEventListener('click',()=>{
+        if (!currentUser) {
+          pendingRoute='/paywall';
+          navigate(pendingProgramSlug?`/auth?program=${encodeURIComponent(pendingProgramSlug)}`:'/auth');
+        } else if (pendingProgramSlug && currentProfile?.verified===true) openDeckForSlug(pendingProgramSlug);
+        else navigate(pendingIndexRoute);
+      });
+      const help=element('p','continue-help','Tombol aktif setelah admin memverifikasi pembayaranmu.'); statusCard.append(badge,continueButton,help); page.append(statusCard,footerNode()); app.append(page);
+      updatePaywallStatus(badge,continueButton,help,unavailable);
+      if (!unavailable && currentUser && currentProfile?.verified !== true) startPaywallPolling();
+    }
+
+    function updatePaywallStatus(badge,button,help,unavailable=false) {
+      if (!unavailable && !currentUser) {
+        badge.className='verification-badge waiting'; badge.textContent='Belum masuk';
+        button.disabled=false; button.textContent='Daftar / Masuk'; help.textContent='Buat akun member atau masuk untuk mengirim bukti pembayaran.';
+        return;
+      }
+      const verified=!unavailable && currentProfile?.verified===true;
+      badge.className=`verification-badge ${verified?'verified':'waiting'}`; badge.textContent=verified?'Terverifikasi ✓':'Menunggu verifikasi admin';
+      button.disabled=!verified; button.textContent='Lanjutkan'; help.textContent=verified?'Pembayaranmu sudah diverifikasi. Kamu bisa membuka seluruh halaman.':'Tombol aktif setelah admin memverifikasi pembayaranmu.';
+    }
+
+    async function uploadProof(event,input,button,statusNode) {
+      event.preventDefault();
+      if (!sb || !currentUser) { statusNode.className='upload-status error'; statusNode.textContent=memberUnavailableMessage(); return; }
+      const file=input.files?.[0];
+      if (!file) { statusNode.className='upload-status error'; statusNode.textContent='Pilih file gambar bukti pembayaran terlebih dahulu.'; return; }
+      if (!file.type.startsWith('image/')) { statusNode.className='upload-status error'; statusNode.textContent='File harus berupa gambar.'; return; }
+      if (file.size > 5 * 1024 * 1024) { statusNode.className='upload-status error'; statusNode.textContent='Ukuran gambar maksimal 5 MB.'; return; }
+      const mimeExt=(file.type.split('/')[1] || 'jpg').replace('jpeg','jpg').replace(/[^a-z0-9]/gi,''); const path=`${currentUser.id}/${Date.now()}.${mimeExt}`;
+      button.disabled=true; button.textContent='Mengirim…'; statusNode.className='upload-status'; statusNode.textContent='Bukti pembayaran sedang dikirim.';
+      try {
+        const { data, error:uploadError }=await sb.storage.from('bukti-pembayaran').upload(path,file,{cacheControl:'3600',upsert:false});
+        if (uploadError) throw uploadError;
+        const { error:insertError }=await sb.from('verifikasi').insert({user_id:currentUser.id,proof_url:data.path,status:'menunggu'});
+        if (insertError) throw insertError;
+        latestVerification={status:'menunggu',created_at:new Date().toISOString()}; input.value=''; statusNode.className='upload-status success'; statusNode.textContent='Bukti berhasil dikirim. Admin akan memverifikasinya.';
+      } catch (error) {
+        statusNode.className='upload-status error'; statusNode.textContent=`Gagal mengirim bukti: ${error.message}`;
+      } finally { button.disabled=false; button.textContent='Kirim Bukti'; }
+    }
+
+    function startPaywallPolling() {
+      clearPaywallPolling(); paywallTimer=window.setInterval(refreshPaywallStatus,20000);
+    }
+    async function refreshPaywallStatus() {
+      const {path}=parseRoute(); if (path!=='/paywall' || !sb || !currentUser || currentProfile?.verified===true) return;
+      await Promise.all([fetchProfile(),fetchLatestVerification()]);
+      const badge=document.querySelector('.verification-badge'); const button=document.querySelector('.continue-btn'); const help=document.querySelector('.continue-help');
+      if (badge && button && help) updatePaywallStatus(badge,button,help,false);
+      if (currentProfile?.verified===true) clearPaywallPolling();
+    }
+
+    const PLACEHOLDERS={
+      '/persiapan-bahasa/':{title:'Persiapan Bahasa',desc:'Panduan target skor IELTS dan TOEFL per beasiswa sedang disiapkan. Akan ada rencana belajar dan tips latihan yang terstruktur.'},
+      '/pra-beasiswa/':{title:'Pra Beasiswa',desc:'Roadmap persiapan 12 bulan sedang disiapkan. Bagian ini akan merinci timeline, dokumen, dan strategi rekomendasi.'}
+    };
+    function normalizePath(path) { if (path==='/' || path.endsWith('/')) return path; return `${path}/`; }
+    function placeholderView(data) {
+      app.innerHTML=''; const page=element('div','page narrow'); page.append(topLine('← Kembali','#/'));
+      const holder=element('div','placeholder'); const box=element('section','placeholder-box'); box.append(iconNode('clock','placeholder-icon'),element('span','pill count-pill',data.title),element('h1','', 'Segera Hadir'),element('p','',data.desc)); const back=element('a','primary-link','← Kembali'); back.href='#/'; box.append(back); holder.append(box); page.append(holder,footerNode()); app.append(page);
+    }
+    function successView() {
+      app.innerHTML=''; const page=element('div','page narrow'); const holder=element('div','placeholder'); const box=element('section','placeholder-box');
+      box.append(element('div','success-mark','✓'),element('h1','', 'Akses kamu sudah aktif!'),element('p','', 'Kamu sekarang bisa membuka seluruh deck beasiswa.')); const link=element('a','primary-link','Buka Indeks S1'); link.href='#/s1/'; box.append(link); holder.append(box); page.append(holder,footerNode()); app.append(page);
+    }
+
+    async function renderRoute() {
+      clearPaywallPolling(); const {path,params}=parseRoute(); const normalized=normalizePath(path); window.scrollTo(0,0);
+      if (path.startsWith('/r/')) {
+        const refCode = decodeURIComponent(path.slice(3)).split('/')[0].trim().toUpperCase();
+        if (refCode) { try { localStorage.setItem('wb_ref_code', refCode); } catch (error) {} }
+        navigate('/');
+        return;
+      }
+      const routeProgram=params.get('program');
+      if (routeProgram && Object.prototype.hasOwnProperty.call(DECK_URLS,routeProgram)) {
+        pendingProgramSlug=routeProgram;
+        pendingIndexRoute=routeProgram.startsWith('deck-dn-')?'/dalam-negeri/':routeProgram.startsWith('deck-grant-')?'/grant/':routeProgram.startsWith('deck-bahasa-')?'/bahasa/':routeProgram.startsWith('deck-pra-')?'/pra/':routeProgram.startsWith('deck-s3-')?'/s3/':routeProgram.startsWith('deck-s2-')?'/s2/':'/s1/';
+      }
+      if (path==='/' || path==='') { pendingProgramSlug=''; pendingIndexRoute='/s1/'; homeView(); return; }
+      if (normalized==='/s1/') {
+        pendingProgramSlug='';
+        pendingIndexRoute='/s1/';
+        if (sb && currentUser) await fetchProfile();
+        indexView({programs:PROGRAMS,level:'S1',stat:'83 program terkurasi',countText:'83 Program · 28 Full · 55 Partial',indexRoute:'/s1/'}); return;
+      }
+      if (normalized==='/s2/') {
+        pendingProgramSlug='';
+        pendingIndexRoute='/s2/';
+        if (sb && currentUser) await fetchProfile();
+        indexView({programs:S2_PROGRAMS,level:'S2',stat:'37 program terkurasi',countText:'37 Program · 26 Full · 11 Partial',indexRoute:'/s2/'}); return;
+      }
+      if (normalized==='/s3/') {
+        pendingProgramSlug='';
+        pendingIndexRoute='/s3/';
+        if (sb && currentUser) await fetchProfile();
+        indexView({programs:S3_PROGRAMS,level:'S3',stat:'39 program terkurasi',countText:'39 Program · 36 Full · 3 Partial',indexRoute:'/s3/'}); return;
+      }
+      if (normalized==='/pra/') {
+        pendingProgramSlug='';
+        pendingIndexRoute='/pra/';
+        if (sb && currentUser) await fetchProfile();
+        indexView({programs:PRA_PROGRAMS,level:'Pra',stat:'7 panduan persiapan',countText:'7 Panduan',indexRoute:'/pra/',showFilters:false,indexTitle:'Indeks Pra Beasiswa',description:'Pilih panduan untuk menyiapkan aplikasi beasiswa dari awal sampai siap daftar.',searchPlaceholder:'Cari panduan Pra Beasiswa...',itemLabel:'panduan'}); return;
+      }
+      if (normalized==='/bahasa/') {
+        pendingProgramSlug='';
+        pendingIndexRoute='/bahasa/';
+        if (sb && currentUser) await fetchProfile();
+        indexView({programs:BAHASA_PROGRAMS,level:'Bahasa',stat:'10 panduan bahasa',countText:'10 Panduan',indexRoute:'/bahasa/',showFilters:false,indexTitle:'Indeks Persiapan Bahasa',description:'Pilih panduan tes dan bahasa yang sesuai dengan target beasiswa atau negara tujuanmu.',searchPlaceholder:'Cari IELTS, TOEFL, JLPT, bahasa...',itemLabel:'panduan'}); return;
+      }
+      if (normalized==='/dalam-negeri/') {
+        pendingProgramSlug='';
+        pendingIndexRoute='/dalam-negeri/';
+        if (sb && currentUser) await fetchProfile();
+        indexView({programs:DN_PROGRAMS,level:'Dalam Negeri',stat:'15 panduan beasiswa dalam negeri',countText:'15 Panduan',indexRoute:'/dalam-negeri/',showFilters:false,indexTitle:'Indeks Beasiswa Dalam Negeri',description:'Panduan beasiswa dalam negeri untuk jenjang S1, S2, dan S3 — dari pemerintah, kementerian, pemerintah daerah, dan swasta.',searchPlaceholder:'Cari LPDP, KIP Kuliah, beasiswa dalam negeri...',itemLabel:'panduan'}); return;
+      }
+      if (normalized==='/grant/') {
+        pendingProgramSlug='';
+        pendingIndexRoute='/grant/';
+        if (sb && currentUser) await fetchProfile();
+        indexView({programs:GRANT_PROGRAMS,level:'Grant',stat:'14 panduan grant',countText:'14 Panduan',indexRoute:'/grant/',showFilters:false,indexTitle:'Indeks Grant',description:'Panduan program grant dan mobilitas internasional: pertukaran mahasiswa, travel grant, kerja sambil belajar, volunteer, dan kursus singkat.',searchPlaceholder:'Cari IISMA, Erasmus+, travel grant...',itemLabel:'panduan'}); return;
+      }
+      if (normalized==='/komisi/') {
+        if (!currentUser) { navigate('/auth'); return; }
+        await komisiView(); return;
+      }
+      if (path==='/auth' || path==='/auth/') { authView(); return; }
+      if (path==='/paywall' || path==='/paywall/') {
+        if (!supabaseReady) { paywallView(true); return; }
+        if (!currentUser) { paywallView(false); return; }
+        await Promise.all([fetchProfile(),fetchLatestVerification()]);
+        if (currentProfile?.verified) {
+          if (pendingProgramSlug) openDeckForSlug(pendingProgramSlug);
+          else navigate(pendingIndexRoute);
+          return;
+        }
+        paywallView(false); return;
+      }
+      const protectedRoutes=new Set(['/persiapan-bahasa/','/pra-beasiswa/','/sukses/']);
+      if (protectedRoutes.has(normalized)) {
+        pendingRoute=normalized;
+        if (!supabaseReady || !currentUser) { navigate('/auth'); return; }
+        await fetchProfile();
+        if (!currentProfile?.verified) { navigate('/paywall'); return; }
+        if (normalized==='/sukses/') successView();
+        else placeholderView(PLACEHOLDERS[normalized]);
+        return;
+      }
+      homeView();
+    }
+
+    let lifecycleListenersBound=false;
+
+    function bindLifecycleListeners() {
+      if (lifecycleListenersBound) return;
+      lifecycleListenersBound=true;
+      window.addEventListener('hashchange',renderRoute);
+      window.addEventListener('pageshow',event=>{
+        if (event.persisted || !app.firstElementChild) void renderRoute();
+        checkDeviceValidThrottled();
+      });
+      window.addEventListener('focus',()=>{
+        checkDeviceValidThrottled();
+        const {path}=parseRoute();
+        if(path==='/paywall') refreshPaywallStatus();
+      });
+      document.addEventListener('visibilitychange',()=>{
+        if(document.visibilityState!=='visible') return;
+        if (!app.firstElementChild) void renderRoute();
+        checkDeviceValidThrottled();
+        const {path}=parseRoute();
+        if(path==='/paywall') refreshPaywallStatus();
+      });
+    }
+
+    async function initializeCurrentDevice() {
+      if (!sb || !currentSession || !currentUser) return;
+      await registerDevice();
+      const deviceValid=await checkDeviceValid();
+      if (deviceValid) startDeviceValidation();
+    }
+
+    async function initApp() {
+      bindLifecycleListeners();
+      if (sb) {
+        try {
+          const {data,error}=await sb.auth.getSession();
+          if (error) throw error;
+          currentSession=data.session || null;
+          currentUser=data.session?.user || null;
+        } catch (error) {
+          supabaseConnectionError=error;
+          currentSession=null;
+          currentUser=null;
+          clearDeviceValidation();
+        }
+        sb.auth.onAuthStateChange((_event,session)=>{
+          currentSession=session;
+          currentUser=session?.user || null;
+          if (!currentUser) {
+            currentProfile=null;
+            clearDeviceValidation();
+          }
+          if (!authActionBusy) window.setTimeout(renderRoute,0);
+        });
+      }
+
+      // Paint the requested page before device-table network checks. Those checks
+      // can be slow after returning from a deck and must never leave #app empty.
+      await renderRoute();
+      if (currentSession && currentUser) void initializeCurrentDevice();
+    }
+
+    function xhrFetch(input, init={}) {
+      return new Promise((resolve, reject) => {
+        const request = input instanceof Request ? input : null;
+        const url = request ? request.url : String(input);
+        const method = init.method || request?.method || 'GET';
+        const xhr = new XMLHttpRequest();
+        xhr.open(method, url, true);
+        xhr.withCredentials = init.credentials === 'include';
+
+        const headers = new Headers(request?.headers || undefined);
+        new Headers(init.headers || undefined).forEach((value, key) => headers.set(key, value));
+        headers.forEach((value, key) => xhr.setRequestHeader(key, value));
+
+        const abort = () => {
+          xhr.abort();
+          reject(new DOMException('Permintaan dibatalkan.', 'AbortError'));
+        };
+        if (init.signal?.aborted) { abort(); return; }
+        init.signal?.addEventListener('abort', abort, { once:true });
+
+        xhr.onload = () => {
+          init.signal?.removeEventListener('abort', abort);
+          const responseHeaders = new Headers();
+          xhr.getAllResponseHeaders().trim().split(/[\r\n]+/).forEach(line => {
+            const separator = line.indexOf(':');
+            if (separator > 0) responseHeaders.append(line.slice(0, separator).trim(), line.slice(separator + 1).trim());
+          });
+          resolve(new Response(xhr.responseText, {
+            status: xhr.status,
+            statusText: xhr.statusText,
+            headers: responseHeaders
+          }));
+        };
+        xhr.onerror = () => {
+          init.signal?.removeEventListener('abort', abort);
+          reject(new TypeError('Koneksi ke Supabase terputus sebelum server merespons.'));
+        };
+        xhr.ontimeout = () => reject(new TypeError('Koneksi ke Supabase melewati batas waktu.'));
+        xhr.send(init.body ?? request?.body ?? null);
+      });
+    }
+
+    async function bootstrapApp() {
+      try {
+        await window.__supabaseSdkPromise;
+        if (window.__supabaseSdkError) throw window.__supabaseSdkError;
+        if (!isSupabaseConfigured()) throw new Error('Konfigurasi Supabase belum lengkap.');
+        if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+          throw new Error('Supabase SDK termuat tanpa fungsi createClient.');
+        }
+        sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey, {
+          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+          global: { fetch: xhrFetch }
+        });
+        supabaseReady = true;
+      } catch (error) {
+        window.__supabaseSdkError = error instanceof Error ? error : new Error(String(error));
+        supabaseReady = false;
+        sb = null;
+      }
+      initApp();
+    }
+
+    // Public pages do not depend on Supabase. Render them immediately so a
+    // back-navigation from a deck cannot show only the page background while
+    // the SDK or a saved member session is being restored.
+    (function paintPublicRouteImmediately() {
+      const {path}=parseRoute();
+      const normalized=normalizePath(path);
+      if (path==='/' || path==='') homeView();
+      else if (normalized==='/s1/') indexView();
+    })();
+
+    bootstrapApp();
+  </script>
+</body>
+</html>
