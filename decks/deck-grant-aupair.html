@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 14 panduan grant ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Au Pair</title>
+<style>
+:root{--acc:#0ea5e9;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:#0f1420;color:#eef2f7;overflow:hidden}
+.deck{position:relative;width:100vw;height:100vh;height:100dvh}
+.progress{position:fixed;top:0;left:0;right:0;height:5px;background:#1e2740;z-index:50}
+.progress .bar{height:100%;width:0;background:var(--acc);transition:width .3s}
+.slide{display:none;width:100%;height:100%;overflow-y:auto;padding:56px 24px 110px;align-items:flex-start;justify-content:center}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.inner{width:100%;max-width:920px}
+h1{font-size:clamp(30px,5vw,52px);line-height:1.15;margin-bottom:14px}
+h2{font-size:clamp(22px,3.6vw,34px);margin-bottom:16px;color:var(--acc)}
+h3{font-size:19px;margin:18px 0 8px;color:#ffd166}
+p,li{font-size:clamp(15px,2.2vw,18px);line-height:1.65}
+ul,ol{margin:8px 0 8px 22px}
+li{margin-bottom:8px}
+.cover{align-items:center !important;justify-content:center !important;text-align:center;padding:40px 24px 110px !important;background-size:cover;background-position:center;position:relative}
+.cover::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,16,.55),rgba(5,8,16,.88))}
+.cover .inner{position:relative;z-index:1}
+.badge{display:inline-block;background:var(--acc);color:#fff;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:8px 18px;border-radius:999px;margin-bottom:18px}
+.cover p.sub{font-size:clamp(16px,2.6vw,22px);color:#cbd5e1;max-width:700px;margin:0 auto}
+.card{background:#182036;border:1px solid #26314d;border-radius:14px;padding:18px 20px;margin:12px 0}
+.card b.t{color:var(--acc)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.ok{border-left:5px solid #22c55e}.warn{border-left:5px solid #f59e0b}.bad{border-left:5px solid #ef4444}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:6px}
+.tag.ok{background:#14532d;color:#bbf7d0}.tag.warn{background:#78350f;color:#fde68a}.tag.bad{background:#7f1d1d;color:#fecaca}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:15px}
+th,td{border:1px solid #2c3a5c;padding:10px 12px;text-align:left;vertical-align:top}
+th{background:#1a2340;color:var(--acc)}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+@media(max-width:640px){.vgrid{gap:8px}}
+.vwrap{position:relative;padding-bottom:56.25%;height:0;background:#000;border-radius:10px;overflow:hidden}
+.vwrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.vcap{font-size:13px;color:#94a3b8;margin:6px 2px 4px}
+.faq{background:#182036;border:1px solid #26314d;border-radius:12px;padding:14px 18px;margin:10px 0}
+.faq b.q{color:#ffd166;display:block;margin-bottom:6px}
+.links a{display:block;background:#182036;border:1px solid #26314d;border-radius:10px;padding:12px 16px;margin:8px 0;color:#7dd3fc;text-decoration:none;font-size:16px;word-break:break-all}
+.links a:hover{border-color:var(--acc)}
+.links small{display:block;color:#94a3b8;font-size:13px}
+.nav{position:fixed;bottom:26px;z-index:60;width:56px;height:56px;border-radius:50%;border:none;background:var(--acc);color:#fff;font-size:28px;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center}
+.nav:active{transform:scale(.93)}
+.nav.prev{left:18px}.nav.next{right:18px}
+.nav:disabled{opacity:.25;cursor:default}
+.counter{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);z-index:60;background:#182036;border:1px solid #26314d;padding:8px 18px;border-radius:999px;font-size:14px;color:#94a3b8}
+.hint{position:fixed;top:14px;right:16px;z-index:60;font-size:12px;color:#64748b}
+.big{font-size:clamp(20px,3.4vw,28px);font-weight:700;color:#ffd166;margin:14px 0}
+.toc ol{font-size:17px}.toc li{margin-bottom:6px}
+.kicker{color:var(--acc);font-weight:700;letter-spacing:1px;font-size:13px;text-transform:uppercase;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="hint">Geser / &larr; &rarr; untuk navigasi</div>
+<section class="slide cover active" style="background-image:url('https://commons.wikimedia.org/wiki/Special:FilePath/Au%20pair%20with%20two%20children%2C%20Heidenheim%2C%202013.jpg');"><div class="inner"><span class="badge">Panduan Grant</span><h1>Panduan Au Pair</h1><p class="sub">Tinggal bersama host family di Jerman, Belanda, atau AS: syarat, cara mencari host family, tahapan visa, hak & kewajiban.</p><p class="sub" style="font-size:12px;margin-top:14px;opacity:.7">Foto: Wikimedia Commons</p></div></section>
+<section class="slide "><div class="inner"><h2>Daftar Isi</h2><div class="toc card"><ol><li>Apa itu au pair</li><li>Au pair Jerman: syarat</li><li>Au pair Jerman: hak & kewajiban</li><li>Au pair Jerman: cari host family + visa</li><li>Au pair Amerika: syarat J-1</li><li>Au pair Amerika: hak & kewajiban</li><li>Au pair Amerika: cara daftar via sponsor</li><li>Au pair Belanda: catatan verifikasi</li><li>Perbandingan 3 negara</li><li>Dokumen yang disiapkan</li><li>Tahapan lengkap</li><li>Estimasi biaya</li><li>Tips dapat host family yang baik</li><li>Red flags & perlindungan diri</li><li>Video panduan (2x2)</li><li>Setelah au pair: jalur lanjutan</li><li>FAQ</li><li>Link resmi</li><li>Checklist aksi</li></ol></div></div></section>
+<section class="slide "><div class="inner"><h2>Apa Itu Au Pair?</h2><p><b>Au pair</b> (bahasa Prancis: "setara") adalah program pertukaran budaya: kamu tinggal bersama <b>host family</b> di luar negeri, membantu menjaga anak &amp; pekerjaan rumah ringan, sambil belajar bahasa dan budaya setempat.</p>
+<div class="card"><b class="t">Bukan PRT, bukan babysitter biasa:</b> kamu dianggap <b>anggota keluarga sementara</b> &mdash; dapat kamar pribadi, makan, uang saku, dan waktu untuk kursus bahasa. Di Eropa sifatnya part-time + kursus; di AS full-time + kuliah wajib.</div>
+<div class="grid2">
+<div class="card"><b class="t">Cocok untuk</b><ul><li>Usia 18-26, belum menikah</li><li>Ingin ke luar negeri dengan <b>modal kecil</b></li><li>Batu loncatan ke Ausbildung/FSJ/kuliah</li></ul></div>
+<div class="card"><b class="t">Tidak cocok untuk</b><ul><li>Mencari gaji besar</li><li>Tidak suka anak-anak</li><li>Butuh kepastian finansial tinggi</li></ul></div>
+</div></div></section>
+<section class="slide "><div class="inner"><h2>Au Pair Jerman: Syarat</h2><ul>
+<li><b>Usia:</b> 18-26 tahun (pendaftaran sebelum ulang tahun ke-27)</li>
+<li><b>Bahasa Jerman:</b> minimal <b>A1</b> &mdash; <b>wajib</b> untuk visa, dibuktikan sertifikat</li>
+<li>Belum menikah &amp; tidak punya anak</li>
+<li>Sehat jasmani-rohani, berkelakuan baik</li>
+<li>Belum pernah ikut au pair di Jerman sebelumnya</li>
+<li>Siap tinggal <b>6-12 bulan</b> (perpanjangan/pengulangan tidak bisa)</li>
+<li>Di host family harus ada <b>minimal 1 anak di bawah umur</b> dan bahasa Jerman sebagai bahasa ibu</li>
+</ul></div></section>
+<section class="slide "><div class="inner"><h2>Au Pair Jerman: Hak & Kewajiban</h2><table><tr><th>Aturan resmi</th><th>Ketentuan</th></tr>
+<tr><td>Uang saku</td><td>minimal <b>&euro;280/bulan</b></td></tr>
+<tr><td>Subsidi kursus bahasa</td><td>minimal <b>&euro;70/bulan</b> (+ transport ke kursus)</td></tr>
+<tr><td>Jam kerja</td><td>maks <b>6 jam/hari, 30 jam/minggu</b></td></tr>
+<tr><td>Hari libur</td><td>1,5 hari/minggu</td></tr>
+<tr><td>Cuti</td><td>minimal 2 hari kerja/bulan</td></tr>
+<tr><td>Asuransi</td><td>kesehatan, kecelakaan, kehamilan &mdash; ditanggung host family</td></tr>
+<tr><td>Tempat tinggal</td><td>kamar pribadi + makan</td></tr></table>
+<p style="color:#94a3b8;font-size:14px">Wajib ada <b>kontrak tertulis</b> (Au-pair-Vertrag) &mdash; ini syarat visa &amp; perlindungan hukum utamamu.</p></div></section>
+<section class="slide "><div class="inner"><h2>Jerman: Cari Host Family + Visa</h2><div class="card"><b class="t">Situs resmi mencari host family</b><ul>
+<li><b>aupairworld.com</b> &amp; <b>aupair.com</b> &mdash; platform terbesar, bisa mandiri (gratis/berbayar ringan)</li>
+<li><b>Agen tersertifikasi Gütegemeinschaft Au Pair</b> (guetegemeinschaftaupair.de) &mdash; agen Jerman hanya boleh memungut <b>maks &euro;150</b> dari au pair</li>
+<li>Grup komunitas: au pair Indonesia di Jerman (mis. grup AFA) untuk info pengganti</li>
+</ul></div>
+<p><b>Visa:</b> ajukan <b>visa au pair</b> di Kedutaan Jerman Jakarta dengan kontrak, sertifikat A1, paspor, dan dokumen keluarga pengundang. Proses beberapa minggu &mdash; jangan beli tiket sebelum visa keluar.</p>
+<div class="card bad"><b class="t">Waspada:</b> agen yang meminta jutaan rupiah "jaminan host family" = red flag. Biaya resmi agen Jerman dibatasi &euro;150.</div></div></section>
+<section class="slide "><div class="inner"><h2>Au Pair Amerika: Syarat (Visa J-1)</h2><p>Program au pair AS diatur <b>Departemen Luar Negeri AS</b> &mdash; wajib lewat <b>sponsor resmi</b> (tidak bisa urus mandiri).</p>
+<ul>
+<li><b>Usia 18-26</b> tahun</li>
+<li>Lulusan <b>SMA/sederajat</b></li>
+<li><b>Bahasa Inggris</b> komunikatif (wawancara dalam Inggris)</li>
+<li>Pengalaman menjaga anak (babysitting dihitung)</li>
+<li>Lulus <b>background check</b> + 3 referensi non-keluarga</li>
+<li>Sehat (medical check-up)</li>
+<li>Belum menikah, tidak punya anak</li>
+<li><b>SIM</b> sangat disarankan (mayoritas host family butuh au pair bisa menyetir)</li>
+</ul></div></section>
+<section class="slide "><div class="inner"><h2>Au Pair Amerika: Hak & Kewajiban</h2><table><tr><th>Aturan resmi (federal)</th><th>Ketentuan</th></tr>
+<tr><td>Uang saku</td><td>minimal <b>$195,75/minggu</b> (~$850/bulan)</td></tr>
+<tr><td>Jam kerja</td><td>maks <b>10 jam/hari, 45 jam/minggu</b></td></tr>
+<tr><td>Libur</td><td>1 akhir pekan penuh/bulan + 2 minggu cuti berbayar/tahun</td></tr>
+<tr><td>Kuliah</td><td><b>wajib 6 SKS</b> di kampus AS; host family bantu hingga <b>$500</b></td></tr>
+<tr><td>Tempat tinggal</td><td>kamar pribadi + makan</td></tr>
+<tr><td>Durasi</td><td><b>12 bulan</b>, bisa diperpanjang 6/9/12 bulan</td></tr></table>
+<p style="color:#94a3b8;font-size:14px">Sponsor resmi contoh: Cultural Care Au Pair, Au Pair in America, AuPairCare &mdash; cek daftar sponsor di j1visa.state.gov.</p></div></section>
+<section class="slide "><div class="inner"><h2>AS: Cara Daftar via Sponsor</h2><ol>
+<li>Pilih <b>sponsor resmi</b> dari daftar Departemen Luar Negeri AS.</li>
+<li>Isi aplikasi online: profil, foto, video perkenalan, referensi, medical.</li>
+<li><b>Wawancara</b> (Bahasa Inggris) dengan perwakilan sponsor.</li>
+<li><b>Matching</b> dengan host family &mdash; video call beberapa keluarga, pilih yang cocok.</li>
+<li>Tanda tangan kontrak &amp; terima dokumen <b>DS-2019</b>.</li>
+<li>Bayar <b>SEVIS fee</b>, ajukan <b>visa J-1</b> di Kedubes AS Jakarta, ikuti wawancara visa.</li>
+<li>Orientasi &amp; terbang ke AS.</li>
+</ol>
+<div class="card warn"><b class="t">Biaya:</b> program fee sponsor + SEVIS + visa + tiket &mdash; total bervariasi per sponsor (ribuan USD). Minta <b>rincian tertulis semua biaya</b> sebelum bayar.</div></div></section>
+<section class="slide "><div class="inner"><h2>Au Pair Belanda: Catatan Verifikasi</h2><div class="card warn"><span class="tag warn">PERLU VERIFIKASI MANDIRI</span>
+<p>Belanda <b>memiliki</b> program au pair yang diatur oleh <b>IND (Immigratie- en Naturalisatiedienst)</b> &mdash; host family menjadi sponsor/resmi penjamin tinggal. Namun aturan detail (batas usia, besaran uang saku, jam kerja) <b>berubah dari waktu ke waktu</b> dan tidak kami cantumkan angkanya di sini agar tidak menyesatkan.</p></div>
+<p><b>Yang harus kamu lakukan:</b></p>
+<ol>
+<li>Buka <b>ind.nl</b> &rarr; cari "au pair" &mdash; baca syarat terbaru langsung dari sumber resmi.</li>
+<li>Pastikan host family terdaftar sebagai <b>recognized sponsor</b> di IND.</li>
+<li>Jangan transfer uang ke "agen Belanda" yang tidak bisa menunjukkan nomor registrasi.</li>
+</ol></div></section>
+<section class="slide "><div class="inner"><h2>Perbandingan 3 Negara</h2><table><tr><th></th><th>Jerman</th><th>Amerika Serikat</th><th>Belanda</th></tr>
+<tr><td>Visa</td><td>Visa au pair</td><td>J-1</td><td>Izin tinggal via IND</td></tr>
+<tr><td>Usia</td><td>18-26</td><td>18-26</td><td>Cek ind.nl</td></tr>
+<tr><td>Bahasa</td><td>Jerman A1</td><td>Inggris komunikatif</td><td>Cek ind.nl</td></tr>
+<tr><td>Uang saku</td><td>&ge;&euro;280/bln</td><td>&ge;$195,75/minggu</td><td>Cek ind.nl</td></tr>
+<tr><td>Durasi</td><td>6-12 bln</td><td>12 bln (+ext)</td><td>Cek ind.nl</td></tr>
+<tr><td>Cari family</td><td>Mandiri/agen</td><td>Sponsor resmi wajib</td><td>Agen/situs</td></tr></table></div></section>
+<section class="slide "><div class="inner"><h2>Dokumen yang Disiapkan</h2><ul>
+<li>Paspor (min. 6-12 bulan berlaku)</li>
+<li>Sertifikat bahasa (A1 Jerman / bukti Inggris)</li>
+<li>CV + <b>surat perkenalan untuk host family</b> (dear family letter)</li>
+<li><b>Foto kolase</b> bersama anak-anak/keluarga</li>
+<li>Surat referensi pengalaman menjaga anak (2-3)</li>
+<li>Surat keterangan sehat dari dokter</li>
+<li>SKCK (untuk AS: background check via sponsor)</li>
+<li>SIM internasional (khusus AS, sangat disarankan)</li>
+<li>Kontrak au pair tertulis (Jerman/AS)</li>
+</ul></div></section>
+<section class="slide "><div class="inner"><h2>Tahapan Lengkap (Jerman)</h2><ol>
+<li><b>Belajar bahasa</b> sampai A1 + lulus ujian (2-4 bulan).</li>
+<li><b>Buat profil</b> menarik di aupairworld.com/aupair.com.</li>
+<li><b>Video call</b> dengan calon host family (minimal 2-3x).</li>
+<li><b>Minta kontak au pair sebelumnya</b> di keluarga itu &mdash; tanya jujur pengalamannya.</li>
+<li><b>Tanda tangan kontrak</b> tertulis.</li>
+<li><b>Ajukan visa</b> di Kedubes Jerman.</li>
+<li>Terbang &amp; mulai; daftar kursus bahasa setempat.</li>
+</ol></div></section>
+<section class="slide "><div class="inner"><h2>Estimasi Biaya (Jerman, Mandiri)</h2><table><tr><th>Komponen</th><th>Estimasi</th></tr>
+<tr><td>Kursus + ujian A1</td><td>Rp 3-6 juta</td></tr>
+<tr><td>Dokumen, foto, SKCK</td><td>Rp 1-2 juta</td></tr>
+<tr><td>Biaya visa</td><td>Rp 1-2 juta</td></tr>
+<tr><td>Tiket pesawat</td><td>Rp 8-15 juta</td></tr>
+<tr><td>Dana pegangan awal</td><td>Rp 5-10 juta</td></tr></table>
+<p><b>Total tipikal: Rp 18-35 juta</b> &mdash; inilah kenapa au pair disebut "jalur hemat" ke Jerman. Setelah tiba, biaya hidup ditanggung host family + uang saku &euro;280/bulan.</p></div></section>
+<section class="slide "><div class="inner"><h2>Tips Dapat Host Family yang Baik</h2><ul>
+<li><b>Profil spesifik:</b> "2 tahun babysitting balita" &gt; "saya sayang anak-anak".</li>
+<li><b>Ceritakan motivasimu</b> belajar budaya &amp; bahasa &mdash; bukan sekadar "ingin ke luar negeri".</li>
+<li><b>Video call berkali-kali</b>, ajak bicara juga anak-anaknya.</li>
+<li><b>Wajib hubungi au pair sebelumnya</b> &mdash; ini filter terbaik.</li>
+<li>Tanyakan ekspektasi harian secara konkret: jam, tugas, hari libur.</li>
+<li><b>Kontrak tertulis sebelum visa</b> &mdash; tanpa kecuali.</li>
+<li>Percayai insting: keluarga yang terburu-buru/enggan video call = mundur.</li>
+</ul></div></section>
+<section class="slide "><div class="inner"><h2>Red Flags & Perlindungan Diri</h2><div class="card bad"><b class="t">Mundur jika:</b><ul>
+<li>Diminta kerja di luar kontrak (bersih-bersih rumah besar, jaga toko).</li>
+<li>Jam kerja melebihi batas resmi tanpa kompensasi.</li>
+<li>Uang saku telat/dipotong sepihak.</li>
+<li>Dilarang keluar/berkomunikasi.</li>
+<li>Ancaman "dilaporkan ke imigrasi" saat kamu protes.</li>
+</ul></div>
+<p><b>Jika bermasalah:</b> hubungi agen/sponsormu dulu; di Jerman bisa lapor ke <b>Gütegemeinschaft Au Pair</b> atau otoritas setempat; di AS hubungi hotline sponsor &amp; <b>Departemen Luar Negeri AS</b>. Kamu punya hak sebagai peserta program resmi.</p></div></section>
+<section class="slide "><div class="inner"><h2>Video Panduan</h2><p>Empat video panduan dalam grid 2&times;2. Klik untuk memutar langsung di slide ini.</p><div class="vgrid"><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/xCxMkZ8cw-4" title="Panduan: penjelasan lengkap program au pair & cara cari host family" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Panduan: penjelasan lengkap program au pair & cara cari host family</div></div><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/wnGZBPcWSPw" title="Panduan: step-by-step ala kak Eka (kursus, host family, visa)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Panduan: step-by-step ala kak Eka (kursus, host family, visa)</div></div><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/l6RlG-IAydk" title="Suasana & realita: 2 tahun au pair di Jerman, angka tabungan jujur" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Suasana & realita: 2 tahun au pair di Jerman, angka tabungan jujur</div></div><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/-pAADtswlDs" title="Testimoni: dari gagal PTN sampai lolos au pair ke Jerman" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Testimoni: dari gagal PTN sampai lolos au pair ke Jerman</div></div></div></div></section>
+<section class="slide "><div class="inner"><h2>Setelah Au Pair: Jalur Lanjutan</h2><p>Au pair sering jadi <b>batu loncatan</b>, bukan tujuan akhir:</p>
+<ul>
+<li><b>Ausbildung:</b> bahasa sudah B1/B2 + pengalaman hidup di Jerman = peluang besar diterima.</li>
+<li><b>FSJ/BFD:</b> tahun sosial sukarela di Jerman (banyak ex-au pair lanjut ke sini).</li>
+<li><b>Kuliah:</b> di Jerman (butuh blocked account) atau negara lain.</li>
+<li><b>Kerja:</b> pulang dengan CV internasional + bahasa asing.</li>
+</ul>
+<div class="card ok"><b class="t">Strategi cerdas:</b> gunakan tahun au pair untuk menaikkan bahasa ke B2 <i>gratis</i> (kursus disubsidi) sambil melamar Ausbildung &mdash; banyak yang berhasil dengan pola ini.</div></div></section>
+<section class="slide "><div class="inner"><h2>FAQ (1)</h2><div class="faq"><b class="q">1. Apakah laki-laki bisa ikut au pair?</b>Bisa. Mayoritas peserta perempuan, tapi host family yang mencari au pair laki-laki ada &mdash; terutama untuk anak laki-laki yang aktif.</div>
+<div class="faq"><b class="q">2. Apakah au pair Jerman bisa diperpanjang?</b>Tidak. Maksimal 12 bulan dan tidak bisa diulang. Rencanakan langkah selanjutnya dari awal.</div>
+<div class="faq"><b class="q">3. Apakah uang saku cukup untuk menabung?</b>Di Jerman (&euro;280/bln) cukup untuk hidup hemat + sedikit tabungan. Menabung besar bukan tujuan program ini.</div></div></section>
+<section class="slide "><div class="inner"><h2>FAQ (2)</h2><div class="faq"><b class="q">4. Bagaimana jika tidak cocok dengan host family?</b>Bisa ganti keluarga (rematch). Di Jerman cari via grup komunitas/situs; di AS via sponsor. Jangan kabur tanpa prosedur &mdash; status visamu taruhannya.</div>
+<div class="faq"><b class="q">5. Apakah perlu agen?</b>Jerman: tidak wajib, bisa mandiri. AS: wajib via sponsor resmi. Pilih agen/sponsor yang transparan biaya &amp; terdaftar resmi.</div>
+<div class="faq"><b class="q">6. Apakah au pair dihitung sebagai pengalaman kerja?</b>Ya &mdash; apalagi untuk jalur pendidikan/kerja anak, hospitality, dan bahasa.</div></div></section>
+<section class="slide "><div class="inner"><h2>Link Resmi</h2><div class="links"><a href="https://jakarta.diplo.de/" target="_blank" rel="noopener">Kedubes Jerman Jakarta - info visa au pair<small>https://jakarta.diplo.de/</small></a><a href="https://www.aupairworld.com/" target="_blank" rel="noopener">AuPairWorld - cari host family<small>https://www.aupairworld.com/</small></a><a href="https://www.aupair.com/" target="_blank" rel="noopener">AuPair.com - cari host family<small>https://www.aupair.com/</small></a><a href="https://j1visa.state.gov/programs/au-pair/" target="_blank" rel="noopener">J1 Visa State Dept - program Au Pair AS<small>https://j1visa.state.gov/programs/au-pair/</small></a><a href="https://ind.nl/" target="_blank" rel="noopener">IND Belanda - syarat au pair<small>https://ind.nl/</small></a></div><p style="color:#94a3b8;font-size:14px;margin-top:10px">Selalu verifikasi informasi terbaru di situs resmi di atas sebelum mendaftar.</p></div></section>
+<section class="slide "><div class="inner"><h2>Checklist Aksi</h2><div class="card"><ol>
+<li>Tentukan negara: Jerman (hemat) / AS (terstruktur) / Belanda (verifikasi dulu)</li>
+<li>Mulai kursus bahasa (A1 Jerman / Inggris komunikatif)</li>
+<li>Buat profil + dear family letter + foto kolase</li>
+<li>Daftar di situs pencari host family / sponsor resmi</li>
+<li>Video call &amp; cek referensi au pair sebelumnya</li>
+<li>Tanda tangan kontrak &rarr; ajukan visa</li>
+</ol></div></div></section>
+<section class="slide "><div class="inner"><div class='kicker'>Penutup</div><h2>Setahun yang Mengubah Hidup</h2><p class="big">Au pair = cara termurah merasakan hidup di luar negeri.</p>
+<p>Modal belasan juta, pulang dengan bahasa asing, kemandirian, dan jaringan global. Kuncinya: <b>host family yang tepat</b> &mdash; selektiflah, karena merekalah yang menentukan ceritamu.</p></div></section>
+<button class="nav prev" id="prevBtn" aria-label="Sebelumnya">&lsaquo;</button>
+<button class="nav next" id="nextBtn" aria-label="Berikutnya">&rsaquo;</button>
+<div class="counter"><span id="cur">1</span> / <span id="tot">0</span></div>
+</div>
+<script>
+(function(){
+var slides=document.querySelectorAll('.slide'),i=0;
+var tot=document.getElementById('tot'),cur=document.getElementById('cur'),bar=document.getElementById('bar');
+var prev=document.getElementById('prevBtn'),next=document.getElementById('nextBtn');
+tot.textContent=slides.length;
+function show(n){
+  i=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach(function(s,k){s.classList.toggle('active',k===i);if(k===i)s.scrollTop=0;});
+  cur.textContent=i+1;bar.style.width=((i+1)/slides.length*100)+'%';
+  prev.disabled=(i===0);next.disabled=(i===slides.length-1);
+}
+prev.onclick=function(){show(i-1)};next.onclick=function(){show(i+1)};
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){show(i+1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){show(i-1);e.preventDefault();}
+  else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+});
+var tx=0;
+document.getElementById('deck').addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;},{passive:true});
+document.getElementById('deck').addEventListener('touchend',function(e){
+  var dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)>60){if(dx<0)show(i+1);else show(i-1);}
+},{passive:true});
+show(0);
+})();
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/grant/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan AIESEC Global Talent", "slug": "deck-grant-aiesec-talent"},{"label": "Panduan AIESEC Global Volunteer", "slug": "deck-grant-aiesec-volunteer"},{"label": "Panduan Au Pair", "slug": "deck-grant-aupair"},{"label": "Panduan Ausbildung Jerman", "slug": "deck-grant-ausbildung"},{"label": "Panduan Erasmus+", "slug": "deck-grant-erasmus"},{"label": "Panduan IISMA", "slug": "deck-grant-iisma"},{"label": "Panduan IISMAVO", "slug": "deck-grant-iismavo"},{"label": "Panduan JET Programme", "slug": "deck-grant-jet"},{"label": "Panduan Short Course Luar Negeri", "slug": "deck-grant-shortcourse"},{"label": "Panduan Summer/Winter School", "slug": "deck-grant-summerschool"},{"label": "Panduan Travel Grant", "slug": "deck-grant-travel"},{"label": "Panduan Work & Travel USA", "slug": "deck-grant-worktravel"},{"label": "Panduan Working Holiday Visa", "slug": "deck-grant-whv"},{"label": "Panduan Youth Summit", "slug": "deck-grant-summit"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

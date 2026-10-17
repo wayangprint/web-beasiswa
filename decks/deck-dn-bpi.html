@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 15 panduan beasiswa dalam negeri ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Beasiswa Pendidikan Indonesia (BPI)</title>
+<style>
+:root{--accent:#0d9488;--ink:#1e293b;--mut:#64748b;}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;background:#0f172a;color:var(--ink);overflow:hidden}
+.deck{position:relative;height:100dvh;width:100%}
+.slide{display:none;height:100dvh;width:100%;overflow-y:auto;padding:64px 22px 120px;background:#f8fafc;animation:fade .35s ease}
+.slide.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.wrap{max-width:920px;margin:0 auto}
+.kicker{display:inline-block;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,white);border:1px solid color-mix(in srgb,var(--accent) 30%,white);padding:6px 14px;border-radius:999px;margin-bottom:14px}
+h2.st{font-size:clamp(24px,4vw,34px);line-height:1.25;margin-bottom:6px;color:#0f172a}
+.lede{color:var(--mut);font-size:16px;margin-bottom:22px;line-height:1.6}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px 22px;margin-bottom:16px;box-shadow:0 2px 10px rgba(15,23,42,.05)}
+.card h3{font-size:18px;margin-bottom:10px;color:var(--accent)}
+.card p,.card li{font-size:15.5px;line-height:1.7}
+.card ul{padding-left:20px}
+.card li{margin-bottom:6px}
+.card li::marker{color:var(--accent)}
+b,strong{color:#0f172a}
+.note{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 18px;font-size:14.5px;line-height:1.65;color:#92400e;margin-bottom:16px}
+.note b{color:#92400e}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr 1fr;gap:10px}.card{padding:16px}}
+.pill{display:inline-block;background:color-mix(in srgb,var(--accent) 12%,white);color:var(--accent);font-weight:700;font-size:13px;padding:5px 12px;border-radius:999px;margin:0 6px 8px 0}
+table.t{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff;border-radius:12px;overflow:hidden;margin-bottom:16px}
+table.t th{background:var(--accent);color:#fff;text-align:left;padding:10px 12px}
+table.t td{padding:10px 12px;border-bottom:1px solid #eef2f7;vertical-align:top;line-height:1.6}
+.check li{list-style:none;padding-left:30px;position:relative;margin-bottom:8px}
+.check li::before{content:"☑";position:absolute;left:0;color:var(--accent);font-weight:700}
+a{color:var(--accent);font-weight:600;word-break:break-all}
+/* cover */
+.slide.cover{padding:0;overflow:hidden;background:linear-gradient(135deg,#0f172a,#1e3a5f)}
+.cover-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cover-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,6,23,.55) 0%,rgba(2,6,23,.35) 40%,rgba(2,6,23,.82) 100%)}
+.cover-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:48px 28px 120px;max-width:920px}
+.cover-kicker{color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);display:inline-block;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:7px 16px;border-radius:999px;margin-bottom:16px;backdrop-filter:blur(4px);align-self:flex-start}
+.cover-content h1{color:#fff;font-size:clamp(30px,6vw,52px);line-height:1.15;margin-bottom:14px;text-shadow:0 2px 18px rgba(0,0,0,.5)}
+.cover-content p{color:#e2e8f0;font-size:clamp(15px,2.5vw,19px);line-height:1.65;max-width:640px}
+.cover-hint{margin-top:22px;color:#fff;font-size:14px;opacity:.85}
+.cover-credit{position:absolute;bottom:86px;right:18px;color:rgba(255,255,255,.65);font-size:11px}
+/* video grid */
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.vid{background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(15,23,42,.06)}
+.vid .frame{position:relative;aspect-ratio:16/9;background:#000}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid .cap{padding:10px 12px;font-size:13px;line-height:1.55;color:var(--mut)}
+.vid .cap b{color:var(--accent)}
+@media(max-width:640px){.vgrid{gap:10px}.vid .cap{font-size:11.5px;padding:8px}}
+/* nav */
+.navbar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(15,23,42,.96);backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,.12);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.navrow{max-width:920px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.nbtn{flex:0 0 auto;background:var(--accent);color:#fff;border:0;border-radius:12px;padding:12px 20px;font-size:15px;font-weight:700;cursor:pointer;min-width:110px}
+.nbtn:disabled{opacity:.35;cursor:default}
+.nbtn.ghost{background:rgba(255,255,255,.12)}
+.nmid{flex:1;text-align:center;color:#cbd5e1;font-size:13.5px;font-weight:600}
+.pbar{height:4px;background:rgba(255,255,255,.15);border-radius:99px;margin-top:8px;overflow:hidden;max-width:920px;margin-left:auto;margin-right:auto}
+.pbar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+.faq{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;margin-bottom:12px}
+.faq h4{font-size:16px;color:var(--accent);margin-bottom:6px}
+.faq p{font-size:15px;line-height:1.7;color:#334155}
+.end{text-align:center;padding:30px 10px}
+.end .big{font-size:clamp(26px,5vw,40px);color:#0f172a;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div class="deck">
+<section class="slide cover"><img class="cover-img" src="https://asset-2.tstatic.net/tribunnews/foto/bank/originals/Guru-sekolah-dasar-Indonesia-bersemangat-mengajar-di-depan-para-siswa-yang-duduk-di-dalam-kelas.jpg" alt="Panduan Beasiswa Pendidikan Indonesia (BPI)" loading="eager" onerror="this.style.display='none'"><div class="cover-shade"></div><div class="cover-content"><span class="cover-kicker">Panduan Beasiswa Dalam Negeri</span><h1>Panduan Beasiswa Pendidikan Indonesia (BPI)</h1><p>Program Kemendikbudristek via Puslapdik — jenjang D4/S1, S2, dan S3 untuk calon guru, guru, dosen, tenaga kependidikan, hingga pelaku budaya.</p><div class="cover-hint">Klik Next / geser / tombol panah → untuk mulai membaca</div></div><div class="cover-credit">Foto: Tribunnews</div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Sekilas Program</span><h2 class="st">Apa Itu BPI?</h2><p class="lede">Beasiswa Pendidikan Indonesia (BPI) adalah program Kemendikbudristek yang dikelola Pusat Layanan Pembiayaan Pendidikan (Puslapdik) — perluasan kerja sama dengan LPDP.</p><div class="card"><h3>Fakta Kunci</h3><ul><li><b>Jenjang:</b> D4/S1, S2, hingga S3 — <b>dalam negeri dan luar negeri</b>. (LPDP reguler hanya S2/S3; BPI mencakup S1.)</li><li><b>Sasaran:</b> calon guru, guru, dosen, tenaga kependidikan, pelaku budaya, dan siswa berprestasi.</li><li><b>Pendanaan:</b> bersumber dari Dana Abadi Pendidikan (LPDP).</li><li><b>Portal:</b> beasiswa.kemdikbud.go.id (umum) dan beasiswa.kemendikdasmen.go.id (BPI GTK).</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Skema S1</span><h2 class="st">Skema Jenjang D4/S1</h2><p class="lede">BPI membuka jenjang sarjana yang tidak ada di LPDP reguler.</p><div class="card"><h3>Jenis Beasiswa S1/D4</h3><ul><li><b>Calon Guru SMK</b> — dalam negeri.</li><li><b>Pendidikan Guru Sekolah Dasar (PGSD)</b>.</li><li><b>Pendidikan Jasmani, Olahraga &amp; Kesehatan (PJOK)</b>.</li><li><b>Pelaku Budaya</b> — S1 sampai S3.</li><li><b>Beasiswa Indonesia Maju (BIM)</b> — S1 dalam dan luar negeri.</li><li>Durasi pembiayaan maksimal <b>4 tahun</b> untuk skema S1/D4 umum.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Skema S2/S3</span><h2 class="st">Skema Jenjang S2 &amp; S3</h2><p class="lede"></p><div class="card"><h3>Jenis Beasiswa Pascasarjana</h3><ul><li><b>Pendidik &amp; Tenaga Kependidikan (GTK):</b> guru dan tendik untuk S2/S3 dalam &amp; luar negeri.</li><li><b>Dosen PT Akademik &amp; Vokasi:</b> calon dosen, dosen, dan tendik perguruan tinggi.</li><li><b>S3 Dosen LPTK / Pendidikan Profesi Guru.</b></li><li><b>Pelaku Budaya</b> (S2/S3).</li><li><b>Stipendium Hungaricum (top-up)</b> untuk S3.</li><li><b>BPI PNS/TNI/Polri</b> — skema targeted via LPDP untuk aparatur negara.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">BPI GTK</span><h2 class="st">Fokus: BPI Guru &amp; Calon Guru 2025</h2><p class="lede">Skema paling populer — untuk meningkatkan kualifikasi guru Indonesia.</p><div class="card"><h3>Dua Kategori (2025)</h3><ul><li><b>Calon Guru (D4/S1):</b> usia maksimal <b>30 tahun</b> saat mendaftar; diterima sebagai mahasiswa baru di prodi kependidikan (PAUD, PGSD, penjas, pendidikan khusus, BK, kejuruan SMK). Biaya pendidikan <b>maksimal 8 semester</b> + biaya pendukung.</li><li><b>Guru aktif (RPL):</b> terdata di Dapodik <b>minimal 3 tahun</b>; usia &lt;47 tahun (mapel umum SMA/SMK), &lt;50 (kejuruan), &lt;55 (PLB); jalur Rekognisi Pembelajaran Lampau — biaya pendidikan <b>maksimal 4 semester</b>.</li><li>Pendaftaran 2025 dibuka September 2025 via <b>beasiswa.kemendikdasmen.go.id</b> (cek portal untuk periode terbaru).</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Syarat Umum</span><h2 class="st">Syarat Umum</h2><p class="lede"></p><div class="card"><h3>Persyaratan</h3><ul><li>Warga Negara Indonesia (KTP/KK).</li><li>Memenuhi syarat khusus tiap skema (usia, status guru/dosen, LoA/ket diterima).</li><li>Tidak sedang menempuh studi pada program yang sama dengan yang dilamar.</li><li>Contoh S3 Dosen LPTK: memiliki NIDN/NUPTK/NIDK, <b>IPK S2 minimal 3,25</b>, surat izin pimpinan, rekomendasi akademisi.</li><li>Tidak sedang menerima beasiswa sejenis dari sumber lain.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Cara Daftar</span><h2 class="st">Cara Mendaftar BPI</h2><p class="lede">Pendaftaran 100% daring.</p><div class="card"><h3>Langkah Pendaftaran</h3><ul><li><b>1.</b> Kunjungi <b>beasiswa.kemdikbud.go.id</b> (atau beasiswa.kemendikdasmen.go.id untuk BPI GTK).</li><li><b>2.</b> Pilih jenjang beasiswa → klik <b>Daftar</b> (buat akun bila belum punya).</li><li><b>3.</b> Isi formulir dengan data yang benar → cek email untuk <b>aktivasi akun</b>.</li><li><b>4.</b> Login, lengkapi formulir registrasi beasiswa.</li><li><b>5.</b> Unggah dokumen (umumnya maksimal <b>2 MB</b> per file).</li><li><b>6.</b> Submit data dan <b>cetak kartu peserta</b>.</li><li>Info &amp; update: Instagram <b>@puslapdik_dikbud</b>.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Tahapan</span><h2 class="st">Tahapan Seleksi</h2><p class="lede"></p><div class="card"><h3>Alur Seleksi</h3><ul><li><b>1. Seleksi administrasi:</b> validasi kesesuaian &amp; kebenaran dokumen.</li><li><b>2. Seleksi substansi (wawancara):</b> menilai kemampuan akademik/keterampilan, sikap, dan <b>wawasan kebangsaan</b>.</li><li><b>3. Rapat pleno</b> tim penyeleksi.</li><li><b>4. Penetapan penerima</b> beasiswa.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Dokumen</span><h2 class="st">Checklist Dokumen</h2><p class="lede"></p><ul class="check"><li>KTP / KK</li><li>Ijazah dan transkrip nilai</li><li>LoA Unconditional / SK lulus ujian masuk PT (sesuai skema)</li><li>Sertifikat kemampuan bahasa</li><li>CV</li><li>Esai / rencana studi / proposal penelitian</li><li>Surat rekomendasi</li><li>Surat izin pimpinan (bagi yang bekerja)</li><li>NIDN/NUPTK (dosen); bukti terdata Dapodik (guru)</li></ul></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Pembiayaan</span><h2 class="st">Komponen Pembiayaan</h2><p class="lede"></p><div class="card"><h3>Dana Pendidikan</h3><ul><li>SPP (tuition fee), biaya pendaftaran, tunjangan buku.</li><li>Bantuan penelitian tesis/disertasi.</li><li>Bantuan seminar internasional &amp; publikasi jurnal internasional.</li></ul></div><div class="card"><h3>Dana Pendukung</h3><ul><li>Transportasi, aplikasi visa/residence permit, asuransi kesehatan.</li><li>Biaya hidup bulanan, dana kedatangan, dana keadaan darurat.</li><li>Tunjangan keluarga (khusus doktor).</li><li>Biaya tambahan bagi penyandang disabilitas.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Strategi</span><h2 class="st">Strategi Esai &amp; Wawancara</h2><p class="lede"></p><div class="card"><h3>Tips</h3><ul><li>Tunjukkan <b>rekam jejak pengabdian</b> di dunia pendidikan — BPI mencari pendidik, bukan sekadar akademisi.</li><li>Rencana studi harus linear dengan tugasmu sebagai guru/dosen/tendik.</li><li>Wawancara menilai wawasan kebangsaan — update isu pendidikan nasional (kurikulum, pemerataan guru, dsb).</li><li>Siapkan contoh nyata kontribusi yang sudah kamu lakukan di sekolah/kampus.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Timeline</span><h2 class="st">Jadwal (Pola Terakhir)</h2><p class="lede"></p><div class="card"><h3>Acuan</h3><ul><li>BPI GTK 2025 untuk guru &amp; calon guru dibuka <b>September 2025</b> (berdasarkan informasi resmi).</li><li>Skema S2/S3 BPI umumnya dibuka bergelombang mengikuti kalender Puslapdik/LPDP.</li><li><b>Jadwal pasti selalu diumumkan di portal resmi</b> — pantau beasiswa.kemdikbud.go.id dan IG @puslapdik_dikbud.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Roadmap</span><h2 class="st">Roadmap Persiapan</h2><p class="lede"></p><div class="card"><h3>Langkah</h3><ul><li>Pastikan status Dapodik/NIDN/NUPTK-mu aktif dan valid.</li><li>Siapkan LoA atau bukti diterima di kampus tujuan (untuk skema yang mensyaratkan).</li><li>Ikuti tes bahasa Inggris/UKBI sesuai syarat skema.</li><li>Tulis esai &amp; rencana studi yang menonjolkan dedikasimu pada pendidikan.</li><li>Minta surat izin pimpinan jauh-jauh hari (proses birokrasi butuh waktu).</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Hindari Ini</span><h2 class="st">Kesalahan Umum</h2><p class="lede"></p><div class="card"><h3>Jangan Lakukan Ini</h3><ul><li>Mendaftar skema yang tidak sesuai status (mis. guru mendaftar skema calon guru).</li><li>Dapodik tidak aktif / masa kerja belum 3 tahun untuk skema guru.</li><li>File unggahan melebihi 2 MB atau tidak terbaca.</li><li>Tidak membaca buku pedoman skema yang dipilih.</li><li>Lupa mencetak kartu peserta setelah submit.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">BPI vs LPDP</span><h2 class="st">BPI vs LPDP: Pilih Mana?</h2><p class="lede"></p><div class="card"><h3>Perbedaan Kunci</h3><ul><li><b>Jenjang:</b> BPI mencakup D4/S1–S3; LPDP reguler khusus S2/S3.</li><li><b>Sasaran:</b> BPI fokus pada ekosistem pendidikan (guru, dosen, tendik, pelaku budaya); LPDP terbuka umum lintas profesi.</li><li><b>Pengelola:</b> BPI oleh Puslapdik Kemendikbudristek; LPDP oleh Kemenkeu — keduanya didanai Dana Abadi Pendidikan.</li><li>Pilih yang paling sesuai dengan profilmu; keduanya sama-sama prestisius.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Video Panduan</span><h2 class="st">🎬 Tonton Dulu, Pahami Dulu</h2><p class="lede">Empat video pilihan: 2 panduan/informasi, 1 gambaran suasana kampus, dan 1 kisah penerima BPI.</p><div class="vgrid"><div class="vid"><div class="frame"><iframe src="https://www.youtube.com/embed/_a-uyE1mK3w" title="Panduan BPI GTK 2025" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p class="cap"><b>Panduan 1:</b> Panduan Beasiswa Pendidikan Indonesia (BPI GTK) 2025 untuk guru & calon guru: syarat, manfaat, dan cara daftar.</p></div><div class="vid"><div class="frame"><iframe src="https://www.youtube.com/embed/tFW9Bbiozd0" title="Talkshow Motivasi Beasiswa" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p class="cap"><b>Panduan 2:</b> Stadium General Medcom: motivasi & informasi beasiswa untuk talenta bangsa (konteks umum dunia beasiswa).</p></div><div class="vid"><div class="frame"><iframe src="https://www.youtube.com/embed/uA01posgKMQ" title="Keliling Kampus UNDIP" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p class="cap"><b>Suasana Kampus:</b> Gambaran suasana dan fasilitas kampus di Indonesia (contoh: Universitas Diponegoro, Semarang).</p></div><div class="vid"><div class="frame"><iframe src="https://www.youtube.com/embed/Q4kqmBb_Mbo" title="Kisah Penerima BPI Guru" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p class="cap"><b>Testimoni:</b> Kisah Intan Andriana Ginting, awardee BPI Guru 2023 — pendidik anak berkebutuhan khusus (kanal Puslapdik).</p></div></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">FAQ</span><h2 class="st">Pertanyaan yang Sering Ditanyakan (1)</h2><p class="lede"></p><div class="faq"><h4>Apakah BPI sama dengan LPDP?</h4><p>Berbeda pengelola, satu sumber dana. BPI dikelola Puslapdik Kemendikbudristek (perluasan kerja sama LPDP) dan mencakup jenjang D4/S1–S3.</p></div><div class="faq"><h4>Saya guru honorer, bisa daftar BPI GTK?</h4><p>Acuan 2025 mensyaratkan terdata di Dapodik minimal 3 tahun. Pastikan status Dapodik-mu aktif dan cek pedoman terbaru.</p></div><div class="faq"><h4>Apakah harus punya LoA dulu?</h4><p>Tergantung skema. Sebagian skema BPI mensyaratkan LoA Unconditional/SK lulus — baca buku pedoman skema pilihanmu.</p></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">FAQ</span><h2 class="st">Pertanyaan yang Sering Ditanyakan (2)</h2><p class="lede"></p><div class="faq"><h4>Berapa lama pembiayaan BPI?</h4><p>Contoh: BPI GTK calon guru maksimal 8 semester (+ biaya pendukung), guru via RPL maksimal 4 semester; skema S1/D4 umum maksimal 4 tahun.</p></div><div class="faq"><h4>Kapan BPI dibuka?</h4><p>Bergelombang mengikuti kalender Puslapdik. Pantau beasiswa.kemdikbud.go.id dan IG @puslapdik_dikbud.</p></div><div class="faq"><h4>Apakah ada wawancara?</h4><p>Ya — seleksi substansi berupa wawancara yang menilai kemampuan akademik, sikap, dan wawasan kebangsaan.</p></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Link Resmi</span><h2 class="st">Kanal Resmi BPI</h2><p class="lede"></p><div class="card"><h3>Tautan Penting</h3><ul><li>Portal BPI: <b>beasiswa.kemdikbud.go.id</b>.</li><li>Portal BPI GTK: <b>beasiswa.kemendikdasmen.go.id</b>.</li><li>Instagram: <b>@puslapdik_dikbud</b>.</li><li>Unduh <b>Pedoman Penyelenggaraan BPI</b> tahun berjalan sebelum mendaftar.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Aksi</span><h2 class="st">Langkah Selanjutnya</h2><p class="lede"></p><ul class="check"><li>Tentukan skema BPI yang sesuai statusmu (guru/calon guru/dosen/pelaku budaya).</li><li>Unduh dan baca pedoman skema tersebut sampai tuntas.</li><li>Aktifkan/validasi Dapodik atau NIDN/NUPTK-mu.</li><li>Siapkan dokumen dan tulis esai dari sekarang.</li><li>Buat akun di portal resmi saat pendaftaran dibuka.</li></ul></div></section>
+<section class="slide"><div class="wrap"><div class="end"><div class="kicker">Penutup</div><div class="big">Guru Hebat, Indonesia Kuat. 🎓</div><p class="lede" style="text-align:center;max-width:640px;margin:0 auto">BPI adalah investasi negara untuk para pendidik. Jika panggilanmu adalah mengajar dan mendidik, beasiswa ini menunggumu.<br><br><b>Semangat, calon pendidik Indonesia!</b></p></div></div></section>
+</div>
+<div class="navbar">
+  <div class="navrow">
+    <button class="nbtn ghost" id="prevBtn" aria-label="Slide sebelumnya">← Prev</button>
+    <div class="nmid"><span id="cnt">1 / 21</span><div class="pbar"><i id="bar" style="width:0%"></i></div></div>
+    <button class="nbtn" id="nextBtn" aria-label="Slide berikutnya">Next →</button>
+  </div>
+</div>
+<script>
+(function(){
+var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+var cur=0,cnt=document.getElementById('cnt'),bar=document.getElementById('bar'),
+    prev=document.getElementById('prevBtn'),next=document.getElementById('nextBtn');
+function go(n){
+  cur=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach(function(s,i){s.classList.toggle('active',i===cur);if(i===cur)s.scrollTop=0;});
+  cnt.textContent=(cur+1)+' / '+slides.length;
+  bar.style.width=((cur+1)/slides.length*100)+'%';
+  prev.disabled=(cur===0);next.disabled=(cur===slides.length-1);
+  window.scrollTo(0,0);
+}
+prev.addEventListener('click',function(){go(cur-1);});
+next.addEventListener('click',function(){go(cur+1);});
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  else if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+  else if(e.key==='Home')go(0);
+  else if(e.key==='End')go(slides.length-1);
+});
+var tx=0,ty=0;
+document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',function(e){
+  var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.4){if(dx<0)go(cur+1);else go(cur-1);}
+},{passive:true});
+go(0);
+})();
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/dalam-negeri/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan Beasiswa BUMN", "slug": "deck-dn-bumn"},{"label": "Panduan Beasiswa Bakti BCA", "slug": "deck-dn-baktibca"},{"label": "Panduan Beasiswa Bank Indonesia (GenBI)", "slug": "deck-dn-genbi"},{"label": "Panduan Beasiswa Djarum Plus", "slug": "deck-dn-djarum"},{"label": "Panduan Beasiswa Garuda 2027", "slug": "deck-dn-garuda"},{"label": "Panduan Beasiswa KIP Kuliah", "slug": "deck-dn-kip"},{"label": "Panduan Beasiswa KSE", "slug": "deck-dn-kse"},{"label": "Panduan Beasiswa Kemenag", "slug": "deck-dn-kemenag"},{"label": "Panduan Beasiswa LPDP", "slug": "deck-dn-lpdp"},{"label": "Panduan Beasiswa Pemda", "slug": "deck-dn-pemda"},{"label": "Panduan Beasiswa Pendidikan Indonesia (BPI)", "slug": "deck-dn-bpi"},{"label": "Panduan Beasiswa Sampoerna Foundation", "slug": "deck-dn-sampoerna"},{"label": "Panduan Beasiswa Tanoto Foundation", "slug": "deck-dn-tanoto"},{"label": "Panduan Beasiswa Unggulan", "slug": "deck-dn-unggulan"},{"label": "Panduan Beasiswa VDMI", "slug": "deck-dn-vdmi"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

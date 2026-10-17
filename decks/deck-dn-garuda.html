@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 15 panduan beasiswa dalam negeri ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Beasiswa Garuda 2027</title>
+<style>
+:root{--accent:#c2410c;--ink:#1e293b;--mut:#64748b;}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;background:#0f172a;color:var(--ink);overflow:hidden}
+.deck{position:relative;height:100dvh;width:100%}
+.slide{display:none;height:100dvh;width:100%;overflow-y:auto;padding:64px 22px 120px;background:#f8fafc;animation:fade .35s ease}
+.slide.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.wrap{max-width:920px;margin:0 auto}
+.kicker{display:inline-block;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,white);border:1px solid color-mix(in srgb,var(--accent) 30%,white);padding:6px 14px;border-radius:999px;margin-bottom:14px}
+h2.st{font-size:clamp(24px,4vw,34px);line-height:1.25;margin-bottom:6px;color:#0f172a}
+.lede{color:var(--mut);font-size:16px;margin-bottom:22px;line-height:1.6}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px 22px;margin-bottom:16px;box-shadow:0 2px 10px rgba(15,23,42,.05)}
+.card h3{font-size:18px;margin-bottom:10px;color:var(--accent)}
+.card p,.card li{font-size:15.5px;line-height:1.7}
+.card ul{padding-left:20px}
+.card li{margin-bottom:6px}
+.card li::marker{color:var(--accent)}
+b,strong{color:#0f172a}
+.note{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 18px;font-size:14.5px;line-height:1.65;color:#92400e;margin-bottom:16px}
+.note b{color:#92400e}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr 1fr;gap:10px}.card{padding:16px}}
+.pill{display:inline-block;background:color-mix(in srgb,var(--accent) 12%,white);color:var(--accent);font-weight:700;font-size:13px;padding:5px 12px;border-radius:999px;margin:0 6px 8px 0}
+table.t{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff;border-radius:12px;overflow:hidden;margin-bottom:16px}
+table.t th{background:var(--accent);color:#fff;text-align:left;padding:10px 12px}
+table.t td{padding:10px 12px;border-bottom:1px solid #eef2f7;vertical-align:top;line-height:1.6}
+.check li{list-style:none;padding-left:30px;position:relative;margin-bottom:8px}
+.check li::before{content:"☑";position:absolute;left:0;color:var(--accent);font-weight:700}
+a{color:var(--accent);font-weight:600;word-break:break-all}
+/* cover */
+.slide.cover{padding:0;overflow:hidden;background:linear-gradient(135deg,#0f172a,#1e3a5f)}
+.cover-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cover-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,6,23,.55) 0%,rgba(2,6,23,.35) 40%,rgba(2,6,23,.82) 100%)}
+.cover-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:48px 28px 120px;max-width:920px}
+.cover-kicker{color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);display:inline-block;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:7px 16px;border-radius:999px;margin-bottom:16px;backdrop-filter:blur(4px);align-self:flex-start}
+.cover-content h1{color:#fff;font-size:clamp(30px,6vw,52px);line-height:1.15;margin-bottom:14px;text-shadow:0 2px 18px rgba(0,0,0,.5)}
+.cover-content p{color:#e2e8f0;font-size:clamp(15px,2.5vw,19px);line-height:1.65;max-width:640px}
+.cover-hint{margin-top:22px;color:#fff;font-size:14px;opacity:.85}
+.cover-credit{position:absolute;bottom:86px;right:18px;color:rgba(255,255,255,.65);font-size:11px}
+/* video grid */
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.vid{background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(15,23,42,.06)}
+.vid .frame{position:relative;aspect-ratio:16/9;background:#000}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid .cap{padding:10px 12px;font-size:13px;line-height:1.55;color:var(--mut)}
+.vid .cap b{color:var(--accent)}
+@media(max-width:640px){.vgrid{gap:10px}.vid .cap{font-size:11.5px;padding:8px}}
+/* nav */
+.navbar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(15,23,42,.96);backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,.12);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.navrow{max-width:920px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.nbtn{flex:0 0 auto;background:var(--accent);color:#fff;border:0;border-radius:12px;padding:12px 20px;font-size:15px;font-weight:700;cursor:pointer;min-width:110px}
+.nbtn:disabled{opacity:.35;cursor:default}
+.nbtn.ghost{background:rgba(255,255,255,.12)}
+.nmid{flex:1;text-align:center;color:#cbd5e1;font-size:13.5px;font-weight:600}
+.pbar{height:4px;background:rgba(255,255,255,.15);border-radius:99px;margin-top:8px;overflow:hidden;max-width:920px;margin-left:auto;margin-right:auto}
+.pbar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+.faq{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;margin-bottom:12px}
+.faq h4{font-size:16px;color:var(--accent);margin-bottom:6px}
+.faq p{font-size:15px;line-height:1.7;color:#334155}
+.end{text-align:center;padding:30px 10px}
+.end .big{font-size:clamp(26px,5vw,40px);color:#0f172a;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div class="deck">
+<section class="slide cover"><img class="cover-img" src="https://image.kkday.com/v2/image/get/s1.kkday.com/product_scm_13672/20260310072510_Qy42y/jpg" alt="Panduan Beasiswa Garuda 2027" loading="eager" onerror="this.style.display='none'"><div class="cover-shade"></div><div class="cover-content"><span class="cover-kicker">Panduan Beasiswa Dalam Negeri</span><h1>Panduan Beasiswa Garuda 2027</h1><p>Beasiswa S1 Kemdiktisaintek — <b>segera dibuka</b> (pengumuman 13 Oktober 2026). Semua fakta syarat resmi, tanpa LoA di awal, dan cara memantau pembukaannya.</p><div class="cover-hint">Klik Next / geser / tombol panah → untuk mulai membaca</div></div><div class="cover-credit">Foto: kkday.com (Patung Garuda Wisnu Kencana, Bali)</div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Status</span><h2 class="st">Status Terkini: Segera Dibuka</h2><p class="lede">Informasi paling penting — baca dulu sebelum yang lain.</p><div class="card"><h3>Pengumuman Resmi</h3><ul><li>Pada <b>13 Oktober 2026</b>, Kemdiktisaintek mengumumkan Beasiswa Garuda <b>'segera dibuka'</b>.</li><li><b>Jadwal pendaftaran BELUM diumumkan</b> sampai panduan ini ditulis.</li><li><b>Pantau terus:</b> Instagram <b>@beasiswagaruda.ri</b> dan situs <b>beasiswagaruda.kemdiktisaintek.go.id</b>.</li><li>Panduan ini disusun jujur berdasarkan pengumuman tersebut + pedoman gelombang sebelumnya — angka pasti mengikuti pedoman resmi 2027.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Syarat Tes</span><h2 class="st">Syarat Skor Tes (Fakta Resmi)</h2><p class="lede">Syarat seleksi yang diumumkan — <b>jangan diubah, catat baik-baik</b>.</p><div class="card"><h3>Ambang Batas Seleksi</h3><ul><li>Tes IQ: <b>minimal 120</b>.</li><li>Bahasa Inggris: <b>IELTS 6,5</b> (tiap band minimal 6,0) <b>atau TOEFL ITP 550</b>.</li><li>SAT: <b>minimal 1200</b>.</li><li>Pendaftar yang skornya <b>di bawah ambang</b> wajib mengikuti <b>Tes Bakat Skolastik</b> yang diselenggarakan program.</li><li>Siapkan sertifikat dari lembaga resmi dan pastikan masih berlaku.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">LoA</span><h2 class="st">Kabar Baik: LoA Tidak Wajib di Awal</h2><p class="lede">Fakta resmi yang membedakan Garuda dari banyak beasiswa S1 luar negeri.</p><div class="card"><h3>Kebijakan LoA</h3><ul><li><b>LoA TIDAK wajib</b> saat pendaftaran.</li><li>Penerima beasiswa diberi waktu <b>maksimal 1 tahun setelah ditetapkan</b> sebagai penerima untuk mendapatkan LoA dari perguruan tinggi tujuan.</li><li>Artinya: kamu bisa fokus lolos seleksi dulu, lalu berburu kampus dengan lebih tenang.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Sekilas</span><h2 class="st">Sekilas Beasiswa Garuda</h2><p class="lede">Beasiswa bergelar Kemdiktisaintek untuk jenjang S1, didanai Dana Abadi Pendidikan (LPDP).</p><div class="card"><h3>Gambaran Program</h3><ul><li><b>Sasaran:</b> siswa kelas 12 SMA/SMK/MA berprestasi — studi S1 di <b>dalam dan luar negeri</b> (kampus top dunia).</li><li><b>Sifat:</b> fully funded — bebas biaya kuliah + dana hidup bulanan + pendukung.</li><li><b>Pola gelombang 2026</b> (gambaran): Gelombang 1 dibuka 15 Feb–15 Mar 2026, Gelombang 2 pada 25 Mei–25 Jun 2026.</li><li>Program ini wujud Asta Cita: penguatan SDM, sains-teknologi, dan daya saing global.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Bidang</span><h2 class="st">Bidang Prioritas Nasional</h2><p class="lede">Pilih bidang studi yang selaras dengan prioritas berikut (acuan 2026).</p><div><span class="pill">Kesehatan</span><span class="pill">Ketahanan Pangan</span><span class="pill">Maritim</span><span class="pill">Material &amp; Manufaktur Maju</span><span class="pill">Energi</span><span class="pill">Pertahanan</span><span class="pill">Digitalisasi</span><span class="pill">Hilirisasi Industri</span><span class="pill">Bisnis &amp; Ekonomi</span><span class="pill">Hukum &amp; Kebijakan Publik</span></div><br><div class="card"><h3>Catatan</h3><ul><li>Pendaftar 2026 wajib memilih tema prioritas dan menentukan pilihan perguruan tinggi sesuai kawasan yang ditetapkan. Ikuti pedoman 2027 untuk detailnya.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Syarat Umum</span><h2 class="st">Syarat Umum (Acuan Pedoman 2026)</h2><p class="lede">Syarat administratif berdasarkan pedoman gelombang sebelumnya — konfirmasi di pedoman 2027.</p><div class="card"><h3>Persyaratan Umum</h3><ul><li>Warga Negara Indonesia (KTP/KK/KIA/paspor).</li><li>Sedang menempuh <b>kelas 12</b> SMA/SMK/MA.</li><li>Memiliki <b>eligibilitas SNBP</b> di sekolah masing-masing (dibuktikan surat keterangan kepala sekolah + nilai rapor semester 1–5).</li><li>Surat keterangan <b>sehat</b> dari faskes/RS pemerintah (maksimal 6 bulan sebelum pendaftaran).</li><li>Surat keterangan <b>bebas narkoba</b> dari pihak berwenang.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Syarat Akademik</span><h2 class="st">Syarat Akademik &amp; Bahasa (Acuan 2026)</h2><p class="lede"></p><div class="card"><h3>Persyaratan</h3><ul><li>Nilai rapor semester 1–5 yang kuat (info 2026: rata-rata minimal 85 — konfirmasi pedoman 2027).</li><li><b>Tujuan luar negeri:</b> IELTS 6,5 (band min 6,0) / TOEFL iBT 80 / PTE 58; atau bahasa resmi negara tujuan (mis. Prancis B2, Spanyol B1, Mandarin HSK 4, Jepang N3, Jerman C1).</li><li><b>Tujuan dalam negeri</b> (joint/double degree): IELTS 6,0 / TOEFL ITP 500 / iBT 61 / PTE 50.</li><li>Sertifikat prestasi 3 tahun terakhir dan/atau pengalaman organisasi (mis. OSIS).</li><li>Ketentuan disabilitas: surat keterangan disabilitas + persetujuan orang tua bermeterai + permohonan pendampingan.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Dokumen</span><h2 class="st">Checklist Dokumen (Acuan 2026)</h2><p class="lede"></p><ul class="check"><li>KTP / KK / KIA / paspor</li><li>Surat keterangan kepala sekolah (eligible SNBP + nilai rapor sem 1–5)</li><li>Sertifikat kemampuan bahasa (masih berlaku)</li><li>Sertifikat tes IQ dari lembaga psikologi terapan di PT terakreditasi</li><li>Sertifikat SAT</li><li>Sertifikat prestasi 3 tahun terakhir</li><li>Surat keterangan sehat + surat bebas narkoba</li><li>Bukti kondisi ekonomi: slip penghasilan ortu, rekening koran 3 bulan, tagihan listrik 3 bulan</li><li>Surat rekomendasi (kepala sekolah / atase pendidikan bagi sekolah LN)</li></ul></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Tahapan</span><h2 class="st">Tahapan Seleksi (Pola 2026)</h2><p class="lede"></p><div class="card"><h3>Alur</h3><ul><li><b>1. Pendaftaran &amp; submisi dokumen</b> secara daring.</li><li><b>2. Seleksi administrasi:</b> verifikasi dokumen dan syarat.</li><li><b>3. Tes Bakat Skolastik (TBS):</b> bagi yang belum memenuhi ambang SAT/bahasa.</li><li><b>4. Pengumuman hasil seleksi.</b></li><li>Detail 2027 mengikuti pedoman resmi — siapkan dari sekarang.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Pembiayaan</span><h2 class="st">Komponen Pembiayaan</h2><p class="lede">Acuan pedoman 2026.</p><div class="card"><h3>Cakupan</h3><ul><li><b>Dana pendidikan:</b> SPP, biaya pendaftaran, tunjangan buku.</li><li><b>Dana pendukung:</b> transportasi, aplikasi visa, asuransi kesehatan, dana kedatangan, <b>biaya hidup bulanan</b>, dana keadaan darurat.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Strategi</span><h2 class="st">Strategi Persiapan Dini</h2><p class="lede">Karena jadwal belum diumumkan, yang menang adalah yang paling siap.</p><div class="card"><h3>Fokus Persiapan</h3><ul><li><b>Kelas 10–11:</b> kejar IELTS 6,5+ dan SAT 1200+ — butuh waktu berbulan-bulan.</li><li>Ikuti <b>tes IQ resmi</b> di lembaga psikologi perguruan tinggi terakreditasi (kejar 120+).</li><li>Kumpulkan <b>prestasi</b> (olimpiade, lomba, organisasi) sejak dini.</li><li>Jaga nilai rapor semester 1–5 tetap tinggi dan konsisten.</li><li>Latih <b>personal statement</b>: pengalaman, cita-cita, urgensi bidang prioritas, rencana kontribusi.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Personal Statement</span><h2 class="st">Menulis Personal Statement</h2><p class="lede"></p><div class="card"><h3>Struktur yang Disarankan</h3><ul><li><b>Pengalaman:</b> ceritakan momen yang membentuk minatmu pada bidang pilihan.</li><li><b>Cita-cita:</b> tujuan studi yang spesifik, bukan sekadar 'kuliah di luar negeri'.</li><li><b>Urgensi:</b> kaitkan dengan bidang prioritas nasional &amp; kebutuhan Indonesia.</li><li><b>Kontribusi:</b> rencana nyata setelah lulus — 5 tahun ke depan mau apa.</li><li>Tulis dengan suaramu sendiri; panitia mengenali tulisan hasil contekan.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Hindari Ini</span><h2 class="st">Kesalahan Umum</h2><p class="lede"></p><div class="card"><h3>Jangan Lakukan Ini</h3><ul><li>Menunggu pengumuman baru mulai belajar IELTS/SAT — terlambat.</li><li>Tes IQ di lembaga tidak resmi/tidak terakreditasi.</li><li>Surat keterangan sehat kedaluwarsa (maks 6 bulan).</li><li>Dokumen ekonomi tidak lengkap (penghasilan, rekening koran, listrik).</li><li>Tidak memantau IG resmi sehingga ketinggalan pembukaan.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Pantau</span><h2 class="st">Cara Memantau Pembukaan</h2><p class="lede"></p><div class="card"><h3>Jangan Sampai Ketinggalan</h3><ul><li>Follow &amp; nyalakan notifikasi Instagram <b>@beasiswagaruda.ri</b>.</li><li>Bookmark <b>beasiswagaruda.kemdiktisaintek.go.id</b> dan cek tiap minggu.</li><li>Siapkan folder dokumen digital dari sekarang agar tinggal unggah saat dibuka.</li><li>Diskusikan dengan guru BK/orang tua tentang rencana studi luar negerimu.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Video Panduan</span><h2 class="st">🎬 Tonton Dulu, Pahami Dulu</h2><p class="lede">Empat video pilihan: 2 panduan program (sosialisasi resmi &amp; penjelasan), 1 ilustrasi suasana kampus, dan 1 kisah penerima.</p><div class="vgrid"><div class="vid"><div class="frame"><iframe src="https://www.youtube.com/embed/EjUdxOB27WU" title="Sosialisasi Peluncuran Beasiswa Garuda" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p class="cap"><b>Panduan 1:</b> Video sosialisasi peluncuran Beasiswa Garuda — penjelasan program langsung dari Kemdiktisaintek.</p></div><div class="vid"><div class="frame"><iframe src="https://www.youtube.com/embed/OWAzT4RxG9Y" title="Penjelasan Program Beasiswa Garuda" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p class="cap"><b>Panduan 2:</b> Gambaran program Beasiswa Garuda: sasaran, jenjang S1/D4, dan tujuannya untuk talenta muda Indonesia.</p></div><div class="vid"><div class="frame"><iframe src="https://www.youtube.com/embed/m8kHYpeL_q0" title="Tour Kampus Modern" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p class="cap"><b>Suasana Kampus:</b> Ilustrasi suasana kampus modern (contoh: UPH) — kampus tujuan Garuda tersebar di dalam dan luar negeri.</p></div><div class="vid"><div class="frame"><iframe src="https://www.youtube.com/embed/qq4mmPsJ1Qw" title="Penerima Beasiswa Garuda di UC Berkeley" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><p class="cap"><b>Testimoni:</b> Kisah Lovenia, penerima Beasiswa Garuda yang diterima di UC Berkeley, Amerika Serikat — dari keterbatasan biaya hingga kampus top dunia.</p></div></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">FAQ</span><h2 class="st">Pertanyaan yang Sering Ditanyakan (1)</h2><p class="lede"></p><div class="faq"><h4>Kapan pendaftaran Beasiswa Garuda 2027 dibuka?</h4><p>Belum diumumkan (status: 'segera dibuka' per 13 Oktober 2026). Pantau IG @beasiswagaruda.ri dan beasiswagaruda.kemdiktisaintek.go.id.</p></div><div class="faq"><h4>Apakah harus punya LoA saat mendaftar?</h4><p>Tidak. LoA tidak wajib saat pendaftaran; penerima diberi maksimal 1 tahun setelah seleksi untuk mendapatkan LoA.</p></div><div class="faq"><h4>Skor SAT saya 1150, masih bisa daftar?</h4><p>Bisa — pendaftar di bawah ambang (SAT 1200) wajib mengikuti Tes Bakat Skolastik program.</p></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">FAQ</span><h2 class="st">Pertanyaan yang Sering Ditanyakan (2)</h2><p class="lede"></p><div class="faq"><h4>Apakah hanya untuk siswa kelas 12?</h4><p>Ya, berdasarkan pedoman sebelumnya program ini untuk siswa yang sedang menempuh kelas 12 SMA/SMK/MA.</p></div><div class="faq"><h4>Apakah penyandang disabilitas bisa mendaftar?</h4><p>Bisa — ada ketentuan khusus: surat keterangan disabilitas, persetujuan orang tua bermeterai, dan permohonan pendampingan.</p></div><div class="faq"><h4>Bisakah memilih kampus dalam negeri?</h4><p>Bisa, melalui skema joint degree/double degree dengan ketentuan bahasa Inggris yang tetap berlaku.</p></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Link Resmi</span><h2 class="st">Kanal Resmi Beasiswa Garuda</h2><p class="lede"></p><div class="card"><h3>Tautan Penting</h3><ul><li>Situs: <b>beasiswagaruda.kemdiktisaintek.go.id</b>.</li><li>Instagram: <b>@beasiswagaruda.ri</b> — sumber pengumuman tercepat.</li><li>Unduh dan baca <b>Buku Panduan Pendaftaran</b> resmi begitu tersedia — itulah satu-satunya acuan sah.</li></ul></div></div></section>
+<section class="slide"><div class="wrap"><span class="kicker">Aksi</span><h2 class="st">Langkah Selanjutnya</h2><p class="lede"></p><ul class="check"><li>Follow @beasiswagaruda.ri dan nyalakan notifikasi.</li><li>Mulai persiapan IELTS &amp; SAT dari sekarang.</li><li>Jadwalkan tes IQ resmi di lembaga psikologi PT terakreditasi.</li><li>Kumpulkan sertifikat prestasi dan jaga nilai rapormu.</li><li>Tulis draf personal statement dan minta guru mereview.</li></ul></div></section>
+<section class="slide"><div class="wrap"><div class="end"><div class="kicker">Penutup</div><div class="big">Garuda Menunggu yang Paling Siap. 🦅</div><p class="lede" style="text-align:center;max-width:640px;margin:0 auto">Beasiswa Garuda adalah tiketmu ke kampus-kampus terbaik dunia — tanpa harus punya LoA di awal.<br><br><b>Persiapkan dari sekarang, terbang saat waktunya tiba.</b></p></div></div></section>
+</div>
+<div class="navbar">
+  <div class="navrow">
+    <button class="nbtn ghost" id="prevBtn" aria-label="Slide sebelumnya">← Prev</button>
+    <div class="nmid"><span id="cnt">1 / 21</span><div class="pbar"><i id="bar" style="width:0%"></i></div></div>
+    <button class="nbtn" id="nextBtn" aria-label="Slide berikutnya">Next →</button>
+  </div>
+</div>
+<script>
+(function(){
+var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+var cur=0,cnt=document.getElementById('cnt'),bar=document.getElementById('bar'),
+    prev=document.getElementById('prevBtn'),next=document.getElementById('nextBtn');
+function go(n){
+  cur=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach(function(s,i){s.classList.toggle('active',i===cur);if(i===cur)s.scrollTop=0;});
+  cnt.textContent=(cur+1)+' / '+slides.length;
+  bar.style.width=((cur+1)/slides.length*100)+'%';
+  prev.disabled=(cur===0);next.disabled=(cur===slides.length-1);
+  window.scrollTo(0,0);
+}
+prev.addEventListener('click',function(){go(cur-1);});
+next.addEventListener('click',function(){go(cur+1);});
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  else if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+  else if(e.key==='Home')go(0);
+  else if(e.key==='End')go(slides.length-1);
+});
+var tx=0,ty=0;
+document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',function(e){
+  var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.4){if(dx<0)go(cur+1);else go(cur-1);}
+},{passive:true});
+go(0);
+})();
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/dalam-negeri/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan Beasiswa BUMN", "slug": "deck-dn-bumn"},{"label": "Panduan Beasiswa Bakti BCA", "slug": "deck-dn-baktibca"},{"label": "Panduan Beasiswa Bank Indonesia (GenBI)", "slug": "deck-dn-genbi"},{"label": "Panduan Beasiswa Djarum Plus", "slug": "deck-dn-djarum"},{"label": "Panduan Beasiswa Garuda 2027", "slug": "deck-dn-garuda"},{"label": "Panduan Beasiswa KIP Kuliah", "slug": "deck-dn-kip"},{"label": "Panduan Beasiswa KSE", "slug": "deck-dn-kse"},{"label": "Panduan Beasiswa Kemenag", "slug": "deck-dn-kemenag"},{"label": "Panduan Beasiswa LPDP", "slug": "deck-dn-lpdp"},{"label": "Panduan Beasiswa Pemda", "slug": "deck-dn-pemda"},{"label": "Panduan Beasiswa Pendidikan Indonesia (BPI)", "slug": "deck-dn-bpi"},{"label": "Panduan Beasiswa Sampoerna Foundation", "slug": "deck-dn-sampoerna"},{"label": "Panduan Beasiswa Tanoto Foundation", "slug": "deck-dn-tanoto"},{"label": "Panduan Beasiswa Unggulan", "slug": "deck-dn-unggulan"},{"label": "Panduan Beasiswa VDMI", "slug": "deck-dn-vdmi"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

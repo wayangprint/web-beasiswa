@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 15 panduan beasiswa dalam negeri ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Beasiswa BUMN</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--c1:#b71c1c;--c2:#e65100;--c3:#f9a825}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0f172a;color:#1e293b;overflow:hidden}
+.deck{height:100vh;height:100dvh;position:relative}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;padding:56px 8vw 96px;overflow-y:auto;background:#fff}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.slide h1{font-size:clamp(1.6rem,4.5vw,2.8rem);color:var(--c1);margin-bottom:18px;text-align:center;line-height:1.25}
+.slide h2{font-size:clamp(1.3rem,3.5vw,2rem);color:var(--c1);margin-bottom:16px;text-align:center}
+.slide h3{font-size:1.05rem;color:var(--c2);margin:14px 0 6px}
+.content{max-width:860px;width:100%}
+.content p{margin:8px 0;line-height:1.65;font-size:clamp(.95rem,2.2vw,1.1rem)}
+.content ul,.content ol{margin:8px 0 8px 22px;line-height:1.7;font-size:clamp(.95rem,2.2vw,1.08rem)}
+.content li{margin:6px 0}
+.card{background:#f1f5f9;border-left:5px solid var(--c2);border-radius:10px;padding:14px 18px;margin:10px 0}
+.card b{color:var(--c1)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.grid2 .card{margin:0}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:clamp(.85rem,2vw,1rem)}
+th{background:var(--c1);color:#fff;padding:10px}
+td{padding:10px;border-bottom:1px solid #e2e8f0}
+tr:nth-child(even) td{background:#f8fafc}
+.kicker{display:inline-block;background:var(--c2);color:#fff;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:999px;margin-bottom:14px}
+.cover{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;text-align:center}
+.cover.hasimg{background-size:cover;background-position:center}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.78))}
+.cover .inner{position:relative;z-index:2;max-width:800px;padding:0 24px}
+.cover h1{color:#fff;font-size:clamp(2rem,6vw,3.6rem);margin:10px 0 14px;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.cover p{font-size:clamp(1rem,2.6vw,1.3rem);opacity:.92;line-height:1.6}
+.cover .kicker{background:rgba(255,255,255,.2);backdrop-filter:blur(4px)}
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:980px}
+.vid{background:#0f172a;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+.vid p{padding:10px 14px;font-size:.85rem;color:#e2e8f0;line-height:1.45}
+.vid p b{color:#fff}
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:rgba(15,23,42,.96);z-index:10}
+.nav button{background:var(--c2);color:#fff;border:0;border-radius:10px;padding:12px 26px;font-size:1rem;font-weight:700;cursor:pointer;min-width:120px}
+.nav button:disabled{opacity:.35;cursor:default}
+.nav button:active{transform:scale(.96)}
+#counter{color:#fff;font-weight:700;font-size:.95rem}
+#barwrap{position:fixed;top:0;left:0;right:0;height:5px;background:#1e293b;z-index:10}
+#bar{height:100%;width:5%;background:linear-gradient(90deg,var(--c2),var(--c3));transition:width .3s}
+.hint{position:fixed;bottom:74px;right:16px;color:#94a3b8;font-size:.75rem;z-index:10}
+.faq{background:#f8fafc;border-radius:10px;padding:12px 16px;margin:8px 0;border:1px solid #e2e8f0}
+.faq b{color:var(--c1);display:block;margin-bottom:4px}
+.linkbtn{display:inline-block;background:var(--c1);color:#fff!important;text-decoration:none;padding:12px 24px;border-radius:10px;font-weight:700;margin:6px 8px 6px 0}
+.badge{display:inline-block;background:#fef3c7;color:#92400e;font-weight:700;font-size:.8rem;padding:4px 12px;border-radius:999px;margin:2px}
+@media(max-width:640px){.vidgrid,.grid2{grid-template-columns:1fr}.slide{padding:44px 6vw 100px}.nav button{min-width:96px;padding:11px 18px}}
+</style>
+</head>
+<body>
+<div id="barwrap"><div id="bar"></div></div>
+<div class="deck" id="deck">
+<section class="slide cover hasimg" style="background-image:url('https://asiatoday.id/wp-content/uploads/2024/09/Kilang-Minyak-Pertamina-Balikpapan.-FILE-Pertamina.jpg')"><div class="shade"></div><div class="inner"><span class="kicker">Panduan Beasiswa Dalam Negeri</span><h1>Panduan Beasiswa BUMN</h1><p>Kumpulan program beasiswa dari perusahaan BUMN: Pertamina Foundation (Sobat Bumi), APERTI BUMN (kuliah gratis hingga lulus), dan beasiswa BUMN lainnya — lengkap dengan syarat dan tips.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Sekilas Program</span><h2>Beasiswa BUMN: Apa Saja?</h2>
+<p>Banyak <b>Badan Usaha Milik Negara (BUMN)</b> menyalurkan beasiswa lewat yayasan/CSR masing-masing. Tiga yang paling aktif dan terverifikasi:</p>
+<div class="grid2">
+<div class="card"><b>🛢️ Pertamina Foundation — Beasiswa Sobat Bumi (PFprestasi)</b><br>Untuk mahasiswa S1/D4/D3 di 47 kampus mitra: bantuan UKT + biaya hidup + <i>capacity building</i> + aksi lingkungan.</div>
+<div class="card"><b>🎓 APERTI BUMN</b><br>Aliansi Perguruan Tinggi BUMN: <b>kuliah gratis hingga lulus</b> (penuh/parsial) di 7 kampus BUMN untuk lulusan SMA/SMK/MA.</div>
+<div class="card"><b>🏦 Beasiswa BUMN lain</b><br>Bank Mandiri, PGN, Bank BTN, Bank Indonesia, dsb — umumnya disalurkan via kampus masing-masing (umumkan di bagian kemahasiswaan).</div>
+</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Pertamina</span><h2>Beasiswa Pertamina Sobat Bumi</h2>
+<p><b>Beasiswa Pertamina Sobat Bumi</b> adalah program tahunan <b>Pertamina Foundation (PFprestasi)</b> untuk mencetak mahasiswa berprestasi yang peduli lingkungan dan sosial.</p>
+<p><b>3 kategori:</b></p>
+<ul>
+<li><b>Reguler</b> — mahasiswa S1/sederajat di kampus mitra.</li>
+<li><b>Afirmasi</b> — mahasiswa S1 di wilayah/daerah operasi PT Pertamina.</li>
+<li><b>Vokasi</b> — mahasiswa D3/D4.</li>
+</ul>
+<div class="card"><b>Benefit:</b> bantuan biaya pendidikan (UKT/SPP) + <b>bantuan biaya hidup</b> + <i>capacity building</i> + program <b>Green Initiative</b> (Aksi Sobat Bumi, Desa Energi Berdikari/DEB SoBi, Pertamina Voluntary).</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Pertamina</span><h2>Syarat Beasiswa Sobat Bumi</h2>
+<ol>
+<li><b>WNI</b>, mahasiswa aktif (tidak cuti) di <b>kampus mitra Pertamina Foundation</b> (47 PT mitra).</li>
+<li>Semester <b>2–6</b> (S1/D4) atau <b>2–4</b> (D3); IP/IPK terakhir <b>≥ 3,00</b>.</li>
+<li><b>Aktif</b> berorganisasi / kegiatan sosial kemasyarakatan / lingkungan hidup.</li>
+<li><b>Tidak sedang menerima beasiswa</b> dari pihak mana pun pada periode program.</li>
+<li>Tidak pernah terlibat narkoba/tindak kriminal.</li>
+<li><b>TOEFL ≥ 500</b> (bersertifikat) menjadi nilai tambah.</li>
+<li>Membuat <b>karya tulis</b> bertema lingkungan (contoh tema 2025: <i>"Langkah Kecil, Dampak Besar: Inovasiku Menuju Green Environment"</i>) — orisinal, bahasa Indonesia, 3–10 halaman + dokumentasi foto pribadi.</li>
+</ol>
+<div class="card"><b>Pendaftaran:</b> online via <b>pertaminafoundation.org</b> (contoh batch 2025: 4 Februari – 4 Maret 2025). Selalu cek pengumuman tahun berjalan.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">APERTI</span><h2>Beasiswa APERTI BUMN</h2>
+<p><b>APERTI BUMN</b> (Aliansi Perguruan Tinggi BUMN) membuka beasiswa <b>kuliah gratis hingga lulus</b> bagi lulusan SMA/SMK/MA sederajat.</p>
+<p><b>7 kampus penyelenggara (2025):</b> Telkom University, Universitas Pertamina, Institut Teknologi PLN, Universitas Internasional Semen Indonesia (UISI), Institut Teknologi Telkom Surabaya, Institut Teknologi Telkom Purwokerto, dan Politeknik Semen Indonesia.</p>
+<ul>
+<li><b>300 kuota</b> dibuka pada 2025; dua jenis: <b>beasiswa penuh</b> (bebas biaya pendidikan sampai lulus) dan <b>parsial 50%</b>.</li>
+<li><b>Tidak menanggung biaya hidup</b> — hanya biaya pendidikan (uang pangkal, SPP, biaya akademik).</li>
+<li><b>Syarat umum:</b> lulusan SMA/SMK/MA tahun berjalan + 1 tahun sebelumnya (<i>gap year</i>); nilai rapor semester 1–5; sertifikat prestasi (akademik/nonakademik); mendaftar <b>online di laman masing-masing kampus</b>.</li>
+<li><b>Contoh jadwal 2025:</b> pendaftaran 2–16 Juni 2025 (ULBI: 4–16 Juni 2025, wajib sertifikat UTBK/SNBT untuk jalur tertentu).</li>
+</ul>
+<div class="card"><b>Ketentuan:</b> IPK/IPS minimal 3,4–3,25 dipertahankan tiap semester (tergantung kampus); hanya untuk kelas reguler.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">BUMN Lain</span><h2>Beasiswa BUMN Lainnya (via Kampus)</h2>
+<p>Selain dua program besar di atas, sejumlah BUMN menyalurkan beasiswa lewat kerja sama dengan kampus. Contoh yang pernah diumumkan (cek bagian kemahasiswaan kampusmu untuk batch terbaru):</p>
+<ul>
+<li><b>Bank Mandiri</b> — untuk mahasiswa S1 semester awal dari keluarga kurang mampu; syarat IPK & tidak menerima beasiswa lain.</li>
+<li><b>PT Perusahaan Gas Negara (PGN)</b> — IPK minimal 3,15; mahasiswa S1 semester 3; keluarga kurang mampu.</li>
+<li><b>Bank BTN</b> — mahasiswa S1 semester 5 & 7, IPK ≥ 3,00.</li>
+<li><b>Bank Indonesia (GenBI)</b> — program Generasi Baru Indonesia: bantuan + komunitas + pelatihan, di banyak kampus.</li>
+<li><b>BSBK — Beasiswa Sobat Bumi Kalimantan</b> (Pertamina Hulu Indonesia) — beasiswa <b>penuh</b> untuk putra-putri prasejahtera di wilayah operasi Kalimantan (Kaltim, Kaltara, Kalsel).</li>
+</ul>
+<div class="card"><b>💡 Kuncinya:</b> beasiswa jenis ini <b>tidak selalu diumumkan nasional</b> — rajin cek papan pengumuman / website kemahasiswaan kampusmu.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Tahapan</span><h2>Tahapan Seleksi (Umum)</h2>
+<ol>
+<li><b>Pendaftaran online</b> — isi formulir + unggah dokumen (KTP/KTM, transkrip, sertifikat, esai/karya tulis).</li>
+<li><b>Seleksi administrasi</b> — verifikasi syarat akademik & dokumen.</li>
+<li><b>Seleksi karya tulis/esai</b> (khusus Sobat Bumi) — orisinalitas dan relevansi tema lingkungan/energi.</li>
+<li><b>Tes online</b> (khusus APERTI BUMN di beberapa kampus).</li>
+<li><b>Wawancara</b> — motivasi, komitmen lingkungan/sosial, dan rencana kontribusi.</li>
+<li><b>Pengumuman</b> via laman resmi & email.</li>
+</ol>
+<div class="card"><b>💡 Tips:</b> untuk Sobat Bumi, <b>karya tulis adalah pembeda utama</b> — tulis tentang aksi lingkungan nyata yang pernah/sedang kamu lakukan, lengkapi dengan foto dokumentasi pribadimu.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>Strategi Lolos Beasiswa BUMN</h2>
+<ul>
+<li><b>Pilih program yang sesuai jenjangmu:</b> masih SMA → APERTI BUMN; sudah kuliah semester 2–6 → Sobat Bumi; butuh info → cek kemahasiswaan kampus.</li>
+<li><b>Bangun portofolio hijau/sosial:</b> ikut aksi bersih-bersih, penanaman pohon, bank sampah, atau komunitas lingkungan — dokumentasikan dengan foto.</li>
+<li><b>Esai/karya tulis yang otentik:</b> angkat isu lingkungan di daerahmu + solusi konkret yang sudah kamu mulai, bukan sekadar teori.</li>
+<li><b>Jaga IPK ≥ 3,00</b> (APERTI: ≥ 3,25–3,4) — ini syarat keras yang tidak bisa ditawar.</li>
+<li><b>Siapkan TOEFL/IELTS:</b> nilai plus di Sobat Bumi, syarat di beberapa program lain.</li>
+<li><b>Pantau kalender:</b> Sobat Bumi biasanya awal tahun (Feb–Mar); APERTI BUMN sekitar Mei–Juni. Siapkan dokumen 2–3 bulan sebelumnya.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Hindari</span><h2>5 Kesalahan Umum</h2>
+<ol>
+<li><b>Karya tulis hasil copy-paste/AI tanpa pengalaman nyata</b> — panitia meminta foto dokumentasi pribadi; karya tanpa bukti mudah terdeteksi.</li>
+<li><b>Mendaftar padahal bukan kampus mitra</b> (Sobat Bumi) — cek daftar 47 kampus mitra dulu.</li>
+<li><b>IPK di bawah syarat</b> tapi tetap mendaftar — gugur di administrasi.</li>
+<li><b>Melewatkan deadline kampus:</b> APERTI BUMN pendaftarannya per kampus dengan jadwal berbeda-beda.</li>
+<li><b>Tidak membaca ketentuan beasiswa penuh vs parsial</b> — parsial APERTI tetap mewajibkan IPK tinggi, kalau turun kamu bayar SPP normal.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">APERTI</span><h2>7 Kampus APERTI BUMN: Pilih Sesuai Minatmu</h2>
+<table>
+<tr><th>Kampus</th><th>Kekuatan / Fokus</th></tr>
+<tr><td><b>Telkom University</b> (Bandung)</td><td>Teknologi informasi, bisnis digital — kampus swasta terbesar Indonesia</td></tr>
+<tr><td><b>Universitas Pertamina</b> (Jakarta)</td><td>Energi, teknik, ilmu komputer — di bawah Pertamina</td></tr>
+<tr><td><b>Institut Teknologi PLN</b> (Jakarta)</td><td>Teknik elektro & energi — di bawah PLN</td></tr>
+<tr><td><b>UISI</b> (Gresik)</td><td>Manajemen, teknik — di bawah Semen Indonesia</td></tr>
+<tr><td><b>ULBI</b> (Bandung)</td><td>Logistik & bisnis — gabungan STIMLOG + Poltekpos</td></tr>
+<tr><td><b>ITT Surabaya & ITT Purwokerto</b></td><td>Teknik & informatika — di bawah Telkom</td></tr>
+<tr><td><b>Politeknik Semen Indonesia</b> (Gresik)</td><td>Vokasi teknik industri semen</td></tr>
+</table>
+<p><span class="badge">Aturan</span> Pilih <b>1 kampus</b> saja — pendaftaran via laman PMB kampus pilihanmu.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Aksi</span><h2>Aksi Nyata Sobat Bumi: Bukan Sekadar Beasiswa</h2>
+<p>Penerima Beasiswa Sobat Bumi wajib terlibat dalam <b>Green Initiative</b>. Contoh aksi nyata para awardee:</p>
+<ul>
+<li><b>Aksi Sobat Bumi:</b> pengumpulan <b>4,5 ton sampah</b> yang diolah menjadi 25 produk inovatif.</li>
+<li><b>Penanaman pohon:</b> <b>22.682 bibit</b> — termasuk 19.922 mangrove dan pohon penyerap karbon lainnya.</li>
+<li><b>DEB SoBi (Desa Energi Berdikari Sobat Bumi):</b> desa binaan mandiri energi — target replikasi ke desa-desa baru tiap tahun.</li>
+<li><b>Sekolah Energi Berdikari & Pertamina Voluntary:</b> edukasi energi bersih ke masyarakat.</li>
+</ul>
+<div class="card"><b>💡 Pelajaran untuk pendaftar:</b> tunjukkan di esaimu bahwa kamu <b>sudah mulai</b> aksi lingkungan sekecil apa pun — panitia mencari <i>doers</i>, bukan penonton.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Banding</span><h2>Perbandingan 3 Jalur Beasiswa BUMN</h2>
+<table>
+<tr><th>Aspek</th><th>Sobat Bumi</th><th>APERTI BUMN</th><th>BUMN via Kampus</th></tr>
+<tr><td>Untuk siapa</td><td>Mahasiswa S1/D4/D3 smt 2–6</td><td>Lulusan SMA/SMK/MA</td><td>Mahasiswa (per kampus)</td></tr>
+<tr><td>Cakupan</td><td>UKT + biaya hidup + pembinaan</td><td>Biaya pendidikan s.d. lulus</td><td>Bervariasi</td></tr>
+<tr><td>Biaya hidup</td><td>Ditanggung ✅</td><td>Tidak ❌</td><td>Tergantung</td></tr>
+<tr><td>Pembeda seleksi</td><td>Karya tulis lingkungan</td><td>Tes online + wawancara</td><td>IPK & berkas</td></tr>
+<tr><td>Pendaftaran</td><td>pertaminafoundation.org</td><td>Laman PMB tiap kampus</td><td>Kemahasiswaan kampus</td></tr>
+</table></div></section>
+<section class="slide"><div class="content"><span class="kicker">Kalender</span><h2>Kalender Tahunan Berburu Beasiswa BUMN</h2>
+<table>
+<tr><th>Bulan</th><th>Aksi</th></tr>
+<tr><td><b>Januari – Februari</b></td><td>Pantau pembukaan <b>Beasiswa Sobat Bumi</b>; siapkan karya tulis</td></tr>
+<tr><td><b>Maret – April</b></td><td>Ikuti seleksi Sobat Bumi; cek info beasiswa BUMN via kemahasiswaan</td></tr>
+<tr><td><b>Mei – Juni</b></td><td>Pendaftaran <b>APERTI BUMN</b> (untuk lulusan SMA/sederajat)</td></tr>
+<tr><td><b>Juli – Agustus</b></td><td>Pengumuman & daftar ulang; pantau batch susulan kampus</td></tr>
+<tr><td><b>Sepanjang tahun</b></td><td>Cek papan pengumuman kemahasiswaan tiap bulan — beasiswa BUMN via kampus bisa dibuka kapan saja</td></tr>
+</table></div></section>
+<section class="slide"><div class="content" style="max-width:1000px"><span class="kicker">Video Panduan</span><h2>Video Panduan Beasiswa BUMN</h2><div class="vidgrid"><div class="vid"><iframe src="https://www.youtube.com/embed/NnXoDHfPBL8" title="Welcoming 520 Awardee Beasiswa Pertamina Sobat Bumi 2024" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Welcoming 520 Awardee Beasiswa Pertamina Sobat Bumi 2024</b><br>Suasana kegiatan #1 — Penyambutan 520 penerima Beasiswa Pertamina Sobat Bumi oleh jajaran Pertamina di Universitas Pertamina.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/g0EtKrMubOQ" title="Beasiswa Sobat Bumi Kalimantan (BSBK) 2025" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Beasiswa Sobat Bumi Kalimantan (BSBK) 2025</b><br>Suasana kegiatan #2 — Penyerahan Beasiswa Sobat Bumi Kalimantan untuk 15 putra-putri terbaik Kalimantan oleh Pertamina Hulu Indonesia.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/IeRpFyOu-ZY" title="Analisis CSR Pertamina: Beasiswa Sobat Bumi" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Analisis CSR Pertamina: Beasiswa Sobat Bumi</b><br>Cara daftar #1 — Video analisis mahasiswa tentang 4 pilar CSR Pertamina, termasuk pilar Pertamina Cerdas (Beasiswa Sobat Bumi): pahami dulu programnya sebelum mendaftar.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/_cPJ76fuIJY" title="Stand Out &amp; Ace Your Scholarship Interview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Stand Out & Ace Your Scholarship Interview</b><br>Cara daftar #2 — Tips personal branding dan wawancara beasiswa; seleksi Beasiswa Pertamina mencakup tahap wawancara.</p></div></div></div></section>
+<section class="slide"><div class="content"><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (1)</h2>
+<div class="faq"><b>1. Apakah Beasiswa Sobat Bumi hanya untuk jurusan teknik/energi?</b>Tidak — terbuka untuk berbagai jurusan di kampus mitra, selama kamu aktif di kegiatan sosial/lingkungan dan memenuhi syarat akademik.</div>
+<div class="faq"><b>2. Apakah APERTI BUMN menanggung biaya hidup/asrama?</b><b>Tidak.</b> Yang ditanggung adalah biaya pendidikan (uang pangkal, SPP, biaya akademik) hingga lulus. Biaya hidup ditanggung sendiri.</div>
+<div class="faq"><b>3. Saya mahasiswa semester 7 — masih bisa daftar Sobat Bumi?</b>Tidak; batas maksimal semester 6 (S1/D4). Manfaatkan jendela semester 2–6.</div>
+<div class="faq"><b>4. Apakah penerima Sobat Bumi wajib ikut aksi lingkungan?</b>Ya — penerima diharapkan aktif dalam program Green Initiative (Aksi SoBi, DEB SoBi) sebagai bagian pembinaan.</div>
+<div class="faq"><b>5. Apakah ada ikatan kerja di Pertamina/BUMN setelah lulus?</b>Tidak ada ikatan dinas wajib. Namun alumni punya jejaring kuat dan akses info karier di grup BUMN.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (2)</h2>
+<div class="faq"><b>6. Bagaimana cara tahu kampus saya mitra Pertamina Foundation?</b>Cek pengumuman di laman pertaminafoundation.org atau tanyakan ke bagian kemahasiswaan kampusmu.</div>
+<div class="faq"><b>7. Apakah APERTI BUMN bisa untuk kelas karyawan/ekstensi?</b>Tidak — hanya untuk <b>kelas reguler</b>, bukan kelas karyawan/ekstensi/RPL.</div>
+<div class="faq"><b>8. Apakah boleh memilih lebih dari satu kampus APERTI?</b>Tidak — peserta hanya boleh memilih <b>1 perguruan tinggi tujuan</b>.</div>
+<div class="faq"><b>9. Kapan pendaftaran Sobat Bumi 2026 dibuka?</b>Pola tahunan: awal tahun (batch 2025 dibuka 4 Feb–4 Mar 2025). Pantau pertaminafoundation.org mulai Januari.</div>
+<div class="faq"><b>10. Apakah beasiswa BUMN ini gratis?</b>Ya — pendaftaran dan seleksi resmi <b>tidak dipungut biaya</b>. Waspada pungli mengatasnamakan program.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Link Resmi</span><h2>Link Resmi & Kontak</h2>
+<p><a class="linkbtn" href="https://pertaminafoundation.org" target="_blank" rel="noopener">Pertamina Foundation</a></p>
+<ul>
+<li><b>Beasiswa Sobat Bumi:</b> pertaminafoundation.org (menu Beasiswa) — pendaftaran online di portal beasiswa.pertaminafoundation.org</li>
+<li><b>APERTI BUMN:</b> pendaftaran via <b>laman PMB masing-masing kampus</b> (Telkom University, Universitas Pertamina, ITPLN, UISI, ULBI, ITT Surabaya, ITT Purwokerto, Politeknik Semen Indonesia).</li>
+<li><b>Beasiswa BUMN via kampus:</b> website / bagian kemahasiswaan universitasmu.</li>
+<li><b>Narahubung Sobat Bumi 2025:</b> 085190000456 (WhatsApp, contoh batch 2025 — cek info terbaru).</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Checklist</span><h2>Checklist Persiapan</h2>
+<ul>
+<li>☐ Tentukan target: Sobat Bumi (mahasiswa) / APERTI (lulusan SMA) / beasiswa kampus</li>
+<li>☐ Jaga IPK ≥ 3,00 (APERTI: ≥ 3,25)</li>
+<li>☐ Ikut kegiatan lingkungan/sosial + dokumentasikan (foto!)</li>
+<li>☐ Tulis karya tulis/esai lingkungan yang orisinal</li>
+<li>☐ Siapkan KTP, KTM, transkrip, sertifikat organisasi</li>
+<li>☐ Tes TOEFL/IELTS sebagai nilai tambah</li>
+<li>☐ Pantau pertaminafoundation.org (Jan–Feb) & laman PMB kampus APERTI (Mei–Jun)</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Rangkuman</span><h2>Rangkuman 60 Detik</h2>
+<div class="card"><b>BUMN = Sobat Bumi (UKT + biaya hidup + aksi lingkungan) • APERTI BUMN (kuliah gratis s.d. lulus di 7 kampus) • Beasiswa BUMN via kampus.</b></div>
+<ul>
+<li><b>Syarat inti:</b> WNI, IPK ≥ 3,00, aktif organisasi/lingkungan, tidak menerima beasiswa lain.</li>
+<li><b>Pembeda Sobat Bumi:</b> karya tulis lingkungan + foto dokumentasi nyata.</li>
+<li><b>Pembeda APERTI:</b> lulusan SMA/SMK/MA, pilih 1 kampus, biaya hidup tidak ditanggung.</li>
+<li><b>Semua gratis, tanpa ikatan dinas.</b></li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Penutup</span><h2>Siap Berburu Beasiswa BUMN?</h2>
+<p>Beasiswa BUMN bukan cuma soal dana — ini <b>gerbang ke ekosistem industri Indonesia</b>: mentoring, jejaring profesional, dan peluang karier di perusahaan-perusahaan terbesar negeri ini.</p>
+<div class="card"><b>Mulai hari ini:</b> ikut satu aksi lingkungan, dokumentasikan, dan tulis ceritamu. Saat pendaftaran dibuka, kamu sudah punya amunisi lengkap.</div>
+<p style="text-align:center;margin-top:16px">🌱 <b>Cintai Bumi, raih beasiswamu!</b></p></div></section>
+</div>
+<div class="nav">
+<button id="prev" onclick="go(cur-1)">&#8592; Sebelumnya</button>
+<span id="counter">1 / 20</span>
+<button id="next" onclick="go(cur+1)">Lanjut &#8594;</button>
+</div>
+<div class="hint">Geser / panah &#8592; &#8594; untuk navigasi</div>
+<script>
+var cur=0;
+var slides=document.querySelectorAll('.slide');
+var N=slides.length;
+function go(n){cur=((n%N)+N)%N;
+slides.forEach(function(s,i){s.classList.toggle('active',i===cur)});
+document.getElementById('counter').textContent=(cur+1)+' / '+N;
+document.getElementById('bar').style.width=((cur+1)/N*100)+'%';
+document.getElementById('prev').disabled=(cur===0);
+document.getElementById('next').disabled=(cur===N-1);
+slides[cur].scrollTop=0;}
+document.addEventListener('keydown',function(e){
+if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(cur+1);}
+if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+if(e.key==='Home'){go(0);} if(e.key==='End'){go(N-1);}});
+var tx=0,ty=0;
+document.getElementById('deck').addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.getElementById('deck').addEventListener('touchend',function(e){
+var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){if(dx<0)go(cur+1);else go(cur-1);}},{passive:true});
+go(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/dalam-negeri/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan Beasiswa BUMN", "slug": "deck-dn-bumn"},{"label": "Panduan Beasiswa Bakti BCA", "slug": "deck-dn-baktibca"},{"label": "Panduan Beasiswa Bank Indonesia (GenBI)", "slug": "deck-dn-genbi"},{"label": "Panduan Beasiswa Djarum Plus", "slug": "deck-dn-djarum"},{"label": "Panduan Beasiswa Garuda 2027", "slug": "deck-dn-garuda"},{"label": "Panduan Beasiswa KIP Kuliah", "slug": "deck-dn-kip"},{"label": "Panduan Beasiswa KSE", "slug": "deck-dn-kse"},{"label": "Panduan Beasiswa Kemenag", "slug": "deck-dn-kemenag"},{"label": "Panduan Beasiswa LPDP", "slug": "deck-dn-lpdp"},{"label": "Panduan Beasiswa Pemda", "slug": "deck-dn-pemda"},{"label": "Panduan Beasiswa Pendidikan Indonesia (BPI)", "slug": "deck-dn-bpi"},{"label": "Panduan Beasiswa Sampoerna Foundation", "slug": "deck-dn-sampoerna"},{"label": "Panduan Beasiswa Tanoto Foundation", "slug": "deck-dn-tanoto"},{"label": "Panduan Beasiswa Unggulan", "slug": "deck-dn-unggulan"},{"label": "Panduan Beasiswa VDMI", "slug": "deck-dn-vdmi"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

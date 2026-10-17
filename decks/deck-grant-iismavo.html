@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 14 panduan grant ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan IISMAVO</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--c1:#00695c;--c2:#00897b;--c3:#ff8f00}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0f172a;color:#1e293b;overflow:hidden}
+.deck{height:100vh;height:100dvh;position:relative}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;padding:56px 8vw 96px;overflow-y:auto;background:#fff}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.slide h1{font-size:clamp(1.6rem,4.5vw,2.8rem);color:var(--c1);margin-bottom:18px;text-align:center;line-height:1.25}
+.slide h2{font-size:clamp(1.3rem,3.5vw,2rem);color:var(--c1);margin-bottom:16px;text-align:center}
+.slide h3{font-size:1.05rem;color:var(--c2);margin:14px 0 6px}
+.content{max-width:860px;width:100%}
+.content p{margin:8px 0;line-height:1.65;font-size:clamp(.95rem,2.2vw,1.1rem)}
+.content ul,.content ol{margin:8px 0 8px 22px;line-height:1.7;font-size:clamp(.95rem,2.2vw,1.08rem)}
+.content li{margin:6px 0}
+.card{background:#f1f5f9;border-left:5px solid var(--c2);border-radius:10px;padding:14px 18px;margin:10px 0}
+.card b{color:var(--c1)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.grid2 .card{margin:0}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:clamp(.85rem,2vw,1rem)}
+th{background:var(--c1);color:#fff;padding:10px}
+td{padding:10px;border-bottom:1px solid #e2e8f0}
+tr:nth-child(even) td{background:#f8fafc}
+.kicker{display:inline-block;background:var(--c2);color:#fff;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:999px;margin-bottom:14px}
+.cover{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;text-align:center}
+.cover.hasimg{background-size:cover;background-position:center}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.78))}
+.cover .inner{position:relative;z-index:2;max-width:800px;padding:0 24px}
+.cover h1{color:#fff;font-size:clamp(2rem,6vw,3.6rem);margin:10px 0 14px;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.cover p{font-size:clamp(1rem,2.6vw,1.3rem);opacity:.92;line-height:1.6}
+.cover .kicker{background:rgba(255,255,255,.2);backdrop-filter:blur(4px)}
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:980px}
+.vid{background:#0f172a;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+.vid p{padding:10px 14px;font-size:.85rem;color:#e2e8f0;line-height:1.45}
+.vid p b{color:#fff}
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:rgba(15,23,42,.96);z-index:10}
+.nav button{background:var(--c2);color:#fff;border:0;border-radius:10px;padding:12px 26px;font-size:1rem;font-weight:700;cursor:pointer;min-width:120px}
+.nav button:disabled{opacity:.35;cursor:default}
+.nav button:active{transform:scale(.96)}
+#counter{color:#fff;font-weight:700;font-size:.95rem}
+#barwrap{position:fixed;top:0;left:0;right:0;height:5px;background:#1e293b;z-index:10}
+#bar{height:100%;width:5%;background:linear-gradient(90deg,var(--c2),var(--c3));transition:width .3s}
+.hint{position:fixed;bottom:74px;right:16px;color:#94a3b8;font-size:.75rem;z-index:10}
+.faq{background:#f8fafc;border-radius:10px;padding:12px 16px;margin:8px 0;border:1px solid #e2e8f0}
+.faq b{color:var(--c1);display:block;margin-bottom:4px}
+.linkbtn{display:inline-block;background:var(--c1);color:#fff!important;text-decoration:none;padding:12px 24px;border-radius:10px;font-weight:700;margin:6px 8px 6px 0}
+.badge{display:inline-block;background:#fef3c7;color:#92400e;font-weight:700;font-size:.8rem;padding:4px 12px;border-radius:999px;margin:2px}
+@media(max-width:640px){.vidgrid,.grid2{grid-template-columns:1fr}.slide{padding:44px 6vw 100px}.nav button{min-width:96px;padding:11px 18px}}
+</style>
+</head>
+<body>
+<div id="barwrap"><div id="bar"></div></div>
+<div class="deck" id="deck">
+<section class="slide cover hasimg" style="background-image:url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjK4sAUBuAbb4JKV6DjUCer29X1dVym4OXZNARZAmJQVWuzJ5OcZvehzswIAlOr33HehUN9Kx8HVGRyanU3ZMXUahbP_bxD6_OtDUVh1kEOMjoebAwW7Zun9_2xcZpxQeXp_MkufdERxwUv/w1200-h630-p-k-no-nu/siswa-smk.jpg')"><div class="shade"></div><div class="inner"><span class="kicker">Panduan Grant & Mobilitas</span><h1>Panduan IISMAVO</h1><p>IISMA untuk mahasiswa vokasi — kuliah + pelatihan/magang 1 semester di universitas & industri luar negeri, beasiswa penuh dari Kemendikbudristek.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Sekilas Program</span><h2>Apa Itu IISMAVO?</h2>
+<p><b>IISMAVO (IISMA Vocational)</b> adalah skema <b>Indonesian International Student Mobility Awards khusus mahasiswa vokasi</b> — jenjang D3, D4, dan Sarjana Terapan.</p>
+<div class="card"><b>Bedanya dengan IISMA reguler:</b> selain perkuliahan, IISMAVO menekankan <b>pelatihan praktik dan magang di industri</b> luar negeri — selaras dengan karakter pendidikan vokasi yang <i>link and match</i> dengan dunia kerja.</div>
+<ul>
+<li>Contoh nyata: <b>39 mahasiswa vokasi</b> diberangkatkan ke <b>University of Nottingham, Inggris</b> untuk belajar 1 semester — disambut langsung Duta Besar RI untuk Inggris Raya.</li>
+<li>Mahasiswa vokasi dari <b>perguruan tinggi penyelenggara pendidikan vokasi (PTPPV)</b> di bawah Kemdiktisaintek.</li>
+<li>Syarat bahasa Inggris <b>lebih terjangkau</b> dibanding jalur sarjana — peluang besar buat kamu!</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Benefit</span><h2>Cakupan Beasiswa IISMAVO</h2>
+<div class="grid2">
+<div class="card"><b>🎓 Biaya pendidikan & pelatihan</b><br>Tuition fee di universitas/lembaga mitra luar negeri — <i>at cost</i>.</div>
+<div class="card"><b>🏥 Asuransi kesehatan</b><br>Perlindungan kesehatan selama program.</div>
+<div class="card"><b>💰 Tunjangan hidup</b><br><i>Living allowance</i> selama 1 semester di luar negeri.</div>
+<div class="card"><b>✈️ Tiket & visa + dana darurat</b><br>Penerbangan PP, visa pelajar, dan dana darurat.</div>
+</div>
+<p><span class="badge">Nilai plus</span> Pengalaman <b>magang/praktik industri internasional</b> — nilai jual luar biasa di CV lulusan vokasi.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Syarat</span><h2>Syarat Pendaftar IISMAVO</h2>
+<ol>
+<li><b>WNI</b> berdomisili di Indonesia.</li>
+<li>Mahasiswa aktif <b>vokasi (D3/D4/Sarjana Terapan)</b>: D4 semester 4–6, D3 semester 4; terdaftar di <b>PDDIKTI</b>.</li>
+<li>Usia maksimal <b>24 tahun</b> (pada 1 Juli tahun program).</li>
+<li><b>IPK minimal 3,00</b> (skala 4,0).</li>
+<li>Skor bahasa Inggris (jalur vokasi): <b>TOEFL iBT 60 / IELTS 6,0 / Duolingo 95 / TOEIC 605</b>.</li>
+<li><b>Dinominasikan</b> oleh pimpinan perguruan tinggi vokasi asal.</li>
+<li>Tidak pernah cuti; tidak ikut program Kampus Merdeka lain yang bersamaan.</li>
+<li>Tidak menerima tunjangan hidup Kemendikbudristek/LPDP dari program lain selama IISMAVO.</li>
+<li>Bersedia menaati seluruh aturan program.</li>
+</ol>
+<div class="card"><b>💡 Kabar baik:</b> syarat TOEFL iBT vokasi (<b>60</b>) jauh di bawah jalur sarjana (78) — manfaatkan!</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Dokumen</span><h2>Dokumen yang Dibutuhkan</h2>
+<ol>
+<li><b>Surat rekomendasi/nominasi</b> dari pimpinan PT vokasi asal.</li>
+<li><b>Sertifikat bahasa Inggris</b> (TOEFL iBT/IELTS/Duolingo/TOEIC).</li>
+<li><b>Transkrip akademik</b> (disarankan versi bahasa Inggris).</li>
+<li><b>Esai</b> motivasi & rencana studi (maksimal 350 kata).</li>
+<li>Surat pernyataan tidak pernah/sedang mengikuti program pertukaran internasional.</li>
+<li>Surat pernyataan <b>bebas narkoba</b>, surat izin orang tua, surat sehat.</li>
+<li>Portofolio <b>praktik/kompetensi vokasi</b> (sertifikat kompetensi, proyek, magang) — nilai tambah khas vokasi!</li>
+</ol>
+<div class="card"><b>💡 Tips khas vokasi:</b> lampirkan <b>sertifikat kompetensi (BNSP)</b> dan dokumentasi proyek praktikmu — ini pembeda utama dari pelamar jalur sarjana.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Tahapan</span><h2>Tahapan Seleksi IISMAVO</h2>
+<ol>
+<li><b>Sosialisasi & seleksi internal kampus</b> — kampus vokasi menyeleksi calon untuk dinominasikan.</li>
+<li><b>Pendaftaran online</b> di portal IISMA (iisma.kemdikbud.go.id).</li>
+<li><b>Seleksi administrasi/dokumen.</b></li>
+<li><b>Wawancara</b> — motivasi, kesiapan praktik/magang, dan adaptasi budaya.</li>
+<li><b>Pengumuman & persiapan prakeberangkatan</b> (visa, tiket, pembekalan).</li>
+<li><b>Pelaksanaan:</b> perkuliahan + pelatihan/magang di mitra luar negeri selama 1 semester.</li>
+<li><b>Kepulangan & pelaporan.</b></li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Timeline</span><h2>Timeline (Pola Tahunan)</h2>
+<table>
+<tr><th>Tahapan</th><th>Jadwal (pola)</th></tr>
+<tr><td>Sosialisasi & seleksi internal kampus</td><td>November – Januari</td></tr>
+<tr><td><b>Pendaftaran portal IISMA</b></td><td><b>Januari – Februari</b></td></tr>
+<tr><td>Seleksi dokumen & wawancara</td><td>Februari – Maret</td></tr>
+<tr><td>Pengumuman</td><td>Maret – April</td></tr>
+<tr><td>Persiapan keberangkatan</td><td>April – Juli</td></tr>
+<tr><td>Keberangkatan & program</td><td>Agustus/September – ±5 bulan</td></tr>
+</table>
+<p><span class="badge">Catatan</span> Jadwal mengikuti kalender IISMA nasional tiap tahun — pantau portal resmi dan KUI/unit kerja sama kampus vokasimu.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Cara Daftar</span><h2>Langkah Pendaftaran</h2>
+<ol>
+<li>Ikuti <b>seleksi internal kampus</b> vokasimu dan dapatkan <b>nominasi resmi</b>.</li>
+<li>Buat akun di <b>iisma.kemdikbud.go.id</b> dan isi data sesuai PDDIKTI.</li>
+<li>Isi riwayat <b>organisasi, magang/PKL, sertifikasi kompetensi</b>, dan penghargaan.</li>
+<li>Pilih <b>universitas/lembaga mitra</b> yang relevan dengan bidang vokasimu.</li>
+<li>Unggah dokumen + <b>esai 350 kata</b> (tonjolkan pengalaman praktik!).</li>
+<li>Simpan <i>draft</i>, review, lalu <b>Submit</b>.</li>
+<li>Siapkan diri untuk <b>wawancara</b> (sering dalam bahasa Inggris).</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>Strategi Esai & Portofolio Vokasi</h2>
+<ul>
+<li><b>Ceritakan pengalaman praktikmu:</b> PKL, proyek bengkel/lab, kompetisi keterampilan — ini modal terbesar mahasiswa vokasi.</li>
+<li><b>Hubungkan ke industri global:</b> jelaskan skill apa yang ingin kamu pelajari dari standar industri negara tujuan.</li>
+<li><b>Rencana transfer ilmu:</b> contoh — "belajar sistem manufaktur presisi di Korea untuk diterapkan di UMKM logam kampung halaman".</li>
+<li><b>Sertifikat kompetensi = senjata:</b> cantumkan sertifikasi BNSP/industri yang relevan.</li>
+<li><b>Bahasa sederhana tapi percaya diri:</b> tidak perlu puitis — yang penting jelas, jujur, dan spesifik.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>Strategi Tes Bahasa & Wawancara</h2>
+<ul>
+<li><b>TOEIC 605 / Duolingo 95</b> adalah target paling realistis — biayanya juga lebih murah dari IELTS.</li>
+<li>Mulai latihan <b>4–6 bulan</b> sebelum pendaftaran; fokus pada <i>listening & speaking</i> untuk wawancara.</li>
+<li><b>Wawancara:</b> siapkan jawaban bahasa Inggris tentang: siapa kamu, pengalaman praktik terbaikmu, mengapa memilih negara/kampus itu, dan rencanamu sepulang program.</li>
+<li><b>Tunjukkan kesiapan mental:</b> tinggal di negeri orang + ritme magang industri butuh kemandirian tinggi — ceritakan pengalaman merantau/mandirimu.</li>
+<li>Minta <b>mock interview</b> ke dosen atau alumni program mobilitas kampusmu.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>7 Tips Lolos IISMAVO</h2>
+<ol>
+<li><b>Amankan nominasi kampus:</b> aktif di kegiatan kampus agar dilirik untuk seleksi internal.</li>
+<li><b>Kumpulkan sertifikasi kompetensi</b> (BNSP) sejak dini.</li>
+<li><b>Target skor bahasa realistis:</b> TOEIC 605+ atau Duolingo 95+.</li>
+<li><b>Dokumentasikan semua praktik/magang</b> dengan foto dan laporan.</li>
+<li><b>Riset mitra vokasi:</b> pilih yang bidangnya <i>match</i> dengan prodimu.</li>
+<li><b>Belajar dari awardee:</b> cari alumni IISMAVO kampusmu di media sosial.</li>
+<li><b>Siapkan dokumen 2 bulan</b> sebelum pendaftaran dibuka.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Hindari</span><h2>5 Kesalahan Umum</h2>
+<ol>
+<li><b>Mengabaikan seleksi internal kampus</b> — tanpa nominasi, aplikasi tidak diproses.</li>
+<li><b>Esai generik tanpa sentuhan vokasi</b> — padahal pengalaman praktik adalah keunggulanmu.</li>
+<li><b>Skor bahasa kedaluwarsa</b> — cek masa berlaku sertifikatmu.</li>
+<li><b>Data PDDIKTI tidak valid</b> — pastikan status mahasiswa aktifmu tercatat.</li>
+<li><b>Tidak siap wawancara bahasa Inggris</b> — latihan <i>speaking</i> sejak awal, bukan H-1.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Kisah</span><h2>Kisah Nyata Awardee IISMAVO</h2>
+<ul>
+<li><b>39 mahasiswa vokasi → University of Nottingham, Inggris:</b> diberangkatkan bertahap untuk belajar 1 semester; disambut Duta Besar RI untuk Inggris Raya. Mereka adalah mahasiswa sarjana terapan & diploma semester 4–6 yang lolos seleksi ketat.</li>
+<li><b>Lucy (Administrasi Bisnis, UB) → University of Portsmouth, Inggris:</b> impian ke Inggris sejak kecil terwujud lewat IISMAeVO. Tantangan terbesarnya: aksen British dan cuaca 6–8°C — diatasi dengan belajar dua kali lebih keras.</li>
+<li><b>Virli (Destinasi Pariwisata, UKSW) → Korea:</b> mahasiswi vokasi pariwisata yang lolos IISMA Vokasi dan kuliah gratis di Korea.</li>
+</ul>
+<div class="card"><b>Pola yang berulang:</b> mereka semua mulai dari <b>keberanian mendaftar</b> + persiapan bahasa + portofolio praktik yang kuat. Giliranmu berikutnya.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Banding</span><h2>IISMA Reguler vs IISMAVO</h2>
+<table>
+<tr><th>Aspek</th><th>IISMA Reguler</th><th>IISMAVO</th></tr>
+<tr><td>Peserta</td><td>Mahasiswa sarjana (S1)</td><td>Mahasiswa vokasi (D3/D4/Terapan)</td></tr>
+<tr><td>Semester</td><td>4 atau 6</td><td>D4: 4–6; D3: 4</td></tr>
+<tr><td>Fokus</td><td>Perkuliahan akademik</td><td>Kuliah + <b>pelatihan/magang industri</b></td></tr>
+<tr><td>TOEFL iBT min</td><td>78</td><td><b>60</b></td></tr>
+<tr><td>Duolingo min</td><td>100</td><td><b>95</b></td></tr>
+<tr><td>TOEIC</td><td>—</td><td><b>605</b> diterima</td></tr>
+<tr><td>Cakupan dana</td><td colspan="2" style="text-align:center">Sama: tuition, living allowance, tiket, visa, asuransi, dana darurat</td></tr>
+</table></div></section>
+<section class="slide"><div class="content" style="max-width:1000px"><span class="kicker">Video Panduan</span><h2>Video Panduan IISMAVO</h2><div class="vidgrid"><div class="vid"><iframe src="https://www.youtube.com/embed/XEL5IAnWGy8" title="Kuliah ke Korea Gratis Program IISMA (Podcast)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Kuliah ke Korea Gratis Program IISMA (Podcast)</b><br>Testimoni #1 — Podcast bersama Virli, mahasiswi vokasi UKSW yang lolos IISMA Vokasi: syarat, cara daftar, dan pengalamannya.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/6YcpkAB71f8" title="Pengen ke Luar Negeri Lewat Program Kampus? (UGM)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Pengen ke Luar Negeri Lewat Program Kampus? (UGM)</b><br>Cara daftar #1 — Gambaran program internasional kampus: suasana kelas, kehidupan kampus, dan pelajaran lintas budaya.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/kFBNe8YuG3c" title="Apakah Pendidikan Vokasi Membuat Siap Kerja?" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Apakah Pendidikan Vokasi Membuat Siap Kerja?</b><br>Suasana kegiatan — Podcast mahasiswa vokasi tentang pengalaman magang di industri: bekal pola pikir sebelum berangkat ke luar negeri.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/71--gu-FJTs" title="Kisah Sukses Alumni Pelatihan Vokasi" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Kisah Sukses Alumni Pelatihan Vokasi</b><br>Testimoni #2 — Kisah inspiratif alumni pelatihan vokasi yang berkarier di industri: bukti lulusan vokasi bisa bersaing global.</p></div></div></div></section>
+<section class="slide"><div class="content"><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (1)</h2>
+<div class="faq"><b>1. Apa beda IISMAVO dengan IISMA reguler?</b>IISMAVO khusus <b>mahasiswa vokasi</b> (D3/D4/Sarjana Terapan) dengan porsi <b>pelatihan/magang industri</b> lebih besar; syarat bahasa Inggrisnya juga lebih rendah.</div>
+<div class="faq"><b>2. Kampus saya politeknik swasta — bisa ikut?</b>Bisa, selama terdaftar di PDDIKTI di bawah Kemdiktisaintek dan kampusmu bersedia memberikan nominasi.</div>
+<div class="faq"><b>3. Apakah ada contoh kampus tujuan untuk vokasi?</b>Ya — contoh: <b>University of Nottingham (Inggris)</b> menerima 39 mahasiswa vokasi Indonesia; University of Portsmouth juga pernah menjadi tujuan.</div>
+<div class="faq"><b>4. Apakah programnya full praktik/magang?</b>Kombinasi <b>perkuliahan + pelatihan/praktik</b> sesuai kurikulum mitra — porsinya disesuaikan dengan karakter vokasi.</div>
+<div class="faq"><b>5. Apakah SKS-nya diakui kampus asal?</b>Ya — setara dengan program MBKM dan dikonversi sesuai kebijakan kampusmu.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (2)</h2>
+<div class="faq"><b>6. Saya D3 semester 6 — masih bisa?</b>Syarat D3 adalah <b>semester 4</b> saat pendaftaran. Untuk D4: semester 4 atau 6. Rencanakan dari awal!</div>
+<div class="faq"><b>7. Mana tes bahasa termurah yang diterima?</b><b>Duolingo English Test</b> (skor 95) — jauh lebih murah dari IELTS/TOEFL iBT dan bisa diambil dari rumah.</div>
+<div class="faq"><b>8. Apakah butuh pengalaman magang dulu?</b>Tidak wajib, tapi <b>pengalaman PKL/magang + sertifikat kompetensi</b> sangat memperkuat aplikasimu.</div>
+<div class="faq"><b>9. Apakah ada ikatan dinas?</b>Tidak ada.</div>
+<div class="faq"><b>10. Ke mana saya bertanya?</b>Unit kerja sama/KUI kampus vokasimu, atau sekretariat IISMA: <b>secretariat@iisma.id</b>.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Link Resmi</span><h2>Link Resmi & Kontak</h2>
+<p><a class="linkbtn" href="https://iisma.kemdikbud.go.id" target="_blank" rel="noopener">Portal Resmi IISMA</a></p>
+<ul>
+<li><b>Website:</b> iisma.kemdikbud.go.id (info skema vokasi, daftar mitra, panduan)</li>
+<li><b>Email:</b> secretariat@iisma.id</li>
+<li><b>Kampusmu:</b> unit kerja sama / KUI / bagian kemahasiswaan politeknik — untuk seleksi internal & nominasi</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Checklist</span><h2>Checklist Persiapan</h2>
+<ul>
+<li>☐ Pastikan semester & status PDDIKTI memenuhi syarat</li>
+<li>☐ Ikut seleksi internal kampus → kejar nominasi</li>
+<li>☐ Tes Duolingo/TOEIC/TOEFL iBT (target di atas minimal)</li>
+<li>☐ Kumpulkan sertifikat kompetensi (BNSP) & dokumentasi praktik</li>
+<li>☐ Riset universitas/lembaga mitra yang sesuai bidangmu</li>
+<li>☐ Tulis esai 350 kata (tonjolkan pengalaman vokasi!)</li>
+<li>☐ Latihan wawancara bahasa Inggris</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Rangkuman</span><h2>Rangkuman 60 Detik</h2>
+<div class="card"><b>IISMAVO = IISMA versi vokasi</b> — 1 semester kuliah + magang/praktik industri di luar negeri, beasiswa penuh.</div>
+<ul>
+<li><b>Untuk:</b> mahasiswa vokasi D3 (semester 4) / D4 (semester 4–6), IPK ≥3,0, TOEFL iBT 60 / IELTS 6,0 / Duolingo 95 / TOEIC 605.</li>
+<li><b>Senjata rahasiamu:</b> sertifikat kompetensi + pengalaman PKL + esai yang menonjolkan sisi praktik.</li>
+<li><b>Kunci:</b> lolos seleksi internal kampus → nominasi → aplikasi kuat.</li>
+<li><b>Daftar:</b> iisma.kemdikbud.go.id.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Penutup</span><h2>Vokasi Bisa Mendunia!</h2>
+<p>Lulusan vokasi Indonesia sudah terbukti bersaing di industri global — dan IISMAVO adalah <b>jalan tol</b> menuju ke sana: belajar standar industri dunia langsung di sumbernya.</p>
+<div class="card"><b>Mulai hari ini:</b> kejar sertifikasi kompetensimu, dokumentasikan setiap praktik, dan asah bahasa Inggrismu. Dunia menunggu skill-mu.</div>
+<p style="text-align:center;margin-top:16px">🔧 <b>Vokasi kuat, Indonesia mendunia!</b></p></div></section>
+</div>
+<div class="nav">
+<button id="prev" onclick="go(cur-1)">&#8592; Sebelumnya</button>
+<span id="counter">1 / 21</span>
+<button id="next" onclick="go(cur+1)">Lanjut &#8594;</button>
+</div>
+<div class="hint">Geser / panah &#8592; &#8594; untuk navigasi</div>
+<script>
+var cur=0;
+var slides=document.querySelectorAll('.slide');
+var N=slides.length;
+function go(n){cur=((n%N)+N)%N;
+slides.forEach(function(s,i){s.classList.toggle('active',i===cur)});
+document.getElementById('counter').textContent=(cur+1)+' / '+N;
+document.getElementById('bar').style.width=((cur+1)/N*100)+'%';
+document.getElementById('prev').disabled=(cur===0);
+document.getElementById('next').disabled=(cur===N-1);
+slides[cur].scrollTop=0;}
+document.addEventListener('keydown',function(e){
+if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(cur+1);}
+if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+if(e.key==='Home'){go(0);} if(e.key==='End'){go(N-1);}});
+var tx=0,ty=0;
+document.getElementById('deck').addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.getElementById('deck').addEventListener('touchend',function(e){
+var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){if(dx<0)go(cur+1);else go(cur-1);}},{passive:true});
+go(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/grant/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan AIESEC Global Talent", "slug": "deck-grant-aiesec-talent"},{"label": "Panduan AIESEC Global Volunteer", "slug": "deck-grant-aiesec-volunteer"},{"label": "Panduan Au Pair", "slug": "deck-grant-aupair"},{"label": "Panduan Ausbildung Jerman", "slug": "deck-grant-ausbildung"},{"label": "Panduan Erasmus+", "slug": "deck-grant-erasmus"},{"label": "Panduan IISMA", "slug": "deck-grant-iisma"},{"label": "Panduan IISMAVO", "slug": "deck-grant-iismavo"},{"label": "Panduan JET Programme", "slug": "deck-grant-jet"},{"label": "Panduan Short Course Luar Negeri", "slug": "deck-grant-shortcourse"},{"label": "Panduan Summer/Winter School", "slug": "deck-grant-summerschool"},{"label": "Panduan Travel Grant", "slug": "deck-grant-travel"},{"label": "Panduan Work & Travel USA", "slug": "deck-grant-worktravel"},{"label": "Panduan Working Holiday Visa", "slug": "deck-grant-whv"},{"label": "Panduan Youth Summit", "slug": "deck-grant-summit"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

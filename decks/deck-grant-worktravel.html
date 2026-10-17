@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 14 panduan grant ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Work & Travel USA / Camp Counselor</title>
+<style>
+:root{--acc:#b91c1c;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:#0f1420;color:#eef2f7;overflow:hidden}
+.deck{position:relative;width:100vw;height:100vh;height:100dvh}
+.progress{position:fixed;top:0;left:0;right:0;height:5px;background:#1e2740;z-index:50}
+.progress .bar{height:100%;width:0;background:var(--acc);transition:width .3s}
+.slide{display:none;width:100%;height:100%;overflow-y:auto;padding:56px 24px 110px;align-items:flex-start;justify-content:center}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.inner{width:100%;max-width:920px}
+h1{font-size:clamp(30px,5vw,52px);line-height:1.15;margin-bottom:14px}
+h2{font-size:clamp(22px,3.6vw,34px);margin-bottom:16px;color:var(--acc)}
+h3{font-size:19px;margin:18px 0 8px;color:#ffd166}
+p,li{font-size:clamp(15px,2.2vw,18px);line-height:1.65}
+ul,ol{margin:8px 0 8px 22px}
+li{margin-bottom:8px}
+.cover{align-items:center !important;justify-content:center !important;text-align:center;padding:40px 24px 110px !important;background-size:cover;background-position:center;position:relative}
+.cover::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,16,.55),rgba(5,8,16,.88))}
+.cover .inner{position:relative;z-index:1}
+.badge{display:inline-block;background:var(--acc);color:#fff;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:8px 18px;border-radius:999px;margin-bottom:18px}
+.cover p.sub{font-size:clamp(16px,2.6vw,22px);color:#cbd5e1;max-width:700px;margin:0 auto}
+.card{background:#182036;border:1px solid #26314d;border-radius:14px;padding:18px 20px;margin:12px 0}
+.card b.t{color:var(--acc)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.ok{border-left:5px solid #22c55e}.warn{border-left:5px solid #f59e0b}.bad{border-left:5px solid #ef4444}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:6px}
+.tag.ok{background:#14532d;color:#bbf7d0}.tag.warn{background:#78350f;color:#fde68a}.tag.bad{background:#7f1d1d;color:#fecaca}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:15px}
+th,td{border:1px solid #2c3a5c;padding:10px 12px;text-align:left;vertical-align:top}
+th{background:#1a2340;color:var(--acc)}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+@media(max-width:640px){.vgrid{gap:8px}}
+.vwrap{position:relative;padding-bottom:56.25%;height:0;background:#000;border-radius:10px;overflow:hidden}
+.vwrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.vcap{font-size:13px;color:#94a3b8;margin:6px 2px 4px}
+.faq{background:#182036;border:1px solid #26314d;border-radius:12px;padding:14px 18px;margin:10px 0}
+.faq b.q{color:#ffd166;display:block;margin-bottom:6px}
+.links a{display:block;background:#182036;border:1px solid #26314d;border-radius:10px;padding:12px 16px;margin:8px 0;color:#7dd3fc;text-decoration:none;font-size:16px;word-break:break-all}
+.links a:hover{border-color:var(--acc)}
+.links small{display:block;color:#94a3b8;font-size:13px}
+.nav{position:fixed;bottom:26px;z-index:60;width:56px;height:56px;border-radius:50%;border:none;background:var(--acc);color:#fff;font-size:28px;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center}
+.nav:active{transform:scale(.93)}
+.nav.prev{left:18px}.nav.next{right:18px}
+.nav:disabled{opacity:.25;cursor:default}
+.counter{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);z-index:60;background:#182036;border:1px solid #26314d;padding:8px 18px;border-radius:999px;font-size:14px;color:#94a3b8}
+.hint{position:fixed;top:14px;right:16px;z-index:60;font-size:12px;color:#64748b}
+.big{font-size:clamp(20px,3.4vw,28px);font-weight:700;color:#ffd166;margin:14px 0}
+.toc ol{font-size:17px}.toc li{margin-bottom:6px}
+.kicker{color:var(--acc);font-weight:700;letter-spacing:1px;font-size:13px;text-transform:uppercase;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="hint">Geser / &larr; &rarr; untuk navigasi</div>
+<section class="slide cover active" style="background-image:url('https://commons.wikimedia.org/wiki/Special:FilePath/YWCA%20Summer%20Camp%20at%20Lake%20Calhoun%20-%20DPLA%20-%20bc6ca62fee3a2156e004e6e14fb0a73b.jpg');"><div class="inner"><span class="badge">Panduan Grant</span><h1>Panduan Work & Travel USA / Camp Counselor</h1><p class="sub">Program pertukaran J-1 Amerika: kerja musim panas untuk mahasiswa & jadi camp counselor di summer camp AS.</p><p class="sub" style="font-size:12px;margin-top:14px;opacity:.7">Foto: Hennepin County Library / DPLA, Wikimedia Commons</p></div></section>
+<section class="slide "><div class="inner"><h2>Daftar Isi</h2><div class="toc card"><ol><li>Dua program: SWT vs Camp Counselor</li><li>Summer Work Travel: gambaran</li><li>SWT: syarat peserta</li><li>SWT: sponsor resmi & agen</li><li>SWT: tahapan lengkap</li><li>SWT: estimasi biaya & gaji</li><li>Camp Counselor: gambaran</li><li>Camp Counselor: syarat</li><li>Camp Counselor: tahapan</li><li>Camp Counselor: biaya & pocket money</li><li>Wawancara visa J-1</li><li>Video panduan (2x2)</li><li>Realita & risiko</li><li>Strategi sukses</li><li>FAQ</li><li>Link resmi</li><li>Checklist aksi</li></ol></div></div></section>
+<section class="slide "><div class="inner"><h2>Dua Program dalam Satu Deck</h2><div class="grid2">
+<div class="card"><b class="t">Summer Work Travel (SWT)</b><p>Kerja musim panas 3-4 bulan di AS (restoran, resort, taman hiburan) + 30 hari jalan-jalan. Untuk <b>mahasiswa aktif</b>.</p></div>
+<div class="card"><b class="t">Camp Counselor</b><p>Jadi pembina di <b>summer camp</b> anak AS selama 9-10 minggu. Akomodasi &amp; makan <b>ditanggung camp</b>. Tidak wajib mahasiswa (tergantung sponsor).</p></div>
+</div>
+<p>Keduanya memakai <b>visa J-1 Exchange Visitor</b> dan <b>wajib lewat sponsor resmi</b> yang ditunjuk Departemen Luar Negeri AS.</p></div></section>
+<section class="slide "><div class="inner"><h2>Summer Work Travel: Gambaran</h2><ul>
+<li><b>Durasi kerja:</b> maksimal <b>4 bulan</b> (tanggal fix per negara)</li>
+<li><b>Grace period:</b> <b>30 hari</b> setelah program untuk traveling (tidak boleh kerja)</li>
+<li><b>Pekerjaan:</b> hospitality, restoran, resort ski/pantai, taman hiburan, retail</li>
+<li><b>Dokumen kunci:</b> <b>DS-2019</b> (diterbitkan sponsor) untuk apply visa J-1</li>
+<li><b>Asuransi:</b> wajib, biasanya sudah termasuk paket program</li>
+</ul>
+<div class="card ok"><b class="t">Untuk siapa:</b> mahasiswa yang ingin pengalaman kerja internasional + bahasa Inggris + jalan-jalan AS dalam satu musim panas.</div></div></section>
+<section class="slide "><div class="inner"><h2>SWT: Syarat Peserta</h2><ul>
+<li><b>Mahasiswa aktif full-time</b> di universitas (beberapa sponsor menerima fresh graduate sangat baru &mdash; cek ke sponsor)</li>
+<li>Usia umumnya <b>18-30</b> tahun</li>
+<li><b>Bahasa Inggris komunikatif</b> (wawancara dengan sponsor &amp; employer dalam Inggris)</li>
+<li>Sehat jasmani-rohani, berkelakuan baik</li>
+<li>Punya <b>job offer</b> (dari job fair sponsor atau cari sendiri) sebelum DS-2019 terbit</li>
+<li>Komitmen penuh selama musim program (umumnya Juni-Agustus)</li>
+<li>Paspor berlaku min. 6 bulan setelah masa tinggal</li>
+</ul></div></section>
+<section class="slide "><div class="inner"><h2>SWT: Sponsor Resmi & Agen</h2><div class="card"><b class="t">Sponsor = wajib & sentral</b><p>Visa J-1 <b>tidak bisa</b> tanpa sponsor yang ditunjuk Departemen Luar Negeri AS. Sponsor menerbitkan <b>DS-2019</b>, memverifikasi job offer, dan memonitor kamu selama di AS.</p></div>
+<p><b>Contoh sponsor global:</b> CIEE, InterExchange, Intrax &mdash; cek daftar lengkap di <b>j1visa.state.gov</b> (sponsor search).</p>
+<div class="card warn"><b class="t">Agen lokal:</b> di Indonesia, agen bekerja sama dengan sponsor AS untuk rekrutmen, job fair, &amp; persiapan visa. Pilih agen yang <b>menyebut nama sponsornya secara terbuka</b> dan memberi kontrak tertulis. Waspadai agen yang tidak transparan soal sponsor &amp; rincian biaya.</div></div></section>
+<section class="slide "><div class="inner"><h2>SWT: Tahapan Lengkap</h2><ol>
+<li>Pilih <b>agen/sponsor</b>, isi aplikasi + dokumen (bukti kuliah, SKCK, medical).</li>
+<li><b>Wawancara</b> dengan sponsor (Bahasa Inggris).</li>
+<li><b>Job fair / matching:</b> pilih employer, wawancara kerja.</li>
+<li>Tanda tangan <b>job offer + DS-2019</b>.</li>
+<li>Bayar <b>SEVIS fee</b> (sistem pelacakan pelajar AS).</li>
+<li>Bayar <b>biaya visa</b> &amp; jadwalkan <b>wawancara di Kedubes AS</b>.</li>
+<li><b>Wawancara visa J-1</b> &mdash; buktikan niat kembali ke Indonesia.</li>
+<li>Persiapan berangkat: tiket, asuransi, orientasi.</li>
+</ol></div></section>
+<section class="slide "><div class="inner"><h2>SWT: Estimasi Biaya & Gaji</h2><table><tr><th>Komponen</th><th>Estimasi</th></tr>
+<tr><td>Program fee (sponsor/agen)</td><td>Bervariasi per sponsor &mdash; <b>minta rincian tertulis</b></td></tr>
+<tr><td>SEVIS fee</td><td>± $35-220 (tergantung kategori)</td></tr>
+<tr><td>Biaya visa J-1</td><td>± <b>$160</b> (MRV fee)</td></tr>
+<tr><td>Tiket pesawat PP</td><td>Rp 12-20 juta</td></tr>
+<tr><td>Dana pegangan awal</td><td>$800-1.500</td></tr></table>
+<div class="card ok"><b class="t">Gaji:</b> upah minimum AS bervariasi per negara bagian (federal $7,25/jam; banyak negara bagian $12-17+/jam). Banyak peserta <b>balik modal</b> bahkan menabung dari gaji + lembur &mdash; tapi jangan jadikan ini janji pasti.</div></div></section>
+<section class="slide "><div class="inner"><h2>Camp Counselor: Gambaran</h2><ul>
+<li>Jadi <b>pembina anak</b> di summer camp AS: mendampingi aktivitas outdoor, games, seni, olahraga.</li>
+<li><b>Durasi:</b> 9-10 minggu (Juni-Agustus) + 30 hari traveling setelahnya.</li>
+<li><b>Akomodasi &amp; makan DITANGGUNG camp</b> selama kontrak &mdash; pengeluaran harian nyaris nol.</li>
+<li>Dapat <b>pocket money/stipend</b> (bukan gaji penuh seperti SWT).</li>
+<li>Pengalaman leadership &amp; bahasa Inggris yang kuat di CV.</li>
+</ul>
+<div class="card"><b class="t">Sponsor camp:</b> CIEE Camp Exchange, Camp America (Camp Counselors USA), InterExchange Camp USA &mdash; verifikasi di j1visa.state.gov.</div></div></section>
+<section class="slide "><div class="inner"><h2>Camp Counselor: Syarat</h2><ul>
+<li>Usia <b>18+</b> (beberapa program 18-30)</li>
+<li><b>Suka anak-anak</b> &amp; aktivitas outdoor &mdash; ini syarat karakter terpenting</li>
+<li>Bahasa Inggris komunikatif</li>
+<li>Pengalaman organisasi/kepanitiaan/pramuka jadi nilai tambah</li>
+<li>Skill khusus (renang, musik, seni, olahraga) = peluang placement lebih baik</li>
+<li>Sehat &amp; berkelakuan baik (background check)</li>
+<li><b>Tidak wajib mahasiswa</b> di banyak program camp (cek ke sponsor)</li>
+</ul></div></section>
+<section class="slide "><div class="inner"><h2>Camp Counselor: Tahapan</h2><ol>
+<li>Daftar ke <b>sponsor camp</b> (langsung atau via agen lokal).</li>
+<li>Buat <b>profil + video perkenalan</b> yang menonjolkan pengalaman dengan anak &amp; skill.</li>
+<li><b>Wawancara</b> dengan sponsor.</li>
+<li><b>Matching dengan camp</b> &mdash; wawancara dengan direktur camp.</li>
+<li>Tanda tangan kontrak + terima <b>DS-2019</b>.</li>
+<li>Bayar SEVIS fee, apply <b>visa J-1</b>, wawancara di Kedubes AS.</li>
+<li>Terbang &amp; ikuti <b>orientasi camp</b> sebelum anak-anak datang.</li>
+</ol></div></section>
+<section class="slide "><div class="inner"><h2>Camp: Biaya & Pocket Money</h2><ul>
+<li><b>Program fee</b> camp umumnya <b>lebih murah</b> dari SWT (bahkan ada yang gratis/ditanggung camp) &mdash; verifikasi ke sponsor.</li>
+<li>SEVIS fee + biaya visa J-1 tetap berlaku.</li>
+<li><b>Stipend/pocket money:</b> kisaran ratusan hingga $1.000+ untuk semusim, tergantung posisi &amp; pengalaman &mdash; <b>bukan gaji bulanan</b>.</li>
+<li><b>Hemat besar:</b> tempat tinggal + 3x makan ditanggung &rarr; hampir semua stipend bisa ditabung untuk traveling 30 hari.</li>
+</ul>
+<div class="card warn"><b class="t">Jujur:</b> pilih camp counselor untuk <b>pengalaman</b>, bukan untuk cari uang. Jika tujuan utama menabung, SWT lebih cocok.</div></div></section>
+<section class="slide "><div class="inner"><h2>Wawancara Visa J-1: Kunci Lolos</h2><p>Petugas konsuler menilai <b>non-immigrant intent</b> &mdash; kamu harus meyakinkan bahwa kamu akan <b>kembali ke Indonesia</b>.</p>
+<ul>
+<li>Bawa <b>DS-2019, job offer, bukti mahasiswa aktif</b> (KTM, transkrip, surat kampus).</li>
+<li>Jawab <b>jujur, singkat, konsisten</b> dalam Bahasa Inggris.</li>
+<li>Tunjukkan <b>ikatan kuat</b>: kuliah yang harus diselesaikan, keluarga, rencana karier di Indonesia.</li>
+<li>Jangan menghafal jawaban &mdash; terdengar dibuat-buat.</li>
+<li>Berpakaian rapi, datang tepat waktu.</li>
+</ul>
+<div class="card bad"><b class="t">Penolakan umum:</b> tidak bisa menjelaskan program, terlihat hanya ingin kerja menetap, atau dokumen tidak konsisten.</div></div></section>
+<section class="slide "><div class="inner"><h2>Video Panduan</h2><p>Empat video panduan dalam grid 2&times;2. Klik untuk memutar langsung di slide ini.</p><div class="vgrid"><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/moFKLsGGzEo" title="Panduan: kenali visa J1 & cara daftarnya (Indonesia)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Panduan: kenali visa J1 & cara daftarnya (Indonesia)</div></div><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/UZWCG3KJ7_4" title="Panduan: semua yang perlu tahu sebelum apply Work and Travel USA" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Panduan: semua yang perlu tahu sebelum apply Work and Travel USA</div></div><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/bsUcrjs-3Vs" title="Suasana: jadi camp counselor di summer camp AS (CIEE)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Suasana: jadi camp counselor di summer camp AS (CIEE)</div></div><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/tXFpfeH6uEY" title="Testimoni: tips sebelum berangkat untuk pemegang visa J-1 (Indonesia)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Testimoni: tips sebelum berangkat untuk pemegang visa J-1 (Indonesia)</div></div></div></div></section>
+<section class="slide "><div class="inner"><h2>Realita & Risiko</h2><div class="card warn"><b class="t">Jujur sebelum daftar:</b><ul>
+<li><b>Visa bisa ditolak</b> &mdash; dan sebagian biaya (visa, SEVIS) hangus.</li>
+<li><b>Kerja capek:</b> shift panjang di restoran/resort; camp = 24/7 bersama anak-anak.</li>
+<li><b>Homesick</b> + culture shock, terutama minggu pertama.</li>
+<li><b>Agen nakal:</b> janji "pasti lolos visa" atau "gaji puluhan juta pasti" = red flag. Tidak ada yang bisa menjamin visa.</li>
+<li><b>Aturan J-1 ketat:</b> kerja di luar employer tercatat / melanggar aturan = visa dicabut &amp; deportasi.</li>
+</ul></div></div></section>
+<section class="slide "><div class="inner"><h2>Strategi Sukses</h2><ul>
+<li><b>Inggris dulu:</b> 3-6 bulan latihan speaking sebelum wawancara sponsor.</li>
+<li><b>Pilih employer/camp dengan teliti:</b> baca review, tanya alumni.</li>
+<li><b>Siapkan dana darurat</b> $1.000+ &mdash; gaji pertama tidak langsung cair.</li>
+<li><b>Buka rekening bank AS</b> segera setelah tiba (banyak sponsor memandu).</li>
+<li><b>Manfaatkan 30 hari grace period</b> untuk traveling &mdash; rencanakan budgetnya.</li>
+<li><b>Dokumentasikan pengalaman:</b> foto, sertifikat, kontak &mdash; untuk CV &amp; beasiswa berikutnya.</li>
+</ul></div></section>
+<section class="slide "><div class="inner"><h2>FAQ (1)</h2><div class="faq"><b class="q">1. Apakah lulusan SMA bisa ikut SWT?</b>Umumnya SWT mensyaratkan status mahasiswa aktif. Lulusan SMA lebih cocok ke <b>Camp Counselor</b> atau program J-1 lain (intern/trainee) sesuai syaratnya.</div>
+<div class="faq"><b class="q">2. Apakah bisa perpanjang tinggal / kerja setelah program?</b>Tidak dengan visa J-1 yang sama. Overstay = blacklist visa AS. Ikuti aturan, pulang tepat waktu.</div>
+<div class="faq"><b class="q">3. Berapa total biaya sampai berangkat?</b>Bervariasi per sponsor/agen &mdash; selalu minta <b>rincian tertulis</b> sebelum membayar apapun.</div></div></section>
+<section class="slide "><div class="inner"><h2>FAQ (2)</h2><div class="faq"><b class="q">4. Apakah asuransi sudah termasuk?</b>Program J-1 mewajibkan asuransi kesehatan; biasanya sudah termasuk paket sponsor. Baca polisnya &mdash; tahu apa yang dicover.</div>
+<div class="faq"><b class="q">5. Bisakah pilih kota kerja?</b>Melalui job fair kamu bisa memilih dari employer yang tersedia. Fleksibel, tapi tidak bisa request kota sembarangan.</div>
+<div class="faq"><b class="q">6. Bagaimana jika konflik dengan employer/camp?</b>Hubungi <b>sponsor</b> segera &mdash; mereka wajib memonitor &amp; memediasi. Jangan kabur/ganti kerja diam-diam.</div></div></section>
+<section class="slide "><div class="inner"><h2>Link Resmi</h2><div class="links"><a href="https://j1visa.state.gov/participants/how-to-apply/sponsor-search" target="_blank" rel="noopener">J1 Visa State Dept - sponsor search<small>https://j1visa.state.gov/participants/how-to-apply/sponsor-search</small></a><a href="https://j1visa.state.gov/programs/summer-work-travel" target="_blank" rel="noopener">J1 Visa - Summer Work Travel<small>https://j1visa.state.gov/programs/summer-work-travel</small></a><a href="https://j1visa.state.gov/programs/camp-counselor" target="_blank" rel="noopener">J1 Visa - Camp Counselor<small>https://j1visa.state.gov/programs/camp-counselor</small></a><a href="https://www.ciee.org/in-the-usa/work" target="_blank" rel="noopener">CIEE Work & Travel USA<small>https://www.ciee.org/in-the-usa/work</small></a></div><p style="color:#94a3b8;font-size:14px;margin-top:10px">Selalu verifikasi informasi terbaru di situs resmi di atas sebelum mendaftar.</p></div></section>
+<section class="slide "><div class="inner"><h2>Checklist Aksi</h2><div class="card"><ol>
+<li>Tentukan: SWT (mahasiswa, mau gaji) atau Camp (suka anak, hemat)</li>
+<li>Naikkan bahasa Inggris speaking 3-6 bulan</li>
+<li>Riset sponsor di j1visa.state.gov + bandingkan 2-3 agen lokal</li>
+<li>Siapkan dokumen: paspor, bukti kuliah, SKCK, referensi</li>
+<li>Ikuti job fair/matching &rarr; DS-2019 &rarr; SEVIS &rarr; visa J-1</li>
+<li>Siapkan dana darurat &amp; rencana 30 hari traveling</li>
+</ol></div></div></section>
+<section class="slide "><div class="inner"><div class='kicker'>Penutup</div><h2>Musim Panas yang Tak Terlupakan</h2><p class="big">J-1 = kerja legal + bahasa Inggris + keliling Amerika.</p>
+<p>Pilih sponsor resmi yang transparan, siapkan mental untuk kerja keras, dan patuhi aturan visa. Pulang dengan tabungan, cerita, dan CV internasional.</p></div></section>
+<button class="nav prev" id="prevBtn" aria-label="Sebelumnya">&lsaquo;</button>
+<button class="nav next" id="nextBtn" aria-label="Berikutnya">&rsaquo;</button>
+<div class="counter"><span id="cur">1</span> / <span id="tot">0</span></div>
+</div>
+<script>
+(function(){
+var slides=document.querySelectorAll('.slide'),i=0;
+var tot=document.getElementById('tot'),cur=document.getElementById('cur'),bar=document.getElementById('bar');
+var prev=document.getElementById('prevBtn'),next=document.getElementById('nextBtn');
+tot.textContent=slides.length;
+function show(n){
+  i=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach(function(s,k){s.classList.toggle('active',k===i);if(k===i)s.scrollTop=0;});
+  cur.textContent=i+1;bar.style.width=((i+1)/slides.length*100)+'%';
+  prev.disabled=(i===0);next.disabled=(i===slides.length-1);
+}
+prev.onclick=function(){show(i-1)};next.onclick=function(){show(i+1)};
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){show(i+1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){show(i-1);e.preventDefault();}
+  else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+});
+var tx=0;
+document.getElementById('deck').addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;},{passive:true});
+document.getElementById('deck').addEventListener('touchend',function(e){
+  var dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)>60){if(dx<0)show(i+1);else show(i-1);}
+},{passive:true});
+show(0);
+})();
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/grant/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan AIESEC Global Talent", "slug": "deck-grant-aiesec-talent"},{"label": "Panduan AIESEC Global Volunteer", "slug": "deck-grant-aiesec-volunteer"},{"label": "Panduan Au Pair", "slug": "deck-grant-aupair"},{"label": "Panduan Ausbildung Jerman", "slug": "deck-grant-ausbildung"},{"label": "Panduan Erasmus+", "slug": "deck-grant-erasmus"},{"label": "Panduan IISMA", "slug": "deck-grant-iisma"},{"label": "Panduan IISMAVO", "slug": "deck-grant-iismavo"},{"label": "Panduan JET Programme", "slug": "deck-grant-jet"},{"label": "Panduan Short Course Luar Negeri", "slug": "deck-grant-shortcourse"},{"label": "Panduan Summer/Winter School", "slug": "deck-grant-summerschool"},{"label": "Panduan Travel Grant", "slug": "deck-grant-travel"},{"label": "Panduan Work & Travel USA", "slug": "deck-grant-worktravel"},{"label": "Panduan Working Holiday Visa", "slug": "deck-grant-whv"},{"label": "Panduan Youth Summit", "slug": "deck-grant-summit"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

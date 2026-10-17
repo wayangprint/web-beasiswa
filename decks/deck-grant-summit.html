@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 14 panduan grant ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Youth Summit Fully Funded</title>
+<style>
+:root{--acc:#7c3aed;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:#0f1420;color:#eef2f7;overflow:hidden}
+.deck{position:relative;width:100vw;height:100vh;height:100dvh}
+.progress{position:fixed;top:0;left:0;right:0;height:5px;background:#1e2740;z-index:50}
+.progress .bar{height:100%;width:0;background:var(--acc);transition:width .3s}
+.slide{display:none;width:100%;height:100%;overflow-y:auto;padding:56px 24px 110px;align-items:flex-start;justify-content:center}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.inner{width:100%;max-width:920px}
+h1{font-size:clamp(30px,5vw,52px);line-height:1.15;margin-bottom:14px}
+h2{font-size:clamp(22px,3.6vw,34px);margin-bottom:16px;color:var(--acc)}
+h3{font-size:19px;margin:18px 0 8px;color:#ffd166}
+p,li{font-size:clamp(15px,2.2vw,18px);line-height:1.65}
+ul,ol{margin:8px 0 8px 22px}
+li{margin-bottom:8px}
+.cover{align-items:center !important;justify-content:center !important;text-align:center;padding:40px 24px 110px !important;background-size:cover;background-position:center;position:relative}
+.cover::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,16,.55),rgba(5,8,16,.88))}
+.cover .inner{position:relative;z-index:1}
+.badge{display:inline-block;background:var(--acc);color:#fff;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:8px 18px;border-radius:999px;margin-bottom:18px}
+.cover p.sub{font-size:clamp(16px,2.6vw,22px);color:#cbd5e1;max-width:700px;margin:0 auto}
+.card{background:#182036;border:1px solid #26314d;border-radius:14px;padding:18px 20px;margin:12px 0}
+.card b.t{color:var(--acc)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.ok{border-left:5px solid #22c55e}.warn{border-left:5px solid #f59e0b}.bad{border-left:5px solid #ef4444}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:6px}
+.tag.ok{background:#14532d;color:#bbf7d0}.tag.warn{background:#78350f;color:#fde68a}.tag.bad{background:#7f1d1d;color:#fecaca}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:15px}
+th,td{border:1px solid #2c3a5c;padding:10px 12px;text-align:left;vertical-align:top}
+th{background:#1a2340;color:var(--acc)}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+@media(max-width:640px){.vgrid{gap:8px}}
+.vwrap{position:relative;padding-bottom:56.25%;height:0;background:#000;border-radius:10px;overflow:hidden}
+.vwrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.vcap{font-size:13px;color:#94a3b8;margin:6px 2px 4px}
+.faq{background:#182036;border:1px solid #26314d;border-radius:12px;padding:14px 18px;margin:10px 0}
+.faq b.q{color:#ffd166;display:block;margin-bottom:6px}
+.links a{display:block;background:#182036;border:1px solid #26314d;border-radius:10px;padding:12px 16px;margin:8px 0;color:#7dd3fc;text-decoration:none;font-size:16px;word-break:break-all}
+.links a:hover{border-color:var(--acc)}
+.links small{display:block;color:#94a3b8;font-size:13px}
+.nav{position:fixed;bottom:26px;z-index:60;width:56px;height:56px;border-radius:50%;border:none;background:var(--acc);color:#fff;font-size:28px;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center}
+.nav:active{transform:scale(.93)}
+.nav.prev{left:18px}.nav.next{right:18px}
+.nav:disabled{opacity:.25;cursor:default}
+.counter{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);z-index:60;background:#182036;border:1px solid #26314d;padding:8px 18px;border-radius:999px;font-size:14px;color:#94a3b8}
+.hint{position:fixed;top:14px;right:16px;z-index:60;font-size:12px;color:#64748b}
+.big{font-size:clamp(20px,3.4vw,28px);font-weight:700;color:#ffd166;margin:14px 0}
+.toc ol{font-size:17px}.toc li{margin-bottom:6px}
+.kicker{color:var(--acc);font-weight:700;letter-spacing:1px;font-size:13px;text-transform:uppercase;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="hint">Geser / &larr; &rarr; untuk navigasi</div>
+<section class="slide cover active" style="background-image:url('https://commons.wikimedia.org/wiki/Special:FilePath/Web%20Summit%202016%20-%20Forum%20-%20Nov%208%20-%20Day%201%20ws%20(43%20of%2069)%20(31044041986).jpg');"><div class="inner"><span class="badge">Panduan Grant</span><h1>Panduan Youth Summit Fully Funded</h1><p class="sub">Daftar summit & konferensi pemuda internasional yang legitimate, status pendanaan yang jujur, dan cara membedakan summit asli vs abal-abal.</p><p class="sub" style="font-size:12px;margin-top:14px;opacity:.7">Foto: Web Summit 2016 (Wikimedia Commons, CC)</p></div></section>
+<section class="slide "><div class="inner"><h2>Daftar Isi</h2><div class="toc card"><ol><li>Apa itu youth summit & kenapa ikut</li><li>One Young World: summit paling legitimate</li><li>Leading Scholarship: cakupan & syarat</li><li>Beasiswa mitra OYW</li><li>Program pemuda legitimate lain (status jujur)</li><li>Realita label 'fully funded'</li><li>Modus summit abal-abal di Indonesia</li><li>7 ciri summit legitimate</li><li>7 red flags summit scam</li><li>Cara verifikasi sebelum daftar/bayar</li><li>Strategi lolos beasiswa summit</li><li>Timeline & dokumen persiapan</li><li>Video panduan (2x2)</li><li>Estimasi biaya jalur mandiri</li><li>FAQ</li><li>Link resmi & checklist aksi</li></ol></div></div></section>
+<section class="slide "><div class="inner"><h2>Apa Itu Youth Summit?</h2><p>Youth summit adalah konferensi internasional yang mempertemukan ratusan hingga ribuan pemuda dari puluhan negara untuk diskusi, workshop, dan networking seputar isu global: iklim, perdamaian, pendidikan, kesehatan, dan kewirausahaan sosial.</p>
+<div class="card"><b class="t">Kenapa banyak yang mengincar?</b><ul>
+<li>Relasi global & peluang kolaborasi lintas negara</li>
+<li>Nilai tambah besar di CV dan aplikasi beasiswa</li>
+<li>Sebagian <b>fully funded</b>: tiket, hotel, dan makan ditanggung penyelenggara</li>
+</ul></div>
+<div class="card warn"><b class="t">Tapi hati-hati:</b> label "fully funded" dan "international youth summit" adalah umpan paling populer untuk <b>skema berbayar</b> yang menargetkan anak muda Indonesia. Deck ini memisahkan mana yang legitimate dan mana yang patut dicurigai.</div></div></section>
+<section class="slide "><div class="inner"><h2>One Young World: Summit Paling Legitimate</h2><div class="card ok"><span class="tag ok">TERVERIFIKASI & LEGITIMATE</span>
+<p><b>One Young World (OYW)</b> adalah forum pemuda global tahunan terbesar di dunia: 2.000+ delegasi dari 190+ negara. Summit 2025 digelar di <b>Munich, Jerman (3-6 November 2025)</b>; summit 2026 dijadwalkan di <b>Cape Town, Afrika Selatan (3-6 November 2026)</b>.</p></div>
+<ul>
+<li><b>Usia:</b> 18-30 tahun (di atas 30 dipertimbangkan bila dampaknya luar biasa)</li>
+<li><b>Syarat inti:</b> rekam jejak kepemimpinan & komitmen nyata pada perubahan positif</li>
+<li><b>Tidak ada</b> biaya pendaftaran, <b>tidak wajib</b> IELTS/TOEFL</li>
+<li>Seleksi kompetitif berbasis esai/aplikasi online di situs resmi</li>
+<li>Pendaftar dari negara under-represented (termasuk Indonesia) diprioritaskan lewat Leading Scholarship</li>
+</ul></div></section>
+<section class="slide "><div class="inner"><h2>Leading Scholarship: Fully Funded Beneran</h2><div class="card ok"><span class="tag ok">FULLY FUNDED TERVERIFIKASI</span>
+<p><b>Leading Scholarship</b> adalah beasiswa utama OYW. Penerima mendapatkan:</p><ul>
+<li>Akses penuh Summit + Opening Ceremony</li>
+<li>Tiket pesawat PP (kelas ekonomi)</li>
+<li>Hotel selama summit</li>
+<li>Makan (sarapan, makan siang, makan malam)</li>
+<li>Transportasi lokal antar venue</li>
+</ul></div>
+<p><b>Cara daftar:</b> isi formulir aplikasi di <b>oneyoungworld.com</b> &rarr; bagian Scholarships. Seleksi rolling basis &mdash; daftar lebih awal = peluang lebih besar. Tulis dampakmu dengan angka dan cerita konkret, bukan sekadar daftar kegiatan.</p></div></section>
+<section class="slide "><div class="inner"><h2>Beasiswa Mitra OYW (Tematik)</h2><p>Selain Leading Scholarship, perusahaan & organisasi global membuka beasiswa tematik ke OYW tiap tahun. Contoh yang pernah dibuka:</p>
+<div class="grid2">
+<div class="card"><b class="t">Deloitte</b><p>Untuk pemuda yang bekerja pada isu perubahan iklim.</p></div>
+<div class="card"><b class="t">Sandoz</b><p>Untuk yang mengatasi hambatan akses layanan kesehatan.</p></div>
+<div class="card"><b class="t">CUSEF Young Leaders</b><p>Untuk pemuda Asia Tenggara &amp; kawasan terkait.</p></div>
+<div class="card"><b class="t">Pernod Ricard, DSM, Audi, dll</b><p>Tema: keberlanjutan, kesehatan, pendidikan &mdash; berganti tiap tahun.</p></div>
+</div>
+<p style="color:#94a3b8;font-size:14px">Daftar beasiswa mitra berubah setiap tahun. Pantau halaman Scholarships di oneyoungworld.com &mdash; jangan percaya info beasiswa mitra dari akun repost tanpa cek situs resmi.</p></div></section>
+<section class="slide "><div class="inner"><h2>Program Pemuda Legitimate Lain</h2><div class="card ok"><span class="tag ok">LEGITIMATE</span><b>Program delegasi pemuda PBB &amp; afiliasinya</b><p>Contoh: UN Young Leaders, program youth delegate via Kemenpora/Kemlu, forum pemuda UNESCO/UNICEF. Pendaftaran lewat kanal resmi PBB/pemerintah, tanpa delegate fee.</p></div>
+<div class="card warn"><span class="tag warn">PERLU VERIFIKASI KASUS PER KASUS</span><b>Model United Nations (MUN) internasional</b><p>Banyak MUN bereputasi baik, tetapi <b>umumnya self-funded</b> (bayar registration fee + biaya sendiri). Klaim "fully funded MUN" wajib diverifikasi ke penyelenggara aslinya.</p></div>
+<div class="card warn"><span class="tag warn">PERLU VERIFIKASI KASUS PER KASUS</span><b>Summit "fully funded" dari akun Instagram/TikTok info lomba</b><p>Sebagian meneruskan info asli (seperti OYW), sebagian mempromosikan event berbayar. Selalu klik sampai ke <b>situs resmi penyelenggara</b>, bukan berhenti di poster.</p></div></div></section>
+<section class="slide "><div class="inner"><h2>Realita Label &quot;Fully Funded&quot;</h2><p>Tiga model pendanaan summit yang sebenarnya ada:</p>
+<table><tr><th>Model</th><th>Artinya</th></tr>
+<tr><td><b>Fully funded (scholarship)</b></td><td>Tiket + hotel + makan ditanggung. Contoh: OYW Leading Scholarship. <b>Selektif, gratis daftar.</b></td></tr>
+<tr><td><b>Partially funded</b></td><td>Hanya sebagian (mis. tiket saja / akomodasi saja). Sisanya biaya sendiri.</td></tr>
+<tr><td><b>Self-funded</b></td><td>Bayar <i>delegate fee</i> + semua biaya sendiri. Ini <b>bukan beasiswa</b>, melainkan event komersial.</td></tr></table>
+<div class="card bad"><b class="t">Jebakan umum:</b> poster bertuliskan "FULLY FUNDED" besar-besar, tapi di formulir ada "delegate fee Rp 3-8 juta" atau "registration fee". Itu <b>bukan fully funded</b> &mdash; itu event berbayar yang dibungkus bahasa beasiswa.</div></div></section>
+<section class="slide "><div class="inner"><h2>Modus Summit Abal-Abal di Indonesia</h2><p>Pola yang berulang menargetkan anak muda Indonesia:</p>
+<ol>
+<li>Undangan "terpilih sebagai delegasi Indonesia" via DM/email generik &mdash; <b>tanpa seleksi berarti</b>.</li>
+<li>Diminta bayar <b>delegate fee / registration fee</b> jutaan rupiah demi "slot fully funded".</li>
+<li>Iming-iming "bantuan visa" dan "sertifikat internasional".</li>
+<li>Acara di kota wisata luar negeri (Istanbul, Dubai, Kuala Lumpur, Bangkok) dengan agenda wisata lebih dominan dari substansi.</li>
+<li>Testimoni dan foto "batch sebelumnya" yang tidak bisa dilacak kebenarannya.</li>
+</ol>
+<div class="card bad"><b class="t">Prinsip emas:</b> beasiswa legitimate <b>tidak pernah</b> memungut biaya pendaftaran sebagai syarat seleksi. Begitu diminta transfer untuk "mengamankan slot beasiswa", anggap scam sampai terbukti sebaliknya.</div></div></section>
+<section class="slide "><div class="inner"><h2>7 Ciri Summit Legitimate</h2><ol>
+<li><b>Penyelenggara jelas &amp; terlacak:</b> organisasi nyata dengan alamat, tim, dan rekam jejak event sebelumnya.</li>
+<li><b>Seleksi kompetitif:</b> ada esai, CV, atau wawancara &mdash; bukan "semua pendaftar diterima".</li>
+<li><b>Gratis mendaftar</b> untuk jalur beasiswa.</li>
+<li><b>Rincian pendanaan tertulis:</b> jelas apa yang ditanggung (tiket/hotel/makan) dan apa yang tidak.</li>
+<li><b>Kontak resmi:</b> email domain organisasi, bukan Gmail/Yahoo pribadi.</li>
+<li><b>Alumni nyata:</b> bisa ditemukan di LinkedIn dan menceritakan pengalamannya.</li>
+<li><b>Konsisten:</b> tanggal, venue, dan agenda tidak berubah-ubah.</li>
+</ol></div></section>
+<section class="slide "><div class="inner"><h2>7 Red Flags Summit Scam</h2><ol>
+<li>Undangan tidak menyebut namamu ("dear delegate") atau datang massal.</li>
+<li>Diminta bayar <b>via transfer/Western Union/kripto</b> sebelum info lengkap diberikan.</li>
+<li>Bahasa poster berantakan tapi klaim "didukung PBB/pemerintah" tanpa bukti.</li>
+<li>Janji "jaminan visa" &mdash; tidak ada penyelenggara swasta yang bisa menjamin visa.</li>
+<li>Tekanan "slot terbatas, transfer hari ini".</li>
+<li>Tidak ada daftar pembicara/komite yang bisa diverifikasi.</li>
+<li>Akun media sosial baru, followers beli, komentar dimatikan.</li>
+</ol>
+<div class="card warn"><b class="t">Catatan jujur:</b> tidak semua event berbayar = scam. Ada konferensi komersial yang memang terselenggara. Masalahnya adalah ketika event berbayar <b>dipasarkan seolah-olah beasiswa fully funded</b>.</div></div></section>
+<section class="slide "><div class="inner"><h2>Cara Verifikasi Sebelum Daftar/Bayar</h2><ol>
+<li><b>Telusuri nama penyelenggara</b> + kata "scam/review/penipuan" di Google.</li>
+<li><b>Cek domain website:</b> umur domain (whois), apakah meniru situs resmi.</li>
+<li><b>Hubungi kontak resmi</b> organisasi yang diklaim sebagai pendukung (mis. email resmi OYW/PBB) untuk konfirmasi.</li>
+<li><b>Minta rincian tertulis:</b> kontrak/invoice resmi dengan kop organisasi.</li>
+<li><b>Cari alumni:</b> DM 2-3 peserta batch sebelumnya di LinkedIn/Instagram, tanya pengalaman asli.</li>
+<li><b>Uji seleksi:</b> kalau "semua diterima tanpa seleksi" untuk klaim fully funded &mdash; mundur.</li>
+<li><b>Jangan pernah</b> kirim KTP/paspor/uang ke pihak yang belum terverifikasi.</li>
+</ol></div></section>
+<section class="slide "><div class="inner"><h2>Strategi Lolos Beasiswa Summit</h2><ul>
+<li><b>Bangun portofolio dampak dulu:</b> 6-12 bulan aktif di komunitas/proyek sosial sebelum apply.</li>
+<li><b>Esai = cerita + angka:</b> "mengajar 120 anak putus sekolah di 3 desa" lebih kuat dari "peduli pendidikan".</li>
+<li><b>Spesifik:</b> jelaskan kenapa summit itu (bukan summit lain) yang kamu butuhkan.</li>
+<li><b>Rekomendasi:</b> minta dari mentor/dosen yang benar-benar mengenal kerjamu.</li>
+<li><b>Apply ke banyak beasiswa mitra</b> sekaligus (Leading + tematik) untuk memperbesar peluang.</li>
+<li><b>Daftar awal</b> saat rolling selection &mdash; kuota menipis di akhir.</li>
+<li><b>Aktif di LinkedIn:</b> dokumentasikan proyekmu; selektor sering mengecek.</li>
+</ul></div></section>
+<section class="slide "><div class="inner"><h2>Timeline & Dokumen Persiapan</h2><div class="grid2">
+<div class="card"><b class="t">Timeline ideal (OYW)</b><ul>
+<li><b>H-8 bulan:</b> bangun/kuatkan proyek & dokumentasi</li>
+<li><b>H-4 bulan:</b> pantau pembukaan aplikasi</li>
+<li><b>H-3 bulan:</b> tulis esai, minta rekomendasi</li>
+<li><b>H-2 bulan:</b> submit aplikasi</li>
+<li><b>H-1 bulan:</b> urus paspor & persiapan visa</li>
+</ul></div>
+<div class="card"><b class="t">Dokumen umum</b><ul>
+<li>Paspor (min. 6 bulan berlaku)</li>
+<li>CV 1-2 halaman (Bahasa Inggris)</li>
+<li>Esai/motivation letter</li>
+<li>Surat rekomendasi 1-2</li>
+<li>Portofolio: foto, link berita, media sosial proyek</li>
+</ul></div>
+</div></div></section>
+<section class="slide "><div class="inner"><h2>Video Panduan</h2><p>Empat video panduan dalam grid 2&times;2. Klik untuk memutar langsung di slide ini.</p><div class="vgrid"><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/_sSnyQpOfQc" title="Cara daftar: info Beasiswa One Young World Summit 2026 Cape Town" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Cara daftar: info Beasiswa One Young World Summit 2026 Cape Town</div></div><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/gcd6egSdnww" title="Cara daftar: 5 peluang gratis untuk pelajar dari UN Young Leader" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Cara daftar: 5 peluang gratis untuk pelajar dari UN Young Leader</div></div><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/3nVtpETP62I" title="Suasana: pidato delegasi di OYW Summit Munich 2025" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Suasana: pidato delegasi di OYW Summit Munich 2025</div></div><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/w6qxWf4q7fY" title="Testimoni: insight delegasi OYW Summit 2021" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Testimoni: insight delegasi OYW Summit 2021</div></div></div></div></section>
+<section class="slide "><div class="inner"><h2>Estimasi Biaya Jalur Mandiri</h2><p>Jika tidak dapat beasiswa, ini gambaran biaya menghadiri summit internasional secara mandiri (contoh OYW):</p>
+<table><tr><th>Komponen</th><th>Estimasi</th></tr>
+<tr><td>Tiket pesawat PP Indonesia-Eropa</td><td>Rp 10-18 juta</td></tr>
+<tr><td>Akomodasi 4-5 malam</td><td>Rp 6-12 juta</td></tr>
+<tr><td>Biaya delegasi (jika ada)</td><td>Rp 5-20 juta</td></tr>
+<tr><td>Visa + asuransi</td><td>Rp 2-4 juta</td></tr>
+<tr><td>Uang saku</td><td>Rp 3-5 juta</td></tr></table>
+<p style="color:#94a3b8;font-size:14px">Angka estimasi kasar, bervariasi per kota &amp; maskapai. Bandingkan dengan manfaatnya sebelum memutuskan berangkat mandiri.</p></div></section>
+<section class="slide "><div class="inner"><h2>FAQ (1)</h2><div class="faq"><b class="q">1. Apakah One Young World benar-benar fully funded?</b>Ya, untuk penerima Leading Scholarship &amp; beasiswa mitra: tiket, hotel, makan, dan akses summit ditanggung. Pendaftaran beasiswanya gratis.</div>
+<div class="faq"><b class="q">2. Apakah harus bisa bahasa Inggris fasih?</b>Sangat disarankan karena seluruh summit berbahasa Inggris, tapi tidak ada syarat skor IELTS/TOEFL.</div>
+<div class="faq"><b class="q">3. Umur saya 31, masih bisa?</b>OYW mempertimbangkan pendaftar di atas 30 dengan dampak luar biasa. Untuk program lain, cek batas usia masing-masing.</div></div></section>
+<section class="slide "><div class="inner"><h2>FAQ (2)</h2><div class="faq"><b class="q">4. Saya dapat DM "terpilih delegasi Indonesia", harus bayar Rp 5 juta. Legit?</b>Hampir pasti tidak. Beasiswa legitimate tidak memungut delegate fee sebagai syarat. Verifikasi dulu dengan 7 langkah di slide verifikasi.</div>
+<div class="faq"><b class="q">5. Apakah summit membantu dapat beasiswa kuliah?</b>Ya, sebagai bukti leadership &amp; jaringan global &mdash; tapi bukan pengganti prestasi akademik.</div>
+<div class="faq"><b class="q">6. Kapan pendaftaran OYW 2026 dibuka?</b>Pengumuman resmi hanya di oneyoungworld.com &amp; akun resmi mereka. Waspadai akun repost yang menambah "biaya admin".</div></div></section>
+<section class="slide "><div class="inner"><h2>Link Resmi</h2><div class="links"><a href="https://www.oneyoungworld.com/scholarships" target="_blank" rel="noopener">One Young World - Scholarships<small>https://www.oneyoungworld.com/scholarships</small></a><a href="https://www.oneyoungworld.com/" target="_blank" rel="noopener">One Young World - Official<small>https://www.oneyoungworld.com/</small></a></div><p style="color:#94a3b8;font-size:14px;margin-top:10px">Selalu verifikasi informasi terbaru di situs resmi di atas sebelum mendaftar.</p></div></section>
+<section class="slide "><div class="inner"><h2>Checklist Aksi</h2><div class="card"><ol>
+<li>Buat/kuatkan satu proyek berdampak &amp; dokumentasikan</li>
+<li>Buat paspor &amp; CV Bahasa Inggris</li>
+<li>Bookmark halaman Scholarships OYW, cek tiap bulan</li>
+<li>Siapkan draft esai dampak (versi 300 &amp; 500 kata)</li>
+<li>Minta 1-2 surat rekomendasi dari mentor</li>
+<li>Untuk setiap summit lain: jalankan 7 langkah verifikasi sebelum bayar</li>
+</ol></div></div></section>
+<section class="slide "><div class="inner"><div class='kicker'>Penutup</div><h2>Pergi Karena Prestasi, Bukan Karena Membayar</h2><p class="big">Summit terbaik adalah yang menyeleksimu karena dampakmu &mdash; bukan karena dompetmu.</p>
+<p>Fokus pada One Young World &amp; program resmi sejenis, bangun portofolio dampak yang nyata, dan jadikan skeptisisme sebagai tameng: setiap "fully funded" yang meminta transfer adalah scam sampai terbukti sebaliknya.</p></div></section>
+<button class="nav prev" id="prevBtn" aria-label="Sebelumnya">&lsaquo;</button>
+<button class="nav next" id="nextBtn" aria-label="Berikutnya">&rsaquo;</button>
+<div class="counter"><span id="cur">1</span> / <span id="tot">0</span></div>
+</div>
+<script>
+(function(){
+var slides=document.querySelectorAll('.slide'),i=0;
+var tot=document.getElementById('tot'),cur=document.getElementById('cur'),bar=document.getElementById('bar');
+var prev=document.getElementById('prevBtn'),next=document.getElementById('nextBtn');
+tot.textContent=slides.length;
+function show(n){
+  i=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach(function(s,k){s.classList.toggle('active',k===i);if(k===i)s.scrollTop=0;});
+  cur.textContent=i+1;bar.style.width=((i+1)/slides.length*100)+'%';
+  prev.disabled=(i===0);next.disabled=(i===slides.length-1);
+}
+prev.onclick=function(){show(i-1)};next.onclick=function(){show(i+1)};
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){show(i+1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){show(i-1);e.preventDefault();}
+  else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+});
+var tx=0;
+document.getElementById('deck').addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;},{passive:true});
+document.getElementById('deck').addEventListener('touchend',function(e){
+  var dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)>60){if(dx<0)show(i+1);else show(i-1);}
+},{passive:true});
+show(0);
+})();
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/grant/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan AIESEC Global Talent", "slug": "deck-grant-aiesec-talent"},{"label": "Panduan AIESEC Global Volunteer", "slug": "deck-grant-aiesec-volunteer"},{"label": "Panduan Au Pair", "slug": "deck-grant-aupair"},{"label": "Panduan Ausbildung Jerman", "slug": "deck-grant-ausbildung"},{"label": "Panduan Erasmus+", "slug": "deck-grant-erasmus"},{"label": "Panduan IISMA", "slug": "deck-grant-iisma"},{"label": "Panduan IISMAVO", "slug": "deck-grant-iismavo"},{"label": "Panduan JET Programme", "slug": "deck-grant-jet"},{"label": "Panduan Short Course Luar Negeri", "slug": "deck-grant-shortcourse"},{"label": "Panduan Summer/Winter School", "slug": "deck-grant-summerschool"},{"label": "Panduan Travel Grant", "slug": "deck-grant-travel"},{"label": "Panduan Work & Travel USA", "slug": "deck-grant-worktravel"},{"label": "Panduan Working Holiday Visa", "slug": "deck-grant-whv"},{"label": "Panduan Youth Summit", "slug": "deck-grant-summit"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

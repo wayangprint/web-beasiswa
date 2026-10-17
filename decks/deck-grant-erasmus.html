@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 14 panduan grant ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Erasmus+</title>
+<style>
+:root{--acc:#1e40af;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:#0f1420;color:#eef2f7;overflow:hidden}
+.deck{position:relative;width:100vw;height:100vh;height:100dvh}
+.progress{position:fixed;top:0;left:0;right:0;height:5px;background:#1e2740;z-index:50}
+.progress .bar{height:100%;width:0;background:var(--acc);transition:width .3s}
+.slide{display:none;width:100%;height:100%;overflow-y:auto;padding:56px 24px 110px;align-items:flex-start;justify-content:center}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.inner{width:100%;max-width:920px}
+h1{font-size:clamp(30px,5vw,52px);line-height:1.15;margin-bottom:14px}
+h2{font-size:clamp(22px,3.6vw,34px);margin-bottom:16px;color:var(--acc)}
+h3{font-size:19px;margin:18px 0 8px;color:#ffd166}
+p,li{font-size:clamp(15px,2.2vw,18px);line-height:1.65}
+ul,ol{margin:8px 0 8px 22px}
+li{margin-bottom:8px}
+.cover{align-items:center !important;justify-content:center !important;text-align:center;padding:40px 24px 110px !important;background-size:cover;background-position:center;position:relative}
+.cover::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,16,.55),rgba(5,8,16,.88))}
+.cover .inner{position:relative;z-index:1}
+.badge{display:inline-block;background:var(--acc);color:#fff;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:8px 18px;border-radius:999px;margin-bottom:18px}
+.cover p.sub{font-size:clamp(16px,2.6vw,22px);color:#cbd5e1;max-width:700px;margin:0 auto}
+.card{background:#182036;border:1px solid #26314d;border-radius:14px;padding:18px 20px;margin:12px 0}
+.card b.t{color:var(--acc)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.ok{border-left:5px solid #22c55e}.warn{border-left:5px solid #f59e0b}.bad{border-left:5px solid #ef4444}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:6px}
+.tag.ok{background:#14532d;color:#bbf7d0}.tag.warn{background:#78350f;color:#fde68a}.tag.bad{background:#7f1d1d;color:#fecaca}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:15px}
+th,td{border:1px solid #2c3a5c;padding:10px 12px;text-align:left;vertical-align:top}
+th{background:#1a2340;color:var(--acc)}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+@media(max-width:640px){.vgrid{gap:8px}}
+.vwrap{position:relative;padding-bottom:56.25%;height:0;background:#000;border-radius:10px;overflow:hidden}
+.vwrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.vcap{font-size:13px;color:#94a3b8;margin:6px 2px 4px}
+.faq{background:#182036;border:1px solid #26314d;border-radius:12px;padding:14px 18px;margin:10px 0}
+.faq b.q{color:#ffd166;display:block;margin-bottom:6px}
+.links a{display:block;background:#182036;border:1px solid #26314d;border-radius:10px;padding:12px 16px;margin:8px 0;color:#7dd3fc;text-decoration:none;font-size:16px;word-break:break-all}
+.links a:hover{border-color:var(--acc)}
+.links small{display:block;color:#94a3b8;font-size:13px}
+.nav{position:fixed;bottom:26px;z-index:60;width:56px;height:56px;border-radius:50%;border:none;background:var(--acc);color:#fff;font-size:28px;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center}
+.nav:active{transform:scale(.93)}
+.nav.prev{left:18px}.nav.next{right:18px}
+.nav:disabled{opacity:.25;cursor:default}
+.counter{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);z-index:60;background:#182036;border:1px solid #26314d;padding:8px 18px;border-radius:999px;font-size:14px;color:#94a3b8}
+.hint{position:fixed;top:14px;right:16px;z-index:60;font-size:12px;color:#64748b}
+.big{font-size:clamp(20px,3.4vw,28px);font-weight:700;color:#ffd166;margin:14px 0}
+.toc ol{font-size:17px}.toc li{margin-bottom:6px}
+.kicker{color:var(--acc);font-weight:700;letter-spacing:1px;font-size:13px;text-transform:uppercase;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="hint">Geser / &larr; &rarr; untuk navigasi</div>
+<section class="slide cover active" style="background-image:url('https://www.uni-mannheim.de/media/_processed_/f/f/csm_DSC_5596_Anna_Logue_448c75b47d.jpg');"><div class="inner"><span class="badge">Panduan Grant</span><h1>Panduan Erasmus+</h1><p class="sub">Erasmus+ Student Exchange & Youth Exchange: syarat, cara daftar via kampus/organisasi, tahapan, benefit, dan link resmi.</p><p class="sub" style="font-size:12px;margin-top:14px;opacity:.7">Foto: Universität Mannheim</p></div></section>
+<section class="slide "><div class="inner"><h2>Daftar Isi</h2><div class="toc card"><ol><li>Apa itu Erasmus+</li><li>Dua jalur: Exchange & Youth Exchange</li><li>Kenapa ikut Erasmus+</li><li>Fakta kunci & besaran hibah</li><li>Syarat Student Exchange</li><li>Syarat Youth Exchange</li><li>Cara daftar via kampus</li><li>Cara daftar Youth Exchange</li><li>Dokumen yang disiapkan</li><li>Estimasi biaya</li><li>Timeline persiapan</li><li>Strategi agar lolos</li><li>Kesalahan umum</li><li>Video panduan (2x2)</li><li>Contoh destinasi</li><li>FAQ</li><li>Link resmi</li><li>Checklist aksi</li></ol></div></div></section>
+<section class="slide "><div class="inner"><h2>Apa Itu Erasmus+?</h2><p><b>Erasmus+</b> adalah program Uni Eropa untuk <b>pendidikan, pelatihan, kepemudaan, dan olahraga</b> &mdash; program mobilitas internasional terbesar di dunia dengan anggaran lebih dari <b>&euro;26 miliar</b> untuk periode 2021&ndash;2027.</p>
+<div class="card"><b class="t">Dua jalur yang relevan untuk orang Indonesia:</b><ul>
+<li><b>Student Mobility (Exchange)</b> &mdash; pertukaran pelajar 2&ndash;12 bulan di universitas Eropa, kredit diakui kampus asal</li>
+<li><b>Youth Exchange</b> &mdash; pertukaran pemuda 5&ndash;21 hari berbasis proyek, hampir seluruh biaya ditanggung UE</li>
+</ul></div></div></section>
+<section class="slide "><div class="inner"><h2>Dua Jalur Erasmus+</h2><div class="grid2">
+<div class="card"><b class="t">Student Exchange</b><ul>
+<li>Untuk mahasiswa S1/S2/S3 aktif</li>
+<li>Durasi 2&ndash;12 bulan</li>
+<li>Kuliah di universitas mitra Eropa</li>
+<li>Dapat <b>hibah bulanan</b></li>
+<li>Kredit ditransfer via Learning Agreement</li>
+<li>Daftar <b>via kampus</b> (harus ada kerja sama/MoU)</li>
+</ul></div>
+<div class="card"><b class="t">Youth Exchange</b><ul>
+<li>Untuk pemuda <b>13&ndash;30 tahun</b> (tidak harus mahasiswa)</li>
+<li>Durasi 5&ndash;21 hari (di luar travel)</li>
+<li>16&ndash;60 peserta lintas negara</li>
+<li><b>Hampir semua biaya ditanggung</b></li>
+<li>Sertifikat <b>Youthpass</b></li>
+<li>Daftar <b>via organisasi kepemudaan</b></li>
+</ul></div>
+</div></div></section>
+<section class="slide "><div class="inner"><h2>Kenapa Ikut Erasmus+?</h2><div class="grid2">
+<div class="card"><b class="t">Kuliah di Eropa</b><p>Rasakan sistem pendidikan Eropa tanpa membayar tuition penuh universitas sana.</p></div>
+<div class="card"><b class="t">Dukungan dana UE</b><p>Hibah bulanan untuk exchange; youth exchange hampir full ditanggung.</p></div>
+<div class="card"><b class="t">Kredit diakui</b><p>Mata kuliah yang diambil diakui kampus asal via Learning Agreement.</p></div>
+<div class="card"><b class="t">Jaringan Eropa</b><p>Teman, dosen, dan koneksi profesional lintas negara UE.</p></div>
+</div></div></section>
+<section class="slide "><div class="inner"><h2>Fakta Kunci &amp; Besaran Hibah</h2><table><tr><th>Aspek</th><th>Detail</th></tr>
+<tr><td>Student Mobility: durasi</td><td>2&ndash;12 bulan</td></tr>
+<tr><td>Student Mobility: hibah</td><td>Dari negara mitra ke Eropa: <b>&euro;800&ndash;900/bulan</b>; dari Eropa ke negara mitra: &euro;700/bulan</td></tr>
+<tr><td>Student Mobility: travel</td><td>Dukungan biaya perjalanan <b>&euro;23&ndash;1.500</b> (berdasar jarak)</td></tr>
+<tr><td>Youth Exchange: durasi</td><td>5&ndash;21 hari (di luar waktu perjalanan)</td></tr>
+<tr><td>Youth Exchange: peserta</td><td>16&ndash;60 orang; usia 13&ndash;30 tahun; group leader min. 18 tahun</td></tr>
+<tr><td>Youth Exchange: biaya</td><td>Perjalanan, akomodasi, makan &amp; asuransi <b>hampir seluruhnya ditanggung</b></td></tr></table>
+<p style="color:#94a3b8;font-size:14px">Sumber: materi sosialisasi Erasmus+ International Mobility Kemendiktisaintek &amp; European Youth Portal.</p></div></section>
+<section class="slide "><div class="inner"><h2>Syarat Student Exchange</h2><ul>
+<li><b>Mahasiswa aktif</b> di kampus Indonesia yang memiliki <b>kerja sama (MoU)</b> Erasmus+ dengan universitas Eropa</li>
+<li>IPK &amp; semester sesuai ketentuan kampus (umumnya min. semester 3&ndash;4)</li>
+<li><b>Kemampuan bahasa Inggris</b> &mdash; syarat skor (IELTS/TOEFL) mengikuti ketentuan universitas tujuan</li>
+<li>Lolos <b>seleksi internal kampus</b> (administrasi + wawancara)</li>
+<li>Bersedia menandatangani <b>Learning Agreement</b> (kontrak mata kuliah yang diakui)</li>
+<li>Paspor aktif &amp; siap mengurus visa pelajar Schengen</li>
+</ul>
+<div class="card warn"><b class="t">Kunci:</b> tanpa MoU antara kampusmu dan universitas Eropa, jalur student mobility tidak bisa diakses. Cek ke International Office kampusmu dulu.</div></div></section>
+<section class="slide "><div class="inner"><h2>Syarat Youth Exchange</h2><ul>
+<li>Usia <b>13&ndash;30 tahun</b> (group leader minimal 18 tahun)</li>
+<li><b>Tidak harus mahasiswa</b> &mdash; terbuka untuk umum</li>
+<li>Warga negara / berdomisili di negara peserta program</li>
+<li><b>Tidak bisa daftar individu</b> &mdash; harus melalui <b>organisasi kepemudaan terakreditasi</b> atau kelompok informal pemuda</li>
+<li>Bahasa Inggris dasar cukup untuk diskusi sehari-hari</li>
+<li>Motivasi kuat terhadap tema proyek</li>
+</ul>
+<div class="card ok"><b class="t">Kabar baik:</b> jalur ini tidak bergantung pada kampus. Siapa pun 13&ndash;30 tahun bisa ikut selama tergabung dengan organisasi pengirim.</div></div></section>
+<section class="slide "><div class="inner"><h2>Cara Daftar Student Exchange via Kampus</h2><ol>
+<li>Datangi <b>International Office / Kantor Urusan Internasional</b> kampusmu &mdash; tanyakan daftar universitas mitra Erasmus+</li>
+<li>Pantau <b>pengumuman seleksi</b> (biasanya 1&ndash;2 kali setahun)</li>
+<li>Siapkan dokumen: transkrip Inggris, sertifikat bahasa, CV, motivation letter, study plan, paspor</li>
+<li>Ikuti <b>seleksi internal</b> kampus (berkas + wawancara)</li>
+<li>Jika lolos: kampus <b>menominasikanmu</b> ke universitas tujuan</li>
+<li>Apply ke universitas tujuan + tandatangani <b>Learning Agreement</b></li>
+<li>Urus visa pelajar, tiket, &amp; keberangkatan</li>
+</ol></div></section>
+<section class="slide "><div class="inner"><h2>Cara Daftar Youth Exchange</h2><ol>
+<li>Cari proyek yang buka di <b>youth.europa.eu</b> atau portal info seperti <b>erasmuser.com</b></li>
+<li>Baca <b>infopack</b> proyek: tema, tanggal, lokasi, syarat usia, dan skema reimbursement</li>
+<li>Temukan <b>organisasi pengirim (sending organisation)</b> di negaramu &mdash; atau hubungi National Agency</li>
+<li>Isi <b>application form + motivation letter</b> yang fokus pada temanya (bukan sekadar ingin jalan-jalan)</li>
+<li>Ikuti seleksi oleh organisasi pengirim</li>
+<li>Persiapan: tiket (beli sendiri lalu reimburse, atau dibelikan organisasi), packing, berangkat</li>
+</ol></div></section>
+<section class="slide "><div class="inner"><h2>Dokumen yang Disiapkan</h2><div class="grid2">
+<div class="card"><b class="t">Student Exchange</b><ul>
+<li>Transkrip akademik (Bahasa Inggris)</li>
+<li>Sertifikat IELTS/TOEFL</li>
+<li>CV format Europass</li>
+<li>Motivation letter &amp; study plan</li>
+<li>Learning Agreement</li>
+<li>Surat rekomendasi dosen/dekan</li>
+<li>Paspor</li>
+</ul></div>
+<div class="card"><b class="t">Youth Exchange</b><ul>
+<li>Application form proyek</li>
+<li>Motivation letter</li>
+<li>CV singkat</li>
+<li>Paspor</li>
+<li>Asuransi perjalanan</li>
+</ul></div>
+</div></div></section>
+<section class="slide "><div class="inner"><h2>Estimasi Biaya</h2><table><tr><th>Komponen</th><th>Student Exchange</th><th>Youth Exchange</th></tr>
+<tr><td>Hibah/dukungan</td><td>&euro;800&ndash;900/bulan + travel &euro;23&ndash;1.500</td><td>Tiket, akomodasi, makan, asuransi ditanggung</td></tr>
+<tr><td>Tiket pesawat</td><td>Dari hibah (sebagian)</td><td>Reimburse pasca proyek (siapkan dana talangan)</td></tr>
+<tr><td>Visa</td><td>Biaya sendiri</td><td>Umumnya dibantu/ditanggung</td></tr>
+<tr><td>Uang saku</td><td>Siapkan tambahan &mdash; hibah tidak selalu cukup</td><td>Uang jajan pribadi secukupnya</td></tr></table>
+<div class="card warn"><b class="t">Jujur:</b> hibah student mobility membantu besar tapi <b>bukan fully funded</b> &mdash; siapkan dana cadangan untuk biaya hidup di Eropa.</div></div></section>
+<section class="slide "><div class="inner"><h2>Timeline Persiapan</h2><div class="card"><ul>
+<li><b>H&minus;8 bulan:</b> cek MoU kampus &amp; daftar mitra Erasmus+; siapkan tes bahasa</li>
+<li><b>H&minus;6 bulan:</b> siapkan dokumen (transkrip, CV, esai, rekomendasi)</li>
+<li><b>H&minus;5 bulan:</b> ikuti seleksi internal kampus</li>
+<li><b>H&minus;4 bulan:</b> nominasi &amp; aplikasi ke universitas tujuan</li>
+<li><b>H&minus;2 bulan:</b> urus visa Schengen &amp; tiket</li>
+<li><b>Hari H:</b> berangkat</li>
+</ul></div>
+<p>Untuk Youth Exchange: pantau proyek yang buka &mdash; timeline tiap proyek berbeda, umumnya 2&ndash;4 bulan sebelum pelaksanaan.</p></div></section>
+<section class="slide "><div class="inner"><h2>Strategi Agar Lolos</h2><ul>
+<li><b>Jaga IPK &amp; skor bahasa</b> sejak awal &mdash; dua filter pertama seleksi kampus</li>
+<li><b>Motivation letter spesifik:</b> sebut mata kuliah/dosen di univ tujuan yang relevan dengan studimu</li>
+<li><b>Aktif organisasi</b> &mdash; nilai tambah saat wawancara</li>
+<li><b>Apply di awal periode</b> pembukaan seleksi kampus</li>
+<li>Untuk Youth Exchange: <b>tulis motivasi berbasis tema proyek</b>, bukan sekadar ingin ke Eropa</li>
+<li>Bangun relasi dengan <b>International Office</b> &mdash; mereka yang menyeleksi &amp; menominasikan</li>
+</ul></div></section>
+<section class="slide "><div class="inner"><h2>Kesalahan Umum</h2><ol>
+<li>Tidak mengecek MoU kampus, langsung bermimpi daftar</li>
+<li>Dokumen disiapkan mepet deadline seleksi internal</li>
+<li>Paspor kedaluwarsa &lt; 1 tahun saat apply visa</li>
+<li>Motivation letter generik tanpa riset universitas tujuan</li>
+<li>Mengira hibah menutupi 100% biaya hidup di Eropa</li>
+<li>Untuk Youth Exchange: apply tanpa membaca infopack &amp; skema reimbursement</li>
+</ol></div></section>
+<section class="slide "><div class="inner"><h2>Video Panduan</h2><p>Empat video panduan dalam grid 2&times;2. Klik untuk memutar langsung di slide ini.</p><div class="vgrid"><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/QILF3xDs2c0" title="Pengenalan: Erasmus+ in a Nutshell" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Pengenalan: Erasmus+ in a Nutshell</div></div><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/Fbl0L99eW8Y" title="Penjelasan: Pendanaan & Mobilitas Erasmus+" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Penjelasan: Pendanaan & Mobilitas Erasmus+</div></div><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/SXdqTWuSnHs" title="Suasana: Youth Exchange di Tortona, Italia" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Suasana: Youth Exchange di Tortona, Italia</div></div><div><div class="vwrap"><iframe src="https://www.youtube.com/embed/0--8iT73Oow" title="Testimoni: Mobilitas Erasmus+ (Irlandia)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="vcap">Testimoni: Mobilitas Erasmus+ (Irlandia)</div></div></div></div></section>
+<section class="slide "><div class="inner"><h2>Contoh Destinasi</h2><p>Universitas Eropa yang pernah membuka program Erasmus+ untuk mahasiswa Indonesia (contoh, bukan daftar lengkap):</p>
+<div class="card"><ul>
+<li><b>University of Oulu, Finlandia</b> &mdash; pernah membuka slot Spring Semester untuk mahasiswa Indonesia via seleksi kampus</li>
+<li>Ratusan universitas lain di Jerman, Belanda, Prancis, Spanyol, Italia, dan lainnya</li>
+</ul></div>
+<div class="card warn"><b class="t">Penting:</b> daftar destinasi yang bisa kamu tuju <b>100% mengikuti MoU kampusmu</b>. Dua mahasiswa dari kampus berbeda bisa punya pilihan negara yang sama sekali berbeda.</div></div></section>
+<section class="slide "><div class="inner"><h2>FAQ (1)</h2><div class="faq"><b class="q">1. Apakah Erasmus+ sepenuhnya gratis?</b>Tidak sepenuhnya. Student mobility mendapat hibah bulanan (&euro;800&ndash;900) tapi kamu tetap perlu dana tambahan. Youth exchange hampir seluruh biayanya ditanggung.</div>
+<div class="faq"><b class="q">2. Apakah kampus harus punya kerja sama?</b>Untuk student mobility: ya, wajib ada MoU. Untuk youth exchange: tidak &mdash; via organisasi kepemudaan.</div></div></section>
+<section class="slide "><div class="inner"><h2>FAQ (2)</h2><div class="faq"><b class="q">3. Apakah perlu IELTS/TOEFL?</b>Untuk student exchange: mengikuti syarat universitas tujuan (umumnya ya). Untuk youth exchange: tidak &mdash; Inggris dasar cukup.</div>
+<div class="faq"><b class="q">4. Apakah mahasiswa S1 Indonesia bisa ikut?</b>Bisa, selama kampusmu memiliki kerja sama Erasmus+ dengan universitas Eropa.</div></div></section>
+<section class="slide "><div class="inner"><h2>FAQ (3)</h2><div class="faq"><b class="q">5. Apakah SKS dari sana diakui kampus?</b>Ya, melalui Learning Agreement yang ditandatangani sebelum berangkat &mdash; pastikan mata kuliahnya disetujui kaprodi.</div>
+<div class="faq"><b class="q">6. Kapan pendaftaran dibuka?</b>Bervariasi per kampus &amp; per proyek. Pantau International Office kampusmu dan portal youth.europa.eu secara berkala.</div></div></section>
+<section class="slide "><div class="inner"><h2>Link Resmi</h2><div class="links"><a href="https://erasmus-plus.ec.europa.eu" target="_blank" rel="noopener">Erasmus+ - Portal Resmi Uni Eropa<small>https://erasmus-plus.ec.europa.eu</small></a><a href="https://youth.europa.eu" target="_blank" rel="noopener">European Youth Portal - Info Youth Exchange<small>https://youth.europa.eu</small></a></div><p style="color:#94a3b8;font-size:14px;margin-top:10px">Selalu verifikasi informasi terbaru di situs resmi di atas sebelum mendaftar.</p></div></section>
+<section class="slide "><div class="inner"><h2>Checklist Aksi</h2><div class="card"><ol>
+<li>Kunjungi International Office: tanyakan MoU Erasmus+ kampusmu</li>
+<li>Cek syarat IPK &amp; bahasa untuk seleksi internal</li>
+<li>Siapkan paspor, transkrip Inggris, CV Europass</li>
+<li>Tulis draft motivation letter &amp; study plan</li>
+<li>Untuk Youth Exchange: buat akun di youth.europa.eu &amp; pantau proyek buka</li>
+<li>Cari organisasi kepemudaan sebagai sending organisation</li>
+</ol></div></div></section>
+<section class="slide "><div class="inner"><div class='kicker'>Penutup</div><h2>Eropa Menunggumu &mdash; Siapkan Dari Sekarang</h2><p class="big">Erasmus+ adalah gerbang termurah menuju pengalaman Eropa.</p>
+<p>Mulai dari International Office kampusmu hari ini: tanyakan MoU, kejar skor bahasa, dan siapkan dokumen jauh sebelum seleksi dibuka. Untuk yang bukan mahasiswa, Youth Exchange adalah jalan pintas yang hampir fully funded.</p></div></section>
+<button class="nav prev" id="prevBtn" aria-label="Sebelumnya">&lsaquo;</button>
+<button class="nav next" id="nextBtn" aria-label="Berikutnya">&rsaquo;</button>
+<div class="counter"><span id="cur">1</span> / <span id="tot">0</span></div>
+</div>
+<script>
+(function(){
+var slides=document.querySelectorAll('.slide'),i=0;
+var tot=document.getElementById('tot'),cur=document.getElementById('cur'),bar=document.getElementById('bar');
+var prev=document.getElementById('prevBtn'),next=document.getElementById('nextBtn');
+tot.textContent=slides.length;
+function show(n){
+  i=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach(function(s,k){s.classList.toggle('active',k===i);if(k===i)s.scrollTop=0;});
+  cur.textContent=i+1;bar.style.width=((i+1)/slides.length*100)+'%';
+  prev.disabled=(i===0);next.disabled=(i===slides.length-1);
+}
+prev.onclick=function(){show(i-1)};next.onclick=function(){show(i+1)};
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){show(i+1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){show(i-1);e.preventDefault();}
+  else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+});
+var tx=0;
+document.getElementById('deck').addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;},{passive:true});
+document.getElementById('deck').addEventListener('touchend',function(e){
+  var dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)>60){if(dx<0)show(i+1);else show(i-1);}
+},{passive:true});
+show(0);
+})();
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/grant/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan AIESEC Global Talent", "slug": "deck-grant-aiesec-talent"},{"label": "Panduan AIESEC Global Volunteer", "slug": "deck-grant-aiesec-volunteer"},{"label": "Panduan Au Pair", "slug": "deck-grant-aupair"},{"label": "Panduan Ausbildung Jerman", "slug": "deck-grant-ausbildung"},{"label": "Panduan Erasmus+", "slug": "deck-grant-erasmus"},{"label": "Panduan IISMA", "slug": "deck-grant-iisma"},{"label": "Panduan IISMAVO", "slug": "deck-grant-iismavo"},{"label": "Panduan JET Programme", "slug": "deck-grant-jet"},{"label": "Panduan Short Course Luar Negeri", "slug": "deck-grant-shortcourse"},{"label": "Panduan Summer/Winter School", "slug": "deck-grant-summerschool"},{"label": "Panduan Travel Grant", "slug": "deck-grant-travel"},{"label": "Panduan Work & Travel USA", "slug": "deck-grant-worktravel"},{"label": "Panduan Working Holiday Visa", "slug": "deck-grant-whv"},{"label": "Panduan Youth Summit", "slug": "deck-grant-summit"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

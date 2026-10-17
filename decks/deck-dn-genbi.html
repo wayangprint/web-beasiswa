@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 15 panduan beasiswa dalam negeri ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Beasiswa Bank Indonesia (GenBI)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--accent:#0284C7;--accent2:#7C3AED}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;background:#0f172a;color:#1e293b;-webkit-tap-highlight-color:transparent}
+.deck{position:fixed;inset:0}
+.progress{position:absolute;top:0;left:0;right:0;height:5px;background:rgba(255,255,255,.18);z-index:50}
+.progress .bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .3s}
+.slides{position:absolute;inset:0}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;padding:60px 7vw 96px;overflow-y:auto;background:linear-gradient(135deg,#f8fafc 0%,#edf1f7 100%)}
+.slide.active{display:flex;animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.slide h2{font-size:clamp(22px,4vw,36px);color:#0f172a;margin-bottom:16px;text-align:center;line-height:1.25;max-width:900px}
+.slide h2 .kicker{display:block;font-size:.42em;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;font-weight:700}
+.slide p.lead{max-width:780px;text-align:center;font-size:clamp(15px,2.2vw,19px);color:#475569;line-height:1.7;margin-bottom:12px}
+.card{width:100%;max-width:840px;background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(2,6,23,.08);padding:24px 28px;margin:8px 0;border-top:5px solid var(--accent);font-size:clamp(14px,2vw,17px);line-height:1.7;color:#334155}
+.card h3{font-size:17px;color:var(--accent);margin-bottom:8px}
+ul.tick{list-style:none;max-width:840px;width:100%}
+ul.tick li{background:#fff;border-radius:12px;padding:13px 18px 13px 52px;margin:9px 0;position:relative;box-shadow:0 4px 14px rgba(2,6,23,.06);font-size:clamp(14px,2vw,16.5px);line-height:1.6}
+ul.tick li::before{content:"\2713";position:absolute;left:16px;top:12px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+ul.num{list-style:none;counter-reset:step;max-width:840px;width:100%}
+ul.num li{counter-increment:step;background:#fff;border-radius:12px;padding:13px 18px 13px 60px;margin:9px 0;position:relative;box-shadow:0 4px 14px rgba(2,6,23,.06);font-size:clamp(14px,2vw,16.5px);line-height:1.6}
+ul.num li::before{content:counter(step);position:absolute;left:15px;top:11px;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+table.info{width:100%;max-width:840px;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(2,6,23,.08);font-size:clamp(13px,1.9vw,15.5px)}
+table.info th{background:var(--accent);color:#fff;text-align:left;padding:12px 16px}
+table.info td{padding:11px 16px;border-bottom:1px solid #eef2f7;line-height:1.6;vertical-align:top}
+table.info tr:last-child td{border-bottom:none}
+.timeline{max-width:840px;width:100%}
+.tl-item{display:flex;gap:14px}
+.tl-dot{flex:0 0 38px;display:flex;flex-direction:column;align-items:center}
+.tl-dot .c{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;z-index:1;flex:0 0 38px}
+.tl-dot .l{width:3px;flex:1;background:#cbd5e1;min-height:12px}
+.tl-item:last-child .tl-dot .l{display:none}
+.tl-body{background:#fff;border-radius:12px;padding:11px 18px;margin-bottom:12px;box-shadow:0 4px 14px rgba(2,6,23,.06);flex:1;font-size:clamp(13.5px,2vw,16px);line-height:1.6}
+.tl-body b{color:var(--accent)}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:940px}
+.vid{background:#0f172a;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px rgba(2,6,23,.25)}
+.vid .frame{position:relative;padding-top:56.25%}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid .cap{padding:10px 14px;color:#e2e8f0;font-size:13px;line-height:1.55}
+.vid .cap .tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:var(--accent);color:#fff;border-radius:20px;padding:2px 10px;margin-right:7px}
+.vnote{max-width:940px;width:100%;background:#fffbeb;border:1px solid #fcd34d;color:#92400e;border-radius:12px;padding:12px 18px;font-size:13.5px;line-height:1.65;margin-top:14px}
+.faq{max-width:840px;width:100%}
+.qa{background:#fff;border-radius:12px;padding:15px 20px;margin:10px 0;box-shadow:0 4px 14px rgba(2,6,23,.06)}
+.qa .q{font-weight:700;color:#0f172a;font-size:clamp(14px,2vw,16.5px);margin-bottom:6px}
+.qa .q::before{content:"Q. ";color:var(--accent)}
+.qa .a{color:#475569;font-size:clamp(13px,1.9vw,15.5px);line-height:1.65}
+.qa .a::before{content:"A. ";color:var(--accent2);font-weight:700}
+.links{max-width:840px;width:100%;display:grid;gap:10px}
+a.linkrow{display:flex;align-items:center;gap:14px;background:#fff;border-radius:12px;padding:13px 18px;box-shadow:0 4px 14px rgba(2,6,23,.06);text-decoration:none;color:#1e293b;font-size:clamp(13.5px,2vw,16px);transition:transform .15s}
+a.linkrow:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(2,6,23,.12)}
+.linkrow .ico{flex:0 0 42px;width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px}
+.linkrow small{display:block;color:#64748b;font-size:.85em}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:860px;width:100%}
+.cols .mini{background:#fff;border-radius:12px;padding:15px 18px;box-shadow:0 4px 14px rgba(2,6,23,.06);font-size:clamp(13px,1.9vw,15px);line-height:1.65}
+.cols .mini b{color:var(--accent)}
+.cover{justify-content:flex-end!important;align-items:flex-start!important;padding:0!important;background:linear-gradient(135deg,#0f172a,#243b5c)}
+.cover img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,6,23,.10) 0%,rgba(2,6,23,.55) 55%,rgba(2,6,23,.94) 100%)}
+.cover .txt{position:relative;z-index:2;padding:0 7vw 11vh;color:#fff;max-width:1000px}
+.cover .badge{display:inline-block;background:var(--accent);color:#fff;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:7px 16px;border-radius:30px;margin-bottom:14px}
+.cover h1{font-size:clamp(30px,5.6vw,56px);line-height:1.15;margin-bottom:12px;text-shadow:0 2px 12px rgba(0,0,0,.45)}
+.cover p{font-size:clamp(14px,2.3vw,19px);color:#e2e8f0;line-height:1.65;max-width:660px}
+.cover .meta{margin-top:16px;font-size:12.5px;color:#cbd5e1;letter-spacing:1px}
+.cover .credit{margin-top:8px;font-size:11px;color:#94a3b8}
+.nav{position:absolute;top:50%;transform:translateY(-50%);z-index:60;width:50px;height:50px;border-radius:50%;border:none;background:rgba(15,23,42,.5);color:#fff;font-size:28px;cursor:pointer;backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;line-height:1;padding-bottom:4px}
+.nav:hover{background:var(--accent)}
+.nav.prev{left:12px}.nav.next{right:12px}
+.nav:disabled{opacity:.22;cursor:default}
+.counter{position:absolute;bottom:20px;right:24px;z-index:60;color:#fff;background:rgba(15,23,42,.5);padding:6px 14px;border-radius:20px;font-size:13px;backdrop-filter:blur(6px)}
+.dots{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:60;display:flex;gap:6px;max-width:62vw;flex-wrap:wrap;justify-content:center}
+.dots span{width:8px;height:8px;border-radius:50%;background:#cbd5e1;cursor:pointer}
+.dots span.on{background:var(--accent);transform:scale(1.35)}
+.cover ~ .dots span,.slide.cover .dots span{background:rgba(255,255,255,.4)}
+.home{position:absolute;top:14px;left:16px;z-index:60;color:#fff;background:rgba(15,23,42,.45);border:none;padding:8px 15px;border-radius:20px;font-size:13px;cursor:pointer;backdrop-filter:blur(6px)}
+@media(max-width:640px){.slide{padding:54px 6vw 112px}.vgrid{grid-template-columns:1fr}.cols{grid-template-columns:1fr}.nav{width:42px;height:42px;font-size:22px}.nav.prev{left:7px}.nav.next{right:7px}.card{padding:18px 20px}}
+</style>
+</head>
+<body>
+<div class="deck">
+<div class="progress"><div class="bar" id="bar"></div></div>
+<button class="home" onclick="go(0)">&#8962; Awal</button>
+<div class="slides" id="slides">
+<section class="slide cover active"><img class="bg" src="https://suarakampus.com/wp-content/uploads/2024/11/IMG_20241105_230659-1160x980.jpg" alt="" loading="eager" onerror="this.style.display='none'"><div class="shade"></div><div class="txt"><span class="badge">Panduan Beasiswa Dalam Negeri</span><h1>Panduan Beasiswa Bank Indonesia (GenBI)</h1><p>Generasi Baru Indonesia: syarat, alur seleksi via kampus, dokumen, strategi lolos, dan benefit Rp1 juta/bulan + komunitas GenBI.</p><div class="meta">21 SLIDE &bull; BAHASA INDONESIA &bull; DIPERBARUI OKTOBER 2026</div><div class="credit">Foto: suarakampus.com</div></div></section>
+<section class="slide"><h2><span class="kicker">Pengenalan</span>Apa Itu Beasiswa Bank Indonesia?</h2><p class="lead"><b>Beasiswa Bank Indonesia</b> adalah program beasiswa dari <b>Bank Indonesia</b> untuk mahasiswa berprestasi. Para penerimanya tergabung dalam komunitas <b>GenBI (Generasi Baru Indonesia)</b>.</p><div class="card"><h3>Dua sisi program</h3><b>Dana beasiswa Rp1.000.000/bulan</b> + keanggotaan <b>komunitas GenBI</b> — wadah pengembangan diri, kepemimpinan, dan pengabdian masyarakat.</div><div class="card"><h3>Untuk siapa?</h3>Mahasiswa <b>S1 minimal 40 SKS (semester 3)</b> di <b>kampus mitra Bank Indonesia</b>, IPK &ge; 3,00, dan bersedia aktif di kegiatan GenBI.</div><div class="card"><h3>Jalur pendaftaran</h3>Pendaftaran <b>via bagian kemahasiswaan kampus</b> masing-masing (bukan daftar langsung ke BI) — lalu seleksi administrasi, wawancara oleh BI, dan pengumuman.</div></section>
+<section class="slide"><h2><span class="kicker">Benefit</span>Benefit yang Didapat</h2><ul class="tick"><li><b>Dana beasiswa Rp1.000.000 per bulan</b>.</li><li><b>Keanggotaan GenBI</b> — komunitas resmi penerima beasiswa BI di kampusmu.</li><li><b>Pembinaan &amp; pelatihan</b> dari Bank Indonesia (leadership, capacity building — sesuai program tahun berjalan).</li><li><b>Kegiatan sosial &amp; pengabdian masyarakat</b> bersama GenBI.</li><li><b>Jejaring nasional</b> GenBI lintas kampus dan daerah.</li><li><b>Nilai tambah CV</b> — penerima beasiswa bank sentral adalah kredensial yang kuat.</li></ul></section>
+<section class="slide"><h2><span class="kicker">Syarat</span>Syarat Pendaftaran (1)</h2><ul class="tick"><li>Kuliah di <b>perguruan tinggi mitra Bank Indonesia</b> — cek ke bagian kemahasiswaan kampusmu.</li><li>Jenjang <b>S1/D4: minimal 40 SKS</b> (umumnya semester 3 ke atas); D3 menyesuaikan ketentuan.</li><li><b>IPK minimal 3,00</b> (skala 4,00). Jalur <b>unggulan: IPK min. 3,50</b> + <b>TOEFL 500 / IELTS 6,0</b>.</li><li><b>Usia maksimal 23 tahun</b> (S1/D4) atau <b>22 tahun</b> (D3) saat mendaftar.</li></ul></section>
+<section class="slide"><h2><span class="kicker">Syarat</span>Syarat Pendaftaran (2)</h2><ul class="tick"><li><b>Tidak sedang menerima beasiswa lain</b> — aturan anti-double funding.</li><li>Memiliki <b>pengalaman kegiatan sosial</b> / kemasyarakatan — ini syarat yang khas BI.</li><li><b>Bersedia aktif</b> di komunitas <b>GenBI</b> dan kegiatan Bank Indonesia.</li><li>Diutamakan yang <b>berprestasi akademik &amp; non-akademik</b> serta memiliki motivasi kuat.</li></ul></section>
+<section class="slide"><h2><span class="kicker">Dokumen</span>Dokumen yang Disiapkan</h2><ul class="tick"><li><b>Formulir A.1</b> — formulir resmi pendaftaran Beasiswa BI (dari kampus).</li><li><b>KTP &amp; KTM</b> (kartu tanda mahasiswa).</li><li><b>Transkrip nilai</b> terakhir.</li><li><b>CV / daftar riwayat hidup.</b></li><li><b>Motivation letter</b> — surat motivasi, komponen penilaian penting.</li><li><b>Surat rekomendasi</b> (dari dosen/pimpinan kampus).</li><li><b>SKTM / slip gaji orang tua</b> — bukti kondisi ekonomi keluarga.</li><li><b>Sertifikat TOEFL/IELTS</b> — wajib untuk jalur unggulan (TOEFL 500 / IELTS 6,0).</li></ul></section>
+<section class="slide"><h2><span class="kicker">Tahapan</span>Tahapan Seleksi</h2><div class="timeline"><div class="tl-item"><div class="tl-dot"><div class="c">1</div><div class="l"></div></div><div class="tl-body"><b>Pengumpulan berkas ke kampus</b><br>Serahkan dokumen ke <b>bagian kemahasiswaan</b> kampus sesuai deadline internal kampus.</div></div><div class="tl-item"><div class="tl-dot"><div class="c">2</div><div class="l"></div></div><div class="tl-body"><b>Seleksi administrasi</b><br>Verifikasi kelengkapan &amp; pemenuhan syarat (IPK, SKS, usia, dokumen) oleh kampus/BI.</div></div><div class="tl-item"><div class="tl-dot"><div class="c">3</div><div class="l"></div></div><div class="tl-body"><b>Wawancara Bank Indonesia</b><br>Wawancara oleh tim BI — gali motivasi, pengalaman sosial, dan komitmen keaktifan GenBI.</div></div><div class="tl-item"><div class="tl-dot"><div class="c">4</div><div class="l"></div></div><div class="tl-body"><b>Pengumuman</b><br>Pengumuman penerima beasiswa.</div></div></div><p class="lead" style="margin-top:10px;font-size:14px">Jadwal seleksi mengikuti kalender tiap Kantor Perwakilan BI &amp; kampus mitra — pantau pengumuman kemahasiswaan kampusmu.</p></section>
+<section class="slide"><h2><span class="kicker">Timeline</span>Pola Timeline Seleksi</h2><table class="info"><tr><th>Sosialisasi &amp; pengumpulan berkas</th><td>Via kemahasiswaan kampus (jadwal per kampus)</td></tr><tr><th>Seleksi administrasi</th><td>Verifikasi dokumen &amp; syarat</td></tr><tr><th>Wawancara BI</th><td>Oleh tim Bank Indonesia</td></tr><tr><th>Pengumuman penerima</th><td>Diumumkan kampus/BI</td></tr></table><p class="lead" style="margin-top:12px;font-size:14px"><b>Data belum tersedia:</b> tanggal pasti seleksi tahun berjalan bervariasi per kampus mitra — tidak ada satu tanggal nasional. Jadikan pola di atas sebagai acuan dan konfirmasi ke kemahasiswaan kampusmu.</p></section>
+<section class="slide"><h2><span class="kicker">Strategi</span>Strategi Persiapan (1)</h2><ul class="num"><li><b>Amankan IPK &ge; 3,00 sejak awal.</b> Syarat mutlak; untuk jalur unggulan bidik &ge; 3,50.</li><li><b>Bangun pengalaman sosial.</b> Ikut bakti sosial, relawan, organisasi kemasyarakatan — ini <b>syarat eksplisit</b> BI, bukan pelengkap.</li><li><b>Siapkan motivation letter yang kuat.</b> Ceritakan motivasi, pengalaman sosial, dan rencanamu berkontribusi di GenBI. Minta feedback dosen/senior.</li><li><b>Urus surat rekomendasi lebih awal.</b> Datangi dosen pembimbing jauh sebelum deadline — jangan dadakan.</li></ul></section>
+<section class="slide"><h2><span class="kicker">Strategi</span>Strategi Persiapan (2)</h2><ul class="num"><li><b>Untuk jalur unggulan: siapkan TOEFL/IELTS.</b> Target TOEFL 500 / IELTS 6,0 butuh persiapan berbulan-bulan — mulai sekarang.</li><li><b>Latihan wawancara.</b> Siapkan jawaban: kenapa memilih Beasiswa BI, pengalaman sosial paling berkesan, dan komitmen aktif di GenBI.</li><li><b>Pantau info kampus.</b> Deadline internal kampus <b>lebih awal</b> dari jadwal BI — yang telat info kampus = gugur sebelum bertanding.</li><li><b>Jaga usia &amp; status beasiswa lain.</b> Pastikan usiamu memenuhi batas dan tidak sedang menerima beasiswa lain.</li></ul></section>
+<section class="slide"><h2><span class="kicker">Tonton &amp; Pelajari</span>Video Panduan</h2><div class="vgrid"><div class="vid"><div class="frame"><iframe src="https://www.youtube.com/embed/tlsEs_OjQTs" title="Tips Daftar Beasiswa BI (GenBI Tegal)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><span class="tag">Panduan</span><b>Tips Daftar Beasiswa BI (GenBI Tegal)</b><br>Tips dan langkah mendaftar Beasiswa Bank Indonesia dari komunitas GenBI Tegal.</div></div><div class="vid"><div class="frame"><iframe src="https://www.youtube.com/embed/lgwHUt-GGms" title="NGOBI: Tips Lolos Beasiswa BI" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><span class="tag">Panduan</span><b>NGOBI: Tips Lolos Beasiswa BI</b><br>Ngobrolin Beasiswa BI — tips persiapan seleksi dari para penerima.</div></div><div class="vid"><div class="frame"><iframe src="https://www.youtube.com/embed/ND0PCunmEZ4" title="Cerita Lolos Beasiswa BI + Tips" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><span class="tag">Testimoni</span><b>Cerita Lolos Beasiswa BI + Tips</b><br>Cerita pengalaman lolos seleksi Beasiswa Bank Indonesia beserta tipsnya.</div></div><div class="vid"><div class="frame"><iframe src="https://www.youtube.com/embed/EpOXJZSYd-Y" title="Info Seleksi Beasiswa BI 2026" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><span class="tag">Info</span><b>Info Seleksi Beasiswa BI 2026</b><br>Informasi seputar seleksi Beasiswa Bank Indonesia tahun 2026.</div></div></div></section>
+<section class="slide"><h2><span class="kicker">Link Resmi</span>Link Resmi</h2><div class="links"><a class="linkrow" href="https://www.genbi.id/" target="_blank" rel="noopener"><span class="ico">&#128279;</span><span>Situs Resmi GenBI<small>https://www.genbi.id/</small></span></a><a class="linkrow" href="https://www.bi.go.id/" target="_blank" rel="noopener"><span class="ico">&#128279;</span><span>Bank Indonesia<small>https://www.bi.go.id/</small></span></a></div><p class="lead" style="margin-top:12px;font-size:14px">Selalu verifikasi informasi terbaru di situs resmi sebelum mendaftar.</p><div class="card"><h3>Jalur informasi utama</h3>Karena pendaftaran via kampus, <b>bagian kemahasiswaan kampusmu</b> adalah sumber info paling akurat untuk jadwal dan kuota. Pantau juga akun media sosial <b>GenBI</b> kampus/daerahmu.</div></section>
+<section class="slide"><h2><span class="kicker">FAQ</span>Pertanyaan yang Sering Ditanyakan (1)</h2><div class="faq"><div class="qa"><div class="q">Apakah semua kampus bisa ikut?</div><div class="a">Tidak. Hanya <b>kampus mitra Bank Indonesia</b>. Tanyakan ke bagian kemahasiswaan apakah kampusmu termasuk mitra.</div></div><div class="qa"><div class="q">Saya semester 1&ndash;2, bisa daftar?</div><div class="a">Belum. Syaratnya <b>minimal 40 SKS</b> (umumnya semester 3 ke atas untuk S1). Manfaatkan semester awal untuk menaikkan IPK dan ikut kegiatan sosial.</div></div></div></section>
+<section class="slide"><h2><span class="kicker">FAQ</span>Pertanyaan yang Sering Ditanyakan (2)</h2><div class="faq"><div class="qa"><div class="q">Apa beda jalur reguler dan unggulan?</div><div class="a">Jalur <b>unggulan</b> mensyaratkan <b>IPK &ge; 3,50 + TOEFL 500 / IELTS 6,0</b> — untuk mahasiswa berprestasi tinggi dengan kemampuan bahasa Inggris teruji.</div></div><div class="qa"><div class="q">Apakah wajib aktif di GenBI setelah diterima?</div><div class="a"><b>Ya.</b> Kesediaan aktif di komunitas GenBI dan kegiatan BI adalah syarat — ini beasiswa plus pembinaan, bukan sekadar dana.</div></div><div class="qa"><div class="q">Bolehkah menerima beasiswa lain bersamaan?</div><div class="a"><b>Tidak boleh.</b> Peserta tidak boleh sedang menerima beasiswa dari pihak lain.</div></div></div></section>
+<section class="slide"><h2><span class="kicker">FAQ</span>Pertanyaan yang Sering Ditanyakan (3)</h2><div class="faq"><div class="qa"><div class="q">Berapa lama dana beasiswa diberikan?</div><div class="a"><b>Data belum tersedia.</b> Periode pemberian mengikuti kebijakan Bank Indonesia tahun berjalan — konfirmasi ke bagian kemahasiswaan kampusmu.</div></div><div class="qa"><div class="q">Apa saja kegiatan GenBI setelah diterima?</div><div class="a">Penerima aktif di <b>komunitas GenBI</b>: pelatihan, seminar, bakti sosial, dan program-program Bank Indonesia di daerahmu.</div></div></div></section>
+<section class="slide"><h2><span class="kicker">Checklist</span>Checklist &amp; Kesalahan Umum</h2><div class="cols"><div class="mini"><b>&#9989; Checklist</b><br>Kampus mitra BI &bull; SKS &ge; 40 &bull; IPK &ge; 3,00 (unggulan 3,50 + TOEFL/IELTS) &bull; Usia memenuhi batas &bull; Tidak terima beasiswa lain &bull; Pengalaman sosial &bull; Form A.1 &bull; KTP/KTM &bull; Transkrip &bull; CV &bull; Motivation letter &bull; Surat rekomendasi &bull; SKTM/slip gaji</div><div class="mini"><b>&#10060; Kesalahan umum</b><br>Tidak tahu deadline internal kampus (lebih awal!) &bull; Motivation letter generik &bull; Surat rekomendasi dadakan &bull; Tidak punya pengalaman sosial &bull; Mendaftar langsung ke BI (salah jalur — harus via kampus)</div></div></section>
+<section class="slide"><h2><span class="kicker">Komunitas GenBI</span>Mengenal Komunitas GenBI</h2><div class="card"><h3>Generasi Baru Indonesia</h3><b>GenBI</b> adalah komunitas resmi para penerima Beasiswa Bank Indonesia — ada di kampus-kampus mitra di seluruh Indonesia.</div><div class="card"><h3>Bukan sekadar penerima dana</h3>Anggota GenBI aktif di <b>pelatihan, seminar, bakti sosial, dan program BI</b> — pengalaman organisasi tingkat nasional yang memperkaya CV.</div><div class="card"><h3>Jejaring nasional</h3>Kegiatan GenBI menghubungkanmu dengan penerima beasiswa BI dari berbagai daerah — jejaring pertemanan dan profesional yang luas.</div></section>
+<section class="slide"><h2><span class="kicker">Mitos vs Fakta</span>Mitos vs Fakta</h2><div class="faq"><div class="qa"><div class="q">Mitos: &ldquo;Beasiswa BI hanya untuk jurusan ekonomi.&rdquo;</div><div class="a">Fakta: beasiswa ini terbuka untuk <b>berbagai jurusan</b> di kampus mitra — yang dinilai adalah prestasi dan pengalaman sosialmu.</div></div><div class="qa"><div class="q">Mitos: &ldquo;IPK 3,00 cukup, tidak perlu yang lain.&rdquo;</div><div class="a">Fakta: IPK hanya syarat awal. <b>Pengalaman sosial, motivation letter, dan wawancara</b> ikut menentukan kelulusan.</div></div><div class="qa"><div class="q">Mitos: &ldquo;Daftarnya langsung ke Bank Indonesia.&rdquo;</div><div class="a">Fakta: pendaftaran melalui <b>bagian kemahasiswaan kampus</b> — salah jalur bisa membuat berkasmu tidak diproses.</div></div></div></section>
+<section class="slide"><h2><span class="kicker">Ringkasan</span>Ringkasan Satu Halaman</h2><table class="info"><tr><th>Program</th><td>Beasiswa <b>Bank Indonesia</b> — komunitas <b>GenBI</b></td></tr><tr><th>Sasaran</th><td>Mahasiswa S1 <b>&ge; 40 SKS</b> di <b>kampus mitra BI</b></td></tr><tr><th>Syarat kunci</th><td>IPK &ge; 3,00 (unggulan 3,50 + TOEFL 500/IELTS 6,0) &bull; usia &le; 23 thn &bull; pengalaman sosial &bull; tidak terima beasiswa lain</td></tr><tr><th>Benefit</th><td><b>Rp1 jt/bln</b> + komunitas &amp; pembinaan GenBI</td></tr><tr><th>Seleksi</th><td>Berkas via kampus &rarr; administrasi &rarr; wawancara BI &rarr; pengumuman</td></tr><tr><th>Resmi</th><td>genbi.id &bull; bi.go.id &bull; kemahasiswaan kampus</td></tr></table></section>
+<section class="slide"><h2><span class="kicker">Penutup</span>Siap Jadi Bagian GenBI?</h2><p class="lead">Beasiswa BI mencari mahasiswa yang <b>berprestasi dan peduli sosial</b> — calon Generasi Baru Indonesia.</p><ul class="num"><li>Pastikan kampusmu <b>mitra BI</b> dan kamu memenuhi <b>SKS, IPK, dan batas usia</b>.</li><li>Bangun <b>pengalaman sosial</b> dan tulis <b>motivation letter</b> yang meyakinkan.</li><li>Kumpulkan berkas via <b>kemahasiswaan kampus</b> sebelum deadline internal.</li></ul><p class="lead" style="margin-top:14px"><b>Jadilah mahasiswa berprestasi yang berdampak bagi masyarakat.</b> Semangat!</p></section>
+</div>
+<button class="nav prev" id="prevBtn" aria-label="Slide sebelumnya">&#8249;</button>
+<button class="nav next" id="nextBtn" aria-label="Slide berikutnya">&#8250;</button>
+<div class="counter" id="counter"></div>
+<div class="dots" id="dots"></div>
+</div>
+<script>
+var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+var cur=0;
+var dotsBox=document.getElementById('dots');
+slides.forEach(function(_,i){var d=document.createElement('span');d.onclick=function(){go(i);};dotsBox.appendChild(d);});
+function paintDots(){var ds=dotsBox.children;for(var i=0;i<ds.length;i++){ds[i].className=(i===cur)?'on':'';}}
+function stopMedia(){for(var si=0;si<slides.length;si++){if(si!==cur){var fr=slides[si].querySelectorAll('iframe');for(var i=0;i<fr.length;i++){fr[i].setAttribute('src',fr[i].getAttribute('src'));}}}}
+function go(n){
+ if(n<0)n=0;if(n>=slides.length)n=slides.length-1;cur=n;
+ for(var i=0;i<slides.length;i++){slides[i].classList.toggle('active',i===cur);}
+ document.getElementById('counter').textContent=(cur+1)+' / '+slides.length;
+ document.getElementById('bar').style.width=((cur+1)/slides.length*100)+'%';
+ document.getElementById('prevBtn').disabled=(cur===0);
+ document.getElementById('nextBtn').disabled=(cur===slides.length-1);
+ try{history.replaceState(null,'','#s'+(cur+1));}catch(e){}
+ paintDots();stopMedia();
+}
+document.getElementById('prevBtn').onclick=function(){go(cur-1);};
+document.getElementById('nextBtn').onclick=function(){go(cur+1);};
+document.addEventListener('keydown',function(e){
+ if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(cur+1);}
+ else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+ else if(e.key==='Home'){go(0);}else if(e.key==='End'){go(slides.length-1);}
+});
+var tx0=0,ty0=0;
+document.addEventListener('touchstart',function(e){tx0=e.touches[0].clientX;ty0=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',function(e){
+ var dx=e.changedTouches[0].clientX-tx0,dy=e.changedTouches[0].clientY-ty0;
+ if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){if(dx<0)go(cur+1);else go(cur-1);}
+},{passive:true});
+(function(){var m=location.hash.match(/#s(\d+)/);if(m){var n=parseInt(m[1],10)-1;if(n>=0&&n<slides.length)cur=n;}})();
+go(cur);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/dalam-negeri/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan Beasiswa BUMN", "slug": "deck-dn-bumn"},{"label": "Panduan Beasiswa Bakti BCA", "slug": "deck-dn-baktibca"},{"label": "Panduan Beasiswa Bank Indonesia (GenBI)", "slug": "deck-dn-genbi"},{"label": "Panduan Beasiswa Djarum Plus", "slug": "deck-dn-djarum"},{"label": "Panduan Beasiswa Garuda 2027", "slug": "deck-dn-garuda"},{"label": "Panduan Beasiswa KIP Kuliah", "slug": "deck-dn-kip"},{"label": "Panduan Beasiswa KSE", "slug": "deck-dn-kse"},{"label": "Panduan Beasiswa Kemenag", "slug": "deck-dn-kemenag"},{"label": "Panduan Beasiswa LPDP", "slug": "deck-dn-lpdp"},{"label": "Panduan Beasiswa Pemda", "slug": "deck-dn-pemda"},{"label": "Panduan Beasiswa Pendidikan Indonesia (BPI)", "slug": "deck-dn-bpi"},{"label": "Panduan Beasiswa Sampoerna Foundation", "slug": "deck-dn-sampoerna"},{"label": "Panduan Beasiswa Tanoto Foundation", "slug": "deck-dn-tanoto"},{"label": "Panduan Beasiswa Unggulan", "slug": "deck-dn-unggulan"},{"label": "Panduan Beasiswa VDMI", "slug": "deck-dn-vdmi"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

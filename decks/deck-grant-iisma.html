@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 14 panduan grant ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan IISMA</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--c1:#0d2b6b;--c2:#1d4ed8;--c3:#ef4444}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0f172a;color:#1e293b;overflow:hidden}
+.deck{height:100vh;height:100dvh;position:relative}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;padding:56px 8vw 96px;overflow-y:auto;background:#fff}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.slide h1{font-size:clamp(1.6rem,4.5vw,2.8rem);color:var(--c1);margin-bottom:18px;text-align:center;line-height:1.25}
+.slide h2{font-size:clamp(1.3rem,3.5vw,2rem);color:var(--c1);margin-bottom:16px;text-align:center}
+.slide h3{font-size:1.05rem;color:var(--c2);margin:14px 0 6px}
+.content{max-width:860px;width:100%}
+.content p{margin:8px 0;line-height:1.65;font-size:clamp(.95rem,2.2vw,1.1rem)}
+.content ul,.content ol{margin:8px 0 8px 22px;line-height:1.7;font-size:clamp(.95rem,2.2vw,1.08rem)}
+.content li{margin:6px 0}
+.card{background:#f1f5f9;border-left:5px solid var(--c2);border-radius:10px;padding:14px 18px;margin:10px 0}
+.card b{color:var(--c1)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.grid2 .card{margin:0}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:clamp(.85rem,2vw,1rem)}
+th{background:var(--c1);color:#fff;padding:10px}
+td{padding:10px;border-bottom:1px solid #e2e8f0}
+tr:nth-child(even) td{background:#f8fafc}
+.kicker{display:inline-block;background:var(--c2);color:#fff;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:999px;margin-bottom:14px}
+.cover{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;text-align:center}
+.cover.hasimg{background-size:cover;background-position:center}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.78))}
+.cover .inner{position:relative;z-index:2;max-width:800px;padding:0 24px}
+.cover h1{color:#fff;font-size:clamp(2rem,6vw,3.6rem);margin:10px 0 14px;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.cover p{font-size:clamp(1rem,2.6vw,1.3rem);opacity:.92;line-height:1.6}
+.cover .kicker{background:rgba(255,255,255,.2);backdrop-filter:blur(4px)}
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:980px}
+.vid{background:#0f172a;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+.vid p{padding:10px 14px;font-size:.85rem;color:#e2e8f0;line-height:1.45}
+.vid p b{color:#fff}
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:rgba(15,23,42,.96);z-index:10}
+.nav button{background:var(--c2);color:#fff;border:0;border-radius:10px;padding:12px 26px;font-size:1rem;font-weight:700;cursor:pointer;min-width:120px}
+.nav button:disabled{opacity:.35;cursor:default}
+.nav button:active{transform:scale(.96)}
+#counter{color:#fff;font-weight:700;font-size:.95rem}
+#barwrap{position:fixed;top:0;left:0;right:0;height:5px;background:#1e293b;z-index:10}
+#bar{height:100%;width:5%;background:linear-gradient(90deg,var(--c2),var(--c3));transition:width .3s}
+.hint{position:fixed;bottom:74px;right:16px;color:#94a3b8;font-size:.75rem;z-index:10}
+.faq{background:#f8fafc;border-radius:10px;padding:12px 16px;margin:8px 0;border:1px solid #e2e8f0}
+.faq b{color:var(--c1);display:block;margin-bottom:4px}
+.linkbtn{display:inline-block;background:var(--c1);color:#fff!important;text-decoration:none;padding:12px 24px;border-radius:10px;font-weight:700;margin:6px 8px 6px 0}
+.badge{display:inline-block;background:#fef3c7;color:#92400e;font-weight:700;font-size:.8rem;padding:4px 12px;border-radius:999px;margin:2px}
+@media(max-width:640px){.vidgrid,.grid2{grid-template-columns:1fr}.slide{padding:44px 6vw 100px}.nav button{min-width:96px;padding:11px 18px}}
+</style>
+</head>
+<body>
+<div id="barwrap"><div id="bar"></div></div>
+<div class="deck" id="deck">
+<section class="slide cover hasimg" style="background-image:url('https://studyabroad.inspire.qa/wp-content/uploads/2023/09/college_campus-scaled.jpg')"><div class="shade"></div><div class="inner"><span class="kicker">Panduan Grant & Mobilitas</span><h1>Panduan IISMA</h1><p>Indonesian International Student Mobility Awards — beasiswa penuh Kemendikbudristek untuk kuliah 1 semester di 100+ universitas top dunia. Syarat, tahapan, timeline, dan strategi lolos.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Sekilas Program</span><h2>Apa Itu IISMA?</h2>
+<p><b>IISMA (Indonesian International Student Mobility Awards)</b> adalah skema beasiswa mobilitas dari <b>Kementerian Pendidikan Tinggi, Sains, dan Teknologi (Kemdiktisaintek)</b> — salah satu program <i>flagship</i> Merdeka Belajar Kampus Merdeka (MBKM), didanai melalui <b>LPDP</b>.</p>
+<div class="card"><b>Konsep:</b> kamu kuliah <b>1 semester</b> di universitas mitra luar negeri (bisa mengambil 3–4 mata kuliah yang diminati), lalu kreditnya diakui kampus asal — <b>pulang dengan pengalaman global tanpa memperpanjang masa studi</b>.</div>
+<ul>
+<li>Berjalan sejak <b>2021</b>; bekerja sama dengan <b>100+ universitas mitra</b> di puluhan negara (angkatan awal: 73 universitas di 30 negara, 4 benua).</li>
+<li>Ada <b>dua skema</b>: IISMA reguler (mahasiswa sarjana) dan <b>IISMAVO</b> (mahasiswa vokasi) — lihat deck Panduan IISMAVO.</li>
+<li><b>3 jalur seleksi:</b> reguler (beasiswa penuh), afirmasi (KIP-Kuliah/Bidikmisi & daerah tertinggal), dan <i>co-funding</i> (pendanaan bersama).</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Benefit</span><h2>Cakupan Beasiswa IISMA</h2>
+<div class="grid2">
+<div class="card"><b>🎓 Biaya pendidikan</b><br>Biaya pendaftaran & tuition fee di universitas tujuan — <i>at cost</i>.</div>
+<div class="card"><b>🏥 Asuransi kesehatan</b><br>CPR & asuransi kesehatan selama program — <i>at cost</i>.</div>
+<div class="card"><b>💰 Tunjangan hidup</b><br>Biaya kedatangan + <i>living allowance lump sum</i> selama 1 semester.</div>
+<div class="card"><b>✈️ Tiket & visa</b><br>Biaya penerbangan PP dan visa — <i>at cost</i>, plus <b>dana darurat</b>.</div>
+</div>
+<p><span class="badge">Nilai</span> Total paket tiap awardee bernilai <b>ratusan juta rupiah</b> — salah satu beasiswa mobilitas paling prestisius untuk mahasiswa Indonesia.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Syarat</span><h2>Syarat Pendaftar IISMA</h2>
+<ol>
+<li><b>WNI</b> berdomisili di Indonesia, tidak berkewarganegaraan ganda.</li>
+<li>Mahasiswa aktif <b>semester 4 atau 6</b> (S1/D4) atau <b>semester 4</b> (D3) di PT di bawah Kemdiktisaintek, terdaftar di <b>PDDIKTI</b>.</li>
+<li>Usia maksimal <b>24 tahun</b> (pada 1 Juli tahun program).</li>
+<li><b>IPK minimal 3,00</b> (skala 4,0) — dibuktikan transkrip terbaru.</li>
+<li>Skor bahasa Inggris: <b>IELTS 6,0 / TOEFL iBT 78 / Duolingo 100</b> (S1).</li>
+<li><b>Dinominasikan</b> oleh Wakil Rektor bidang akademik kampus asal.</li>
+<li><b>Tidak pernah cuti</b> semester selama kuliah.</li>
+<li>Tidak sedang/tidak akan mengikuti <b>program Kampus Merdeka lain</b> yang bersamaan; tidak kuliah di kampus asal selama IISMA.</li>
+<li>Tidak menerima tunjangan hidup dari Kemendikbudristek/LPDP dari program lain selama IISMA.</li>
+<li>Bersedia menaati seluruh aturan program.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Dokumen</span><h2>Dokumen yang Dibutuhkan</h2>
+<ol>
+<li><b>Surat rekomendasi</b> dari Kepala Kantor Urusan Internasional atas nama Wakil Rektor bidang Akademik.</li>
+<li><b>Sertifikat bahasa Inggris</b> (IELTS/TOEFL iBT/Duolingo) yang masih berlaku.</li>
+<li><b>Transkrip akademik</b> dalam bahasa Inggris.</li>
+<li><b>Esai</b> maksimal 350 kata (motivasi & rencana studi).</li>
+<li>Surat pernyataan <b>tidak pernah/sedang mengikuti</b> program pertukaran internasional.</li>
+<li>Surat pernyataan <b>bebas narkoba</b> & zat adiktif.</li>
+<li>Surat pernyataan <b>tidak pernah terlibat kekerasan seksual</b>.</li>
+<li>Surat izin orang tua, surat sehat, SKCK (sesuai ketentuan tahun berjalan).</li>
+</ol>
+<div class="card"><b>💡 Tips:</b> urus transkrip bahasa Inggris dan surat-surat pernyataan <b>sejak jauh hari</b> — birokrasi kampus butuh waktu.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Tahapan</span><h2>Tahapan Seleksi IISMA</h2>
+<ol>
+<li><b>Sosialisasi</b> — info program & bootcamp persiapan (Des–Jan).</li>
+<li><b>Pendaftaran online</b> di portal IISMA: buat akun, isi data PDDIKTI, pilih universitas tujuan + mata kuliah, unggah dokumen & esai.</li>
+<li><b>Seleksi administrasi/dokumen.</b></li>
+<li><b>Tes kebangsaan</b> (pada batch tertentu).</li>
+<li><b>Wawancara</b> — motivasi, kesiapan lintas budaya, dan rencana studi.</li>
+<li><b>Seleksi final & pengumuman.</b></li>
+<li><b>Pelengkapan dokumen & persiapan prakeberangkatan</b> (visa, tiket, asuransi).</li>
+<li><b>Keberangkatan & pelaksanaan program</b> (1 semester), lalu kepulangan + pelaporan.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Timeline</span><h2>Timeline (Contoh Batch 2024)</h2>
+<table>
+<tr><th>Tahapan</th><th>Jadwal</th></tr>
+<tr><td>Sosialisasi</td><td>Desember 2023 – Januari 2024</td></tr>
+<tr><td><b>Pendaftaran</b></td><td><b>23 Januari – 14 Februari 2024</b></td></tr>
+<tr><td>Seleksi administrasi</td><td>Februari 2024</td></tr>
+<tr><td>Tes kebangsaan</td><td>Februari 2024</td></tr>
+<tr><td>Wawancara</td><td>Februari – Maret 2024</td></tr>
+<tr><td>Pengumuman</td><td>Maret 2024</td></tr>
+<tr><td>Persiapan keberangkatan</td><td>April 2024</td></tr>
+<tr><td>Pelaksanaan program</td><td>Mei 2024 – Maret 2025</td></tr>
+</table>
+<p><span class="badge">Catatan</span> Pendaftaran IISMA dibuka <b>setiap awal tahun</b> (pola: Januari–Februari). Mulai persiapan <b>minimal 6 bulan sebelumnya</b> — terutama tes bahasa Inggris.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Cara Daftar</span><h2>Langkah Pendaftaran Online</h2>
+<ol>
+<li>Buka <b>iisma.kemdikbud.go.id</b> → klik Login → <b>Create Account</b> jika belum punya.</li>
+<li>Aktivasi akun via email, lalu isi <b>identitas diri</b> sesuai data PDDIKTI.</li>
+<li>Isi <b>kemampuan bahasa Inggris</b>, pengalaman organisasi/relawan, dan penghargaan 3 tahun terakhir.</li>
+<li><b>Pilih universitas tujuan + mata kuliahnya</b> (riset dulu: syarat bahasa & kurikulum tiap kampus berbeda!).</li>
+<li>Unggah <b>dokumen pendukung</b> lengkap.</li>
+<li>Tulis <b>esai maksimal 350 kata</b> — simpan sebagai <i>draft</i> dulu.</li>
+<li>Review semuanya, klik <b>Submit</b> sebelum deadline.</li>
+</ol>
+<div class="card"><b>💡 Tips memilih kampus:</b> jangan hanya pilih yang paling terkenal — pilih yang <b>syarat bahasanya sesuai skormu</b> dan mata kuliahnya relevan dengan jurusanmu agar kredit mudah diakui.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>Strategi Esai IISMA (350 Kata)</h2>
+<ul>
+<li><b>Temukan "big why"-mu:</b> alasan unik dan personal — alasan klise sudah dipakai ribuan pendaftar.</li>
+<li><b>Bangun personal branding:</b> hubungkan pengalaman masa lalu + keahlian saat ini + cita-cita masa depan dalam satu benang merah.</li>
+<li><b>Riset kampus tujuan:</b> sebutkan mata kuliah/profesor/fasilitas spesifik — tunjukkan kamu serius, bukan asal pilih.</li>
+<li><b>Metode STAR</b> untuk pertanyaan pengalaman: Situation → Task → Action → Result.</li>
+<li><b>Jujur & percaya diri:</b> asesor menilai keaslian; cek grammar (minta <i>native speaker</i>/mentor me-review).</li>
+<li><b>Rencana pasca-IISMA:</b> jelaskan kontribusi konkret yang akan kamu bawa pulang ke Indonesia.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>Strategi Tes Bahasa & Wawancara</h2>
+<h3>Tes Bahasa Inggris</h3>
+<ul>
+<li>Target aman: <b>IELTS 6,5 / TOEFL iBT 85+ / Duolingo 110+</b> — di atas syarat minimal agar kompetitif.</li>
+<li>Mulai latihan <b>6–12 bulan</b> sebelum pendaftaran; ikut <i>try out</i> resmi.</li>
+</ul>
+<h3>Wawancara</h3>
+<ul>
+<li>Latihan menjawab dalam <b>bahasa Inggris</b> dengan lancar dan terstruktur.</li>
+<li>Siapkan cerita tentang: motivasimu, kesiapan hidup mandiri di luar negeri, dan rencana kontribusimu.</li>
+<li>Tunjukkan <b>kematangan lintas budaya</b>: adaptif, terbuka, dan menghargai perbedaan.</li>
+<li>Minta <b>mock interview</b> ke kakak tingkat awardee IISMA.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>7 Tips Lolos IISMA</h2>
+<ol>
+<li><b>Mulai dari semester 2–3:</b> jaga IPK, ikut organisasi, kumpulkan prestasi.</li>
+<li><b>Amankan skor bahasa Inggris</b> jauh sebelum pendaftaran dibuka.</li>
+<li><b>Bangun relasi dengan Kantor Urusan Internasional (KUI)</b> kampusmu — mereka yang memproses nominasi.</li>
+<li><b>Hubungi awardee tahun sebelumnya</b> untuk konsultasi esai & pilihan kampus.</li>
+<li><b>Pilih 3–5 kampus tujuan</b> dengan strategi: 1–2 ambisius, 2–3 realistis.</li>
+<li><b>Jangan prokrastinasi:</b> siapkan dokumen berminggu-minggu sebelum deadline.</li>
+<li><b>Ikuti bootcamp/sosialisasi</b> IISMA di kampusmu.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Hindari</span><h2>5 Kesalahan Umum</h2>
+<ol>
+<li><b>Skor bahasa pas-pasan/melewati batas berlaku</b> — tes yang kedaluwarsa = gugur administrasi.</li>
+<li><b>Esai generik</b> tanpa riset kampus tujuan.</li>
+<li><b>Data tidak sinkron dengan PDDIKTI</b> — pastikan NIM & data akademik valid.</li>
+<li><b>Lupa nominasi kampus:</b> tanpa rekomendasi WR bidang akademik, aplikasi tidak diproses.</li>
+<li><b>Pernah cuti / ikut program MBKM lain bersamaan</b> — melanggar syarat = diskualifikasi.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>Memilih Universitas Tujuan</h2>
+<ul>
+<li><b>Cek syarat bahasa tiap kampus:</b> universitas top (Ivy League, Oxbridge) biasanya minta IELTS 6,5–7,0 — sesuaikan dengan skormu.</li>
+<li><b>Relevansi mata kuliah:</b> pilih kampus yang menawarkan 3–4 mata kuliah menarik & bisa dikonversi ke kurikulum prodimu.</li>
+<li><b>Strategi portofolio:</b> pilih 1–2 kampus impian + 2–3 kampus realistis.</li>
+<li><b>Pertimbangkan biaya hidup kota:</b> tunjangan hidup bersifat <i>lump sum</i> — kota mahal butuh manajemen ekstra.</li>
+<li><b>Musim & kalender akademik:</b> program berjalan Mei–Maret (batch 2024) — sesuaikan dengan semestermu agar tidak bentrok KKN/skripsi.</li>
+</ul>
+<div class="card"><b>Contoh kampus mitra:</b> University of Pennsylvania, University of Michigan, Nanyang Technological University, Korea University, Radboud University, University of York, Yale University, University of Glasgow — dan 90+ lainnya.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Selama</span><h2>Selama Program: Yang Perlu Disiapkan</h2>
+<ul>
+<li><b>Akademik:</b> sistem belajar luar negeri menuntut <b>diskusi aktif & membaca sebelum kelas</b> — siapkan mental, bukan cuma nilai.</li>
+<li><b>Administrasi:</b> visa pelajar, asuransi, tiket — ikuti briefing prakeberangkatan dengan saksama.</li>
+<li><b>Keuangan:</b> buat budgeting bulanan; tunjangan diberikan <i>lump sum</i> — jangan habis di bulan pertama.</li>
+<li><b>Budaya:</b> pelajari etika & kebiasaan negara tujuan; kamu adalah <b>duta Indonesia</b>.</li>
+<li><b>Kewajiban:</b> ikuti seluruh kegiatan program, jaga IP/performa, dan buat <b>laporan akhir</b> sepulang program.</li>
+<li><b>Manfaatkan:</b> jejaring internasional, organisasi mahasiswa, dan kesempatan eksplorasi — ini investasi seumur hidup.</li>
+</ul></div></section>
+<section class="slide"><div class="content" style="max-width:1000px"><span class="kicker">Video Panduan</span><h2>Video Panduan IISMA</h2><div class="vidgrid"><div class="vid"><iframe src="https://www.youtube.com/embed/bCOhz3i6WUQ" title="Strategi Sukses Awardee IISMA (Radboud University)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Strategi Sukses Awardee IISMA (Radboud University)</b><br>Cara daftar #1 — Tips lengkap dari awardee: tes bahasa Inggris, memilih universitas host, menulis esai, dan menghadapi interview IISMA.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/eL2jqmpvAk0" title="14 Mahasiswa Indonesia Go International (USB YPKP)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>14 Mahasiswa Indonesia Go International (USB YPKP)</b><br>Cara daftar #2 — Contoh program mobilitas mahasiswa Indonesia (ASEMO Malaysia, student exchange, festival pemuda Rusia): gambaran persiapan dan pengalaman.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/Z4bapJ4upkE" title="Intip Keseruan Awardee IISMA di University of York (Unhas TV)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Intip Keseruan Awardee IISMA di University of York (Unhas TV)</b><br>Suasana kegiatan — Sharing mahasiswi Unhas awardee IISMA di University of York, Inggris: pengalaman kuliah + tips dan trik.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/e2vBiutpnic" title="Kehidupan Mahasiswa Indonesia di Irlandia" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Kehidupan Mahasiswa Indonesia di Irlandia</b><br>Testimoni — Vlog keseharian mahasiswa Indonesia kuliah di luar negeri: gambaran nyata suasana studi abroad yang akan kamu jalani.</p></div></div></div></section>
+<section class="slide"><div class="content"><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (1)</h2>
+<div class="faq"><b>1. Apakah mahasiswa PTS bisa ikut IISMA?</b>Bisa, selama PTS-mu berada di bawah Kemdiktisaintek dan terdaftar di PDDIKTI serta bersedia memberikan nominasi.</div>
+<div class="faq"><b>2. Apakah kredit SKS dari luar negeri diakui?</b>Ya — program ini setara <b>20 SKS</b>; mata kuliah yang diambil dikonversi sesuai kebijakan kampus asal.</div>
+<div class="faq"><b>3. Apakah saya bisa memilih negaranya?</b>Kamu memilih <b>universitas tujuan</b> dari daftar mitra; penempatan akhir mengikuti hasil seleksi.</div>
+<div class="faq"><b>4. Apakah ada batasan jurusan?</b>Kamu bebas memilih mata kuliah yang diminati, termasuk di luar jurusan — asal memenuhi prasyarat kampus tujuan.</div>
+<div class="faq"><b>5. Apakah IISMA mengikat kerja setelah lulus?</b>Tidak ada ikatan dinas. Kamu diharapkan menjadi duta dan berkontribusi untuk Indonesia.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (2)</h2>
+<div class="faq"><b>6. Saya penerima KIP-Kuliah — bisa ikut jalur afirmasi?</b>Ya! Jalur <b>afirmasi</b> dikhususkan untuk penerima KIP-Kuliah/Bidikmisi dan mahasiswa dari daerah tertinggal.</div>
+<div class="faq"><b>7. Berapa kali boleh mencoba?</b>Kesempatan emas ada di <b>semester 4 dan 6</b> — maksimal dua kali mencoba. Manfaatkan keduanya.</div>
+<div class="faq"><b>8. Apakah tes bahasa harus yang mahal (IELTS/TOEFL iBT)?</b><b>Duolingo English Test</b> (skor 100) juga diterima dan biayanya jauh lebih murah — cek ketentuan tahun berjalan.</div>
+<div class="faq"><b>9. Bagaimana jika saya belum pernah ke luar negeri?</b>Tidak masalah — justru IISMA dirancang untuk memberimu pengalaman internasional pertama. Yang dinilai adalah kesiapan dan motivasimu.</div>
+<div class="faq"><b>10. Ke mana bertanya jika ada kendala pendaftaran?</b>Sekretariat IISMA: <b>secretariat@iisma.id</b> — atau hubungi KUI kampusmu.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Link Resmi</span><h2>Link Resmi & Kontak</h2>
+<p><a class="linkbtn" href="https://iisma.kemdikbud.go.id" target="_blank" rel="noopener">Portal Resmi IISMA</a></p>
+<ul>
+<li><b>Website:</b> iisma.kemdikbud.go.id (pendaftaran, daftar universitas mitra, panduan)</li>
+<li><b>Email:</b> secretariat@iisma.id</li>
+<li><b>Media sosial resmi IISMA</b> — untuk info sosialisasi & timeline terbaru</li>
+<li><b>Kantor Urusan Internasional (KUI)</b> kampusmu — untuk nominasi & seleksi internal</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Checklist</span><h2>Checklist Persiapan 6 Bulan</h2>
+<ul>
+<li>☐ Jaga IPK ≥ 3,00 dan pastikan data PDDIKTI valid</li>
+<li>☐ Ikut tes IELTS/TOEFL iBT/Duolingo (target di atas syarat minimal)</li>
+<li>☐ Kumpulkan pengalaman organisasi & prestasi</li>
+<li>☐ Riset 5+ universitas mitra + mata kuliahnya</li>
+<li>☐ Minta transkrip bahasa Inggris ke akademik</li>
+<li>☐ Draft esai 350 kata + minta review mentor/awardee</li>
+<li>☐ Kenalan dengan KUI kampus untuk info nominasi</li>
+<li>☐ Latihan wawancara bahasa Inggris</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Rangkuman</span><h2>Rangkuman 60 Detik</h2>
+<div class="card"><b>IISMA = kuliah 1 semester GRATIS di 100+ universitas top dunia</b> — tuition, tiket, visa, asuransi, tunjangan hidup, dana darurat ditanggung.</div>
+<ul>
+<li><b>Untuk:</b> mahasiswa S1/D4 semester 4–6 (D3: semester 4), IPK ≥3,0, IELTS 6,0/TOEFL iBT 78/Duolingo 100, dinominasikan kampus.</li>
+<li><b>Kunci lolos:</b> skor bahasa di atas minimal + esai 350 kata yang personal + riset kampus + wawancara matang.</li>
+<li><b>Daftar:</b> iisma.kemdikbud.go.id (pola tahunan: Jan–Feb).</li>
+<li><b>3 jalur:</b> reguler • afirmasi • co-funding.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Penutup</span><h2>Siap Mendunia?</h2>
+<p>IISMA adalah <b>kesempatan sekali seumur hidup</b>: satu semester belajar di kampus top dunia, dibiayai penuh negara, pulang membawa jejaring global.</p>
+<div class="card"><b>Mulai hari ini:</b> daftar tes bahasa Inggris, riset universitas impianmu, dan tulis draf esaimu. Persiapan 6 bulan mengalahkan bakat dadakan.</div>
+<p style="text-align:center;margin-top:16px">🌍 <b>Indonesia mendunia — mulai darimu!</b></p></div></section>
+</div>
+<div class="nav">
+<button id="prev" onclick="go(cur-1)">&#8592; Sebelumnya</button>
+<span id="counter">1 / 21</span>
+<button id="next" onclick="go(cur+1)">Lanjut &#8594;</button>
+</div>
+<div class="hint">Geser / panah &#8592; &#8594; untuk navigasi</div>
+<script>
+var cur=0;
+var slides=document.querySelectorAll('.slide');
+var N=slides.length;
+function go(n){cur=((n%N)+N)%N;
+slides.forEach(function(s,i){s.classList.toggle('active',i===cur)});
+document.getElementById('counter').textContent=(cur+1)+' / '+N;
+document.getElementById('bar').style.width=((cur+1)/N*100)+'%';
+document.getElementById('prev').disabled=(cur===0);
+document.getElementById('next').disabled=(cur===N-1);
+slides[cur].scrollTop=0;}
+document.addEventListener('keydown',function(e){
+if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(cur+1);}
+if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+if(e.key==='Home'){go(0);} if(e.key==='End'){go(N-1);}});
+var tx=0,ty=0;
+document.getElementById('deck').addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.getElementById('deck').addEventListener('touchend',function(e){
+var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){if(dx<0)go(cur+1);else go(cur-1);}},{passive:true});
+go(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/grant/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan AIESEC Global Talent", "slug": "deck-grant-aiesec-talent"},{"label": "Panduan AIESEC Global Volunteer", "slug": "deck-grant-aiesec-volunteer"},{"label": "Panduan Au Pair", "slug": "deck-grant-aupair"},{"label": "Panduan Ausbildung Jerman", "slug": "deck-grant-ausbildung"},{"label": "Panduan Erasmus+", "slug": "deck-grant-erasmus"},{"label": "Panduan IISMA", "slug": "deck-grant-iisma"},{"label": "Panduan IISMAVO", "slug": "deck-grant-iismavo"},{"label": "Panduan JET Programme", "slug": "deck-grant-jet"},{"label": "Panduan Short Course Luar Negeri", "slug": "deck-grant-shortcourse"},{"label": "Panduan Summer/Winter School", "slug": "deck-grant-summerschool"},{"label": "Panduan Travel Grant", "slug": "deck-grant-travel"},{"label": "Panduan Work & Travel USA", "slug": "deck-grant-worktravel"},{"label": "Panduan Working Holiday Visa", "slug": "deck-grant-whv"},{"label": "Panduan Youth Summit", "slug": "deck-grant-summit"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

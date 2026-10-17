@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 15 panduan beasiswa dalam negeri ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Beasiswa VDMI</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--c1:#0b5d3b;--c2:#15803d;--c3:#f59e0b}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0f172a;color:#1e293b;overflow:hidden}
+.deck{height:100vh;height:100dvh;position:relative}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;padding:56px 8vw 96px;overflow-y:auto;background:#fff}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.slide h1{font-size:clamp(1.6rem,4.5vw,2.8rem);color:var(--c1);margin-bottom:18px;text-align:center;line-height:1.25}
+.slide h2{font-size:clamp(1.3rem,3.5vw,2rem);color:var(--c1);margin-bottom:16px;text-align:center}
+.slide h3{font-size:1.05rem;color:var(--c2);margin:14px 0 6px}
+.content{max-width:860px;width:100%}
+.content p{margin:8px 0;line-height:1.65;font-size:clamp(.95rem,2.2vw,1.1rem)}
+.content ul,.content ol{margin:8px 0 8px 22px;line-height:1.7;font-size:clamp(.95rem,2.2vw,1.08rem)}
+.content li{margin:6px 0}
+.card{background:#f1f5f9;border-left:5px solid var(--c2);border-radius:10px;padding:14px 18px;margin:10px 0}
+.card b{color:var(--c1)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.grid2 .card{margin:0}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:clamp(.85rem,2vw,1rem)}
+th{background:var(--c1);color:#fff;padding:10px}
+td{padding:10px;border-bottom:1px solid #e2e8f0}
+tr:nth-child(even) td{background:#f8fafc}
+.kicker{display:inline-block;background:var(--c2);color:#fff;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:999px;margin-bottom:14px}
+.cover{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;text-align:center}
+.cover.hasimg{background-size:cover;background-position:center}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.78))}
+.cover .inner{position:relative;z-index:2;max-width:800px;padding:0 24px}
+.cover h1{color:#fff;font-size:clamp(2rem,6vw,3.6rem);margin:10px 0 14px;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.cover p{font-size:clamp(1rem,2.6vw,1.3rem);opacity:.92;line-height:1.6}
+.cover .kicker{background:rgba(255,255,255,.2);backdrop-filter:blur(4px)}
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:980px}
+.vid{background:#0f172a;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+.vid p{padding:10px 14px;font-size:.85rem;color:#e2e8f0;line-height:1.45}
+.vid p b{color:#fff}
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:rgba(15,23,42,.96);z-index:10}
+.nav button{background:var(--c2);color:#fff;border:0;border-radius:10px;padding:12px 26px;font-size:1rem;font-weight:700;cursor:pointer;min-width:120px}
+.nav button:disabled{opacity:.35;cursor:default}
+.nav button:active{transform:scale(.96)}
+#counter{color:#fff;font-weight:700;font-size:.95rem}
+#barwrap{position:fixed;top:0;left:0;right:0;height:5px;background:#1e293b;z-index:10}
+#bar{height:100%;width:5%;background:linear-gradient(90deg,var(--c2),var(--c3));transition:width .3s}
+.hint{position:fixed;bottom:74px;right:16px;color:#94a3b8;font-size:.75rem;z-index:10}
+.faq{background:#f8fafc;border-radius:10px;padding:12px 16px;margin:8px 0;border:1px solid #e2e8f0}
+.faq b{color:var(--c1);display:block;margin-bottom:4px}
+.linkbtn{display:inline-block;background:var(--c1);color:#fff!important;text-decoration:none;padding:12px 24px;border-radius:10px;font-weight:700;margin:6px 8px 6px 0}
+.badge{display:inline-block;background:#fef3c7;color:#92400e;font-weight:700;font-size:.8rem;padding:4px 12px;border-radius:999px;margin:2px}
+@media(max-width:640px){.vidgrid,.grid2{grid-template-columns:1fr}.slide{padding:44px 6vw 100px}.nav button{min-width:96px;padding:11px 18px}}
+</style>
+</head>
+<body>
+<div id="barwrap"><div id="bar"></div></div>
+<div class="deck" id="deck">
+<section class="slide cover hasimg" style="background-image:url('https://www.unja.ac.id/wp-content/uploads/2024/06/024acc4b-0d61-4aa5-af92-f52c6772df26-RIDHO-SYAHPUTRA-scaled-e1719556168411.jpeg')"><div class="shade"></div><div class="inner"><span class="kicker">Panduan Beasiswa Dalam Negeri</span><h1>Panduan Beasiswa VDMI</h1><p>Van Deventer-Maas Indonesia — beasiswa bulanan Rp800.000 untuk mahasiswa D3/D4/S1 di 35 kampus mitra, lengkap dengan bonus TOEFL, bonus lulus tepat waktu, dan capacity building gratis.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Sekilas Program</span><h2>Apa Itu Beasiswa VDMI?</h2>
+<p><b>Beasiswa Van Deventer-Maas Indonesia (VDMI)</b> adalah program beasiswa dari <b>Yayasan Van Deventer-Maas Indonesia</b>, yang didanai oleh Van Deventer-Maas Stichting di Belanda.</p>
+<div class="card"><b>Sejarah singkat:</b> yayasan ini berdiri berdasarkan wasiat Elizabeth Maas (istri Coen Van Deventer) dan telah mendukung pendidikan di Indonesia <b>sejak tahun 1913</b> — lebih dari satu abad!</div>
+<ul>
+<li>Ditujukan untuk mahasiswa <b>ongoing</b> (bukan mahasiswa baru) di <b>35 perguruan tinggi mitra</b> di seluruh Indonesia: UGM, ITB, UI, IPB, UNPAD, USU, UNHAS, UNDANA, UII, dan lainnya.</li>
+<li>Fokus pada mahasiswa <b>berprestasi dari keluarga kurang mampu</b> secara ekonomi.</li>
+<li>Pendaftaran rutin dibuka setiap tahun, biasanya <b>10 Februari – 10 Maret</b> melalui sistem <i>online</i> ERS.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Benefit</span><h2>Apa Saja yang Kamu Dapatkan?</h2>
+<div class="grid2">
+<div class="card"><b>💰 Rp800.000/bulan</b><br>Uang saku bulanan, ditransfer langsung ke rekening pribadi, <b>berlangsung hingga lulus</b> (D3: 6 semester, S1/D4: 8 semester).</div>
+<div class="card"><b>🎓 Bonus TOEFL Rp400.000</b><br>Bonus satu kali untuk biaya tes TOEFL — dukungan nyata meningkatkan kemampuan bahasa Inggrismu.</div>
+<div class="card"><b>🏆 Bonus Lulus Tepat Waktu Rp700.000</b><br>Diberikan bagi grantee yang menyelesaikan studi sesuai masa studi normal.</div>
+<div class="card"><b>🚀 Capacity Building Gratis</b><br>Kesempatan mengikuti pelatihan pengembangan diri (regional meeting, workshop kepemimpinan) — seluruh biaya ditanggung yayasan, melalui seleksi.</div>
+</div>
+<p><span class="badge">Catatan</span> Beasiswa dihentikan sementara jika IPK di bawah 3,00, cuti kuliah, atau tidak ada kabar/konfirmasi dalam periode tertentu.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Syarat</span><h2>Syarat Umum Pendaftar</h2>
+<ol>
+<li>Mahasiswa aktif <b>S1/D4 semester 2–6</b> atau <b>D3 semester 2–4</b> (tidak sedang di tahun akhir).</li>
+<li>Usia <b>maksimal 27 tahun</b>.</li>
+<li>Berasal dari keluarga dengan <b>keterbatasan ekonomi</b> (dibuktikan SKTM atau surat rekomendasi kampus).</li>
+<li><b>IPK minimal 3,00</b> dan wajib dipertahankan selama menerima beasiswa.</li>
+<li>Jurusan: Pertanian, Perikanan, Peternakan, Arsitektur, Seni & Budaya, Biologi, Kimia, Matematika, Fisika, Komunikasi, Ekonomi, Pendidikan, Teknik, Bahasa, Manajemen, Kehutanan, Geografi, Kesehatan/Kedokteran, Sejarah, Informatika, Statistik, Hukum, Ilmu Politik, dan lainnya — <b>kecuali Agama dan Teologi</b>.</li>
+<li>Aktif berorganisasi/komunitas <b>diutamakan</b>; fasih berbahasa Inggris jadi nilai plus.</li>
+<li><b>Tidak sedang menerima beasiswa lain</b> dari pihak mana pun.</li>
+<li>Kuliah di <b>kampus mitra VDMI</b> (cek daftar 35 kampus di laman resmi).</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Syarat</span><h2>Siapa yang Paling Cocok?</h2>
+<div class="card"><b>🎯 Profil ideal penerima VDMI:</b> mahasiswa semester awal–menengah yang IPK-nya stabil di atas 3,00, aktif di organisasi atau kegiatan sosial, punya keterbatasan ekonomi yang bisa dibuktikan dokumen, dan mau berkembang lewat pelatihan.</div>
+<ul>
+<li><b>Semester 2–4 adalah waktu terbaik mendaftar</b> — kamu masih punya banyak semester tersisa untuk menerima dana bulanan.</li>
+<li>Mahasiswa dengan pengalaman <b>kegiatan sosial/pengabdian masyarakat</b> punya nilai tambah besar karena misi yayasan ini sosial.</li>
+<li>Kemampuan bahasa Inggris yang baik membantumu di tahap esai dan wawancara — mulai latih dari sekarang.</li>
+<li>VDMI mencari grantee yang <b>bertanggung jawab dan komunikatif</b>: setelah lolos kamu wajib konfirmasi penerimaan dana rutin.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Dokumen</span><h2>Dokumen yang Wajib Disiapkan</h2>
+<ol>
+<li><b>Formulir/document checklist</b> VDMI (diunduh saat pendaftaran online).</li>
+<li><b>SKTM</b> dari kelurahan/desa sesuai KK (atau surat rekomendasi kondisi ekonomi dari kampus).</li>
+<li><b>Transkrip akademik terakhir</b> dengan IPK ≥ 3,00.</li>
+<li><b>Surat keterangan penghasilan orang tua</b> 2 bulan terakhir (wiraswasta: surat bermaterai Rp10.000 yang dilegalisir kelurahan).</li>
+<li>Fotokopi/scan <b>KTP, KTM, Kartu Keluarga</b>.</li>
+<li>Pas foto <b>4×6</b>.</li>
+<li><b>Tagihan listrik/telepon</b> rumah 2 bulan terakhir.</li>
+<li>Fotokopi <b>halaman depan buku tabungan</b> atas nama sendiri (disiapkan setelah lolos).</li>
+<li><b>Esai berbahasa Inggris</b> minimal 1,5 halaman A4 (font Palatino Linotype 11, spasi 1) tentang: profil diri & keluarga, studi & aktivitas, <b>mengapa VDMI harus memilihmu</b>, harapanmu jika terpilih, dan kontribusimu untuk masyarakat.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Tahapan</span><h2>Tahapan Seleksi</h2>
+<ol>
+<li><b>Pendaftaran online via ERS</b> — isi formulir di <i>vas.vdms-scholarship.org/ers</i> dengan email aktif, lalu isi <i>form checklist</i> dokumen di hari yang sama.</li>
+<li><b>Seleksi tahap 1 (administrasi)</b> — tim VDMI memeriksa kelengkapan dan kesesuaian syarat; hasilnya dikirim via email.</li>
+<li><b>Pengumpulan berkas fisik</b> — yang lolos tahap 1 wajib menyerahkan berkas asli ke <b>PIC (person in charge)</b> VDMI di kampus masing-masing sebelum deadline.</li>
+<li><b>Wawancara</b> — mengenal kepribadian, motivasi, dan rencana masa depanmu.</li>
+<li><b>Pengumuman akhir</b> — via email; penerima diminta melengkapi data rekening dan menandatangani kesepakatan.</li>
+</ol>
+<div class="card"><b>💡 Tips:</b> selalu cek email (termasuk folder spam) setelah mendaftar — semua pemberitahuan tahapan dikirim lewat email.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Timeline</span><h2>Timeline Pendaftaran</h2>
+<table>
+<tr><th>Tahapan</th><th>Jadwal (pola tahunan)</th></tr>
+<tr><td>Pendaftaran online ERS</td><td><b>10 Februari – 10 Maret</b></td></tr>
+<tr><td>Seleksi administrasi tahap 1</td><td>Maret – April</td></tr>
+<tr><td>Pengumpulan berkas ke PIC kampus</td><td>April (sesuai pengumuman kampus)</td></tr>
+<tr><td>Wawancara</td><td>April – Mei</td></tr>
+<tr><td>Pengumuman penerima</td><td>Mei – Juni</td></tr>
+<tr><td>Mulai pencairan dana</td><td>Semester berjalan</td></tr>
+</table>
+<p><span class="badge">Penting</span> Jadwal di atas adalah <b>pola tahunan</b> (contoh: batch 2026 dibuka 10 Feb–10 Mar 2026). Tanggal pasti tiap tahun bisa bergeser — pantau laman resmi dan pengumuman kemahasiswaan kampusmu.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Cara Daftar</span><h2>Langkah Pendaftaran Online</h2>
+<ol>
+<li>Pastikan kampusmu ada di <b>daftar 35 kampus mitra VDMI</b>.</li>
+<li>Siapkan <b>semua dokumen</b> dalam bentuk scan yang jelas (PDF/JPG).</li>
+<li>Buka <b>vas.vdms-scholarship.org/ers</b> (gunakan mode desktop bila mendaftar via HP).</li>
+<li>Masukkan <b>email aktif pribadi</b> (bukan email kampus), klik Apply, lalu cek tautan pendaftaran di email.</li>
+<li>Lengkapi formulir data diri, keluarga, akademik, dan kondisi ekonomi <b>dengan jujur dan konsisten</b>.</li>
+<li>Unggah <b>esai bahasa Inggris</b> yang sudah disiapkan.</li>
+<li>Centang persetujuan dokumen, klik <b>Submit</b>, lalu <b>isi form checklist dokumen</b> di hari yang sama.</li>
+<li>Simpan bukti pendaftaran; pantau email untuk undangan tahap berikutnya.</li>
+<li>Jika lolos tahap 1: serahkan <b>berkas fisik ke PIC kampus</b> sebelum deadline.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>Strategi Esai: Kunci Lolos VDMI</h2>
+<p>Esai adalah <b>penentu utama</b> — banyak pendaftar gugur karena esai yang standar dan tidak personal.</p>
+<ul>
+<li><b>Ceritakan kisah nyata:</b> latar keluarga, perjuangan ekonomi, dan bagaimana kamu tetap berprestasi. Jujur lebih kuat dari dramatis.</li>
+<li><b>Jawab 3 pertanyaan inti:</b> (1) Mengapa VDMI harus memilihmu? (2) Apa harapanmu jika terpilih? (3) Kontribusi apa yang akan kamu berikan ke masyarakat?</li>
+<li><b>Tunjukkan keselarasan nilai:</b> VDMI peduli pada tanggung jawab sosial — tonjolkan pengalaman organisasimu dan rencana pengabdian.</li>
+<li><b>Bahasa Inggris rapi:</b> minimal 1,5 halaman A4, periksa grammar dan typo; minta dosen/teman me-review.</li>
+<li><b>Spesifik, bukan klise:</b> hindari "ingin membanggakan orang tua" tanpa isi; ganti dengan rencana konkret (misal: "mengajar bahasa Inggris gratis di desa saya tiap akhir pekan").</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>Strategi Wawancara</h2>
+<ul>
+<li><b>Kenali VDMI:</b> pelajari sejarah yayasan (sejak 1913, misi pendidikan kaum muda Indonesia) — pewawancara menghargai pendaftar yang riset.</li>
+<li><b>Konsisten dengan esai:</b> wawancara menguji apakah kamu orang yang sama dengan yang tertulis di esai. Jangan mengarang.</li>
+<li><b>Tenang dan santai:</b> menurut pengalaman awardee, pembawaan yang tenang, jawaban rapi, dan tidak terlihat gugup dinilai positif.</li>
+<li><b>Siapkan 3 jawaban:</b> ceritakan dirimu, mengapa layak menerima beasiswa, dan rencana kontribusimu setelah lulus.</li>
+<li><b>Tunjukkan komitmen:</b> tegaskan kamu akan mempertahankan IPK ≥ 3,00 dan aktif di kegiatan grantee.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>7 Tips Lolos Seleksi VDMI</h2>
+<ol>
+<li><b>Daftar di awal periode</b> — jangan mepet deadline; sistem online rawan macet di hari terakhir.</li>
+<li><b>Dokumen super lengkap:</b> scan jernih, nama file rapi, semua sesuai checklist.</li>
+<li><b>Data konsisten:</b> penghasilan orang tua di formulir harus cocok dengan slip gaji/SKTM.</li>
+<li><b>IPK aman:</b> jaga di atas 3,00 — bukan pas-pasan.</li>
+<li><b>Aktif organisasi itu nyata:</b> cantumkan peran dan kontribusi konkret, bukan sekadar nama organisasi.</li>
+<li><b>Esai direview orang lain</b> sebelum diunggah.</li>
+<li><b>Responsif:</b> balas email VDMI/PIC kampus dengan cepat; keterlambatan konfirmasi bisa menggugurkan.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Hindari</span><h2>5 Kesalahan Umum Pendaftar</h2>
+<ol>
+<li><b>Dokumen buram/tidak terbaca</b> — scan ulang dengan resolusi cukup.</li>
+<li><b>Esai terlalu singkat/klise</b> — tidak menjawab "mengapa kamu" secara meyakinkan.</li>
+<li><b>Data ekonomi tidak cocok</b> — angka di formulir berbeda dengan bukti penghasilan.</li>
+<li><b>Mendaftar padahal kampus bukan mitra</b> — cek daftar 35 kampus mitra dulu.</li>
+<li><b>Melewatkan email undangan tahap 2</b> — tidak cek email/spam sehingga gagal kirim berkas ke PIC tepat waktu.</li>
+</ol></div></section>
+<section class="slide"><div class="content" style="max-width:1000px"><span class="kicker">Video Panduan</span><h2>Video Panduan Beasiswa VDMI</h2><div class="vidgrid"><div class="vid"><iframe src="https://www.youtube.com/embed/8snWsSYeQpc" title="Panduan Visual Strategi Beasiswa" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Panduan Visual Strategi Beasiswa</b><br>Cara daftar #1 — Strategi personal branding untuk aplikasi beasiswa: mengemas pengalaman organisasi menjadi poin kuat di esai.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/nAPZvQ8zeWo" title="Road to Achievement: Tips Menang Lomba Esai" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Road to Achievement: Tips Menang Lomba Esai</b><br>Cara daftar #2 — Teknik menulis esai yang runtut dan persuasif; VDMI mewajibkan esai berbahasa Inggris minimal 1,5 halaman A4.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/9ja31o--mbM" title="Pembinaan Mahasiswa Penerima Beasiswa" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Pembinaan Mahasiswa Penerima Beasiswa</b><br>Suasana kegiatan — Contoh sesi pembinaan penerima beasiswa; VDMI punya program serupa: Capacity Building gratis untuk grantee terpilih.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/IW_duVS8x18" title="Cerita: Dari Melamar Beasiswa sampai Jadi Penerima" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Cerita: Dari Melamar Beasiswa sampai Jadi Penerima</b><br>Testimoni — Perjalanan seorang scholarship hunter hingga menjadi awardee; hal-hal yang harus diperhatikan pelamar beasiswa.</p></div></div></div></section>
+<section class="slide"><div class="content"><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (1)</h2>
+<div class="faq"><b>1. Apakah mahasiswa PTS bisa mendaftar?</b>Bisa, selama kampusmu termasuk 35 kampus mitra VDMI (daftar mencakup PTN dan PTS seperti UII, UKSW, USD, dll).</div>
+<div class="faq"><b>2. Apakah boleh mendaftar jika sudah menerima beasiswa lain?</b>Tidak. Salah satu syarat mutlak: tidak sedang menerima beasiswa dari pihak mana pun.</div>
+<div class="faq"><b>3. Apakah dana Rp800.000/bulan dipotong biaya kuliah (UKT)?</b>Tidak — dana ditransfer langsung ke rekening pribadimu sebagai uang saku/bantuan biaya hidup, bukan pembayaran ke kampus.</div>
+<div class="faq"><b>4. Bagaimana jika IPK saya turun di bawah 3,00?</b>Beasiswa dihentikan sementara pada periode tersebut. Jika IPK kembali memenuhi syarat, dana dapat dilanjutkan.</div>
+<div class="faq"><b>5. Apakah ada ikatan dinas setelah lulus?</b>Tidak ada ikatan kerja. Namun grantee diharapkan menjaga nama baik dan berkontribusi ke masyarakat.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (2)</h2>
+<div class="faq"><b>6. Jurusan saya tidak ada di daftar — apakah masih bisa daftar?</b>Daftar disiplin ilmu VDMI sangat luas; hanya jurusan <b>Agama dan Teologi</b> yang dikecualikan. Cek daftar lengkap di laman resmi.</div>
+<div class="faq"><b>7. Apakah Capacity Building wajib diikuti?</b>Program ini melalui seleksi tersendiri dan gratis; sangat disarankan diikuti karena menambah skill dan jejaring nasional antar-grantee.</div>
+<div class="faq"><b>8. Kapan bonus TOEFL cair?</b>Bonus TOEFL Rp400.000 diberikan satu kali (jika ada alokasinya pada tahun berjalan) — tanyakan ke PIC kampusmu.</div>
+<div class="faq"><b>9. Apakah pendaftaran dipungut biaya?</b>Tidak. Pendaftaran dan seleksi VDMI <b>gratis</b>; waspada penipuan yang meminta bayaran.</div>
+<div class="faq"><b>10. Saya semester 6 S1 — masih bisa daftar?</b>Bisa, karena batas maksimal S1/D4 adalah semester 6. Tapi ingat, dana hanya cair untuk sisa masa studi normal (maksimal semester 8).</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Link Resmi</span><h2>Link Resmi & Kontak</h2>
+<p>Selalu gunakan <b>kanal resmi</b> berikut — jangan percaya info pendaftaran dari akun tidak resmi:</p>
+<p><a class="linkbtn" href="https://vas.vdms-scholarship.org/ers" target="_blank" rel="noopener">Pendaftaran Online (ERS)</a></p>
+<ul>
+<li><b>Portal pendaftaran:</b> vas.vdms-scholarship.org/ers</li>
+<li><b>Laman yayasan:</b> vandeventermaas.or.id (profil yayasan, daftar kampus mitra, manual book)</li>
+<li><b>PIC kampus:</b> setiap kampus mitra punya <i>person in charge</i> — hubungi bagian kemahasiswaan kampusmu untuk info berkas fisik dan deadline internal.</li>
+<li><b>Email:</b> semua pengumuman tahapan dikirim via email yang kamu daftarkan.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Checklist</span><h2>Checklist Persiapan 30 Hari</h2>
+<ul>
+<li>☐ Cek kampusmu di daftar 35 mitra VDMI</li>
+<li>☐ Urus SKTM ke kelurahan/desa</li>
+<li>☐ Minta slip gaji orang tua 2 bulan terakhir</li>
+<li>☐ Cetakan transkrip IPK terbaru (≥ 3,00)</li>
+<li>☐ Scan KTP, KTM, KK, tagihan listrik</li>
+<li>☐ Tulis esai bahasa Inggris (1,5 hal A4) + minta review dosen</li>
+<li>☐ Siapkan pas foto 4×6</li>
+<li>☐ Daftar online di awal periode 10 Feb–10 Mar</li>
+<li>☐ Pantau email setiap hari setelah mendaftar</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Rangkuman</span><h2>Rangkuman 60 Detik</h2>
+<div class="card"><b>VDMI = Rp800.000/bulan sampai lulus</b> + bonus TOEFL Rp400rb + bonus lulus tepat waktu Rp700rb + capacity building gratis.</div>
+<ul>
+<li><b>Untuk:</b> mahasiswa D3/D4/S1 semester 2–6 (D3: 2–4), usia ≤27, IPK ≥3,00, keluarga kurang mampu, di 35 kampus mitra.</li>
+<li><b>Kunci lolos:</b> dokumen lengkap & konsisten + esai Inggris yang personal dan jujur + wawancara yang tenang.</li>
+<li><b>Daftar:</b> vas.vdms-scholarship.org/ers (pola tahunan: 10 Feb–10 Mar).</li>
+<li><b>Gratis, tanpa ikatan dinas.</b></li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Penutup</span><h2>Siap Jadi Grantee VDMI?</h2>
+<p>Beasiswa VDMI sudah membantu ribuan mahasiswa Indonesia sejak puluhan tahun lalu — bukan sekadar dana bulanan, tapi juga <b>komunitas dan pembinaan</b> yang menemanimu sampai lulus.</p>
+<div class="card"><b>Langkah pertamamu hari ini:</b> cek daftar kampus mitra, urus SKTM, dan mulai tulis esaimu. Pendaftaran dibuka tiap awal tahun — yang siap lebih awal, yang menang.</div>
+<p style="text-align:center;margin-top:16px">🎓 <b>Semangat, calon grantee VDMI!</b></p></div></section>
+</div>
+<div class="nav">
+<button id="prev" onclick="go(cur-1)">&#8592; Sebelumnya</button>
+<span id="counter">1 / 20</span>
+<button id="next" onclick="go(cur+1)">Lanjut &#8594;</button>
+</div>
+<div class="hint">Geser / panah &#8592; &#8594; untuk navigasi</div>
+<script>
+var cur=0;
+var slides=document.querySelectorAll('.slide');
+var N=slides.length;
+function go(n){cur=((n%N)+N)%N;
+slides.forEach(function(s,i){s.classList.toggle('active',i===cur)});
+document.getElementById('counter').textContent=(cur+1)+' / '+N;
+document.getElementById('bar').style.width=((cur+1)/N*100)+'%';
+document.getElementById('prev').disabled=(cur===0);
+document.getElementById('next').disabled=(cur===N-1);
+slides[cur].scrollTop=0;}
+document.addEventListener('keydown',function(e){
+if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(cur+1);}
+if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+if(e.key==='Home'){go(0);} if(e.key==='End'){go(N-1);}});
+var tx=0,ty=0;
+document.getElementById('deck').addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.getElementById('deck').addEventListener('touchend',function(e){
+var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){if(dx<0)go(cur+1);else go(cur-1);}},{passive:true});
+go(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/dalam-negeri/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan Beasiswa BUMN", "slug": "deck-dn-bumn"},{"label": "Panduan Beasiswa Bakti BCA", "slug": "deck-dn-baktibca"},{"label": "Panduan Beasiswa Bank Indonesia (GenBI)", "slug": "deck-dn-genbi"},{"label": "Panduan Beasiswa Djarum Plus", "slug": "deck-dn-djarum"},{"label": "Panduan Beasiswa Garuda 2027", "slug": "deck-dn-garuda"},{"label": "Panduan Beasiswa KIP Kuliah", "slug": "deck-dn-kip"},{"label": "Panduan Beasiswa KSE", "slug": "deck-dn-kse"},{"label": "Panduan Beasiswa Kemenag", "slug": "deck-dn-kemenag"},{"label": "Panduan Beasiswa LPDP", "slug": "deck-dn-lpdp"},{"label": "Panduan Beasiswa Pemda", "slug": "deck-dn-pemda"},{"label": "Panduan Beasiswa Pendidikan Indonesia (BPI)", "slug": "deck-dn-bpi"},{"label": "Panduan Beasiswa Sampoerna Foundation", "slug": "deck-dn-sampoerna"},{"label": "Panduan Beasiswa Tanoto Foundation", "slug": "deck-dn-tanoto"},{"label": "Panduan Beasiswa Unggulan", "slug": "deck-dn-unggulan"},{"label": "Panduan Beasiswa VDMI", "slug": "deck-dn-vdmi"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>
