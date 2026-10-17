@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panduan S3 TaiwanICDF Taiwan</title>
+<style>:root{--accent:#b03a2e}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#b3541e;--bg:#141210;--card:#1f1b17;--text:#f5efe6;--muted:#c9bda9;--line:#3a322a}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;overflow:hidden}
+.deck{position:fixed;inset:0;display:flex;flex-direction:column}
+.slides{flex:1;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;padding:48px 7vw;overflow-y:auto;text-align:left}
+.slide.active{display:flex}
+.inner{max-width:960px;width:100%}
+.kicker{display:inline-block;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px}
+h1{font-size:clamp(30px,5vw,58px);line-height:1.12;margin-bottom:14px}
+h2{font-size:clamp(24px,3.6vw,40px);line-height:1.2;margin-bottom:18px}
+h3{font-size:clamp(18px,2.4vw,26px);margin:18px 0 10px;color:var(--accent)}
+.sub{font-size:clamp(16px,2.2vw,22px);color:var(--muted);line-height:1.55}
+.body{font-size:clamp(15px,2vw,19px);line-height:1.65;color:var(--text)}
+.body p{margin-bottom:12px}
+.body ul,.body ol{margin:0 0 14px 22px}
+.body li{margin-bottom:8px}
+.body strong{color:#fff}
+.num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:15px;margin-right:10px;flex:none}
+.step{display:flex;align-items:flex-start;margin-bottom:14px}
+.step div{flex:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.card b{color:#fff}
+.warn{background:#2a1f14;border:1px solid #7a4a1e;border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.warn b{color:#ffcf8a}
+table{width:100%;border-collapse:collapse;margin:6px 0 14px;font-size:clamp(13px,1.8vw,17px)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--accent);text-transform:uppercase;font-size:12px;letter-spacing:1px}
+.cover{background-size:cover;background-position:center;position:absolute;inset:0}
+.cover::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,8,6,.55) 0%,rgba(10,8,6,.88) 78%)}
+.cover .inner{position:relative;z-index:1}
+.cover .badge{display:inline-block;background:var(--accent);color:#fff;font-size:13px;font-weight:700;letter-spacing:2px;padding:8px 16px;border-radius:999px;margin-bottom:18px;text-transform:uppercase}
+.cover h1{text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;margin-top:6px}
+.vid{background:#000;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.vid .frame{position:relative;width:100%;padding-top:56.25%}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid .cap{padding:10px 12px;font-size:13px;color:var(--muted);background:var(--card)}
+.vid .cap b{color:var(--text);display:block;font-size:14px;margin-bottom:2px}
+.links{display:grid;gap:12px;margin-top:8px}
+.alink{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;color:var(--text);text-decoration:none;font-size:16px}
+.alink:hover{border-color:var(--accent)}
+.alink .arr{margin-left:auto;color:var(--accent);font-weight:700}
+.nav{flex:none;display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid var(--line);background:rgba(20,18,16,.96)}
+.nav button{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 18px;font-size:15px;cursor:pointer}
+.nav button:hover{border-color:var(--accent)}
+.nav button:disabled{opacity:.35;cursor:default}
+.counter{font-size:14px;color:var(--muted);white-space:nowrap}
+.progress{flex:1;height:6px;background:#2c2620;border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);width:0;transition:width .25s}
+.toc{columns:2;column-gap:32px;font-size:clamp(14px,1.9vw,18px)}
+.toc div{break-inside:avoid;margin-bottom:10px;color:var(--muted)}
+.toc b{color:var(--text);margin-right:8px}
+.src{font-size:13px;color:var(--muted);margin-top:14px}
+@media(max-width:640px){.slide{padding:28px 6vw}.toc{columns:1}.vidgrid{gap:10px}}
+</style>
+</style>
+</head>
+<body>
+<div class="deck">
+<div class="slides">
+<section class="slide"><div class="cover" style="background-image:url('https://media.globaladmissions.com/media/school_pictures/National_Taiwan_University_Entrance.jpeg?width=3840&amp;quality=100')"></div>
+<div class="inner"><span class="badge">Panduan Beasiswa S3</span>
+<h1>Panduan S3 TaiwanICDF Taiwan</h1>
+<p class="sub">TaiwanICDF International Higher Education Scholarship — PhD: full tuition + NT$20 ribu/bulan + asrama + tiket PP. Wajib aplikasi ganda: ke ICDF dan ke universitas, via TECO.</p>
+<p class="src">Sumber foto: National Taiwan University — gerbang utama kampus</p></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Daftar Isi</span><h2>Yang akan kamu pelajari</h2>
+<div class="toc"><div><b>01</b>Sekilas: beasiswa TaiwanICDF</div><div><b>02</b>Apa saja yang ditanggung?</div><div><b>03</b>Syarat utama pendaftar</div><div><b>04</b>Format &amp; tahapan seleksi</div><div><b>05</b>Tahap 1: Pilih program TICA yang tepat</div><div><b>06</b>Tahap 2: Aplikasi ganda yang rapi</div><div><b>07</b>Tahap 3: Mandarin test &amp; dokumen</div><div><b>08</b>Tahap 4: Via TECO &amp; pantau</div><div><b>09</b>Timeline persiapan 12 bulan</div><div><b>10</b>Checklist dokumen</div><div><b>11</b>Anatomi research plan yang menang</div><div><b>12</b>Strategi Mandarin Test</div><div><b>13</b>Sumber informasi resmi</div><div><b>14</b>Link pendaftaran resmi</div><div><b>15</b>Tonton &amp; pelajari</div><div><b>16</b>Tips wawancara &amp; hari-H</div><div><b>17</b>Pertanyaan yang sering ditanyakan</div><div><b>18</b>Catatan jujur: aplikasi ganda</div><div><b>19</b>Langkah pertamamu minggu ini</div></div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Sekilas beasiswa</span><h2>Sekilas: beasiswa TaiwanICDF</h2>
+<div class="body">
+<p><strong>TaiwanICDF (International Cooperation and Development Fund)</strong> adalah lembaga pembangunan internasional Taiwan yang menjalankan <strong>International Higher Education Scholarship Program</strong> — termasuk <strong>jalur PhD</strong>.</p>
+<ul>
+<li><strong>Indonesia ADA di daftar negara eligible</strong> resmi TaiwanICDF (Asia-Pacific) — terverifikasi dari Guidebook 2026.</li>
+<li>Hanya untuk <strong>program English-taught</strong> di <strong>~23 universitas mitra TICA</strong>.</li>
+<li><strong>Wajib aplikasi ganda</strong>: ke <strong>ICDF</strong> DAN ke <strong>universitas</strong> secara terpisah.</li>
+<li>Aplikasi diproses via <strong>TECO (Kantor Dagang/Ekonomi Taiwan)</strong> di Indonesia.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Rincian pendanaan</span><h2>Apa saja yang ditanggung?</h2>
+<div class="body">
+<table>
+<tr><th>Komponen</th><th>Nilai</th></tr>
+<tr><td><strong>Tuition + credit fees</strong></td><td>Penuh</td></tr>
+<tr><td><strong>Stipend bulanan</strong></td><td><strong>NT$20.000/bulan</strong> (~Rp 10 juta)</td></tr>
+<tr><td><strong>Asrama</strong></td><td>Ditanggung</td></tr>
+<tr><td><strong>Tiket pesawat PP</strong></td><td>Ditanggung</td></tr>
+<tr><td><strong>Asuransi + buku</strong></td><td>Ditanggung</td></tr>
+</table>
+<p>Paket lengkap — penerima tiba di Taiwan tanpa beban finansial menunggu.</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Syarat utama</span><h2>Syarat utama pendaftar</h2>
+<div class="body">
+<ul>
+<li><strong>Warga negara Indonesia</strong> (negara eligible resmi ICDF).</li>
+<li><strong>Bukan</strong> warga negara Taiwan / overseas compatriot student.</li>
+<li>Memenuhi <strong>syarat admisi universitas mitra</strong> untuk program PhD English-taught.</li>
+<li><strong>Bahasa Inggris</strong>: bukti kemampuan (TOEFL/IELTS) sesuai syarat program.</li>
+<li><strong>2 surat referensi</strong>.</li>
+<li><strong>Tidak sedang</strong> menerima beasiswa pemerintah Taiwan lain (MOE/MOFA) di tahun yang sama.</li>
+<li>Pernah menerima beasiswa ICDF/MOFA/MOE? <strong>Wajib sudah kembali ke negara asal min. 1 tahun</strong> sebelum apply lagi.</li>
+<li>Tidak ada riwayat <strong>pencabutan beasiswa / DO</strong> di Taiwan.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Format seleksi</span><h2>Format &amp; tahapan seleksi</h2>
+<div class="body">
+<div class="step"><span class="num">1</span><div><b>Aplikasi ganda</b> — (a) <b>ICDF Online Scholarship Application System</b> + (b) <b>sistem admisi universitas mitra</b> pilihanmu.</div></div>
+<div class="step"><span class="num">2</span><div><b>Kursus Mandarin online</b> — pelajari via <b>TaiwanICDF School YouTube Channel</b> dan selesaikan <b>Online Mandarin Test</b> (mempengaruhi second review!).</div></div>
+<div class="step"><span class="num">3</span><div><b>First review</b> — TECO menyeleksi berdasarkan kriteria ICDF (rekomendasi ke ICDF maks 31 Mar).</div></div>
+<div class="step"><span class="num">4</span><div><b>Second review</b> — komite akademik universitas + perwakilan ICDF.</div></div>
+<div class="step"><span class="num">5</span><div><b>Pengumuman</b> — maks <b>10 Juni</b> tiap tahun via TECO. <b>Catatan:</b> diterima universitas <b>belum tentu</b> dapat beasiswa ICDF — hanya penerima <b>acceptance letter dari ICDF</b> yang resmi.</div></div>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 1</span><h2>Tahap 1: Pilih program TICA yang tepat</h2>
+<div class="body">
+<ul>
+<li>Pelajari daftar <strong>~23 universitas mitra TICA</strong> + program English-taught yang dibuka untuk ICDF (cek Guidebook tahun berjalan).</li>
+<li>Pilih <strong>1–2 program PhD</strong> yang paling cocok dengan latar S2 & risetmu.</li>
+<li>Baca <strong>kurikulum & profil fakultas</strong> tiap program — second review dilakukan komite universitas tersebut.</li>
+<li>Perhatikan <strong>periode aplikasi</strong>: pola tahunan <strong>1 Des – 15 Mar</strong> (cek guidebook terbaru).</li>
+<li>Siapkan <strong>research plan</strong> yang selaras dengan kekuatan program.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 2</span><h2>Tahap 2: Aplikasi ganda yang rapi</h2>
+<div class="body">
+<ul>
+<li><strong>Jalur A — ICDF</strong>: isi <strong>Online Scholarship Application System</strong> ICDF dengan lengkap.</li>
+<li><strong>Jalur B — Universitas</strong>: isi <strong>sistem admisi international student</strong> universitas mitra (dokumen bisa berbeda — ikuti keduanya!).</li>
+<li><strong>Sinkronkan data</strong>: nama, program, dan dokumen harus konsisten di kedua sistem.</li>
+<li>Ajukan <strong>jauh sebelum deadline</strong> — dua sistem = dua kali potensi kendala teknis.</li>
+<li>Simpan <strong>bukti submit</strong> dari kedua sistem.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 3</span><h2>Tahap 3: Mandarin test &amp; dokumen</h2>
+<div class="body">
+<ul>
+<li><strong>Jangan lewatkan Mandarin Test</strong>: pelajari kursus di <strong>TaiwanICDF School YouTube Channel</strong>, selesaikan <strong>Online Mandarin Test</strong> — kelulusanmu <strong>mempengaruhi second review</strong>.</li>
+<li>Siapkan: <strong>transkrip & ijazah, bukti bahasa Inggris, 2 referensi</strong>, dokumen lain yang diminta TECO.</li>
+<li>Dokumen <strong>tidak dalam Inggris/Mandarin</strong>? Siapkan terjemahan resmi.</li>
+<li><strong>Research plan / study plan</strong> untuk PhD: jelas, feasible, relevan.</li>
+<li>Cek <strong>persyaratan khusus TECO Indonesia</strong> (legalisasi, format).</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 4</span><h2>Tahap 4: Via TECO &amp; pantau</h2>
+<div class="body">
+<ul>
+<li>Aplikasi diajukan <strong>melalui TECO</strong> (Kantor Dagang/Ekonomi Taiwan) — ikuti prosedur setempat.</li>
+<li><strong>First review oleh TECO</strong> — pastikan berkasmu menonjol di tahap ini.</li>
+<li>Siapkan diri untuk <strong>wawancara/asesmen</strong> bila diminta universitas di second review.</li>
+<li>Pengumuman <strong>maks 10 Juni</strong> — hanya <strong>acceptance letter dari ICDF</strong> yang berarti kamu penerima beasiswa.</li>
+<li>Setelah itu: <strong>consent form</strong> dikembalikan via TECO → urus visa & keberangkatan.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Timeline</span><h2>Timeline persiapan 12 bulan</h2>
+<div class="body">
+<table>
+<tr><th>Bulan</th><th>Fokus</th></tr>
+<tr><td><strong>Jun–Agu</strong> (H-12 s.d. H-9)</td><td>Riset program TICA; pilih 1–2 program PhD; susun research plan; siapkan tes bahasa Inggris.</td></tr>
+<tr><td><strong>Sep–Nov</strong> (H-9 s.d. H-6)</td><td>Ikuti kursus Mandarin online ICDF; kumpulkan dokumen; hubungi referee.</td></tr>
+<tr><td><strong>Des–Feb</strong> (periode aplikasi)</td><td>Isi <strong>kedua sistem</strong> (ICDF + universitas); selesaikan Mandarin test; submit via TECO.</td></tr>
+<tr><td><strong>Mar–Mei</strong></td><td>First review (TECO) → second review (universitas + ICDF).</td></tr>
+<tr><td><strong>Jun</strong></td><td>Pengumuman (maks 10 Jun); consent form; urus visa.</td></tr>
+</table>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Dokumen</span><h2>Checklist dokumen</h2>
+<div class="body">
+<ul>
+<li>☐ Formulir aplikasi <strong>ICDF online system</strong></li>
+<li>☐ Formulir <strong>admisi universitas mitra</strong></li>
+<li>☐ Transkrip & ijazah S1+S2</li>
+<li>☐ Bukti kemampuan <strong>bahasa Inggris</strong></li>
+<li>☐ <strong>2 surat referensi</strong></li>
+<li>☐ Research plan / study plan (PhD)</li>
+<li>☐ Paspor</li>
+<li>☐ <strong>Sertifikat/hasil Online Mandarin Test</strong></li>
+<li>☐ Dokumen tambahan sesuai permintaan TECO</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Research plan</span><h2>Anatomi research plan yang menang</h2>
+<div class="body">
+<ul>
+<li><strong>Research question</strong>: tajam dan terjawab dalam masa PhD.</li>
+<li><strong>Relevansi pembangunan</strong>: ICDF adalah lembaga pembangunan — tunjukkan dampak bagi Indonesia.</li>
+<li><strong>Kesesuaian program</strong>: kenapa program English-taught di universitas mitra itu yang tepat.</li>
+<li><strong>Metodologi</strong>: langkah konkret.</li>
+<li><strong>Rencana pasca-studi</strong>: kembali dan berkontribusi — nilai inti ICDF.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Mandarin test</span><h2>Strategi Mandarin Test</h2>
+<div class="body">
+<ul>
+<li>ICDF mewajibkan pendaftar <strong>belajar via TaiwanICDF School YouTube Channel</strong> dan menyelesaikan <strong>Online Mandarin Test</strong>.</li>
+<li>Hasilnya <strong>diperhitungkan di second review</strong> — jangan anggap formalitas.</li>
+<li>Mulai belajar <strong>3–4 bulan sebelum aplikasi</strong>; targetkan pemahaman dasar yang solid.</li>
+<li>Catat <strong>jadwal & link tes</strong> dari guidebook/pengumuman resmi.</li>
+<li>Sertakan <strong>bukti penyelesaian</strong> dalam berkas aplikasimu.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Sumber resmi</span><h2>Sumber informasi resmi</h2>
+<div class="body">
+<ul>
+<li><strong>TaiwanICDF</strong> — icdf.org.tw: Guidebook & pengumuman resmi tiap tahun.</li>
+<li><strong>TICA</strong> — aliansi universitas mitra: daftar program English-taught.</li>
+<li><strong>TECO Indonesia</strong> — prosedur aplikasi & first review untuk WNI.</li>
+<li><strong>Universitas mitra</strong> — syarat admisi spesifik tiap program.</li>
+<li><strong>Alternatif</strong>: <strong>MOE Taiwan Scholarship</strong> (via TECO juga) — PhD: NT$15–20rb/bulan + tuition s.d. NT$40rb/semester.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Link resmi</span><h2>Link pendaftaran resmi</h2>
+<div class="body"><p>Kanal resmi untuk aplikasi TaiwanICDF:</p></div><div class="links"><a class="alink" href="https://www.icdf.org.tw/" target="_blank" rel="noopener"><span>TaiwanICDF — icdf.org.tw (resmi)</span><span class="arr">&rarr;</span></a><a class="alink" href="https://www.icdf.org.tw/wSite/ct?xItem=12507&amp;ctNode=31564&amp;mp=2" target="_blank" rel="noopener"><span>Halaman beasiswa ICDF</span><span class="arr">&rarr;</span></a><a class="alink" href="https://www.studyintaiwan.org/" target="_blank" rel="noopener"><span>Study in Taiwan — studyintaiwan.org</span><span class="arr">&rarr;</span></a></div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Video</span><h2>Tonton &amp; pelajari</h2>
+<div class="vidgrid"><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/IzXOkg1oh5M" title="Taiwan Government International Higher Education Scholarship — panduan aplikasi step-by-step"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Cara daftar 1</b>Taiwan Government International Higher Education Scholarship — panduan aplikasi step-by-step</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/_P6R8fLiRRo" title="YZU + ICDF Scholarship — prosedur aplikasi ganda via universitas mitra"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Cara daftar 2</b>YZU + ICDF Scholarship — prosedur aplikasi ganda via universitas mitra</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/f5hSoZq17Z4" title="National Taiwan University Campus Tour — tur kampus utama di Taipei"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Suasana kampus</b>National Taiwan University Campus Tour — tur kampus utama di Taipei</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/ojz3A9TwaVA" title="Study in Taiwan, Make Your Dreams Come True — testimoni scholars TaiwanICDF"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Testimoni</b>Study in Taiwan, Make Your Dreams Come True — testimoni scholars TaiwanICDF</div></div></div>
+<p class="src">Klik video untuk memutar. Semua video dari YouTube dan relevan dengan beasiswa ini.</p></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Wawancara</span><h2>Tips wawancara &amp; hari-H</h2>
+<div class="body">
+<ul>
+<li><strong>Kuasai research plan</strong>: jelaskan 3 menit dengan percaya diri.</li>
+<li><strong>Kenapa Taiwan & program ini</strong>: spesifik — kurikulum, fakultas, relevansi pembangunan.</li>
+<li><strong>Komitmen kembali</strong>: ICDF menilai kesungguhan kontribusimu bagi Indonesia.</li>
+<li><strong>Mandarin dasar</strong>: sapaan sederhana menunjukkan keseriusanmu.</li>
+<li><strong>Hari-H</strong>: dokumen lengkap, berpakaian rapi, datang tepat waktu.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">FAQ</span><h2>Pertanyaan yang sering ditanyakan</h2>
+<div class="body">
+<h3>Apakah WNI eligible?</h3>
+<p><strong>Ya</strong> — Indonesia ada di daftar negara eligible resmi TaiwanICDF.</p>
+<h3>Apakah cukup apply ke universitas saja?</h3>
+<p><strong>Tidak.</strong> Wajib <strong>aplikasi ganda</strong>: ke ICDF dan ke universitas, keduanya.</p>
+<h3>Apakah diterima universitas = dapat beasiswa?</h3>
+<p><strong>Tidak.</strong> Hanya penerima <strong>acceptance letter dari ICDF</strong> yang resmi menjadi penerima beasiswa.</p>
+<h3>Apakah harus bisa Mandarin?</h3>
+<p>Tidak wajib fasih, tapi <strong>Online Mandarin Test harus diselesaikan</strong> dan diperhitungkan di seleksi.</p>
+<h3>Apakah ada alternatif selain ICDF?</h3>
+<p>Ya: <strong>MOE Taiwan Scholarship</strong> via TECO — juga terbuka untuk PhD WNI.</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Catatan jujur</span><h2>Catatan jujur: aplikasi ganda</h2>
+<div class="body">
+<div class="warn">
+<p><b>Jebakan yang paling sering menggugurkan:</b></p>
+<ul>
+<li>Banyak pendaftar <strong>hanya apply ke universitas</strong> dan mengira otomatis dapat beasiswa — <strong>salah</strong>. Tanpa aplikasi ICDF, tidak ada beasiswa.</li>
+<li><strong>Diterima universitas ≠ diterima beasiswa.</strong> Hanya <strong>acceptance letter dari ICDF</strong> yang sah.</li>
+<li><strong>Mandarin Test bukan formalitas</strong> — hasilnya memengaruhi second review.</li>
+<li>Hanya <strong>program English-taught di universitas mitra TICA</strong> yang eligible — program di luar daftar tidak bisa.</li>
+</ul>
+</div>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Penutup</span><h2>Langkah pertamamu minggu ini</h2>
+<div class="body">
+<div class="step"><span class="num">1</span><div>Unduh <b>Guidebook TaiwanICDF terbaru</b> di icdf.org.tw dan tandai <b>program PhD English-taught</b> yang cocok.</div></div>
+<div class="step"><span class="num">2</span><div>Mulai <b>kursus Mandarin online ICDF</b> (YouTube Channel TaiwanICDF School) dari sekarang.</div></div>
+<div class="step"><span class="num">3</span><div>Buat <b>timeline aplikasi ganda</b>: checklist terpisah untuk sistem ICDF vs sistem universitas.</div></div>
+<div class="step"><span class="num">4</span><div>Hubungi <b>TECO</b> untuk menanyakan prosedur & jadwal first review untuk WNI tahun ini.</div></div>
+</div></div></section>
+</div>
+<nav class="nav">
+<button id="prev">&larr; Sebelumnya</button>
+<div class="progress"><i id="bar"></i></div>
+<span class="counter" id="counter">1 / 21</span>
+<button id="next">Berikutnya &rarr;</button>
+</nav>
+</div>
+<script>
+let cur=0;const slides=[...document.querySelectorAll('.slide')];const total=slides.length;
+const prevB=document.getElementById('prev'),nextB=document.getElementById('next'),
+counter=document.getElementById('counter'),bar=document.getElementById('bar');
+function show(i){cur=Math.max(0,Math.min(total-1,i));
+slides.forEach((s,k)=>s.classList.toggle('active',k===cur));
+prevB.disabled=cur===0;nextB.disabled=cur===total-1;
+counter.textContent=(cur+1)+' / '+total;bar.style.width=((cur+1)/total*100)+'%';
+slides[cur].scrollTop=0;}
+prevB.onclick=()=>show(cur-1);nextB.onclick=()=>show(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(cur+1);}
+if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(cur-1);}});
+let tx=null;document.addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;
+if(dx<-60)show(cur+1);else if(dx>60)show(cur-1);tx=null;},{passive:true});
+show(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

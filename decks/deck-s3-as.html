@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panduan S3 Fulbright AS</title>
+<style>:root{--accent:#1f4e9c}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#b3541e;--bg:#141210;--card:#1f1b17;--text:#f5efe6;--muted:#c9bda9;--line:#3a322a}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;overflow:hidden}
+.deck{position:fixed;inset:0;display:flex;flex-direction:column}
+.slides{flex:1;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;padding:48px 7vw;overflow-y:auto;text-align:left}
+.slide.active{display:flex}
+.inner{max-width:960px;width:100%}
+.kicker{display:inline-block;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px}
+h1{font-size:clamp(30px,5vw,58px);line-height:1.12;margin-bottom:14px}
+h2{font-size:clamp(24px,3.6vw,40px);line-height:1.2;margin-bottom:18px}
+h3{font-size:clamp(18px,2.4vw,26px);margin:18px 0 10px;color:var(--accent)}
+.sub{font-size:clamp(16px,2.2vw,22px);color:var(--muted);line-height:1.55}
+.body{font-size:clamp(15px,2vw,19px);line-height:1.65;color:var(--text)}
+.body p{margin-bottom:12px}
+.body ul,.body ol{margin:0 0 14px 22px}
+.body li{margin-bottom:8px}
+.body strong{color:#fff}
+.num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:15px;margin-right:10px;flex:none}
+.step{display:flex;align-items:flex-start;margin-bottom:14px}
+.step div{flex:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.card b{color:#fff}
+.warn{background:#2a1f14;border:1px solid #7a4a1e;border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.warn b{color:#ffcf8a}
+table{width:100%;border-collapse:collapse;margin:6px 0 14px;font-size:clamp(13px,1.8vw,17px)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--accent);text-transform:uppercase;font-size:12px;letter-spacing:1px}
+.cover{background-size:cover;background-position:center;position:absolute;inset:0}
+.cover::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,8,6,.55) 0%,rgba(10,8,6,.88) 78%)}
+.cover .inner{position:relative;z-index:1}
+.cover .badge{display:inline-block;background:var(--accent);color:#fff;font-size:13px;font-weight:700;letter-spacing:2px;padding:8px 16px;border-radius:999px;margin-bottom:18px;text-transform:uppercase}
+.cover h1{text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;margin-top:6px}
+.vid{background:#000;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.vid .frame{position:relative;width:100%;padding-top:56.25%}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid .cap{padding:10px 12px;font-size:13px;color:var(--muted);background:var(--card)}
+.vid .cap b{color:var(--text);display:block;font-size:14px;margin-bottom:2px}
+.links{display:grid;gap:12px;margin-top:8px}
+.alink{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;color:var(--text);text-decoration:none;font-size:16px}
+.alink:hover{border-color:var(--accent)}
+.alink .arr{margin-left:auto;color:var(--accent);font-weight:700}
+.nav{flex:none;display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid var(--line);background:rgba(20,18,16,.96)}
+.nav button{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 18px;font-size:15px;cursor:pointer}
+.nav button:hover{border-color:var(--accent)}
+.nav button:disabled{opacity:.35;cursor:default}
+.counter{font-size:14px;color:var(--muted);white-space:nowrap}
+.progress{flex:1;height:6px;background:#2c2620;border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);width:0;transition:width .25s}
+.toc{columns:2;column-gap:32px;font-size:clamp(14px,1.9vw,18px)}
+.toc div{break-inside:avoid;margin-bottom:10px;color:var(--muted)}
+.toc b{color:var(--text);margin-right:8px}
+.src{font-size:13px;color:var(--muted);margin-top:14px}
+@media(max-width:640px){.slide{padding:28px 6vw}.toc{columns:1}.vidgrid{gap:10px}}
+</style>
+</style>
+</head>
+<body>
+<div class="deck">
+<div class="slides">
+<section class="slide"><div class="cover" style="background-image:url('https://statesymbolsusa.org/sites/default/files/primary-images/MemorialHallHarvardUniversity.jpg')"></div>
+<div class="inner"><span class="badge">Panduan Beasiswa S3</span>
+<h1>Panduan S3 Fulbright AS</h1>
+<p class="sub">Fulbright Doctoral Degree (Ph.D.) Scholarship — AMINEF. Beasiswa penuh 3 tahun untuk WNI bergelar S2: tuition + biaya hidup + tiket PP + asuransi kesehatan untuk studi doktoral di Amerika Serikat.</p>
+<p class="src">Sumber foto: statesymbolsusa.org — Memorial Hall, Harvard University</p></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Daftar Isi</span><h2>Yang akan kamu pelajari</h2>
+<div class="toc"><div><b>01</b>Sekilas: Fulbright Doctoral Degree</div><div><b>02</b>Apa saja yang ditanggung?</div><div><b>03</b>Syarat utama pendaftar</div><div><b>04</b>Format &amp; tahapan seleksi</div><div><b>05</b>Tahap 1: Study objective yang tajam</div><div><b>06</b>Tahap 2: Personal statement yang hidup</div><div><b>07</b>Tahap 3: Bahasa Inggris &amp; rekomendasi</div><div><b>08</b>Tahap 4: Submit &amp; wawancara</div><div><b>09</b>Timeline persiapan 12 bulan</div><div><b>10</b>Checklist dokumen</div><div><b>11</b>Anatomi study objective yang menang</div><div><b>12</b>Memilih referee yang tepat</div><div><b>13</b>Sumber informasi resmi</div><div><b>14</b>Link pendaftaran resmi</div><div><b>15</b>Tonton &amp; pelajari</div><div><b>16</b>Tips wawancara &amp; hari-H</div><div><b>17</b>Pertanyaan yang sering ditanyakan</div><div><b>18</b>Catatan jujur</div><div><b>19</b>Langkah pertamamu minggu ini</div></div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Sekilas beasiswa</span><h2>Sekilas: Fulbright Doctoral Degree</h2>
+<div class="body">
+<p><strong>Fulbright Doctoral Degree (Ph.D.) Scholarship</strong> dikelola di Indonesia oleh <strong>AMINEF</strong> (American Indonesian Exchange Foundation). Ini adalah beasiswa <strong>penuh 3 tahun</strong> untuk studi doktoral di universitas Amerika Serikat.</p>
+<ul>
+<li><strong>Khusus WNI</strong> yang sudah bergelar <strong>S2 (master)</strong>.</li>
+<li>Terbuka untuk <strong>semua bidang studi kecuali kedokteran klinis</strong>.</li>
+<li><strong>Prioritas</strong> bagi yang berniat <strong>mengajar/meneliti di Indonesia</strong> setelah lulus.</li>
+<li>Catatan: dosen tetap PT Indonesia (pemegang NIDN) diarahkan ke program paralel DIKTI-funded yang sedang hiatus — pendaftar umum tetap ke program ini.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Rincian pendanaan</span><h2>Apa saja yang ditanggung?</h2>
+<div class="body">
+<table>
+<tr><th>Komponen</th><th>Cakupan</th></tr>
+<tr><td><strong>Tuition & fees</strong></td><td>Biaya kuliah universitas AS</td></tr>
+<tr><td><strong>Biaya hidup</strong></td><td>Living expenses selama studi</td></tr>
+<tr><td><strong>Tiket pesawat</strong></td><td>PP Indonesia–AS</td></tr>
+<tr><td><strong>Asuransi kesehatan</strong></td><td>Ditanggung program</td></tr>
+<tr><td><strong>Durasi</strong></td><td><strong>3 tahun</strong> studi doktoral</td></tr>
+</table>
+<p>Paket penuh ini memungkinkanmu fokus pada disertasi tanpa beban finansial.</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Syarat utama</span><h2>Syarat utama pendaftar</h2>
+<div class="body">
+<ul>
+<li><strong>WNI</strong>, bukan permanent resident AS dan tidak sedang tinggal di AS.</li>
+<li><strong>Bergelar S2 (master)</strong> dengan <strong>IPK minimal 3.0</strong> (skala 4.0).</li>
+<li><strong>Bahasa Inggris</strong>: TOEFL ITP <strong>575</strong> / TOEFL iBT <strong>90</strong> / IELTS <strong>7.0</strong> / Duolingo <strong>135</strong> (minimal, hasil &lt; 2 tahun).</li>
+<li><strong>Komitmen kembali ke Indonesia</strong> setelah selesai — dibuktikan dalam esai.</li>
+<li><strong>Leadership & pengabdian masyarakat</strong>: rekam jejak kepemimpinan dan community service.</li>
+<li><strong>Rekam akademik outstanding</strong> + kesiapan studi full-time di AS.</li>
+<li>Tidak sedang menempuh gelar lain / menerima beasiswa lain saat mendaftar.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Format seleksi</span><h2>Format &amp; tahapan seleksi</h2>
+<div class="body">
+<div class="step"><span class="num">1</span><div><b>Aplikasi online</b> — registrasi di <b>stu.aminef.or.id/grantee/</b>, isi formulir + unggah dokumen (ada panduan berbahasa Indonesia yang bisa diunduh setelah registrasi).</div></div>
+<div class="step"><span class="num">2</span><div><b>Screening administrasi</b> — kelengkapan & syarat minimal dicek (sekitar Maret).</div></div>
+<div class="step"><span class="num">3</span><div><b>Seleksi wawancara</b> — hanya kandidat shortlist yang dihubungi (sekitar April).</div></div>
+<div class="step"><span class="num">4</span><div><b>Pengumuman shortlist</b> — sekitar Juni.</div></div>
+<div class="step"><span class="num">5</span><div><b>Penempatan universitas</b> — AMINEF/IIE membantu penempatan di universitas AS yang sesuai.</div></div>
+<p class="src"><strong>Deadline tahunan: 15 Februari</strong> (dapat berubah tiap tahun — cek situs AMINEF).</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 1</span><h2>Tahap 1: Study objective yang tajam</h2>
+<div class="body">
+<p>Formulir meminta <strong>one-page study objective</strong> — ini jantung aplikasimu.</p>
+<ul>
+<li><strong>Research question jelas</strong>: apa yang ingin kamu teliti di S3 dan mengapa penting.</li>
+<li><strong>Kenapa AS & kenapa sekarang</strong>: hubungkan dengan sumber daya/keahlian spesifik di universitas AS.</li>
+<li><strong>Kenapa kamu</strong>: latar S2, pengalaman riset, dan kesiapanmu.</li>
+<li><strong>Dampak untuk Indonesia</strong>: jelaskan kontribusi pasca-studi — ini kriteria prioritas Fulbright.</li>
+<li>Tulis dalam <strong>1 halaman, bahasa Inggris akademik yang jernih</strong> — minta 2–3 orang mereview.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 2</span><h2>Tahap 2: Personal statement yang hidup</h2>
+<div class="body">
+<ul>
+<li><strong>Ceritakan perjalananmu</strong>: momen yang membentukmu menjadi calon peneliti — bukan sekadar daftar prestasi.</li>
+<li><strong>Tunjukkan leadership & community service</strong> dengan contoh konkret (bukan klaim umum).</li>
+<li><strong>Narasi koheren</strong>: masa lalu → S2 → rencana S3 → kembali ke Indonesia, satu benang merah.</li>
+<li><strong>Jujur & reflektif</strong>: panel Fulbright membaca ratusan esai — keaslian menonjol.</li>
+<li><strong>Academic writing sample + bibliografi</strong> karya tulismu juga diminta — pilih tulisan terbaikmu.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 3</span><h2>Tahap 3: Bahasa Inggris &amp; rekomendasi</h2>
+<div class="body">
+<ul>
+<li>Targetkan <strong>TOEFL ITP 575 / iBT 90 / IELTS 7.0 / Duolingo 135</strong> — ambil tes <strong>minimal 6 bulan sebelum deadline</strong> agar bisa retake.</li>
+<li>Siapkan <strong>3 surat referensi</strong> (dari dosen/pemberi kerja) — pilih yang benar-benar mengenal kapasitas akademikmu.</li>
+<li>Berikan referee <strong>CV + draft study objective</strong>-mu agar suratnya spesifik dan kuat.</li>
+<li>Siapkan <strong>transkrip & ijazah S1+S2 yang dilegalisasi</strong> + terjemahan Inggris.</li>
+<li>Siapkan <strong>KTP/paspor</strong> dan <strong>CV</strong> terkini.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 4</span><h2>Tahap 4: Submit &amp; wawancara</h2>
+<div class="body">
+<ul>
+<li>Submit <strong>jauh sebelum 15 Februari</strong> — sistem bisa padat di hari-hari terakhir.</li>
+<li>Setelah submit, <strong>aplikasi tidak bisa diubah</strong> — cek ulang semuanya.</li>
+<li>Jika lolos screening: <strong>wawancara sekitar April</strong> — latihan menjawab dalam bahasa Inggris.</li>
+<li>Di wawancara: <strong>kuasai study objective-mu</strong>, siap ditanya "kenapa AS?", "kenapa tidak S3 di Indonesia?", dan rencana kontribusimu.</li>
+<li>Tunjukkan <strong>komitmen kembali</strong> dengan rencana konkret (institusi, posisi, program).</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Timeline</span><h2>Timeline persiapan 12 bulan</h2>
+<div class="body">
+<table>
+<tr><th>Bulan</th><th>Fokus</th></tr>
+<tr><td><strong>Mar–Mei</strong> (H-12 s.d. H-9)</td><td>Tentukan topik riset; mulai draft study objective & personal statement; daftar tes bahasa Inggris.</td></tr>
+<tr><td><strong>Jun–Agu</strong> (H-9 s.d. H-6)</td><td>Ambil tes bahasa; finalisasi esai (minta review); hubungi calon referee.</td></tr>
+<tr><td><strong>Sep–Nov</strong> (H-6 s.d. H-4)</td><td>Kumpulkan transkrip legalisasi + terjemahan; siapkan writing sample & bibliografi.</td></tr>
+<tr><td><strong>Des–Jan</strong> (H-4 s.d. H-2)</td><td>Registrasi di stu.aminef.or.id; isi formulir online dengan teliti; unduh panduan pengisian.</td></tr>
+<tr><td><strong>Feb</strong> (deadline 15 Feb)</td><td>Submit final. Siapkan diri untuk tahap wawancara (Apr) bila shortlist.</td></tr>
+</table>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Dokumen</span><h2>Checklist dokumen</h2>
+<div class="body">
+<ul>
+<li>☐ Formulir aplikasi online (lengkap)</li>
+<li>☐ <strong>One-page study objective</strong></li>
+<li>☐ <strong>One-page personal statement</strong></li>
+<li>☐ Bibliografi karya tulis + <strong>academic writing sample</strong></li>
+<li>☐ Skor TOEFL/IELTS/Duolingo (&lt; 2 tahun)</li>
+<li>☐ <strong>3 surat referensi</strong></li>
+<li>☐ Transkrip & ijazah S1+S2 dilegalisasi + terjemahan Inggris</li>
+<li>☐ KTP/paspor yang berlaku</li>
+<li>☐ CV terkini</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Study objective</span><h2>Anatomi study objective yang menang</h2>
+<div class="body">
+<ul>
+<li><strong>Paragraf 1</strong>: research question + urgensi topik (kaitkan dengan isu Indonesia/global).</li>
+<li><strong>Paragraf 2</strong>: pendekatan/metode yang akan dipakai + kenapa cocok di ekosistem riset AS.</li>
+<li><strong>Paragraf 3</strong>: kualifikasimu — S2, riset, publikasi, pengalaman relevan.</li>
+<li><strong>Paragraf 4</strong>: rencana pasca-PhD — kembali ke Indonesia, mengajar/meneliti di institusi X, dampak Y.</li>
+<li><strong>Gaya</strong>: 1 halaman, kalimat aktif, hindari jargon berlebihan, nol typo.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Rekomendasi</span><h2>Memilih referee yang tepat</h2>
+<div class="body">
+<ul>
+<li>Pilih <strong>dosen pembimbing S2</strong> atau atasan yang menyaksikan langsung kapasitas risetmu.</li>
+<li>Hindari "nama besar" yang tidak mengenalmu — <strong>spesifisitas mengalahkan jabatan</strong>.</li>
+<li>Beri referee <strong>minimal 1 bulan</strong> tenggat; kirim pengingat sopan H-2 minggu.</li>
+<li>Sediakan <strong>paket bantu</strong>: CV, study objective, daftar pencapaian — memudahkan mereka menulis surat yang kuat.</li>
+<li>Pastikan referee paham <strong>program Fulbright</strong> dan nilai yang dicari: akademik, leadership, komitmen kembali.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Sumber resmi</span><h2>Sumber informasi resmi</h2>
+<div class="body">
+<ul>
+<li><strong>Halaman program</strong> — aminef.or.id (Fulbright Doctoral Degree Ph.D. Scholarship): syarat, dokumen, deadline.</li>
+<li><strong>Portal aplikasi</strong> — stu.aminef.or.id/grantee/ (registrasi + panduan pengisian berbahasa Indonesia).</li>
+<li><strong>FAQ AMINEF</strong> — kumpulan tanya-jawab resmi.</li>
+<li><strong>Email</strong>: infofulbright_ind@aminef.or.id (pertanyaan program); helpdesk@aminef.or.id (kendala teknis).</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Link resmi</span><h2>Link pendaftaran resmi</h2>
+<div class="body"><p>Semua informasi dan pendaftaran resmi hanya melalui:</p></div><div class="links"><a class="alink" href="https://www.aminef.or.id/grants-for-indonesians/fulbright-programs/scholarship/fulbright-doctoral-degree-phd-scholarship/" target="_blank" rel="noopener"><span>Fulbright Doctoral Degree (Ph.D.) Scholarship — AMINEF</span><span class="arr">&rarr;</span></a><a class="alink" href="https://stu.aminef.or.id/grantee/" target="_blank" rel="noopener"><span>Portal aplikasi online — stu.aminef.or.id</span><span class="arr">&rarr;</span></a><a class="alink" href="https://www.aminef.or.id/" target="_blank" rel="noopener"><span>Beranda AMINEF</span><span class="arr">&rarr;</span></a></div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Video</span><h2>Tonton &amp; pelajari</h2>
+<div class="vidgrid"><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/aIl0fusdI_I" title="Fulbright Scholarships USA — step-by-step guide untuk aplikan Masters &amp; PhD"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Cara daftar 1</b>Fulbright Scholarships USA — step-by-step guide untuk aplikan Masters &amp; PhD</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/7nhye-Rhmhg" title="How to prepare a winning Fulbright application — tips dari para grantee"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Cara daftar 2</b>How to prepare a winning Fulbright application — tips dari para grantee</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/hfImhPDk8Yc" title="Discover the USA — University of Maryland: kampus &amp; kehidupan mahasiswa Fulbright"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Suasana kampus</b>Discover the USA — University of Maryland: kampus &amp; kehidupan mahasiswa Fulbright</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/0E02-gKt7Bk" title="Perjalanan Akademik ke Amerika — pengalaman alumni Fulbright Indonesia (podcast)"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Testimoni</b>Perjalanan Akademik ke Amerika — pengalaman alumni Fulbright Indonesia (podcast)</div></div></div>
+<p class="src">Klik video untuk memutar. Semua video dari YouTube dan relevan dengan beasiswa ini.</p></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Wawancara</span><h2>Tips wawancara &amp; hari-H</h2>
+<div class="body">
+<ul>
+<li><strong>3 menit pembuka</strong>: siapa kamu, riset apa, kenapa Fulbright — latihan sampai natural.</li>
+<li><strong>Siap ditantang</strong>: "Kenapa harus di AS?", "Apa rencanamu jika tidak lolos?", "Bagaimana memastikan kamu kembali?"</li>
+<li><strong>Bukti komitmen Indonesia</strong>: sebutkan institusi/rencana konkret pasca-studi, bukan janji abstrak.</li>
+<li><strong>Bahasa Inggris lancar</strong>: latihan tanya-jawab dengan teman/mentor.</li>
+<li><strong>Sikap</strong>: percaya diri tapi rendah hati; tunjukkan rasa ingin tahu dan keterbukaan budaya.</li>
+<li><strong>Hari-H</strong>: datang lebih awal, berpakaian rapi, bawa salinan dokumen penting.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">FAQ</span><h2>Pertanyaan yang sering ditanyakan</h2>
+<div class="body">
+<h3>Apakah harus sudah punya LoA dari universitas AS?</h3>
+<p><strong>Tidak.</strong> Penempatan universitas dibantu AMINEF/IIE setelah seleksi — fokus pada kualitas aplikasi.</p>
+<h3>Bolehkah mendaftar bila sedang menerima beasiswa lain?</h3>
+<p><strong>Tidak</strong> — pendaftar tidak boleh sedang menerima beasiswa lain atau menempuh gelar lain saat mendaftar.</p>
+<h3>Bidang apa saja yang bisa dipilih?</h3>
+<p>Semua bidang <strong>kecuali kedokteran klinis</strong>.</p>
+<h3>Kapan deadline?</h3>
+<p><strong>15 Februari setiap tahun</strong> (tanggal pasti dapat berubah — selalu cek situs AMINEF).</p>
+<h3>Apakah dosen tetap (NIDN) bisa mendaftar?</h3>
+<p>Dosen tetap diarahkan ke program paralel DIKTI-funded yang <strong>sedang hiatus</strong>; pendaftar umum tetap melalui program ini.</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Catatan jujur</span><h2>Catatan jujur</h2>
+<div class="body">
+<div class="warn">
+<p><b>Yang perlu kamu tahu apa adanya:</b></p>
+<ul>
+<li>Program ini <strong>khusus bergelar S2</strong> — lulusan S1 tidak eligible.</li>
+<li><strong>Komitmen kembali ke Indonesia</strong> adalah syarat serius, bukan formalitas — panel menilai kesungguhan rencanamu.</li>
+<li>Skor bahasa Inggris minimal <strong>harus terpenuhi</strong>; tanpa itu aplikasi gugur di screening.</li>
+<li>Seleksi <strong>sangat kompetitif</strong> — ribuan pendaftar untuk kuota terbatas tiap tahun.</li>
+</ul>
+</div>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Penutup</span><h2>Langkah pertamamu minggu ini</h2>
+<div class="body">
+<div class="step"><span class="num">1</span><div>Tulis <b>draft 1 paragraf research question</b>-mu — topik S3 yang ingin diteliti di AS.</div></div>
+<div class="step"><span class="num">2</span><div>Cek <b>skor bahasa Inggrismu</b> — bila belum memenuhi syarat minimal, jadwalkan tes sekarang.</div></div>
+<div class="step"><span class="num">3</span><div>Buat daftar <b>3 calon referee</b> dan mulai bangun komunikasi dengan mereka.</div></div>
+<div class="step"><span class="num">4</span><div>Buka halaman resmi AMINEF dan <b>unduh panduan pengisian aplikasi</b> untuk memahami seluruh formulir sejak awal.</div></div>
+</div></div></section>
+</div>
+<nav class="nav">
+<button id="prev">&larr; Sebelumnya</button>
+<div class="progress"><i id="bar"></i></div>
+<span class="counter" id="counter">1 / 21</span>
+<button id="next">Berikutnya &rarr;</button>
+</nav>
+</div>
+<script>
+let cur=0;const slides=[...document.querySelectorAll('.slide')];const total=slides.length;
+const prevB=document.getElementById('prev'),nextB=document.getElementById('next'),
+counter=document.getElementById('counter'),bar=document.getElementById('bar');
+function show(i){cur=Math.max(0,Math.min(total-1,i));
+slides.forEach((s,k)=>s.classList.toggle('active',k===cur));
+prevB.disabled=cur===0;nextB.disabled=cur===total-1;
+counter.textContent=(cur+1)+' / '+total;bar.style.width=((cur+1)/total*100)+'%';
+slides[cur].scrollTop=0;}
+prevB.onclick=()=>show(cur-1);nextB.onclick=()=>show(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(cur+1);}
+if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(cur-1);}});
+let tx=null;document.addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;
+if(dx<-60)show(cur+1);else if(dx>60)show(cur-1);tx=null;},{passive:true});
+show(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

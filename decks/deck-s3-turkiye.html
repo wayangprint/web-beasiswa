@@ -1,0 +1,234 @@
+<!DOCTYPE html><html lang="id"><head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Panduan S3 Türkiye Burslari — Beasiswa Doktor Turki</title><style>
+:root{color-scheme:light dark;--ink:#17143b;--muted:#5d5b78;--paper:#f8f7ff;--panel:#fff;--line:#dddaf2;--navy:#1a1446;--navy2:#232a68;--purple:#7c3aed;--purple2:#a855f7;--red:#d84959;--green:#138a67;--gold:#d8a223;--shadow:0 18px 50px rgba(28,22,79,.13);--bar:rgba(255,255,255,.93)}
+@media(prefers-color-scheme:dark){:root{--ink:#f4f1ff;--muted:#c7c2dd;--paper:#100d29;--panel:#1a1638;--line:#39335d;--red:#ff7d8b;--green:#63d3aa;--gold:#ffd166;--shadow:0 18px 55px rgba(0,0,0,.35);--bar:rgba(18,14,42,.96)}}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--navy);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink)}button,a{font:inherit}.deck{height:100svh;min-height:620px;display:grid;grid-template-rows:minmax(0,1fr) auto;background:var(--paper)}.stage{position:relative;min-height:0;overflow:hidden}.slide{position:absolute;inset:0;display:none;overflow:auto;padding:clamp(26px,5vw,66px) clamp(22px,7vw,96px) 86px;background:var(--paper)}.slide.active{display:block;animation:reveal .3s ease-out}@keyframes reveal{from{opacity:.25;transform:translateX(10px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.slide.active{animation:none}}
+.slide.cover{padding:0;background:var(--navy);color:#fff;overflow:hidden}.cover-art{position:absolute;inset:0}.cover-art img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 45%;filter:saturate(.88) contrast(1.04)}.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(20,15,67,.99) 0%,rgba(20,15,67,.9) 42%,rgba(20,15,67,.32) 70%,rgba(20,15,67,.08))}.cover-content{position:relative;z-index:1;max-width:870px;padding:clamp(40px,8vw,112px);display:flex;height:100%;flex-direction:column;justify-content:center}.cover-caption{position:absolute;z-index:2;right:24px;bottom:24px;margin:0;padding:8px 11px;border-radius:10px;background:rgba(16,13,41,.72);color:#fff;font-size:.76rem;line-height:1.25;backdrop-filter:blur(8px)}.cover-caption a{color:inherit;text-decoration:none}.cover-caption a:hover{text-decoration:underline}.cover h1{font-size:clamp(3.1rem,7.7vw,7.1rem);line-height:.88;letter-spacing:-.065em;margin:18px 0 24px;max-width:820px}.cover .kicker{font-size:clamp(1rem,2vw,1.28rem);font-weight:850;letter-spacing:.02em}.cover .sub{font-size:clamp(1.05rem,2vw,1.4rem);line-height:1.55;max-width:650px;color:#e4e1ff}.flagline{display:flex;gap:12px;align-items:center;color:#e2ddff;font-weight:780}.flag{width:58px;height:38px;border-radius:8px;background:#da251d;display:grid;place-items:center;box-shadow:0 7px 18px rgba(0,0,0,.28)}.flag svg{width:22px;height:22px}
+.content{max-width:1160px;margin:0 auto}.topline{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:clamp(20px,3.5vh,36px)}.pill{display:inline-flex;align-items:center;gap:9px;padding:8px 15px;border-radius:999px;color:#fff;font-weight:850;font-size:.82rem;letter-spacing:.04em;background:linear-gradient(105deg,var(--navy2),var(--purple))}.slide-no{font-weight:900;color:var(--purple);font-variant-numeric:tabular-nums}.slide h2{font-size:clamp(2.05rem,5vw,4.5rem);line-height:.98;letter-spacing:-.05em;margin:0 0 clamp(20px,3.5vh,36px);max-width:1040px}.lead{font-size:clamp(1.08rem,2vw,1.4rem);line-height:1.55;color:var(--muted);max-width:920px;margin:-14px 0 30px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:clamp(19px,2.7vw,28px);box-shadow:var(--shadow)}.card h3{margin:0 0 10px;font-size:1.13rem}.card p{margin:0;color:var(--muted);line-height:1.54}.span3{grid-column:span 3}.span4{grid-column:span 4}.span5{grid-column:span 5}.span6{grid-column:span 6}.span7{grid-column:span 7}.span8{grid-column:span 8}.span9{grid-column:span 9}.span12{grid-column:span 12}.metric{font-size:clamp(2.4rem,6vw,5.2rem);font-weight:950;line-height:.92;letter-spacing:-.06em;color:var(--purple);margin:10px 0 14px}.metric small{font-size:.24em;letter-spacing:0;color:var(--muted)}.tag{display:inline-block;border-radius:999px;padding:7px 11px;background:color-mix(in srgb,var(--purple) 12%,transparent);color:var(--purple);font-weight:850;font-size:.8rem}.tag.red{background:color-mix(in srgb,var(--red) 14%,transparent);color:var(--red)}.tag.yellow{background:color-mix(in srgb,var(--gold) 18%,transparent);color:color-mix(in srgb,var(--gold) 70%,var(--ink))}.list{display:grid;gap:12px;margin:0;padding:0;list-style:none}.list li{position:relative;padding-left:34px;line-height:1.48;color:var(--muted)}.list li:before{content:"✓";position:absolute;left:0;top:-1px;width:23px;height:23px;display:grid;place-items:center;border-radius:50%;background:color-mix(in srgb,var(--green) 15%,transparent);color:var(--green);font-weight:950}.list.warn li:before{content:"!";background:color-mix(in srgb,var(--red) 14%,transparent);color:var(--red)}.note{padding:14px 18px;border-radius:16px;background:color-mix(in srgb,var(--purple) 9%,transparent);color:var(--muted);line-height:1.5}.note strong{color:var(--ink)}.alert{padding:22px;border-radius:20px;background:color-mix(in srgb,var(--red) 10%,var(--panel));border:1px solid color-mix(in srgb,var(--red) 35%,var(--line));color:var(--muted);line-height:1.55}.alert strong{color:var(--red)}.split{display:grid;grid-template-columns:1fr 1fr;gap:22px}.steps{counter-reset:step;display:grid;gap:16px}.step{counter-increment:step;display:grid;grid-template-columns:58px 1fr;gap:16px;align-items:start}.step:before{content:counter(step,decimal-leading-zero);display:grid;place-items:center;width:58px;height:58px;border-radius:18px;background:linear-gradient(145deg,var(--navy2),var(--purple));color:#fff;font-weight:950}.step h3{margin:3px 0 5px}.step p{margin:0;color:var(--muted);line-height:1.5}.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:start}.time{position:relative;padding-top:35px}.time:before{content:"";position:absolute;top:10px;left:0;right:-12px;height:4px;background:var(--line)}.time:after{content:"";position:absolute;top:3px;left:0;width:18px;height:18px;border-radius:50%;background:var(--purple);box-shadow:0 0 0 5px color-mix(in srgb,var(--purple) 15%,transparent)}.time:last-child:before{right:calc(100% - 18px)}.time b{display:block;margin-bottom:5px}.time span{color:var(--muted);font-size:.88rem;line-height:1.4}.slide.video-slide{padding-top:clamp(18px,3vh,34px);padding-bottom:74px;overflow:hidden}.video-slide .content{height:100%;display:flex;flex-direction:column}.video-slide .topline{margin-bottom:10px}.video-slide h2{font-size:clamp(1.8rem,3.5vw,3.35rem);margin-bottom:14px}.video-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:14px;min-height:0;flex:1}.video-card{min-height:0;display:grid;grid-template-columns:minmax(180px,.92fr) 1.08fr;gap:14px;align-items:center;padding:13px;background:var(--panel);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}.video-shell{min-width:0}.video-copy{min-width:0}.video-meta{display:block;margin-bottom:7px;color:var(--purple);font-size:.68rem;line-height:1.25;font-weight:900}.video-title{margin:0 0 7px;font-size:clamp(.78rem,1.15vw,.98rem);line-height:1.27}.video-caption{margin:0;color:var(--muted);font-size:clamp(.68rem,.88vw,.8rem);line-height:1.35}.video{aspect-ratio:16/9;width:100%;border:0;border-radius:14px;background:#090815;box-shadow:0 10px 28px rgba(28,22,79,.18)}.cta-slide{background:linear-gradient(135deg,var(--navy),var(--navy2) 52%,#4c1d95);color:#fff}.cta-slide .content{min-height:100%;display:flex;flex-direction:column;justify-content:center}.cta-slide .lead{color:#dcd7ff}.cta-row{display:flex;gap:12px;flex-wrap:wrap}.cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:max-content;max-width:100%;padding:15px 21px;border-radius:999px;background:#fff;color:var(--navy);font-weight:950;text-decoration:none;box-shadow:0 18px 40px rgba(0,0,0,.25)}.cta.secondary{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.45)}.fine{font-size:.8rem;color:var(--muted);line-height:1.5;margin-top:20px}.cta-slide .fine{color:#d3cff0}.source{margin-top:18px;font-size:.78rem;color:var(--muted);line-height:1.5}.compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.controls{z-index:30;position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:12px max(14px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));background:var(--bar);backdrop-filter:blur(14px);border-top:1px solid var(--line)}.navgroup{display:flex;gap:8px}.navgroup:last-child{justify-self:end}.btn{border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink);padding:10px 15px;font-weight:850;cursor:pointer}.btn.primary{background:linear-gradient(110deg,var(--navy2),var(--purple));color:#fff;border:0}.btn:disabled{opacity:.35;cursor:not-allowed}.center{min-width:170px;text-align:center}.counter{font-size:.85rem;font-weight:900;font-variant-numeric:tabular-nums}.progress{height:4px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:7px}.progress i{display:block;height:100%;width:5%;background:linear-gradient(90deg,var(--navy2),var(--purple2));transition:width .25s ease}.overlay{position:fixed;inset:0;z-index:99;background:rgba(10,8,33,.82);backdrop-filter:blur(14px);padding:clamp(18px,4vw,50px);display:none;overflow:auto}.overlay.open{display:block}.toc{max-width:1100px;margin:auto;background:var(--panel);border-radius:28px;padding:clamp(20px,4vw,40px);box-shadow:0 30px 90px rgba(0,0,0,.45)}.toc-head{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:22px}.toc h2{margin:0;font-size:clamp(1.8rem,4vw,3.4rem)}.toc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.toc-item{text-align:left;border:1px solid var(--line);border-radius:16px;background:var(--paper);color:var(--ink);padding:14px;cursor:pointer;min-height:88px}.toc-item span{display:block;color:var(--purple);font-weight:950;font-size:.76rem;margin-bottom:6px}.toc-item.active{outline:3px solid color-mix(in srgb,var(--purple) 45%,transparent)}
+@media(max-width:800px){.deck{height:100svh;min-height:500px}.slide{padding:26px 18px 76px}.cover-content{padding:42px 24px 76px;justify-content:flex-end;background:linear-gradient(0deg,rgba(20,15,67,.97),rgba(20,15,67,.18) 75%)}.cover::after{background:linear-gradient(0deg,rgba(20,15,67,.92),rgba(20,15,67,.08))}.cover-caption{top:18px;right:18px;bottom:auto}.cover h1{font-size:clamp(3rem,15vw,5rem)}.grid,.split,.compare{grid-template-columns:1fr}.span3,.span4,.span5,.span6,.span7,.span8,.span9,.span12{grid-column:1}.timeline{grid-template-columns:1fr;gap:14px}.time{padding:0 0 0 36px}.time:before{top:12px;left:9px;right:auto;width:4px;height:calc(100% + 14px)}.time:after{top:5px;left:2px}.time:last-child:before{height:0}.controls{grid-template-columns:1fr auto}.center{grid-column:1/-1;grid-row:1;min-width:0}.navgroup{grid-row:2}.btn .label{display:none}.toc-grid{grid-template-columns:1fr 1fr}.slide h2{font-size:clamp(2rem,10vw,3.35rem)}.metric{font-size:clamp(2.2rem,14vw,4.6rem)}.slide.video-slide{padding:10px 9px 72px}.video-slide .topline{margin-bottom:4px}.video-slide .topline .pill{padding:5px 9px;font-size:.64rem}.video-slide h2{font-size:clamp(1.15rem,5vw,1.55rem);line-height:1;margin-bottom:7px}.video-slide .video-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:7px}.video-card{display:flex;flex-direction:column;align-items:stretch;gap:5px;padding:7px;border-radius:13px}.video{height:clamp(66px,12vh,86px);aspect-ratio:auto;border-radius:9px}.video-meta{margin-bottom:3px;font-size:.56rem;line-height:1.15}.video-title{margin-bottom:3px;font-size:.61rem;line-height:1.14}.video-caption{font-size:.56rem;line-height:1.18}}
+@media(max-width:430px){.toc-grid{grid-template-columns:1fr}.toc-item{min-height:0}.btn{padding:10px 13px}.step{grid-template-columns:48px 1fr}.step:before{width:48px;height:48px}.cta{width:100%}}
+</style></head><body><div class="deck"><div class="stage"><section class="slide cover active" data-title="Panduan S3 Türkiye Burslari"><div class="cover-art"><img src="assets/cover.jpg" alt="Gerbang utama Istanbul University, Turki"></div><div class="cover-content"><div class="kicker">BEASISWA PEMERINTAH TURKI • JENJANG DOKTOR (PhD)</div><h1>Türkiye Burslari S3</h1><p class="sub">Panduan lengkap beasiswa doktor (PhD) fully funded pemerintah Turki: kuliah gratis, uang saku bulanan, akomodasi, asuransi, tiket pesawat PP, plus 1 tahun kursus bahasa Turki.</p><div class="flagline" style="margin-top:22px;gap:10px;flex-wrap:wrap"><span class="tag">🇹🇷 Turki</span> <span class="tag">🎓 Jenjang S3 / PhD</span> <span class="tag">🏛️ Pemerintah Turki (YTB)</span></div></div><p class="cover-caption">Foto: gerbang Istanbul University via <a href="https://commons.wikimedia.org/wiki/File:Istanbul_University_Gate.tif" target="_blank" rel="noopener">Wikimedia Commons</a></p></section><section class="slide" data-title="Profil Beasiswa"><div class="content"><div class="topline"><span class="pill">Gambaran Program</span></div>
+<h2>Türkiye Burslari untuk Jenjang Doktor</h2>
+<p class="lead">Beasiswa pemerintah Turki (dikelola YTB — Presidency for Turks Abroad and Related Communities) untuk semua jenjang termasuk <strong>Graduate: Master's & PhD</strong>. Terbuka untuk semua kewarganegaraan kecuali warga Turki.</p>
+<div class="grid">
+<div class="card span4"><h3>🏛️ Penyelenggara</h3><p>Pemerintah Republik Turki melalui YTB. Pendaftaran 100% online lewat portal TBBS di turkiyeburslari.gov.tr — gratis, tanpa biaya aplikasi.</p></div><div class="card span4"><h3>🎓 Jenjang</h3><p>Program Doktor (PhD) — durasi standar 4 tahun + 1 tahun kursus bahasa Turki di awal bagi yang belum bisa bahasa Turki.</p></div><div class="card span4"><h3>🌍 Siapa Bisa Daftar</h3><p>WNI eligible. Bukan warga negara Turki dan tidak sedang kuliah di Turki pada jenjang yang sama.</p></div>
+</div></div></section><section class="slide" data-title="Cakupan Dana"><div class="content"><div class="topline"><span class="pill">Gambaran Program</span></div>
+<h2>Apa Saja yang Ditanggung?</h2>
+<p class="lead">Türkiye Burslari adalah beasiswa <strong>penuh (full)</strong> — ini daftar manfaat resminya.</p>
+<div class="grid">
+<div class="card span4"><div class="metric">13.000 TL</div><p>uang saku bulanan untuk PhD <small>(angka resmi berubah tiap siklus — verifikasi di halaman resmi)</small></p></div>
+<div class="card span4"><h3>🎓 Kuliah & Akomodasi</h3><p>Biaya kuliah (tuition) 100% ditanggung + akomodasi/asrama. Penempatan universitas dan jurusan diatur oleh YTB.</p></div><div class="card span4"><h3>✈️ Tiket & Asuransi</h3><p>Tiket pesawat PP (sekali, saat berangkat dan setelah lulus), asuransi kesehatan, dan 1 tahun kursus bahasa Turki.</p></div>
+</div>
+<div class="note"><strong>Catatan jujur:</strong> nominal uang saku diumumkan ulang tiap siklus penerimaan di halaman resmi <em>Criteria and Scholarship Programs</em>. Jangan berpatokan pada angka tahun lama — selalu cek angka terbaru sebelum mendaftar.</div></div></section><section class="slide" data-title="Syarat Umum"><div class="content"><div class="topline"><span class="pill">Syarat</span></div>
+<h2>Syarat Umum Pelamar PhD</h2>
+<div class="grid"><div class="card span12">
+<ul class="list"><li><strong>Bukan warga negara Turki</strong> dan tidak sedang menempuh studi di Turki pada jenjang yang sama.</li><li><strong>Usia di bawah 35 tahun</strong> untuk pelamar program doktor.</li><li><strong>Lulusan S2</strong> (atau mahasiswa tingkat akhir S2 yang akan lulus sebelum keberangkatan).</li><li><strong>Nilai akademik minimal 75%</strong> (atau setara) untuk jenjang Master/PhD — bidang kesehatan minimal 90%.</li><li>Memenuhi syarat bahasa program yang dipilih (Turki atau Inggris — beberapa program meminta TOEFL/IELTS/GRE).</li><li>Sehat jasmani dan rohani.</li></ul>
+</div></div></div></section><section class="slide" data-title="Syarat Khusus PhD"><div class="content"><div class="topline"><span class="pill">Syarat</span></div>
+<h2>Dokumen Khusus Wajib untuk PhD</h2>
+<p class="lead">Selain dokumen umum, pelamar doktor <strong>wajib</strong> menyiapkan:</p>
+<div class="grid">
+<div class="card span6"><h3>📄 Proposal Riset</h3><p>Research proposal adalah dokumen penentu untuk PhD. Tulis topik, rumusan masalah, metodologi, dan relevansinya — serta kaitkan dengan kekuatan riset universitas tujuan di Turki.</p></div><div class="card span6"><h3>✉️ Surat Rekomendasi</h3><p>Siapkan surat rekomendasi dari dosen/pembimbing akademik (umumnya 1–2 surat). Minta jauh-jauh hari agar tidak mepet tenggat.</p></div><div class="card span6"><h3>🎓 Ijazah & Transkrip S2</h3><p>Ijazah dan transkrip S2 (atau surat keterangan lulus sementara bagi yang belum wisuda). Dokumen bukan berbahasa Inggris/Turki perlu terjemahan resmi.</p></div><div class="card span6"><h3>🪪 Identitas & Foto</h3><p>Paspor atau KTP yang masih berlaku, pasfoto terbaru, dan hasil ujian nasional/internasional bila ada (GRE, ALES, dsb. bila dipersyaratkan program).</p></div>
+</div></div></section><section class="slide" data-title="Tahapan Seleksi"><div class="content"><div class="topline"><span class="pill">Seleksi</span></div>
+<h2>Alur Seleksi Türkiye Burslari</h2>
+<div class="steps"><div class="step"><div><h3>Aplikasi Online (TBBS)</h3><p>Buat akun di tbbs.turkiyeburslari.gov.tr, isi data pribadi, riwayat pendidikan, pengalaman kerja/riset, lalu unggah semua dokumen. Pilih hingga 12 kombinasi universitas + program sesuai urutan prioritas.</p></div></div><div class="step"><div><h3>Evaluasi Dokumen</h3><p>YTB memeriksa kelengkapan dan konsistensi data — nilai akademik, proposal riset, dan surat niat (letter of intent) yang ditulis di formulir.</p></div></div><div class="step"><div><h3>Wawancara</h3><p>Kandidat yang lolos seleksi berkas diundang wawancara — online untuk sebagian besar pelamar, atau tatap muka di Kedutaan/Konsulat Turki di negara tertentu. Topik: latar akademik, motivasi, dan kecocokan dengan Turki.</p></div></div><div class="step"><div><h3>Pengumuman & Penempatan</h3><p>Hasil akhir diumumkan (biasanya sekitar Juni). YTB dapat menempatkanmu di salah satu dari 12 pilihanmu berdasarkan profil dan kuota.</p></div></div></div></div></section><section class="slide" data-title="Strategi Dokumen"><div class="content"><div class="topline"><span class="pill">Strategi</span></div>
+<h2>Strategi: Menangkan Seleksi Berkas</h2>
+<div class="grid"><div class="card span12">
+<ul class="list"><li><strong>Letter of intent ditulis serius:</strong> jelaskan spesifik mau riset apa, kenapa program itu, kenapa di Turki, dan rencana setelah lulus. Generik = gugur.</li><li><strong>12 pilihan universitas disusun strategis:</strong> pilihan pertama paling berbobot — taruh program yang paling cocok dengan latar belakangmu di urutan teratas.</li><li><strong>Konsistensi data:</strong> YTB mencocokkan setiap unggahan dengan isian formulir. Satu tanggal yang beda bisa menimbulkan keraguan.</li><li><strong>Bahasa:</strong> IELTS/TOEFL tidak wajib untuk mendaftar, tapi menjadi nilai tambah — dan beberapa program berbahasa Inggris memintanya.</li><li><strong>Submit H-2:</strong> portal TBBS melambat di hari terakhir. Jangan daftar di jam-jam tenggat.</li></ul>
+</div></div></div></section><section class="slide" data-title="Strategi Proposal Riset"><div class="content"><div class="topline"><span class="pill">Strategi</span></div>
+<h2>Strategi: Proposal Riset PhD</h2>
+<p class="lead">Untuk jenjang doktor, proposal riset sering jadi pembeda utama. Ini kerangkanya:</p>
+<div class="grid">
+<div class="card span6"><h3>1️⃣ Masalah & Urgensi</h3><p>Rumusan masalah yang jelas, kebaruan (novelty), dan kenapa topik ini penting — untuk bidangmu dan untuk konteks yang lebih luas.</p></div><div class="card span6"><h3>2️⃣ Metodologi Realistis</h3><p>Desain riset yang bisa dikerjakan dalam durasi PhD (±4 tahun). Tunjukkan kamu paham metode, data, dan keterbatasannya.</p></div><div class="card span6"><h3>3️⃣ Kesesuaian dengan Turki</h3><p>Kaitkan dengan kekuatan riset universitas/lab tujuan di Turki — sebutkan calon pembimbing atau pusat riset yang relevan bila memungkinkan.</p></div><div class="card span6"><h3>4️⃣ Rencana Pasca-PhD</h3><p>Gambarkan kontribusi setelah lulus — riset lanjutan, pengajaran, atau kerja sama Indonesia–Turki. YTB menyukai visi jangka panjang.</p></div>
+</div></div></section><section class="slide" data-title="Strategi Wawancara"><div class="content"><div class="topline"><span class="pill">Strategi</span></div>
+<h2>Strategi: Lolos Wawancara</h2>
+<div class="grid"><div class="card span12">
+<ul class="list"><li><strong>Kuasai proposal risetmu sendiri</strong> — pewawancara akan menguji kedalaman pemahamanmu, bukan hafalan.</li><li><strong>Siapkan jawaban 'kenapa Turki?'</strong> — alasan akademik yang konkret (lab, profesor, arsip, keunikan program) selalu mengalahkan jawaban normatif.</li><li><strong>Latihan bahasa Inggris</strong> yang lugas dan percaya diri; wawancara umumnya memakai bahasa Inggris (atau Turki bila kamu bisa).</li><li><strong>Tunjukkan kematangan riset:</strong> ceritakan pengalaman riset S2, publikasi, atau proyek yang relevan — bukti kamu siap menjalani PhD.</li><li><strong>Sikap profesional:</strong> tepat waktu (cek zona waktu!), pakaian rapi, koneksi stabil untuk wawancara online.</li></ul>
+</div></div></div></section><section class="slide" data-title="Timeline Persiapan"><div class="content"><div class="topline"><span class="pill">Jadwal</span></div>
+<h2>Timeline: Kapan Mulai Siap-siap?</h2>
+<p class="lead">Siklus Türkiye Burslari berjalan tahunan. Berdasarkan pola siklus berjalan (selalu verifikasi tanggal resmi):</p>
+<div class="timeline"><div class="time"><b>H-6 bulan</b><span>Riset 12 program/universitas tujuan, hubungi calon pemberi rekomendasi, mulai draf proposal riset & letter of intent.</span></div><div class="time"><b>Januari</b><span>Pendaftaran dibuka (~10 Januari). Buat akun TBBS, isi formulir, unggah dokumen.</span></div><div class="time"><b>20 Februari</b><span>Tenggat pendaftaran (~pukul 17.00 waktu Turki). Submit minimal H-2.</span></div><div class="time"><b>Mar–Jun</b><span>Wawancara bagi yang lolos berkas (Maret–April), pengumuman hasil (~Juni), persiapan visa & keberangkatan untuk mulai kuliah September/Oktober.</span></div></div><div class="note"><strong>Catatan:</strong> tanggal di atas mengikuti pola siklus tahunan YTB dan bisa bergeser. Satu-satunya sumber tanggal resmi adalah turkiyeburslari.gov.tr.</div></div></section><section class="slide" data-title="Checklist Dokumen"><div class="content"><div class="topline"><span class="pill">Dokumen</span></div>
+<h2>Checklist Dokumen Pendaftaran</h2>
+<div class="grid"><div class="card span6">
+<h3>📋 Wajib</h3>
+<ul class="list"><li>Paspor / KTP yang masih berlaku</li><li>Pasfoto terbaru</li><li>Ijazah S2 + transkrip (atau SKL)</li><li>Proposal riset (wajib PhD)</li><li>Letter of intent (diisi di formulir)</li><li>Surat rekomendasi akademik</li></ul>
+</div><div class="card span6">
+<h3>📎 Pendukung (bila ada)</h3>
+<ul class="list"><li>Sertifikat TOEFL/IELTS</li><li>Skor GRE/GMAT/ALES/YÖS</li><li>Publikasi / portofolio riset</li><li>Sertifikat penghargaan & pengalaman kerja</li><li>Hasil ujian nasional/internasional</li></ul>
+</div></div><div class="note"><strong>Format:</strong> unggah dalam PDF atau JPEG berkualitas baik, di bawah batas ukuran portal. Beri nama file yang jelas (mis. <em>Transkrip_S2_Nama.pdf</em>).</div></div></section><section class="slide" data-title="Sumber Info Resmi"><div class="content"><div class="topline"><span class="pill">Referensi</span></div>
+<h2>Sumber Informasi Resmi</h2>
+<p class="lead">Hanya percaya informasi dari kanal resmi. Waspada pihak ketiga yang memungut biaya — pendaftaran Türkiye Burslari <strong>gratis</strong>.</p>
+<div class="grid">
+<div class="card span6"><h3>🌐 Website Resmi</h3><p>turkiyeburslari.gov.tr — pengumuman siklus, kriteria & program beasiswa, dan portal aplikasi TBBS.</p></div><div class="card span6"><h3>📝 Portal Aplikasi (TBBS)</h3><p>tbbs.turkiyeburslari.gov.tr — pembuatan akun dan pengisian aplikasi online.</p></div>
+</div>
+<div class="cta-row" style="margin-top:24px">
+<a class="cta" href="https://www.turkiyeburslari.gov.tr/" target="_blank" rel="noopener">Buka Website Resmi ↗</a><a class="cta secondary" href="https://tbbs.turkiyeburslari.gov.tr" target="_blank" rel="noopener">Portal Aplikasi TBBS ↗</a>
+</div></div></section><section class="slide" data-title="Tips Hari-H"><div class="content"><div class="topline"><span class="pill">Tips</span></div>
+<h2>Tips Wawancara & Hari-H</h2>
+<div class="grid"><div class="card span12">
+<ul class="list"><li><strong>Riset pewawancara & format:</strong> cari tahu apakah wawancaramu online atau di kedutaan — persiapannya beda.</li><li><strong>Bawa narasi 2 menit:</strong> siapa kamu, riset apa yang mau dikerjakan, kenapa Turki — padat, jelas, meyakinkan.</li><li><strong>Siapkan 2–3 pertanyaan balik</strong> tentang program/universitas — menunjukkan keseriusan.</li><li><strong>Dokumen cadangan:</strong> siapkan salinan digital semua berkas di HP/laptop bila diminta menunjukkan sesuatu.</li><li><strong>Setelah wawancara:</strong> pantau email resmi YTB (cek folder spam juga) untuk pengumuman hasil.</li></ul>
+</div></div></div></section><section class="slide" data-title="Kesalahan Umum"><div class="content"><div class="topline"><span class="pill">Waspada</span></div>
+<h2>Kesalahan yang Sering Menggugurkan</h2>
+<div class="grid"><div class="card span12">
+<ul class="list warn"><li>Letter of intent generik hasil copy-paste — tidak menyebut program/universitas spesifik.</li><li>Proposal riset terlalu ambisius atau tidak nyambung dengan kapasitas lab di Turki.</li><li>12 pilihan universitas asal pilih tanpa riset kecocokan bidang.</li><li>Data formulir tidak konsisten dengan dokumen yang diunggah.</li><li>Mendaftar di menit-menit terakhir lalu gagal submit karena portal macet.</li><li>Percaya calo/pihak ketiga berbayar — aplikasi resmi selalu gratis dan mandiri.</li></ul>
+</div></div></div></section><section class="slide" data-title="Cocok Untuk Siapa"><div class="content"><div class="topline"><span class="pill">Evaluasi</span></div>
+<h2>Cocok Untuk Siapa?</h2>
+<div class="compare">
+<div class="card"><h3>✅ Cocok jika kamu…</h3>
+<ul class="list"><li>Punya rekam riset S2 yang kuat dan proposal doktor yang jelas</li><li>Siap belajar bahasa Turki 1 tahun (nilai plus untuk riset lapangan)</li><li>Fleksibel ditempatkan di berbagai universitas Turki</li><li>Berusia di bawah 35 dan IPK memenuhi ambang 75%</li></ul>
+</div><div class="card"><h3>⚠️ Pikirkan ulang jika…</h3>
+<ul class="list warn"><li>Hanya mau satu universitas/kota tertentu — penempatan ditentukan YTB</li><li>Tidak siap jauh dari rumah selama 4–5 tahun</li><li>Butuh kepastian dana riset lapangan besar (stipend standar, bukan hibah riset)</li></ul>
+</div></div></div></section><section class="slide" data-title="Fakta Jujur"><div class="content"><div class="topline"><span class="pill">Transparansi</span></div>
+<h2>Fakta Jujur & Batasan</h2>
+<div class="alert"><strong>Angka uang saku berubah tiap siklus.</strong> Nominal 13.000 TL/bulan untuk PhD adalah angka dari sumber sekunder pada siklus berjalan — <strong>angka resmi hanya yang tertera di halaman <em>Criteria and Scholarship Programs</em> turkiyeburslari.gov.tr</strong> untuk tahun kamu mendaftar.</div>
+<div class="grid" style="margin-top:18px"><div class="card span12">
+<ul class="list"><li>Penempatan universitas final ditentukan YTB — kamu memilih preferensi, bukan kepastian.</li><li>Kursus bahasa Turki 1 tahun itu wajib bila programmu berbahasa Turki / kamu belum bisa bahasa Turki — anggap sebagai bagian dari durasi studi.</li><li>Tiket pesawat hanya PP satu kali (berangkat & setelah lulus), bukan tiket tahunan.</li><li>Persaingan tinggi: ribuan pelamar tiap tahun dari seluruh dunia untuk kuota terbatas.</li></ul>
+</div></div></div></section><section class="slide video-slide" data-title="Video Panduan"><div class="content"><div class="topline"><span class="pill">Video</span></div>
+<h2>Tonton: Panduan & Pengalaman</h2>
+<div class="video-grid"><div class="video-card"><div class="video-shell"><iframe class="video" src="https://www.youtube.com/embed/byx25zU3OHw" title="YouTube video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="video-copy"><span class="video-meta">🎬 CARA DAFTAR 1</span><p class="video-title">Turkey Burslari Scholarship 2026 — Fully Funded</p><p class="video-caption">Bedah lengkap cakupan beasiswa, syarat nilai & usia (PhD < 35 thn), dan jadwal pendaftaran.</p></div></div><div class="video-card"><div class="video-shell"><iframe class="video" src="https://www.youtube.com/embed/FtgBxrNP3-I" title="YouTube video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="video-copy"><span class="video-meta">🎬 CARA DAFTAR 2</span><p class="video-title">Türkiye Scholarships — Applications Are Open!</p><p class="video-caption">Video resmi Türkiye Burslari: ajakan pendaftaran untuk jenjang S1, S2, dan S3.</p></div></div><div class="video-card"><div class="video-shell"><iframe class="video" src="https://www.youtube.com/embed/4qddk314KMA" title="YouTube video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="video-copy"><span class="video-meta">🏛️ SUASANA KAMPUS</span><p class="video-title">Istanbul University — 4K Campus Tour</p><p class="video-caption">Tur kampus salah satu universitas tertua Turki: gerbang bersejarah, fakultas, dan atmosfer kampus.</p></div></div><div class="video-card"><div class="video-shell"><iframe class="video" src="https://www.youtube.com/embed/f2zxNpcptX0" title="YouTube video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="video-copy"><span class="video-meta">💬 TESTIMONI</span><p class="video-title">One Story, 8 Languages: Türkiye Scholarships</p><p class="video-caption">Para penerima beasiswa berbagi perjalanan mereka — dari proses aplikasi, wawancara, hingga kehidupan di Turki.</p></div></div></div></div></section><section class="slide" data-title="FAQ 1"><div class="content"><div class="topline"><span class="pill">FAQ</span></div>
+<h2>Pertanyaan Umum (1)</h2>
+<div class="grid">
+<div class="card span6"><h3>❓ Apakah IELTS wajib?</h3><p>Tidak wajib untuk mendaftar. Tapi skor bahasa Inggris menjadi nilai tambah, dan program berbahasa Inggris tertentu bisa mensyaratkannya di tahap universitas.</p></div><div class="card span6"><h3>❓ Apakah harus bisa bahasa Turki?</h3><p>Tidak saat mendaftar. Penerima yang programnya berbahasa Turki wajib ikut kursus bahasa Turki 1 tahun yang disediakan beasiswa.</p></div><div class="card span6"><h3>❓ Bolehkah mahasiswa tingkat akhir S2 mendaftar?</h3><p>Boleh — selama sudah lulus sebelum masa keberangkatan/pendaftaran ulang.</p></div><div class="card span6"><h3>❓ Berapa universitas yang bisa dipilih?</h3><p>Hingga 12 kombinasi universitas + program, disusun berdasar prioritas. Pilihan pertama paling berbobot.</p></div>
+</div></div></section><section class="slide" data-title="FAQ 2"><div class="content"><div class="topline"><span class="pill">FAQ</span></div>
+<h2>Pertanyaan Umum (2)</h2>
+<div class="grid">
+<div class="card span6"><h3>❓ Apakah ada ikatan dinas?</h3><p>Tidak ada kewajiban kontrak kerja setelah lulus setahu panduan resmi — tapi cek ketentuan terbaru di situs resmi.</p></div><div class="card span6"><h3>❓ Kapan pendaftaran dibuka?</h3><p>Siklus tahunan, umumnya dibuka Januari dan tutup Februari. Selalu verifikasi tanggal di turkiyeburslari.gov.tr.</p></div><div class="card span6"><h3>❓ Apakah WNI pernah lolos?</h3><p>Ya — tiap tahun ada penerima dari Indonesia di berbagai jenjang, termasuk pascasarjana.</p></div><div class="card span6"><h3>❓ Bisakah pindah universitas setelah diterima?</h3><p>Penempatan ditentukan YTB dan sulit diubah. Pilih preferensimu dengan serius sejak awal.</p></div>
+</div></div></section><section class="slide" data-title="Siap Mendaftar?"><div class="content"><div class="topline"><span class="pill">Aksi</span></div>
+<h2>Siap Mendaftar?</h2>
+<p class="lead">Semua langkah bermula dari portal resmi. Siapkan dokumenmu dari sekarang — siklus berikutnya dibuka Januari.</p>
+<div class="cta-row">
+<a class="cta" href="https://www.turkiyeburslari.gov.tr/" target="_blank" rel="noopener">🌐 turkiyeburslari.gov.tr ↗</a><a class="cta secondary" href="https://tbbs.turkiyeburslari.gov.tr" target="_blank" rel="noopener">📝 Portal Aplikasi TBBS ↗</a>
+</div>
+<p class="fine">Informasi dalam deck ini merangkum panduan resmi dan sumber sekunder per Oktober 2026. Angka tunjangan dan tanggal dapat berubah — selalu verifikasi di situs resmi sebelum mendaftar.</p></div></section></div><div class="controls"><div class="navgroup"><button class="btn" id="tocBtn">☰ Daftar Slide</button></div><div class="center"><div class="counter" id="counter">1 / 1</div><div class="progress"><i id="progress"></i></div></div><div class="navgroup"><button class="btn" id="prev"><span class="label">← Sebelumnya</span><span>←</span></button><button class="btn primary" id="next"><span class="label">Berikutnya →</span><span>→</span></button></div></div></div><div class="overlay" id="overlay"><div class="toc"><div class="toc-head"><h2>Panduan S3 Türkiye Burslari</h2><button class="btn" id="closeToc">Tutup ✕</button></div><div class="toc-grid" id="tocGrid"></div></div></div><script>
+(function(){
+  var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var index=0,prev=document.getElementById('prev'),next=document.getElementById('next');
+  var counter=document.getElementById('counter'),progress=document.getElementById('progress');
+  var overlay=document.getElementById('overlay'),tocGrid=document.getElementById('tocGrid');
+  slides.forEach(function(slide,i){var b=document.createElement('button');b.className='toc-item';b.type='button';b.innerHTML='<span>SLIDE '+String(i+1).padStart(2,'0')+'</span>'+slide.dataset.title;b.addEventListener('click',function(){go(i);closeToc();});tocGrid.appendChild(b);});
+  function go(n){index=Math.max(0,Math.min(slides.length-1,n));slides.forEach(function(s,i){s.classList.toggle('active',i===index);s.setAttribute('aria-hidden',i===index?'false':'true');if(i===index)s.scrollTop=0;});counter.textContent=(index+1)+' / '+slides.length;progress.style.width=((index+1)/slides.length*100)+'%';prev.disabled=index===0;next.disabled=index===slides.length-1;Array.prototype.forEach.call(tocGrid.children,function(x,i){x.classList.toggle('active',i===index);});document.title=slides[index].dataset.title+' — Panduan S3 Türkiye Burslari';}
+  function openToc(){overlay.classList.add('open');document.getElementById('closeToc').focus();}
+  function closeToc(){overlay.classList.remove('open');document.getElementById('tocBtn').focus();}
+  prev.addEventListener('click',function(){go(index-1);});next.addEventListener('click',function(){go(index+1);});document.getElementById('tocBtn').addEventListener('click',openToc);document.getElementById('closeToc').addEventListener('click',closeToc);overlay.addEventListener('click',function(e){if(e.target===overlay)closeToc();});
+  document.addEventListener('keydown',function(e){if(overlay.classList.contains('open')){if(e.key==='Escape')closeToc();return;}if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();go(index+1);}else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(index-1);}else if(e.key==='Home'){e.preventDefault();go(0);}else if(e.key==='End'){e.preventDefault();go(slides.length-1);}});
+  go(0);
+})();
+</script><div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body></html>

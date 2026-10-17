@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panduan PhD KAUST Arab Saudi</title>
+<style>:root{--accent:#0e6b5e}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#b3541e;--bg:#141210;--card:#1f1b17;--text:#f5efe6;--muted:#c9bda9;--line:#3a322a}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;overflow:hidden}
+.deck{position:fixed;inset:0;display:flex;flex-direction:column}
+.slides{flex:1;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;padding:48px 7vw;overflow-y:auto;text-align:left}
+.slide.active{display:flex}
+.inner{max-width:960px;width:100%}
+.kicker{display:inline-block;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px}
+h1{font-size:clamp(30px,5vw,58px);line-height:1.12;margin-bottom:14px}
+h2{font-size:clamp(24px,3.6vw,40px);line-height:1.2;margin-bottom:18px}
+h3{font-size:clamp(18px,2.4vw,26px);margin:18px 0 10px;color:var(--accent)}
+.sub{font-size:clamp(16px,2.2vw,22px);color:var(--muted);line-height:1.55}
+.body{font-size:clamp(15px,2vw,19px);line-height:1.65;color:var(--text)}
+.body p{margin-bottom:12px}
+.body ul,.body ol{margin:0 0 14px 22px}
+.body li{margin-bottom:8px}
+.body strong{color:#fff}
+.num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:15px;margin-right:10px;flex:none}
+.step{display:flex;align-items:flex-start;margin-bottom:14px}
+.step div{flex:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.card b{color:#fff}
+.warn{background:#2a1f14;border:1px solid #7a4a1e;border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.warn b{color:#ffcf8a}
+table{width:100%;border-collapse:collapse;margin:6px 0 14px;font-size:clamp(13px,1.8vw,17px)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--accent);text-transform:uppercase;font-size:12px;letter-spacing:1px}
+.cover{background-size:cover;background-position:center;position:absolute;inset:0}
+.cover::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,8,6,.55) 0%,rgba(10,8,6,.88) 78%)}
+.cover .inner{position:relative;z-index:1}
+.cover .badge{display:inline-block;background:var(--accent);color:#fff;font-size:13px;font-weight:700;letter-spacing:2px;padding:8px 16px;border-radius:999px;margin-bottom:18px;text-transform:uppercase}
+.cover h1{text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;margin-top:6px}
+.vid{background:#000;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.vid .frame{position:relative;width:100%;padding-top:56.25%}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid .cap{padding:10px 12px;font-size:13px;color:var(--muted);background:var(--card)}
+.vid .cap b{color:var(--text);display:block;font-size:14px;margin-bottom:2px}
+.links{display:grid;gap:12px;margin-top:8px}
+.alink{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;color:var(--text);text-decoration:none;font-size:16px}
+.alink:hover{border-color:var(--accent)}
+.alink .arr{margin-left:auto;color:var(--accent);font-weight:700}
+.nav{flex:none;display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid var(--line);background:rgba(20,18,16,.96)}
+.nav button{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 18px;font-size:15px;cursor:pointer}
+.nav button:hover{border-color:var(--accent)}
+.nav button:disabled{opacity:.35;cursor:default}
+.counter{font-size:14px;color:var(--muted);white-space:nowrap}
+.progress{flex:1;height:6px;background:#2c2620;border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);width:0;transition:width .25s}
+.toc{columns:2;column-gap:32px;font-size:clamp(14px,1.9vw,18px)}
+.toc div{break-inside:avoid;margin-bottom:10px;color:var(--muted)}
+.toc b{color:var(--text);margin-right:8px}
+.src{font-size:13px;color:var(--muted);margin-top:14px}
+@media(max-width:640px){.slide{padding:28px 6vw}.toc{columns:1}.vidgrid{gap:10px}}
+</style>
+</style>
+</head>
+<body>
+<div class="deck">
+<div class="slides">
+<section class="slide"><div class="cover" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5f8800b7b7402a0197c03d63/1602748617754-Q6B83M4IPCWCRO30SME5/KAUST_09_1500x800.jpg?format=2500w')"></div>
+<div class="inner"><span class="badge">Panduan Beasiswa S3</span>
+<h1>Panduan PhD KAUST Arab Saudi</h1>
+<p class="sub">KAUST Fellowship — otomatis untuk semua yang diterima: full tuition + stipend USD 25–30 ribu/tahun + housing + asuransi. Total nilai ~USD 70–80 ribu/tahun di King Abdullah University of Science and Technology.</p>
+<p class="src">Sumber foto: KAUST — kampus tepi Laut Merah, Thuwal</p></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Daftar Isi</span><h2>Yang akan kamu pelajari</h2>
+<div class="toc"><div><b>01</b>Sekilas: fellowship otomatis KAUST</div><div><b>02</b>Apa saja yang ditanggung?</div><div><b>03</b>Syarat utama pendaftar</div><div><b>04</b>Format &amp; tahapan seleksi</div><div><b>05</b>Tahap 1: Pilih program &amp; fakultas target</div><div><b>06</b>Tahap 2: Statement of purpose ~750 kata</div><div><b>07</b>Tahap 3: Bahasa Inggris &amp; referee</div><div><b>08</b>Tahap 4: Submit &amp; pantau portal</div><div><b>09</b>Timeline persiapan 12 bulan</div><div><b>10</b>Checklist dokumen</div><div><b>11</b>Anatomi SOP yang menang</div><div><b>12</b>Strategi referee KAUST</div><div><b>13</b>Sumber informasi resmi</div><div><b>14</b>Link pendaftaran resmi</div><div><b>15</b>Tonton &amp; pelajari</div><div><b>16</b>Tips wawancara &amp; hari-H</div><div><b>17</b>Pertanyaan yang sering ditanyakan</div><div><b>18</b>Catatan jujur</div><div><b>19</b>Langkah pertamamu minggu ini</div></div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Sekilas beasiswa</span><h2>Sekilas: fellowship otomatis KAUST</h2>
+<div class="body">
+<p><strong>KAUST (King Abdullah University of Science and Technology)</strong> adalah universitas riset pascasarjana di Thuwal, Arab Saudi — 17 program <strong>STEM berbahasa Inggris</strong>.</p>
+<ul>
+<li><strong>KAUST Fellowship otomatis</strong> untuk <strong>SEMUA mahasiswa yang diterima</strong> — <strong>tidak ada aplikasi beasiswa terpisah</strong>.</li>
+<li>Terbuka untuk <strong>semua kewarganegaraan, termasuk WNI</strong>.</li>
+<li><strong>Tanpa application fee</strong>.</li>
+<li>Total nilai paket <strong>~USD 70–80 ribu/tahun</strong>.</li>
+<li>Siklus <strong>Fall 2027</strong>: aplikasi 28 Sep 2026 – 3 Jan 2027.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Rincian pendanaan</span><h2>Apa saja yang ditanggung?</h2>
+<div class="body">
+<table>
+<tr><th>Komponen</th><th>Nilai</th></tr>
+<tr><td><strong>Full tuition</strong></td><td>Biaya kuliah penuh</td></tr>
+<tr><td><strong>Bench fee</strong></td><td>s.d. <strong>USD 35.000/tahun</strong></td></tr>
+<tr><td><strong>Stipend hidup</strong></td><td><strong>USD 25.000–30.000/tahun</strong></td></tr>
+<tr><td><strong>Akomodasi</strong></td><td>Housing kampus</td></tr>
+<tr><td><strong>Asuransi</strong></td><td>Kesehatan (+ gigi)</td></tr>
+<tr><td><strong>Relokasi</strong></td><td>Dukungan kepindahan</td></tr>
+</table>
+<p>Fellowship diberikan <strong>otomatis saat diterima</strong> — detail tercantum di admission offer.</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Syarat utama</span><h2>Syarat utama pendaftar</h2>
+<div class="body">
+<ul>
+<li><strong>Gelar relevan</strong>: S1 untuk MS/PhD; <strong>S2 untuk PhD</strong>.</li>
+<li><strong>GPA minimal 3.0/4.0</strong>.</li>
+<li><strong>Bahasa Inggris</strong>: IELTS <strong>6.5</strong> / TOEFL <strong>79</strong>.</li>
+<li><strong>Statement of purpose</strong> ~750 kata.</li>
+<li><strong>3 referee</strong> (referensi via sistem online).</li>
+<li><strong>CV + transkrip + paspor</strong>.</li>
+<li><strong>GRE</strong>: dianjurkan tapi tidak wajib.</li>
+<li>Hanya boleh apply ke <strong>1 program per tahun</strong>.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Format seleksi</span><h2>Format &amp; tahapan seleksi</h2>
+<div class="body">
+<div class="step"><span class="num">1</span><div><b>Pilih program & intake</b> — Fall (MS/MS-PhD/PhD) atau Spring (PhD). Satu program per tahun.</div></div>
+<div class="step"><span class="num">2</span><div><b>Buat akun portal aplikasi KAUST</b> — isi formulir online, masukkan <b>data referee sejak awal</b> (undangan referensi terkirim langsung).</div></div>
+<div class="step"><span class="num">3</span><div><b>Unggah dokumen</b> — transkrip, CV, SOP, paspor, skor bahasa; semua dalam bahasa Inggris.</div></div>
+<div class="step"><span class="num">4</span><div><b>Submit sebelum deadline</b> — aplikasi <b>tidak bisa diubah</b> setelah submit kecuali diminta.</div></div>
+<div class="step"><span class="num">5</span><div><b>Review fakultas</b> — kandidat kuat bisa dihubungi untuk <b>interview/asesmen online</b>.</div></div>
+<div class="step"><span class="num">6</span><div><b>Keputusan</b> — admission offer otomatis mencantumkan KAUST Fellowship.</div></div>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 1</span><h2>Tahap 1: Pilih program &amp; fakultas target</h2>
+<div class="body">
+<ul>
+<li>Pelajari <strong>17 program studi KAUST</strong> (3 divisi: biosains & lingkungan; komputer, elektro & fisika; dsb).</li>
+<li>Baca <strong>profil fakultas</strong> — untuk MS/PhD & PhD, kamu bisa <strong>mencantumkan fakultas yang ingin diajak kerja sama</strong>; kandidat kuat bisa dihubungi langsung.</li>
+<li><strong>Tidak wajib</strong> mengamankan supervisor sebelum apply — tapi riset kecocokan memperkuat SOP.</li>
+<li>Sesuaikan <strong>intake</strong>: Spring khusus PhD; Fall untuk MS, MS/PhD, dan PhD.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 2</span><h2>Tahap 2: Statement of purpose ~750 kata</h2>
+<div class="body">
+<ul>
+<li><strong>Struktur</strong>: motivasi riset → pengalaman & skill → kenapa KAUST (lab/fakultas spesifik) → rencana kontribusi.</li>
+<li><strong>Spesifik soal KAUST</strong>: sebutkan <strong>lab, pusat riset, atau fakultas</strong> yang relevan — generik = lemah.</li>
+<li><strong>Tunjukkan potensi riset</strong>: proyek, publikasi, pengalaman lab.</li>
+<li><strong>750 kata</strong>: padat, tiap kalimat bekerja. Minta 2–3 orang mereview.</li>
+<li>Hindari template beasiswa umum — tulis <strong>khusus untuk KAUST</strong>.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 3</span><h2>Tahap 3: Bahasa Inggris &amp; referee</h2>
+<div class="body">
+<ul>
+<li>Targetkan <strong>IELTS 6.5 / TOEFL 79</strong> — ambil tes <strong>jauh sebelum deadline</strong>.</li>
+<li>Masukkan <strong>data referee lebih awal</strong>: undangan referensi terkirim saat kamu menambahkannya, dan <strong>referensi harus masuk dalam 7 hari setelah deadline</strong>.</li>
+<li>Pilih referee yang mengenal <strong>kapasitas risetmu</strong>; beri mereka CV + SOP-mu.</li>
+<li>Siapkan <strong>transkrip resmi + grading scale</strong>, CV, paspor — semua <strong>dalam bahasa Inggris</strong>.</li>
+<li><strong>GRE opsional</strong> tapi memperkuat aplikasi yang kompetitif.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 4</span><h2>Tahap 4: Submit &amp; pantau portal</h2>
+<div class="body">
+<ul>
+<li><strong>Cek ulang sebelum submit</strong> — aplikasi tidak bisa diubah setelah dikirim.</li>
+<li>Submit <strong>sebelum deadline</strong>; pantau status referensi di portal (bisa ganti referee / kirim pengingat).</li>
+<li>Jika dihubungi fakultas: siapkan <strong>interview online</strong> — kuasai SOP dan riset yang kamu cantumkan.</li>
+<li>Keputusan diumumkan per round — baca <strong>fellowship terms</strong> di offer letter dengan teliti.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Timeline</span><h2>Timeline persiapan 12 bulan</h2>
+<div class="body">
+<table>
+<tr><th>Bulan</th><th>Fokus</th></tr>
+<tr><td><strong>H-12 s.d. H-9</strong></td><td>Pilih program & fakultas target; riset lab; mulai draft SOP.</td></tr>
+<tr><td><strong>H-9 s.d. H-6</strong></td><td>Ambil IELTS/TOEFL; finalisasi SOP (spesifik KAUST); hubungi referee.</td></tr>
+<tr><td><strong>H-6 s.d. H-4</strong></td><td>Siapkan transkrip + dokumen Inggris; buat akun portal saat intake dibuka.</td></tr>
+<tr><td><strong>H-4 s.d. H-1</strong></td><td>Isi aplikasi; masukkan referee lebih awal; submit sebelum deadline.</td></tr>
+<tr><td><strong>H-0</strong></td><td>Pantau portal; siapkan interview bila dihubungi fakultas.</td></tr>
+</table>
+<p class="src">Acuan siklus: Spring 2027 tutup 27 Sep 2026; Fall 2027 buka 28 Sep 2026 – tutup 3 Jan 2027. Selalu cek kalender resmi.</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Dokumen</span><h2>Checklist dokumen</h2>
+<div class="body">
+<ul>
+<li>☐ Transkrip resmi + grading scale (Inggris)</li>
+<li>☐ Ijazah/degree certificate</li>
+<li>☐ <strong>CV</strong> terkini</li>
+<li>☐ <strong>Statement of purpose ~750 kata</strong></li>
+<li>☐ <strong>3 referee</strong> (data dimasukkan di portal)</li>
+<li>☐ Skor IELTS/TOEFL resmi</li>
+<li>☐ Paspor / ID</li>
+<li>☐ Skor GRE (opsional, dianjurkan)</li>
+<li>☐ Publikasi/artikel riset (bila ada)</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Statement of purpose</span><h2>Anatomi SOP yang menang</h2>
+<div class="body">
+<ul>
+<li><strong>Pembuka</strong>: momen/pertanyaan yang mendorongmu ke riset — 3–4 kalimat.</li>
+<li><strong>Pengalaman</strong>: proyek riset, skill lab, publikasi — bukti, bukan klaim.</li>
+<li><strong>Kenapa KAUST</strong>: lab/pusat riset/fakultas spesifik + fasilitas unik (mis. Red Sea research, core labs).</li>
+<li><strong>Rencana riset</strong>: arah riset yang ingin ditekuni di PhD.</li>
+<li><strong>Penutup</strong>: kontribusi jangka panjang — untuk sains dan untuk Indonesia.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Rekomendasi</span><h2>Strategi referee KAUST</h2>
+<div class="body">
+<ul>
+<li>Referee <strong>wajib submit via sistem</strong> dalam <strong>7 hari kalender setelah deadline</strong> — keterlambatan = aplikasi tidak lengkap.</li>
+<li>Masukkan data referee <strong>di awal pengisian</strong> agar mereka punya waktu maksimal.</li>
+<li>Gunakan <strong>email institusional/profesional</strong> referee.</li>
+<li>Pantau status di portal; <strong>ganti referee / kirim pengingat</strong> bila belum submit mendekati deadline.</li>
+<li>Beri referee <strong>CV + SOP</strong> agar suratnya spesifik.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Sumber resmi</span><h2>Sumber informasi resmi</h2>
+<div class="body">
+<ul>
+<li><strong>Fees & funding</strong> — admissions.kaust.edu.sa/fees-funding: rincian fellowship resmi.</li>
+<li><strong>How to apply</strong> — admissions.kaust.edu.sa/how-to-apply: panduan aplikasi resmi.</li>
+<li><strong>Portal aplikasi</strong> — apply.kaust.edu.sa/apply</li>
+<li><strong>Program studi</strong> — daftar 17 program STEM di situs admissions KAUST.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Link resmi</span><h2>Link pendaftaran resmi</h2>
+<div class="body"><p>Semua aplikasi resmi hanya melalui portal KAUST:</p></div><div class="links"><a class="alink" href="https://admissions.kaust.edu.sa/fees-funding" target="_blank" rel="noopener"><span>Fees &amp; Funding — KAUST Admissions (resmi)</span><span class="arr">&rarr;</span></a><a class="alink" href="https://admissions.kaust.edu.sa/how-to-apply" target="_blank" rel="noopener"><span>How to Apply — KAUST</span><span class="arr">&rarr;</span></a><a class="alink" href="https://apply.kaust.edu.sa/apply" target="_blank" rel="noopener"><span>Portal aplikasi — apply.kaust.edu.sa</span><span class="arr">&rarr;</span></a></div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Video</span><h2>Tonton &amp; pelajari</h2>
+<div class="vidgrid"><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/xyGOOGAsJ1s" title="KAUST Scholarships 2026-27 — cara daftar MS, PhD &amp; direct PhD + syarat dokumen"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Cara daftar 1</b>KAUST Scholarships 2026-27 — cara daftar MS, PhD &amp; direct PhD + syarat dokumen</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/mRhv4hMvmG4" title="Study Free in Saudi Arabia — KAUST Scholarships 2027: cara apply &amp; cakupan fellowship"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Cara daftar 2</b>Study Free in Saudi Arabia — KAUST Scholarships 2027: cara apply &amp; cakupan fellowship</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/y_fIq7UiKE0" title="KAUST Campus dari udara — kampus oasis di tepi Laut Merah, Thuwal"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Suasana kampus</b>KAUST Campus dari udara — kampus oasis di tepi Laut Merah, Thuwal</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/Ic1L9FGklDw" title="Meet Liam Swanepoel — alumni PhD KAUST berbagi perjalanan risetnya"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Testimoni</b>Meet Liam Swanepoel — alumni PhD KAUST berbagi perjalanan risetnya</div></div></div>
+<p class="src">Klik video untuk memutar. Semua video dari YouTube dan relevan dengan beasiswa ini.</p></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Wawancara</span><h2>Tips wawancara &amp; hari-H</h2>
+<div class="body">
+<ul>
+<li><strong>Kandidat kuat bisa diundang interview</strong> oleh fakultas — kuasai SOP dan setiap klaim di dalamnya.</li>
+<li><strong>Siap menjelaskan riset S2</strong>-mu secara teknis: metode, hasil, keterbatasan.</li>
+<li><strong>Kenapa KAUST</strong>: tunjukkan kamu paham ekosistem risetnya (bukan sekadar "fully funded").</li>
+<li><strong>Pertanyaan balik</strong>: tanyakan soal ekspektasi lab, pendanaan konferensi, kolaborasi.</li>
+<li><strong>Hari-H</strong>: koneksi stabil, latar rapi, catatan 1 halaman sebagai panduan.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">FAQ</span><h2>Pertanyaan yang sering ditanyakan</h2>
+<div class="body">
+<h3>Apakah perlu aplikasi beasiswa terpisah?</h3>
+<p><strong>Tidak.</strong> Semua yang diterima otomatis mendapat KAUST Fellowship.</p>
+<h3>Apakah ada application fee?</h3>
+<p><strong>Tidak ada.</strong></p>
+<h3>Apakah harus menghubungi profesor dulu?</h3>
+<p><strong>Tidak wajib</strong> — tapi mencantumkan fakultas yang diminati memperkuat aplikasi; kandidat kuat bisa dihubungi fakultas.</p>
+<h3>Berapa stipend-nya?</h3>
+<p><strong>USD 25.000–30.000/tahun</strong> + full tuition + housing + asuransi.</p>
+<h3>Apakah WNI bisa mendaftar?</h3>
+<p><strong>Bisa</strong> — terbuka untuk semua kewarganegaraan.</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Catatan jujur</span><h2>Catatan jujur</h2>
+<div class="body">
+<div class="warn">
+<p><b>Yang perlu kamu tahu apa adanya:</b></p>
+<ul>
+<li>KAUST <strong>hanya untuk STEM</strong> (17 program) — tidak ada program humaniora/sosial.</li>
+<li>Seleksi <strong>sangat kompetitif</strong> (acceptance rate ~20%) dengan ambang GPA & bahasa yang tegas.</li>
+<li>Hanya boleh apply ke <strong>1 program per tahun</strong> — pilih dengan matang.</li>
+<li>Jumlah stipend <strong>bervariasi menurut kualifikasi & progres</strong> — baca fellowship terms di offer letter.</li>
+</ul>
+</div>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Penutup</span><h2>Langkah pertamamu minggu ini</h2>
+<div class="body">
+<div class="step"><span class="num">1</span><div>Buka situs admissions KAUST dan <b>pilih 2–3 program + fakultas</b> yang paling cocok dengan latar S2-mu.</div></div>
+<div class="step"><span class="num">2</span><div>Mulai draft <b>SOP 750 kata</b> — tulis dulu versi kasar, sempurnakan belakangan.</div></div>
+<div class="step"><span class="num">3</span><div>Cek <b>skor IELTS/TOEFL</b>-mu terhadap syarat 6.5/79 — jadwalkan tes bila belum memenuhi.</div></div>
+<div class="step"><span class="num">4</span><div>Buat daftar <b>3 calon referee</b> dan siapkan email permintaan referensi.</div></div>
+</div></div></section>
+</div>
+<nav class="nav">
+<button id="prev">&larr; Sebelumnya</button>
+<div class="progress"><i id="bar"></i></div>
+<span class="counter" id="counter">1 / 21</span>
+<button id="next">Berikutnya &rarr;</button>
+</nav>
+</div>
+<script>
+let cur=0;const slides=[...document.querySelectorAll('.slide')];const total=slides.length;
+const prevB=document.getElementById('prev'),nextB=document.getElementById('next'),
+counter=document.getElementById('counter'),bar=document.getElementById('bar');
+function show(i){cur=Math.max(0,Math.min(total-1,i));
+slides.forEach((s,k)=>s.classList.toggle('active',k===cur));
+prevB.disabled=cur===0;nextB.disabled=cur===total-1;
+counter.textContent=(cur+1)+' / '+total;bar.style.width=((cur+1)/total*100)+'%';
+slides[cur].scrollTop=0;}
+prevB.onclick=()=>show(cur-1);nextB.onclick=()=>show(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(cur+1);}
+if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(cur-1);}});
+let tx=null;document.addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;
+if(dx<-60)show(cur+1);else if(dx>60)show(cur-1);tx=null;},{passive:true});
+show(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

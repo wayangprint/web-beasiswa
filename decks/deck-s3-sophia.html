@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panduan S3 Sophia University Jepang</title>
+<style>:root{--accent:#a93226}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#b3541e;--bg:#141210;--card:#1f1b17;--text:#f5efe6;--muted:#c9bda9;--line:#3a322a}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;overflow:hidden}
+.deck{position:fixed;inset:0;display:flex;flex-direction:column}
+.slides{flex:1;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;padding:48px 7vw;overflow-y:auto;text-align:left}
+.slide.active{display:flex}
+.inner{max-width:960px;width:100%}
+.kicker{display:inline-block;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px}
+h1{font-size:clamp(30px,5vw,58px);line-height:1.12;margin-bottom:14px}
+h2{font-size:clamp(24px,3.6vw,40px);line-height:1.2;margin-bottom:18px}
+h3{font-size:clamp(18px,2.4vw,26px);margin:18px 0 10px;color:var(--accent)}
+.sub{font-size:clamp(16px,2.2vw,22px);color:var(--muted);line-height:1.55}
+.body{font-size:clamp(15px,2vw,19px);line-height:1.65;color:var(--text)}
+.body p{margin-bottom:12px}
+.body ul,.body ol{margin:0 0 14px 22px}
+.body li{margin-bottom:8px}
+.body strong{color:#fff}
+.num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:15px;margin-right:10px;flex:none}
+.step{display:flex;align-items:flex-start;margin-bottom:14px}
+.step div{flex:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.card b{color:#fff}
+.warn{background:#2a1f14;border:1px solid #7a4a1e;border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.warn b{color:#ffcf8a}
+table{width:100%;border-collapse:collapse;margin:6px 0 14px;font-size:clamp(13px,1.8vw,17px)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--accent);text-transform:uppercase;font-size:12px;letter-spacing:1px}
+.cover{background-size:cover;background-position:center;position:absolute;inset:0}
+.cover::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,8,6,.55) 0%,rgba(10,8,6,.88) 78%)}
+.cover .inner{position:relative;z-index:1}
+.cover .badge{display:inline-block;background:var(--accent);color:#fff;font-size:13px;font-weight:700;letter-spacing:2px;padding:8px 16px;border-radius:999px;margin-bottom:18px;text-transform:uppercase}
+.cover h1{text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;margin-top:6px}
+.vid{background:#000;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.vid .frame{position:relative;width:100%;padding-top:56.25%}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid .cap{padding:10px 12px;font-size:13px;color:var(--muted);background:var(--card)}
+.vid .cap b{color:var(--text);display:block;font-size:14px;margin-bottom:2px}
+.links{display:grid;gap:12px;margin-top:8px}
+.alink{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;color:var(--text);text-decoration:none;font-size:16px}
+.alink:hover{border-color:var(--accent)}
+.alink .arr{margin-left:auto;color:var(--accent);font-weight:700}
+.nav{flex:none;display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid var(--line);background:rgba(20,18,16,.96)}
+.nav button{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 18px;font-size:15px;cursor:pointer}
+.nav button:hover{border-color:var(--accent)}
+.nav button:disabled{opacity:.35;cursor:default}
+.counter{font-size:14px;color:var(--muted);white-space:nowrap}
+.progress{flex:1;height:6px;background:#2c2620;border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);width:0;transition:width .25s}
+.toc{columns:2;column-gap:32px;font-size:clamp(14px,1.9vw,18px)}
+.toc div{break-inside:avoid;margin-bottom:10px;color:var(--muted)}
+.toc b{color:var(--text);margin-right:8px}
+.src{font-size:13px;color:var(--muted);margin-top:14px}
+@media(max-width:640px){.slide{padding:28px 6vw}.toc{columns:1}.vidgrid{gap:10px}}
+</style>
+</style>
+</head>
+<body>
+<div class="deck">
+<div class="slides">
+<section class="slide"><div class="cover" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/1/1c/Sophia_University%2C_Yotsuya_Campus%2C_Tokyo%2C_Japan.jpg')"></div>
+<div class="inner"><span class="badge">Panduan Beasiswa S3</span>
+<h1>Panduan S3 Sophia University Jepang</h1>
+<p class="sub">Beasiswa doktoral Sophia University, Tokyo — grant riset ¥300–400 ribu/tahun untuk semua mahasiswa doktoral full-time + potongan biaya kuliah. Dukungan parsial: tanpa tunjangan hidup penuh.</p>
+<p class="src">Sumber foto: Wikimedia Commons — Sophia University, Yotsuya Campus, Tokyo</p></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Daftar Isi</span><h2>Yang akan kamu pelajari</h2>
+<div class="toc"><div><b>01</b>Sekilas: S3 di Sophia University</div><div><b>02</b>Rincian dukungan dana</div><div><b>03</b>Syarat utama pendaftar</div><div><b>04</b>Format &amp; tahapan seleksi</div><div><b>05</b>Tahap 1: Pilih program &amp; supervisor</div><div><b>06</b>Tahap 2: Research plan yang kuat</div><div><b>07</b>Tahap 3: Bahasa &amp; dokumen</div><div><b>08</b>Tahap 4: Submit &amp; pantau</div><div><b>09</b>Timeline persiapan 12 bulan</div><div><b>10</b>Checklist dokumen</div><div><b>11</b>Anatomi research plan yang menang</div><div><b>12</b>Cara menghubungi calon supervisor</div><div><b>13</b>Sumber informasi resmi</div><div><b>14</b>Link pendaftaran resmi</div><div><b>15</b>Tonton &amp; pelajari</div><div><b>16</b>Tips wawancara &amp; hari-H</div><div><b>17</b>Pertanyaan yang sering ditanyakan</div><div><b>18</b>Catatan jujur: soal TIU</div><div><b>19</b>Langkah pertamamu minggu ini</div></div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Sekilas beasiswa</span><h2>Sekilas: S3 di Sophia University</h2>
+<div class="body">
+<p><strong>Sophia University (上智大学)</strong> adalah universitas swasta ternama di Tokyo, didirikan tahun 1913. Berbeda dengan skema beasiswa pemerintah yang full, dukungan doktoral Sophia bersifat <strong>parsial</strong> dan melekat pada statusmu sebagai mahasiswa doktoral:</p>
+<ul>
+<li><strong>Graduate School Scholarship for Fostering Researchers</strong> — grant riset tahunan untuk <strong>semua mahasiswa doktoral full-time yang memenuhi syarat, tanpa aplikasi terpisah</strong>.</li>
+<li><strong>New Student Scholarship</strong> — potongan 1/3, 1/2, atau <strong>full biaya kuliah tahun pertama</strong>.</li>
+<li><strong>Tuition Support Scholarship</strong> — potongan full/sebagian biaya kuliah selama masa studi.</li>
+</ul>
+<p>PENTING: deck ini <strong>fokus ke Sophia University saja</strong> — lihat slide Catatan Jujur soal TIU.</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Rincian pendanaan</span><h2>Rincian dukungan dana</h2>
+<div class="body">
+<table>
+<tr><th>Skema</th><th>Nilai</th></tr>
+<tr><td><strong>Fostering Researchers Grant</strong> (non-saintek)</td><td><strong>¥300.000/tahun</strong></td></tr>
+<tr><td><strong>Fostering Researchers Grant</strong> (Graduate School of Science and Technology)</td><td><strong>¥400.000/tahun</strong></td></tr>
+<tr><td><strong>New Student Scholarship</strong></td><td>Potongan <strong>1/3, 1/2, atau full</strong> tuition tahun pertama</td></tr>
+<tr><td><strong>Tuition Support Scholarship</strong></td><td>Potongan full/sebagian tuition selama studi</td></tr>
+</table>
+<div class="warn"><p><b>Catatan jujur:</b> ini skema <strong>parsial</strong> — ada dukungan tuition + grant riset tahunan, tetapi <strong>tidak ada tunjangan hidup penuh</strong> seperti LPDP/MEXT. Kamu perlu rencana dana hidup di Tokyo secara mandiri (tabungan, kerja paruh waktu sesuai aturan visa, atau beasiswa eksternal seperti JASSO).</p></div>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Syarat utama</span><h2>Syarat utama pendaftar</h2>
+<div class="body">
+<ul>
+<li><strong>Lulusan S2</strong> bidang terkait dari universitas yang diakui.</li>
+<li><strong>Diterima di program doktoral</strong> Sophia University (graduate school tujuan).</li>
+<li>Untuk <strong>Fostering Researchers grant</strong>: berstatus <strong>mahasiswa doktoral full-time</strong> yang memenuhi syarat — <strong>otomatis, tanpa aplikasi terpisah</strong>.</li>
+<li>Untuk <strong>New Student Scholarship</strong>: memenuhi kriteria seleksi beasiswa mahasiswa baru (umumnya berbasis kebutuhan & prestasi).</li>
+<li><strong>Bahasa</strong>: tergantung program — banyak program graduate berbahasa Inggris (TOEFL/IELTS), sebagian berbahasa Jepang (JLPT).</li>
+<li><strong>Dokumen standar</strong>: transkrip, ijazah, research plan, surat rekomendasi, bukti bahasa.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Format seleksi</span><h2>Format &amp; tahapan seleksi</h2>
+<div class="body">
+<div class="step"><span class="num">1</span><div><b>Pilih graduate school & program doktoral</b> — cek kurikulum dan bahasa pengantar (Inggris/Jepang).</div></div>
+<div class="step"><span class="num">2</span><div><b>Hubungi calon supervisor</b> — di Jepang, kesediaan profesor pembimbing sangat menentukan.</div></div>
+<div class="step"><span class="num">3</span><div><b>Siapkan research plan</b> — rencana riset doktoral yang jelas dan sesuai kepakaran supervisor.</div></div>
+<div class="step"><span class="num">4</span><div><b>Ajukan aplikasi admisi</b> sesuai periode (Spring/Autumn intake) + dokumen lengkap.</div></div>
+<div class="step"><span class="num">5</span><div><b>Seleksi dokumen & ujian/wawancara</b> — format bervariasi per graduate school (ujian tertulis, wawancara, atau keduanya).</div></div>
+<div class="step"><span class="num">6</span><div><b>Ajukan New Student Scholarship</b> (terpisah dari admisi bila dibutuhkan) — grant Fostering Researchers otomatis menyusul setelah terdaftar full-time.</div></div>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 1</span><h2>Tahap 1: Pilih program &amp; supervisor</h2>
+<div class="body">
+<ul>
+<li>Pelajari <strong>graduate schools</strong> Sophia: Global Studies, Science and Technology, Languages & Linguistics, Human Sciences, Law, Economics, Theology, dsb.</li>
+<li>Perhatikan <strong>program berbahasa Inggris</strong> (mis. Global Studies, Global Environmental Studies, Green Science/Engineering) bila kemampuan bahasa Jepangmu terbatas.</li>
+<li>Telusuri profil profesor di situs tiap graduate school; baca publikasinya 2–3 tahun terakhir.</li>
+<li>Kirim email perkenalan dalam <strong>bahasa yang sopan dan ringkas</strong> (Inggris/Jepang sesuai profil profesor).</li>
+<li>Tanyakan apakah beliau <strong>menerima mahasiswa doktoral baru</strong> untuk intake yang kamu tuju.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 2</span><h2>Tahap 2: Research plan yang kuat</h2>
+<div class="body">
+<ul>
+<li><strong>Tema relevan dengan Jepang/global</strong>: Sophia kuat di studi global, lingkungan, dan humaniora — selaraskan topikmu.</li>
+<li><strong>Struktur</strong>: latar belakang, rumusan masalah, tinjauan pustaka, metodologi, rencana 3 tahun, signifikansi.</li>
+<li><strong>Realistis</strong>: tunjukkan riset bisa dikerjakan dengan fasilitas dan arsip yang ada di Jepang.</li>
+<li><strong>Bahasa</strong>: tulis dalam bahasa pengantar program (Inggris/Jepang) dengan akademik yang rapi.</li>
+<li>Minta <strong>review dari dosen/mentor</strong> sebelum submit — research plan adalah dokumen penentu di seleksi doktoral Jepang.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 3</span><h2>Tahap 3: Bahasa &amp; dokumen</h2>
+<div class="body">
+<ul>
+<li><strong>Program Inggris</strong>: siapkan TOEFL iBT/IELTS sesuai syarat program (umumnya TOEFL iBT 79+ / IELTS 6.0+ untuk program internasional Sophia).</li>
+<li><strong>Program Jepang</strong>: butuh kemampuan bahasa Jepang akademik (JLPT N1/N2 tergantung program).</li>
+<li>Siapkan <strong>transkrip & ijazah S1+S2</strong> + terjemahan Inggris/Jepang bila perlu.</li>
+<li><strong>2 surat rekomendasi</strong> dari dosen yang mengenal risetmu.</li>
+<li><strong>Formulir beasiswa New Student</strong> diajukan <strong>terpisah dari berkas admisi</strong> — perhatikan tenggatnya (contoh pola: Spring entry Agu–Sep, Autumn entry Mar–Apr).</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 4</span><h2>Tahap 4: Submit &amp; pantau</h2>
+<div class="body">
+<ul>
+<li>Submit <strong>aplikasi admisi</strong> via portal resmi Sophia sesuai periode intake pilihanmu.</li>
+<li>Ajukan <strong>aplikasi beasiswa</strong> (New Student Scholarship) secara terpisah ke Center for Student Affairs bila kamu mengincar potongan tuition tahun pertama.</li>
+<li>Siapkan diri untuk <strong>ujian/wawancara</strong> sesuai ketentuan graduate school.</li>
+<li>Setelah diterima & terdaftar full-time: <strong>grant Fostering Researchers (¥300–400rb/tahun) berlaku otomatis</strong> tanpa aplikasi tambahan.</li>
+<li>Urus <strong>Certificate of Eligibility (CoE)</strong> dan visa pelajar setelah LoA terbit.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Timeline</span><h2>Timeline persiapan 12 bulan</h2>
+<div class="body">
+<table>
+<tr><th>Bulan</th><th>Fokus</th></tr>
+<tr><td><strong>H-12 s.d. H-9</strong></td><td>Pilih graduate school & program; riset calon supervisor; mulai research plan.</td></tr>
+<tr><td><strong>H-9 s.d. H-6</strong></td><td>Hubungi supervisor; finalisasi research plan; siapkan tes bahasa.</td></tr>
+<tr><td><strong>H-6 s.d. H-4</strong></td><td>Ambil TOEFL/IELTS/JLPT; kumpulkan transkrip, ijazah, rekomendasi.</td></tr>
+<tr><td><strong>H-4 s.d. H-2</strong></td><td>Submit aplikasi admisi + aplikasi beasiswa New Student (terpisah!).</td></tr>
+<tr><td><strong>H-2 s.d. H-0</strong></td><td>Ikuti ujian/wawancara; terima hasil; urus CoE & visa.</td></tr>
+</table>
+<p class="src">Pola periode aplikasi beasiswa (acuan 2027): Spring entry sekitar Agu–Sep 2026; Autumn entry sekitar Mar–Apr 2027. Selalu cek kalender resmi terbaru.</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Dokumen</span><h2>Checklist dokumen</h2>
+<div class="body">
+<ul>
+<li>☐ Formulir aplikasi admisi program doktoral</li>
+<li>☐ Research plan / rencana riset</li>
+<li>☐ Transkrip & ijazah S1 + S2 (+ terjemahan bila perlu)</li>
+<li>☐ Bukti kemampuan bahasa (TOEFL/IELTS/JLPT sesuai program)</li>
+<li>☐ 2 surat rekomendasi</li>
+<li>☐ CV akademik</li>
+<li>☐ Paspor</li>
+<li>☐ <strong>Formulir aplikasi beasiswa New Student</strong> (terpisah dari admisi)</li>
+<li>☐ Dokumen finansial pendukung (untuk aplikasi beasiswa berbasis kebutuhan)</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Research plan</span><h2>Anatomi research plan yang menang</h2>
+<div class="body">
+<ul>
+<li><strong>Judul</strong>: jelas dan spesifik, mencerminkan kontribusi.</li>
+<li><strong>Latar belakang</strong>: masalah → urgensi → posisi risetmu.</li>
+<li><strong>Tinjauan pustaka</strong>: tunjukkan penguasaan literatur, terutama karya calon supervisor.</li>
+<li><strong>Pertanyaan & tujuan riset</strong>: tajam dan terukur.</li>
+<li><strong>Metodologi</strong>: pendekatan, data, teknik analisis.</li>
+<li><strong>Rencana 3 tahun</strong>: tahapan yang realistis.</li>
+<li><strong>Signifikansi</strong>: kontribusi akademik + relevansi sosial.</li>
+<li><strong>Referensi</strong>: mutakhir dan relevan.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Email supervisor</span><h2>Cara menghubungi calon supervisor</h2>
+<div class="body">
+<div class="card">
+<p><b>Subject:</b> Prospective doctoral student — [topik singkat]</p>
+<p>Dear Professor [Nama],<br><br>
+My name is [nama], a master's graduate from Indonesia. I am writing to inquire whether you would consider supervising my doctoral research on [topik] at the Graduate School of [nama].<br><br>
+Having read your work on [karya spesifik], I believe my proposed research on [1 kalimat] aligns with your expertise in [bidang]. I have attached my CV and a brief research outline.<br><br>
+Thank you for your consideration.<br><br>
+Sincerely,<br>[Nama]</p>
+</div>
+<p><strong>Tips</strong>: di Jepang, kesopanan dan kekhususan sangat dihargai — sebutkan karya spesifik profesor, jangan template massal.</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Sumber resmi</span><h2>Sumber informasi resmi</h2>
+<div class="body">
+<ul>
+<li><strong>Halaman beasiswa graduate school Sophia</strong> — sophia.ac.jp/eng/admissions-and-aid/tuition/scholarship-daigakuin/</li>
+<li><strong>Admissions Office</strong> — adm.sophia.ac.jp (info admisi program internasional)</li>
+<li><strong>Web Piloti</strong> — portal aplikasi beasiswa mahasiswa internasional Sophia</li>
+<li><strong>Graduate school masing-masing</strong> — syarat & jadwal ujian berbeda per sekolah</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Link resmi</span><h2>Link pendaftaran resmi</h2>
+<div class="body"><p>Kanal resmi untuk aplikasi dan informasi beasiswa:</p></div><div class="links"><a class="alink" href="https://www.sophia.ac.jp/eng/admissions-and-aid/tuition/scholarship-daigakuin/" target="_blank" rel="noopener"><span>Beasiswa Graduate School Sophia (resmi)</span><span class="arr">&rarr;</span></a><a class="alink" href="https://adm.sophia.ac.jp/eng/" target="_blank" rel="noopener"><span>Admissions — Sophia University</span><span class="arr">&rarr;</span></a><a class="alink" href="https://gs.sophia.ac.jp/en/admissions" target="_blank" rel="noopener"><span>Graduate School of Global Studies — Admissions</span><span class="arr">&rarr;</span></a></div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Video</span><h2>Tonton &amp; pelajari</h2>
+<div class="vidgrid"><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/8uC57_6kNqo" title="Sophia University Scholarships 2027 — cara daftar, syarat &amp; benefit (Bachelors, Masters &amp; PhD)"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Cara daftar 1</b>Sophia University Scholarships 2027 — cara daftar, syarat &amp; benefit (Bachelors, Masters &amp; PhD)</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/jPzJnbBbLJ4" title="Graduate School Application — funding, academic CV &amp; cara menghubungi profesor"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Cara daftar 2</b>Graduate School Application — funding, academic CV &amp; cara menghubungi profesor</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/OURrEmTnX50" title="Tur resmi Yotsuya Campus — kampus utama Sophia di jantung Tokyo"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Suasana kampus</b>Tur resmi Yotsuya Campus — kampus utama Sophia di jantung Tokyo</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/zCbBNWJV6es" title="Learning at Sophia — cerita mahasiswa &amp; profesor (kanal resmi Sophia)"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Testimoni</b>Learning at Sophia — cerita mahasiswa &amp; profesor (kanal resmi Sophia)</div></div></div>
+<p class="src">Klik video untuk memutar. Semua video dari YouTube dan relevan dengan beasiswa ini.</p></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Wawancara</span><h2>Tips wawancara &amp; hari-H</h2>
+<div class="body">
+<ul>
+<li><strong>Kuasai research plan</strong>: jelaskan dalam 3–5 menit dengan percaya diri.</li>
+<li><strong>Alasan memilih Sophia & supervisor</strong>: spesifik — sebutkan lab, publikasi, atau fasilitas.</li>
+<li><strong>Rencana kontribusi</strong>: apa yang akan kamu hasilkan selama 3 tahun.</li>
+<li><strong>Bahasa</strong>: latihan menjawab dalam bahasa pengantar program.</li>
+<li><strong>Etika Jepang</strong>: datang tepat waktu (lebih awal), berpakaian formal, bahasa tubuh sopan.</li>
+<li><strong>Hari-H</strong>: bawa salinan dokumen, alat tulis, dan daftar pertanyaan untuk pewawancara.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">FAQ</span><h2>Pertanyaan yang sering ditanyakan</h2>
+<div class="body">
+<h3>Apakah grant Fostering Researchers perlu aplikasi terpisah?</h3>
+<p>Tidak. Grant ¥300.000–400.000/tahun diberikan ke <strong>semua mahasiswa doktoral full-time yang memenuhi syarat</strong> tanpa aplikasi terpisah.</p>
+<h3>Apakah ini beasiswa full?</h3>
+<p><strong>Tidak.</strong> Ini dukungan parsial: potongan tuition + grant riset tahunan. <strong>Tidak ada tunjangan hidup</strong> — siapkan dana hidup di Tokyo.</p>
+<h3>Apakah aplikasi beasiswa sama dengan aplikasi admisi?</h3>
+<p><strong>Tidak.</strong> Aplikasi beasiswa (mis. New Student Scholarship) <strong>diajukan terpisah</strong> dari berkas admisi, ke Center for Student Affairs.</p>
+<h3>Apakah program doktoral berbahasa Inggris tersedia?</h3>
+<p>Ya, beberapa graduate school menawarkan kurikulum berbahasa Inggris (mis. Global Studies, Global Environmental Studies, Green Science/Engineering).</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Catatan jujur</span><h2>Catatan jujur: soal TIU</h2>
+<div class="body">
+<div class="warn">
+<p><b>Kenapa deck ini hanya membahas Sophia?</b></p>
+<p>Berdasarkan riset, <strong>Tokyo International University (TIU)</strong> memang memiliki graduate school dengan program doktoral, tetapi <strong>tidak ditemukan beasiswa PhD khusus internasional yang legitimate untuk TIU</strong>. Karena prinsip panduan ini adalah tidak mengarang cakupan beasiswa, deck ini <strong>fokus ke Sophia University saja</strong>.</p>
+<p>Alternatif legitimate untuk S3 di Jepang: <strong>MEXT Scholarship — University Recommendation</strong>, yang membuka jalur doktoral di banyak universitas Jepang termasuk Sophia.</p>
+<p>Selain itu, ingat: dukungan Sophia bersifat <strong>parsial tanpa tunjangan hidup</strong> — rencanakan pembiayaan hidup di Tokyo dengan realistis.</p>
+</div>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Penutup</span><h2>Langkah pertamamu minggu ini</h2>
+<div class="body">
+<div class="step"><span class="num">1</span><div>Buka halaman beasiswa graduate school Sophia dan <b>tentukan program doktoral + bahasa pengantarnya</b>.</div></div>
+<div class="step"><span class="num">2</span><div>Buat daftar <b>5 calon supervisor</b> beserta 1 publikasi terbaru masing-masing.</div></div>
+<div class="step"><span class="num">3</span><div>Mulai draft <b>research plan 2 halaman</b> — fokus pada research question yang tajam.</div></div>
+<div class="step"><span class="num">4</span><div>Hitung <b>anggaran hidup di Tokyo</b> (tempat tinggal, makan, transport) dan petakan sumber dananya sejak awal.</div></div>
+</div></div></section>
+</div>
+<nav class="nav">
+<button id="prev">&larr; Sebelumnya</button>
+<div class="progress"><i id="bar"></i></div>
+<span class="counter" id="counter">1 / 21</span>
+<button id="next">Berikutnya &rarr;</button>
+</nav>
+</div>
+<script>
+let cur=0;const slides=[...document.querySelectorAll('.slide')];const total=slides.length;
+const prevB=document.getElementById('prev'),nextB=document.getElementById('next'),
+counter=document.getElementById('counter'),bar=document.getElementById('bar');
+function show(i){cur=Math.max(0,Math.min(total-1,i));
+slides.forEach((s,k)=>s.classList.toggle('active',k===cur));
+prevB.disabled=cur===0;nextB.disabled=cur===total-1;
+counter.textContent=(cur+1)+' / '+total;bar.style.width=((cur+1)/total*100)+'%';
+slides[cur].scrollTop=0;}
+prevB.onclick=()=>show(cur-1);nextB.onclick=()=>show(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(cur+1);}
+if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(cur-1);}});
+let tx=null;document.addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;
+if(dx<-60)show(cur+1);else if(dx>60)show(cur-1);tx=null;},{passive:true});
+show(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

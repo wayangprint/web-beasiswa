@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panduan S3 MAECI Italia</title>
+<style>:root{--accent:#1e6e3e}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#b3541e;--bg:#141210;--card:#1f1b17;--text:#f5efe6;--muted:#c9bda9;--line:#3a322a}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;overflow:hidden}
+.deck{position:fixed;inset:0;display:flex;flex-direction:column}
+.slides{flex:1;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;padding:48px 7vw;overflow-y:auto;text-align:left}
+.slide.active{display:flex}
+.inner{max-width:960px;width:100%}
+.kicker{display:inline-block;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px}
+h1{font-size:clamp(30px,5vw,58px);line-height:1.12;margin-bottom:14px}
+h2{font-size:clamp(24px,3.6vw,40px);line-height:1.2;margin-bottom:18px}
+h3{font-size:clamp(18px,2.4vw,26px);margin:18px 0 10px;color:var(--accent)}
+.sub{font-size:clamp(16px,2.2vw,22px);color:var(--muted);line-height:1.55}
+.body{font-size:clamp(15px,2vw,19px);line-height:1.65;color:var(--text)}
+.body p{margin-bottom:12px}
+.body ul,.body ol{margin:0 0 14px 22px}
+.body li{margin-bottom:8px}
+.body strong{color:#fff}
+.num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:15px;margin-right:10px;flex:none}
+.step{display:flex;align-items:flex-start;margin-bottom:14px}
+.step div{flex:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.card b{color:#fff}
+.warn{background:#2a1f14;border:1px solid #7a4a1e;border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.warn b{color:#ffcf8a}
+table{width:100%;border-collapse:collapse;margin:6px 0 14px;font-size:clamp(13px,1.8vw,17px)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--accent);text-transform:uppercase;font-size:12px;letter-spacing:1px}
+.cover{background-size:cover;background-position:center;position:absolute;inset:0}
+.cover::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,8,6,.55) 0%,rgba(10,8,6,.88) 78%)}
+.cover .inner{position:relative;z-index:1}
+.cover .badge{display:inline-block;background:var(--accent);color:#fff;font-size:13px;font-weight:700;letter-spacing:2px;padding:8px 16px;border-radius:999px;margin-bottom:18px;text-transform:uppercase}
+.cover h1{text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;margin-top:6px}
+.vid{background:#000;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.vid .frame{position:relative;width:100%;padding-top:56.25%}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid .cap{padding:10px 12px;font-size:13px;color:var(--muted);background:var(--card)}
+.vid .cap b{color:var(--text);display:block;font-size:14px;margin-bottom:2px}
+.links{display:grid;gap:12px;margin-top:8px}
+.alink{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;color:var(--text);text-decoration:none;font-size:16px}
+.alink:hover{border-color:var(--accent)}
+.alink .arr{margin-left:auto;color:var(--accent);font-weight:700}
+.nav{flex:none;display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid var(--line);background:rgba(20,18,16,.96)}
+.nav button{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 18px;font-size:15px;cursor:pointer}
+.nav button:hover{border-color:var(--accent)}
+.nav button:disabled{opacity:.35;cursor:default}
+.counter{font-size:14px;color:var(--muted);white-space:nowrap}
+.progress{flex:1;height:6px;background:#2c2620;border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);width:0;transition:width .25s}
+.toc{columns:2;column-gap:32px;font-size:clamp(14px,1.9vw,18px)}
+.toc div{break-inside:avoid;margin-bottom:10px;color:var(--muted)}
+.toc b{color:var(--text);margin-right:8px}
+.src{font-size:13px;color:var(--muted);margin-top:14px}
+@media(max-width:640px){.slide{padding:28px 6vw}.toc{columns:1}.vidgrid{gap:10px}}
+</style>
+</style>
+</head>
+<body>
+<div class="deck">
+<div class="slides">
+<section class="slide"><div class="cover" style="background-image:url('https://www.theromanpost.com/wp-content/uploads/2024/11/Universita-La-Sapienza-Roma-1000x563.jpg')"></div>
+<div class="inner"><span class="badge">Panduan Beasiswa S3</span>
+<h1>Panduan S3 MAECI Italia</h1>
+<p class="sub">MAECI Italian Government Grant — jalur PhD: €10.800/9 bulan + pembebasan tuition + asuransi kesehatan. Syarat: usia ≤30 dan sudah punya LoA program doktoral Italia.</p>
+<p class="src">Sumber foto: theromanpost.com — Sapienza Università di Roma, Città Universitaria</p></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Daftar Isi</span><h2>Yang akan kamu pelajari</h2>
+<div class="toc"><div><b>01</b>Sekilas: beasiswa pemerintah Italia</div><div><b>02</b>Apa saja yang ditanggung?</div><div><b>03</b>Syarat utama pendaftar</div><div><b>04</b>Format &amp; tahapan seleksi</div><div><b>05</b>Tahap 1: Amankan LoA PhD dulu</div><div><b>06</b>Tahap 2: Dokumen aplikasi MAECI</div><div><b>07</b>Tahap 3: Bahasa &amp; persiapan</div><div><b>08</b>Tahap 4: Submit via Study in Italy</div><div><b>09</b>Timeline persiapan 12 bulan</div><div><b>10</b>Checklist dokumen</div><div><b>11</b>Anatomi study plan yang menang</div><div><b>12</b>Cara menghubungi calon supervisor</div><div><b>13</b>Sumber informasi resmi</div><div><b>14</b>Link pendaftaran resmi</div><div><b>15</b>Tonton &amp; pelajari</div><div><b>16</b>Tips wawancara &amp; hari-H</div><div><b>17</b>Pertanyaan yang sering ditanyakan</div><div><b>18</b>Catatan jujur</div><div><b>19</b>Langkah pertamamu minggu ini</div></div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Sekilas beasiswa</span><h2>Sekilas: beasiswa pemerintah Italia</h2>
+<div class="body">
+<p><strong>MAECI (Ministry of Foreign Affairs and International Cooperation)</strong> Italia menawarkan <strong>Italian Government Grant</strong> untuk mahasiswa internasional, termasuk <strong>jalur PhD</strong>.</p>
+<ul>
+<li>Seleksi berdasarkan <strong>kewarganegaraan</strong> — WNI mendaftar via portal <strong>Study in Italy</strong> dengan pendampingan Kedubes Italia / IIC Jakarta.</li>
+<li><strong>Jalur PhD</strong>: durasi <strong>9 bulan</strong> (1 Nov–31 Jul), <strong>dapat diperpanjang</strong> untuk program multi-tahun.</li>
+<li><strong>Wajib sudah punya LoA/admission letter</strong> program doktoral Italia saat mendaftar.</li>
+<li><strong>Usia maksimal 30 tahun</strong> untuk jalur PhD.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Rincian pendanaan</span><h2>Apa saja yang ditanggung?</h2>
+<div class="body">
+<table>
+<tr><th>Komponen</th><th>Nilai</th></tr>
+<tr><td><strong>Tunjangan total</strong></td><td><strong>€10.800 / 9 bulan</strong> (dibayar 3 termin: €5.500 + €2.300 + €3.000)</td></tr>
+<tr><td><strong>Tuition</strong></td><td><strong>Pembebasan</strong> di sebagian besar universitas negeri (kebijakan tiap universitas; regional fees tetap bayar)</td></tr>
+<tr><td><strong>Asuransi kesehatan</strong></td><td>Ditanggung MAECI</td></tr>
+<tr><td><strong>Durasi</strong></td><td>9 bulan, <strong>dapat diperpanjang</strong> untuk PhD multi-tahun</td></tr>
+</table>
+<p>Catatan: tiket pesawat & akomodasi umumnya <strong>tidak termasuk</strong> — rencanakan anggarannya.</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Syarat utama</span><h2>Syarat utama pendaftar</h2>
+<div class="body">
+<ul>
+<li><strong>WNI</strong> (seleksi per kewarganegaraan).</li>
+<li><strong>Usia maksimal 30 tahun</strong> (jalur PhD).</li>
+<li><strong>Sudah memiliki LoA/admission letter</strong> program doktoral di universitas Italia.</li>
+<li><strong>Bahasa</strong>: level <strong>B2</strong> bahasa Italia atau Inggris (tergantung bahasa pengantar program).</li>
+<li><strong>Rekam akademik kuat</strong> + rencana studi yang jelas.</li>
+<li><strong>Belum terdaftar</strong> di program gelar Italia saat mendaftar; mendaftar untuk <strong>tahun pertama</strong> program.</li>
+<li>Paspor/ID valid.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Format seleksi</span><h2>Format &amp; tahapan seleksi</h2>
+<div class="body">
+<div class="step"><span class="num">1</span><div><b>Amankan LoA PhD</b> — daftar & diterima di program doktoral universitas Italia <i>terlebih dahulu</i> (ini prasyarat).</div></div>
+<div class="step"><span class="num">2</span><div><b>Registrasi portal Study in Italy</b> — buat akun di studyinitaly.esteri.it.</div></div>
+<div class="step"><span class="num">3</span><div><b>Isi aplikasi MAECI</b> — pilih negara, jenjang (PhD), institusi; unggah dokumen.</div></div>
+<div class="step"><span class="num">4</span><div><b>Submit sebelum deadline</b> — pola tahunan sekitar <b>Maret–Mei</b> (cek bando/call terbaru).</div></div>
+<div class="step"><span class="num">5</span><div><b>Seleksi berkas</b> — penilaian merit akademik & rencana studi; pengumuman via portal/kedutaan.</div></div>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 1</span><h2>Tahap 1: Amankan LoA PhD dulu</h2>
+<div class="body">
+<p>Ini <strong>pintu gerbang</strong> MAECI jalur PhD — tanpa LoA, aplikasi beasiswa tidak bisa diajukan.</p>
+<ul>
+<li>Riset <strong>program doktoral Italia</strong> berbahasa Inggris di bidangmu (cek Universitaly / situs universitas).</li>
+<li>Hubungi <strong>calon supervisor / koordinator PhD</strong> jauh hari; siapkan research proposal.</li>
+<li>Ikuti <strong>call for PhD positions</strong> tiap universitas (bando di situs resmi universitas).</li>
+<li>Targetkan LoA terbit <strong>sebelum deadline MAECI</strong> (pola Maret–Mei) — mulai proses 9–12 bulan sebelumnya.</li>
+<li>Simpan <strong>admission letter resmi</strong> sebagai dokumen wajib aplikasi MAECI.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 2</span><h2>Tahap 2: Dokumen aplikasi MAECI</h2>
+<div class="body">
+<ul>
+<li><strong>LoA/admission letter</strong> program doktoral Italia (wajib).</li>
+<li><strong>Transkrip & ijazah</strong> + terjemahan bila perlu.</li>
+<li><strong>Bukti bahasa B2</strong> (Italia/Inggris sesuai program).</li>
+<li><strong>CV</strong> akademik yang rapi.</li>
+<li><strong>Study/research plan</strong>: rencana studi doktoral yang jelas dan meyakinkan.</li>
+<li><strong>Surat pengalaman kerja/magang</strong> bila relevan — sesuaikan dengan studi lanjutan.</li>
+<li>Siapkan <strong>salinan dokumen</strong> untuk verifikasi setelah tiba di Italia (bila lolos).</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 3</span><h2>Tahap 3: Bahasa &amp; persiapan</h2>
+<div class="body">
+<ul>
+<li>Capai <strong>B2 Italia atau Inggris</strong> (tergantung program) — sertifikat resmi memperkuat aplikasi.</li>
+<li>Untuk program berbahasa Italia: pertimbangkan <strong>kursus bahasa Italia</strong> (IIC Jakarta menyelenggarakan).</li>
+<li>Pelajari <strong>sistem pendidikan Italia</strong>: struktur PhD (dottorato di ricerca), durasi 3 tahun, budaya akademik.</li>
+<li>Siapkan <strong>dana cadangan</strong> untuk tiket & biaya awal — tunjangan dibayar bertahap setelah tiba.</li>
+<li>Bangun relasi dengan <strong>IIC Jakarta / Kedubes Italia</strong> untuk info call terbaru.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Strategi 4</span><h2>Tahap 4: Submit via Study in Italy</h2>
+<div class="body">
+<ul>
+<li>Alur portal: <strong>Study in Italy → Register Account → Apply for MAECI Scholarship → Open Application</strong>.</li>
+<li>Isi: <strong>personal details → language proof → academic documents → submit</strong>.</li>
+<li>Periksa <strong>bando (call) tahun berjalan</strong> — syarat detail (usia, dokumen) mengikuti bando.</li>
+<li>Submit <strong>sebelum deadline</strong>; simpan bukti aplikasi.</li>
+<li>Pantau pengumuman via portal & kanal resmi kedutaan.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Timeline</span><h2>Timeline persiapan 12 bulan</h2>
+<div class="body">
+<table>
+<tr><th>Bulan</th><th>Fokus</th></tr>
+<tr><td><strong>H-12 s.d. H-9</strong></td><td>Riset program PhD Italia; hubungi calon supervisor; susun research proposal.</td></tr>
+<tr><td><strong>H-9 s.d. H-6</strong></td><td>Apply ke program doktoral (bando universitas); siapkan sertifikat bahasa B2.</td></tr>
+<tr><td><strong>H-6 s.d. H-4</strong></td><td>Amankan LoA; kumpulkan & terjemahkan dokumen.</td></tr>
+<tr><td><strong>H-4 s.d. H-2</strong></td><td>Registrasi Study in Italy; isi aplikasi MAECI; submit sebelum deadline (pola Mar–Mei).</td></tr>
+<tr><td><strong>H-2 s.d. H-0</strong></td><td>Tunggu hasil; bila lolos: urus visa studi, tiket, dan persiapan keberangkatan 1 Nov.</td></tr>
+</table>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Dokumen</span><h2>Checklist dokumen</h2>
+<div class="body">
+<ul>
+<li>☐ <strong>LoA/admission letter</strong> program doktoral Italia</li>
+<li>☐ Paspor/ID valid</li>
+<li>☐ Transkrip & ijazah (+ terjemahan bila perlu)</li>
+<li>☐ Bukti bahasa B2 (Italia/Inggris)</li>
+<li>☐ CV</li>
+<li>☐ Study/research plan</li>
+<li>☐ Surat pengalaman kerja/magang (bila ada)</li>
+<li>☐ Dokumen pendukung lain sesuai bando tahun berjalan</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Study plan</span><h2>Anatomi study plan yang menang</h2>
+<div class="body">
+<ul>
+<li><strong>Tujuan studi</strong>: apa yang ingin dicapai selama 9 bulan pertama PhD.</li>
+<li><strong>Keterkaitan dengan disertasi</strong>: bagaimana periode ini menopang riset 3 tahun.</li>
+<li><strong>Metode & aktivitas</strong>: riset, coursework, seminar, kolaborasi.</li>
+<li><strong>Kenapa Italia</strong>: sumber daya spesifik — arsip, lab, pakar, tradisi akademik.</li>
+<li><strong>Dampak</strong>: kontribusi bagi Indonesia/komunitas akademik sepulang studi.</li>
+<li><strong>Realistis & terukur</strong>: milestone jelas per termin.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Email supervisor</span><h2>Cara menghubungi calon supervisor</h2>
+<div class="body">
+<div class="card">
+<p><b>Subject:</b> Prospective PhD candidate — [topik singkat]</p>
+<p>Dear Professor [Nama],<br><br>
+My name is [nama] from Indonesia. I am applying for the PhD programme in [program] at [universitas], and I am also preparing a MAECI Italian Government Grant application, for which an admission letter is required.<br><br>
+I was impressed by your research on [karya spesifik]. My proposed doctoral research on [1 kalimat] aligns with your work on [bidang]. I have attached my CV and research outline.<br><br>
+I would be grateful for your consideration as a potential supervisor.<br><br>
+Kind regards,<br>[Nama]</p>
+</div>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Sumber resmi</span><h2>Sumber informasi resmi</h2>
+<div class="body">
+<ul>
+<li><strong>IIC Jakarta</strong> — iicjakarta.esteri.it: publikasi <strong>bando/call resmi</strong> tiap tahun.</li>
+<li><strong>Portal Study in Italy</strong> — studyinitaly.esteri.it: tempat aplikasi resmi.</li>
+<li><strong>Kedubes Italia Jakarta</strong> — pendampingan pendaftar Indonesia.</li>
+<li><strong>Universitaly</strong> — direktori program studi Italia.</li>
+</ul>
+<p class="src">Selalu baca <strong>bando tahun berjalan</strong> — detail usia, dokumen, dan deadline mengikuti dokumen itu.</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Link resmi</span><h2>Link pendaftaran resmi</h2>
+<div class="body"><p>Kanal resmi untuk info dan pendaftaran:</p></div><div class="links"><a class="alink" href="https://iicjakarta.esteri.it/" target="_blank" rel="noopener"><span>IIC Jakarta — iicjakarta.esteri.it (bando resmi)</span><span class="arr">&rarr;</span></a><a class="alink" href="https://studyinitaly.esteri.it/" target="_blank" rel="noopener"><span>Portal Study in Italy — studyinitaly.esteri.it</span><span class="arr">&rarr;</span></a><a class="alink" href="https://www.esteri.it/" target="_blank" rel="noopener"><span>MAECI — esteri.it</span><span class="arr">&rarr;</span></a></div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Video</span><h2>Tonton &amp; pelajari</h2>
+<div class="vidgrid"><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/iOYXEI2Z1ao" title="MAECI Italian Government Scholarship 2026 — panduan lengkap step-by-step (termasuk PhD)"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Cara daftar 1</b>MAECI Italian Government Scholarship 2026 — panduan lengkap step-by-step (termasuk PhD)</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/oGvIlEq_5QI" title="Complete Guide MAECI Scholarship 2026/2027 — portal Study in Italy"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Cara daftar 2</b>Complete Guide MAECI Scholarship 2026/2027 — portal Study in Italy</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/485iBWJQ3ys" title="Walking Tour Sapienza University of Rome — panduan kampus untuk mahasiswa internasional"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Suasana kampus</b>Walking Tour Sapienza University of Rome — panduan kampus untuk mahasiswa internasional</div></div><div class="vid"><div class="frame">
+<iframe src="https://www.youtube.com/embed/mGF3CCR1WNI" title="Sapienza University of Rome Tour &amp; Student Life — vlog kehidupan mahasiswa"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div><div class="cap"><b>Testimoni</b>Sapienza University of Rome Tour &amp; Student Life — vlog kehidupan mahasiswa</div></div></div>
+<p class="src">Klik video untuk memutar. Semua video dari YouTube dan relevan dengan beasiswa ini.</p></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Wawancara</span><h2>Tips wawancara &amp; hari-H</h2>
+<div class="body">
+<ul>
+<li><strong>Kuasai study plan</strong>: jelaskan tujuan 9 bulan & kaitannya dengan disertasi.</li>
+<li><strong>Kenapa Italia</strong>: alasan akademik spesifik, bukan sekadar "ingin ke Eropa".</li>
+<li><strong>LoA-mu</strong>: pahami betul program & supervisor yang menerimamu.</li>
+<li><strong>Rencana pembiayaan</strong>: tunjukkan kamu paham tunjangan dibayar bertahap & sudah menyiapkan dana awal.</li>
+<li><strong>Bahasa</strong>: siap menjawab dalam bahasa pengantar program.</li>
+<li><strong>Hari-H</strong>: dokumen lengkap, berpakaian rapi, datang tepat waktu.</li>
+</ul>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">FAQ</span><h2>Pertanyaan yang sering ditanyakan</h2>
+<div class="body">
+<h3>Apakah bisa mendaftar tanpa LoA?</h3>
+<p><strong>Tidak.</strong> Jalur PhD mewajibkan LoA/admission letter program doktoral Italia.</p>
+<h3>Berapa batas usianya?</h3>
+<p><strong>Maksimal 30 tahun</strong> untuk jalur PhD (mengikuti bando tahun berjalan).</p>
+<h3>Apakah tunjangan cukup untuk hidup di Italia?</h3>
+<p>€10.800/9 bulan adalah <strong>bantuan substansial</strong>, tetapi tiket & akomodasi awal perlu dana sendiri — rencanakan anggaran.</p>
+<h3>Apakah beasiswa bisa diperpanjang?</h3>
+<p><strong>Ya</strong>, untuk program PhD multi-tahun, perpanjangan dimungkinkan.</p>
+<h3>Apakah Invest Your Talent in Italy bisa untuk S3?</h3>
+<p><strong>Tidak</strong> — program itu hanya untuk S2. Untuk S3 gunakan jalur MAECI ini.</p>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Catatan jujur</span><h2>Catatan jujur</h2>
+<div class="body">
+<div class="warn">
+<p><b>Yang perlu kamu tahu apa adanya:</b></p>
+<ul>
+<li><strong>LoA adalah prasyarat mutlak</strong> — perjuangan terbesar justru mendapatkan admission PhD Italia sebelum deadline beasiswa.</li>
+<li><strong>Usia ≤30 tahun</strong> menutup peluang bagi yang lebih senior — cek alternatif (beasiswa universitas) bila tidak memenuhi.</li>
+<li>Pembebasan tuition <strong>tergantung kebijakan tiap universitas</strong> — regional fees tetap dibayar sendiri.</li>
+<li>Tunjangan <strong>tidak mencakup tiket pesawat & akomodasi awal</strong>.</li>
+</ul>
+</div>
+</div></div></section>
+<section class="slide"><div class="inner">
+<span class="kicker">Penutup</span><h2>Langkah pertamamu minggu ini</h2>
+<div class="body">
+<div class="step"><span class="num">1</span><div>Riset <b>3 program doktoral Italia</b> di bidangmu (via Universitaly/situs universitas) + catat <b>jadwal bando PhD</b>-nya.</div></div>
+<div class="step"><span class="num">2</span><div>Buat daftar <b>5 calon supervisor</b> dan mulai susun research outline 2 halaman.</div></div>
+<div class="step"><span class="num">3</span><div>Cek <b>level bahasamu</b> (Italia/Inggris) terhadap syarat B2 — jadwalkan kursus/tes bila kurang.</div></div>
+<div class="step"><span class="num">4</span><div>Pantau <b>bando MAECI terbaru di situs IIC Jakarta</b> dan tandai deadline-nya di kalendermu.</div></div>
+</div></div></section>
+</div>
+<nav class="nav">
+<button id="prev">&larr; Sebelumnya</button>
+<div class="progress"><i id="bar"></i></div>
+<span class="counter" id="counter">1 / 21</span>
+<button id="next">Berikutnya &rarr;</button>
+</nav>
+</div>
+<script>
+let cur=0;const slides=[...document.querySelectorAll('.slide')];const total=slides.length;
+const prevB=document.getElementById('prev'),nextB=document.getElementById('next'),
+counter=document.getElementById('counter'),bar=document.getElementById('bar');
+function show(i){cur=Math.max(0,Math.min(total-1,i));
+slides.forEach((s,k)=>s.classList.toggle('active',k===cur));
+prevB.disabled=cur===0;nextB.disabled=cur===total-1;
+counter.textContent=(cur+1)+' / '+total;bar.style.width=((cur+1)/total*100)+'%';
+slides[cur].scrollTop=0;}
+prevB.onclick=()=>show(cur-1);nextB.onclick=()=>show(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(cur+1);}
+if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(cur-1);}});
+let tx=null;document.addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;
+if(dx<-60)show(cur+1);else if(dx>60)show(cur-1);tx=null;},{passive:true});
+show(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

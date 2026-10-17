@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panduan PhD Monash Australia</title>
+<style>:root{--accent:#006dae}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#0b5fff}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:#0d1117;color:#f0f4f8;overflow:hidden}
+.deck{position:relative;height:100dvh;width:100%}
+.slide{display:none;height:100%;width:100%;padding:56px 8vw 110px;overflow-y:auto;animation:fade .35s ease}
+.slide.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.kicker{display:inline-block;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px}
+h1{font-size:clamp(30px,5.4vw,58px);line-height:1.12;margin-bottom:18px}
+h2{font-size:clamp(24px,4vw,40px);line-height:1.2;margin-bottom:20px}
+.slide ul{list-style:none;display:flex;flex-direction:column;gap:14px;max-width:900px}
+.slide li{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px;font-size:clamp(15px,2.1vw,19px);line-height:1.55}
+.slide li b{color:#fff}
+.note{margin-top:22px;max-width:900px;background:rgba(255,193,7,.08);border:1px dashed rgba(255,193,7,.5);border-radius:10px;padding:14px 18px;font-size:15px;line-height:1.6;color:#ffe1a1}
+.note b{color:#ffd76a}
+.cover{position:relative;display:none}
+.cover.active{display:flex;flex-direction:column;justify-content:flex-end}
+.cover .bg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,15,.25) 0%,rgba(5,8,15,.55) 45%,rgba(5,8,15,.94) 100%);z-index:1}
+.cover .inner{position:relative;z-index:2}
+.cover h1{text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.cover .sub{font-size:clamp(16px,2.4vw,22px);color:#dbe4ee;max-width:800px;line-height:1.6;margin-bottom:22px}
+.credit{position:absolute;right:14px;bottom:86px;z-index:2;font-size:11px;color:rgba(255,255,255,.55)}
+.pill{display:inline-block;background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:8px 18px;border-radius:999px;margin-bottom:16px}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:1100px}
+.vcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden}
+.vcard .frame{position:relative;padding-top:56.25%;background:#000}
+.vcard iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vcard .cap{padding:12px 14px}
+.vcard .cap .tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+.vcard .cap .t{font-size:14px;font-weight:600;margin-top:4px;line-height:1.4}
+.vcard .cap .d{font-size:12.5px;color:#aeb9c6;margin-top:4px;line-height:1.45}
+@media(max-width:640px){.vgrid{grid-template-columns:1fr}.slide{padding:40px 6vw 120px}}
+.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:18px;padding:16px 34px;border-radius:12px;margin-top:8px}
+.btn:hover{filter:brightness(1.12)}
+.urlbox{margin-top:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:14px 18px;font-size:15px;word-break:break-all;max-width:700px}
+.controls{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 4vw;background:linear-gradient(180deg,transparent,rgba(5,8,15,.92) 40%)}
+.navbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:16px;font-weight:600;padding:10px 22px;border-radius:999px;cursor:pointer}
+.navbtn:hover{background:var(--accent);border-color:var(--accent)}
+.navbtn:disabled{opacity:.3;cursor:default}
+.counter{font-size:14px;color:#aeb9c6;font-weight:600;white-space:nowrap}
+.dots{display:flex;gap:6px;overflow-x:auto;max-width:44vw;padding:4px}
+.dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.22);cursor:pointer;border:0;padding:0}
+.dot.on{background:var(--accent);transform:scale(1.25)}
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--accent);z-index:11;width:0;transition:width .3s}
+.steps{display:flex;flex-direction:column;gap:12px;max-width:900px}
+.step{display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:14px 18px}
+.step .n{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:16px}
+.step .tx{font-size:clamp(15px,2vw,18px);line-height:1.55}
+table{border-collapse:collapse;max-width:900px;width:100%;font-size:clamp(13px,1.9vw,16px)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.12);line-height:1.5}
+th{color:var(--accent);text-transform:uppercase;font-size:12px;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="deck">
+<section class="slide cover active"><div class="bg" style="background-image:url('https://e2studysolution.com/wp-content/uploads/2022/07/monash-uni.jpg')"></div><div class="shade"></div><div class="inner"><div class="pill">Monash RTP Stipend + Tuition Scholarship</div><h1>Panduan PhD Monash Australia</h1><p class="sub">Monash RTP Stipend + tuition scholarship: stipendium bebas pajak AUD 37.145/tahun, tunjangan relokasi & OSHC, dan pembebasan biaya kuliah penuh.</p><a class="btn" href="https://www.monash.edu/graduate-research/study/scholarships" target="_blank" rel="noopener">Kunjungi Situs Resmi</a></div><div class="credit">Foto: E2 Study Solution (foto kampus Monash)</div></section><section class="slide"><div><span class="kicker">Gambaran Program</span><h2>Sekilas Beasiswa PhD Monash</h2><ul><li><b>Research Training Program (RTP) Stipend</b> — beasiswa pemerintah Australia untuk riset pascasarjana — <b>plus paket tuition scholarship Monash</b> (Monash Graduate Scholarship / MIPRS) untuk mahasiswa internasional.</li><li>Kombinasi ini = <b>paket fully funded</b>: stipendium hidup + bebas biaya kuliah penuh.</li><li>Terbuka untuk mahasiswa internasional, <b>termasuk WNI</b>.</li><li><b>Tidak ada formulir beasiswa terpisah</b> — pendaftaran beasiswa otomatis bersama aplikasi admisi riset (graduate research admission).</li><li>Seleksi <b>sangat kompetitif</b>: umumnya setara First Class Honours (H1) atau master dengan tesis riset signifikan.</li></ul></div></section><section class="slide"><div><span class="kicker">Cakupan Pendanaan</span><h2>Apa yang Ditanggung?</h2><ul><li><b>Stipendium bebas pajak: AUD 37.145/tahun</b> (rate 2026) untuk biaya hidup.</li><li><b>Pembebasan biaya kuliah penuh</b> via paket tuition scholarship.</li><li><b>Tunjangan relokasi</b> + <b>single OSHC</b> (asuransi kesehatan pelajar) + dukungan riset/tesis.</li><li>Durasi: hingga <b>3,5–4 tahun</b> untuk PhD (sesuai ketentuan skema).</li><li>Catatan: rate stipendium direvisi tiap tahun — cek angka terbaru di laman resmi.</li></ul></div></section><section class="slide"><div><span class="kicker">Eligibilitas</span><h2>Siapa yang Bisa Mendaftar?</h2><ul><li>Memenuhi syarat masuk <b>graduate research degree (PhD)</b> Monash.</li><li>Rekam akademik kuat — umumnya setara <b>Australian First Class Honours (H1)</b>.</li><li>Master dengan <b>tesis riset yang signifikan</b> (bukan coursework murni) sangat diutamakan.</li><li>Publikasi riset menjadi nilai tambah besar di seleksi yang kompetitif.</li><li><b>Wajib menemukan supervisor</b> — profesor Monash yang bersedia membimbing — <b>sebelum</b> mendaftar.</li></ul></div></section><section class="slide"><div><span class="kicker">Format Seleksi</span><h2>Tahapan Seleksi</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx"><b>Temukan supervisor:</b> riset profil profesor Monash → kirim Expression of Interest (EOI) + CV + ringkasan proposal.</div></div><div class="step"><div class="n">2</div><div class="tx">Dapatkan <b>persetujuan/invitasi supervisi</b> dari profesor (syarat mutlak aplikasi).</div></div><div class="step"><div class="n">3</div><div class="tx">Submit <b>aplikasi admisi riset</b> online lengkap dengan dokumen — otomatis dipertimbangkan untuk beasiswa.</div></div><div class="step"><div class="n">4</div><div class="tx">Fakultas menilai & me-ranking kandidat (akademik + riset + kecocokan supervisor).</div></div><div class="step"><div class="n">5</div><div class="tx">Tawaran admisi + beasiswa → terima → urus visa pelajar (subclass 500).</div></div></div></div></section><section class="slide"><div><span class="kicker">Strategi 1</span><h2>Mengamankan Supervisor (Kunci Utama)</h2><ul><li>Tanpa supervisor, aplikasi <b>tidak bisa diproses</b> — ini langkah pertama, bukan terakhir.</li><li>Cari via <b>Find a supervisor</b> di monash.edu: filter fakultas/bidang → baca publikasi 3 tahun terakhir.</li><li>Kirim <b>EOI</b>: subjek jelas, 1 paragraf latar, 1 paragraf ketertarikan pada risetnya (sebut publikasi spesifik), lampirkan CV + transkrip + ringkasan proposal 1–2 hal.</li><li>Hubungi 5–8 profesor; follow-up sopan 2–3 minggu bila belum dibalas. Respons positif = ajak diskusi proposal.</li></ul></div></section><section class="slide"><div><span class="kicker">Strategi 2</span><h2>Research Proposal yang Kompetitif</h2><ul><li>Struktur: judul, latar & gap, pertanyaan/tujuan, metodologi, signifikansi/kebaruan, timeline, daftar pustaka.</li><li>Panjang umum 1.500–2.500 kata (cek ketentuan fakultas) — padat, bukan bertele-tele.</li><li>Selaraskan dengan <b>riset supervisor</b> — proposal yang &ldquo;nyambung&rdquo; menang atas proposal ambisius tapi asing.</li><li>Tonjolkan kesiapan: skill, data awal, atau publikasi pendahulu bila ada.</li></ul></div></section><section class="slide"><div><span class="kicker">Strategi 3</span><h2>Dokumen Aplikasi</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx">Siapkan: ijazah & transkrip S2 (+S1), CV akademik, research proposal, bukti bahasa Inggris (IELTS/TOEFL sesuai syarat), paspor, publikasi.</div></div><div class="step"><div class="n">2</div><div class="tx">Minta <b>2 surat referensi akademik</b> (pemberi referensi mengisi form online Monash).</div></div><div class="step"><div class="n">3</div><div class="tx">Pastikan <b>nama supervisor</b> yang menyetujui tercantum dengan benar di aplikasi.</div></div><div class="step"><div class="n">4</div><div class="tx">Submit via portal aplikasi Monash sebelum <b>deadline ronde beasiswa</b> — beasiswa dinilai per ronde, bukan rolling.</div></div><div class="step"><div class="n">5</div><div class="tx">Simpan semua bukti submit & nomor aplikasi.</div></div></div></div></section><section class="slide"><div><span class="kicker">Timeline</span><h2>Rencana Persiapan 12 Bulan</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx"><b>B-12 s/d B-9:</b> riset supervisor & publikasi; kirim EOI; siapkan tes bahasa Inggris.</div></div><div class="step"><div class="n">2</div><div class="tx"><b>B-8 s/d B-6:</b> diskusi proposal dengan calon supervisor; tulis research proposal; minta referensi.</div></div><div class="step"><div class="n">3</div><div class="tx"><b>B-5 s/d B-4:</b> kumpulkan & legalisasi dokumen; finalisasi proposal sesuai masukan supervisor.</div></div><div class="step"><div class="n">4</div><div class="tx"><b>B-3 s/d B-2:</b> submit aplikasi admisi + beasiswa <b>sebelum deadline ronde</b>.</div></div><div class="step"><div class="n">5</div><div class="tx"><b>B-1:</b> tunggu hasil → terima tawaran → medical check-up → visa pelajar 500.</div></div></div></div></section><section class="slide"><div><span class="kicker">Jadwal Penting</span><h2>Ronde Beasiswa (Pola Umum)</h2><ul><li>Monash menilai beasiswa dalam <b>ronde (rounds)</b> tiap tahun — umumnya ada ronde internasional khusus.</li><li>Deadline tiap ronde <b>berbeda per tahun</b> — cek &ldquo;scholarship rounds & deadlines&rdquo; di laman resmi.</li><li>Aturan praktis: submit <b>minimal 6–8 minggu</b> sebelum deadline ronde untuk antisipasi verifikasi dokumen.</li><li>Jangan menunggu deadline: aplikasi yang masuk awal tetap dinilai di ronde yang sama, tapi kamu punya waktu memperbaiki kekurangan.</li><li>Catat juga deadline <b>visa pelajar</b> — prosesnya butuh 1–3 bulan.</li></ul></div></section><section class="slide"><div><span class="kicker">Checklist</span><h2>Checklist Dokumen</h2><ul><li>Ijazah & transkrip S2 (+S1) — terjemahan Inggris tersertifikasi bila perlu.</li><li>Research proposal (sesuai ketentuan fakultas).</li><li>CV akademik + daftar publikasi.</li><li>Bukti bahasa Inggris (IELTS/TOEFL).</li><li>2 referensi akademik (via form online).</li><li>Paspor; bukti persetujuan supervisor (nama di aplikasi).</li></ul></div></section><section class="slide"><div><span class="kicker">Keuangan</span><h2>Anggaran: Stipendium vs Biaya Hidup</h2><ul><li>AUD 37.145/tahun ≈ <b>AUD 3.095/bulan bebas pajak</b> — untuk single di Melbourne: cukup dengan budgeting bijak.</li><li>Sewa: kamar di Clayton ±AUD 900–1.400/bln; akomodasi kampus lebih mahal tapi praktis tahun pertama.</li><li>Single OSHC ditanggung — hemat ±AUD 600–700/tahun.</li><li>Tunjangan relokasi membantu biaya pindah awal; siapkan dana darurat 2–3 bulan.</li></ul></div></section><section class="slide"><div><span class="kicker">Video Panduan</span><h2>Tonton Dulu: 4 Video Kunci</h2><div class="vgrid"><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/OhzNyIKwX8I?rel=0" title="Beasiswa Monash 2026-27: cara daftar lengkap" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Cara Daftar 1</div><div class="t">Beasiswa Monash 2026-27: cara daftar lengkap</div><div class="d">Panduan aplikasi beasiswa riset Monash: syarat, dokumen, cara menghubungi supervisor, dan tips lolos.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/fjQxjqB4p28?rel=0" title="Monash RTP Scholarship: bedah langkah demi langkah" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Cara Daftar 2</div><div class="t">Monash RTP Scholarship: bedah langkah demi langkah</div><div class="d">Penjelasan skema RTP: cakupan, eligibility, dokumen, dan deadline.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/TUU5AnQPF24?rel=0" title="Tur kampus Clayton, Monash University" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Suasana Kampus</div><div class="t">Tur kampus Clayton, Monash University</div><div class="d">Tur lengkap kampus utama Clayton: perpustakaan, fakultas, fasilitas olahraga, dan student hub.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/3UsBQWu5Eic?rel=0" title="Mahasiswa Indonesia: graduate research di Monash" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Testimoni</div><div class="t">Mahasiswa Indonesia: graduate research di Monash</div><div class="d">Reneta Kristiani (penerima Australia Awards, asal Indonesia) berbagi pengalaman riset pascasarjana di Monash.</div></div></div></div><div class="note"><b>Catatan:</b> video-video di atas adalah materi publik di YouTube dari kreator/pihak ketiga — gunakan sebagai referensi awal, dan selalu verifikasi detail terbaru di situs resmi.</div></div></section><section class="slide"><div><span class="kicker">Sumber Resmi</span><h2>Sumber Informasi Resmi</h2><ul><li><b>monash.edu/graduate-research/study/scholarships</b> — laman beasiswa riset resmi (satu-satunya acuan valid).</li><li><b>Find a supervisor</b> (monash.edu) — direktori resmi calon pembimbing.</li><li>Laman tiap fakultas — syarat proposal & dokumen bisa berbeda per fakultas.</li><li><b>homeaffairs.gov.au</b> — info resmi visa pelajar subclass 500.</li><li>Abaikan &ldquo;jasa jaminan beasiswa&rdquo; berbayar — seleksi Monash murni merit & gratis.</li></ul></div></section><section class="slide"><div><span class="kicker">Tips Wawancara</span><h2>Tips Diskusi dengan Calon Supervisor</h2><ul><li>Anggap EOI/wawancara sebagai <b>wawancara kerja riset</b>: kuasai proposal & publikasi mereka.</li><li>Siap menjelaskan kontribusi unikmu: skill, metode, atau akses data yang kamu bawa.</li><li>Tanyakan ekspektasi: ritme publikasi, pendanaan konferensi, struktur co-supervisi.</li><li>Jujur soal keterbatasan — supervisor menghargai kandidat yang tahu apa yang belum dikuasai.</li><li>Follow-up dengan email terima kasih + ringkasan diskusi — profesionalisme diingat.</li></ul></div></section><section class="slide"><div><span class="kicker">Setelah Diterima</span><h2>Setelah Diterima: Visa & Keberangkatan</h2><ul><li>Terima Letter of Offer → penuhi conditions (mis. bukti bahasa Inggris final).</li><li>Terima <b>CoE</b> (Confirmation of Enrolment) → urus <b>visa pelajar subclass 500</b> + medical check-up.</li><li>Aktifkan <b>OSHC</b> sebelum tiba; siapkan akomodasi awal (booking asrama/kamar dari Indonesia).</li><li>Ikuti orientasi graduate research & induction fakultas; daftar ke HDR support services.</li><li>Buka rekening bank Australia; pelajari sistem transport umum Melbourne (myki).</li></ul></div></section><section class="slide"><div><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (1)</h2><ul><li><b>Apakah ada formulir beasiswa terpisah?</b><br><b>Tidak ada</b> — aplikasi admisi riset otomatis dipertimbangkan untuk RTP & tuition scholarship.</li><li><b>Apakah WNI eligible?</b><br>Ya — terbuka untuk semua mahasiswa internasional.</li><li><b>Apakah harus sudah punya supervisor?</b><br><b>Wajib</b> — tanpa persetujuan supervisor aplikasi tidak diproses.</li></ul></div></section><section class="slide"><div><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (2)</h2><ul><li><b>Seberapa kompetitif?</b><br>Sangat — umumnya butuh setara <b>H1</b> atau master riset kuat + publikasi.</li><li><b>Apakah stipendium kena pajak?</b><br><b>Tidak</b> — RTP stipend bebas pajak.</li><li><b>Bisakah membawa keluarga?</b><br>Bisa via visa dependent — hitung biaya tambahan (asuransi keluarga tidak ditanggung single OSHC).</li></ul></div></section><section class="slide"><div><span class="kicker">Hindari</span><h2>Kesalahan Umum yang Harus Dihindari</h2><ul><li>Mendaftar <b>tanpa supervisor</b> yang menyetujui — aplikasi gugur di tahap awal.</li><li>Mengirim EOI massal generik ke puluhan profesor — satu email personal mengalahkan 20 template.</li><li>Melewatkan <b>deadline ronde beasiswa</b> — telat sehari = menunggu ronde berikutnya.</li><li>Proposal tidak selaras dengan riset supervisor — kecocokan mengalahkan keambisian.</li><li>Mengandalkan info lama soal rate/deadline — <b>selalu cek laman resmi</b> tahun berjalan.</li></ul></div></section><section class="slide closing"><div><span class="kicker">Langkah Berikutnya</span><h2>Mulai Pendaftaran Resmi</h2><ul><li>Semua informasi di deck ini merujuk ke sumber resmi. Jangan membayar ke pihak ketiga mana pun — pendaftaran program ini <b>tidak dipungut biaya perantara</b>.</li><li>Siapkan dokumen dari checklist, hubungi calon supervisor lebih awal, dan pantau tanggal penting di situs resmi.</li></ul><a class="btn" href="https://www.monash.edu/graduate-research/study/scholarships" target="_blank" rel="noopener">Buka Situs Resmi Pendaftaran</a><div class="urlbox">https://www.monash.edu/graduate-research/study/scholarships</div></div></section>
+</div>
+<div class="controls">
+<button class="navbtn" id="prev">&#8592; Sebelumnya</button>
+<div class="dots" id="dots"></div>
+<span class="counter" id="counter"></span>
+<button class="navbtn" id="next">Berikutnya &#8594;</button>
+</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let cur=0;
+const dots=document.getElementById('dots'),counter=document.getElementById('counter'),prog=document.getElementById('prog');
+slides.forEach((_,i)=>{const d=document.createElement('button');d.className='dot';d.setAttribute('aria-label','Slide '+(i+1));d.onclick=()=>go(i);dots.appendChild(d);});
+function go(i){cur=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,j)=>s.classList.toggle('active',j===cur));
+[...dots.children].forEach((d,j)=>d.classList.toggle('on',j===cur));
+counter.textContent=(cur+1)+' / '+slides.length;prog.style.width=((cur+1)/slides.length*100)+'%';
+document.getElementById('prev').disabled=cur===0;document.getElementById('next').disabled=cur===slides.length-1;
+const act=slides[cur];if(act.scrollTo)act.scrollTo(0,0);}
+document.getElementById('prev').onclick=()=>go(cur-1);document.getElementById('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(cur+1);}if(e.key==='ArrowLeft')go(cur-1);});
+let tx=0;document.addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>60){dx<0?go(cur+1):go(cur-1);}},{passive:true});
+go(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

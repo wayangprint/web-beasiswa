@@ -1,0 +1,241 @@
+<!DOCTYPE html><html lang='id'><head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Panduan DPhil Clarendon Oxford</title>
+<style>:root{--accent:#1a237e}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#1a56db}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;background:#0b1020;color:#1e293b;overflow:hidden}
+#deck{position:fixed;inset:0;display:flex;flex-direction:column}
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:rgba(8,12,28,.92);color:#fff;z-index:5;border-bottom:3px solid var(--accent)}
+#topbar .t{font-weight:700;font-size:15px;letter-spacing:.3px}
+#topbar .c{font-size:13px;opacity:.85;font-variant-numeric:tabular-nums}
+#progress{height:4px;background:#1e293b}
+#progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+#stage{flex:1;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:34px 20px;overflow-y:auto;background:linear-gradient(160deg,#f8fafc,#eef2f7)}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.wrap{width:100%;max-width:920px}
+.kicker{display:inline-block;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+h1.s{font-size:clamp(24px,4.5vw,40px);line-height:1.2;color:#0f172a;margin-bottom:14px}
+h2.s{font-size:clamp(20px,3.6vw,30px);color:#0f172a;margin-bottom:12px}
+.slide p{font-size:clamp(14px,2.2vw,17px);line-height:1.65;color:#334155;margin-bottom:10px}
+.slide ul{margin:6px 0 12px 4px;list-style:none}
+.slide ul li{font-size:clamp(14px,2.2vw,16.5px);line-height:1.6;color:#334155;margin-bottom:9px;padding-left:30px;position:relative}
+.slide ul li::before{content:"";position:absolute;left:2px;top:7px;width:10px;height:10px;border-radius:3px;background:var(--accent)}
+.card{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 6px 24px rgba(15,23,42,.08);margin-bottom:12px;border-left:5px solid var(--accent)}
+.card h3{font-size:16px;color:#0f172a;margin-bottom:8px}
+.card p,.card li{font-size:14.5px}
+.note{background:#fffbeb;border:1px solid #fcd34d;border-left:6px solid #f59e0b;border-radius:12px;padding:16px 18px;margin:12px 0}
+.note b.t{display:block;color:#92400e;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.note p{color:#78350f;font-size:14.5px}
+table.info{width:100%;border-collapse:collapse;margin:10px 0;font-size:14.5px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(15,23,42,.06)}
+table.info th{background:var(--accent);color:#fff;text-align:left;padding:10px 14px}
+table.info td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top}
+table.info tr:last-child td{border-bottom:none}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+/* cover */
+.slide.cover{padding:0;justify-content:flex-end;align-items:stretch;background-size:cover;background-position:center}
+.cover-veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,20,.25) 0%,rgba(5,8,20,.55) 45%,rgba(5,8,20,.92) 100%)}
+.cover-inner{position:relative;z-index:2;padding:46px 34px;color:#fff;max-width:920px;margin:0 auto;width:100%}
+.cover-inner .kicker{color:#fcd34d}
+.cover-inner h1{font-size:clamp(30px,6vw,54px);line-height:1.12;margin-bottom:10px;text-shadow:0 2px 18px rgba(0,0,0,.5)}
+.cover-inner p.sub{font-size:clamp(15px,2.6vw,20px);color:#e2e8f0;max-width:640px}
+.cover-inner .meta{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:13px;font-weight:600;padding:7px 14px;border-radius:999px;backdrop-filter:blur(4px)}
+.hint{margin-top:22px;font-size:13.5px;color:#cbd5e1}
+/* videos */
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;margin-top:6px}
+.vid{background:#0f172a;border-radius:12px;overflow:hidden;box-shadow:0 6px 20px rgba(15,23,42,.25)}
+.vid .lbl{padding:9px 12px;color:#fff;font-size:12.5px;font-weight:600;line-height:1.4;min-height:52px;display:flex;align-items:center}
+.vid .frame{position:relative;padding-top:56.25%;background:#000}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* cta */
+.btn{display:inline-block;background:var(--accent);color:#fff!important;font-weight:700;font-size:15px;padding:13px 22px;border-radius:10px;text-decoration:none;margin:6px 8px 6px 0;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.btn.ghost{background:#fff;color:var(--accent)!important;border:2px solid var(--accent);box-shadow:none}
+.linkrow{background:#fff;border-radius:12px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 4px 14px rgba(15,23,42,.06);flex-wrap:wrap}
+.linkrow .u{font-size:13px;color:#64748b;word-break:break-all}
+.linkrow .n{font-weight:700;color:#0f172a;font-size:15px}
+/* faq */
+.qa{background:#fff;border-radius:12px;padding:14px 18px;margin-bottom:10px;box-shadow:0 4px 14px rgba(15,23,42,.06)}
+.qa .q{font-weight:700;color:var(--accent);font-size:15px;margin-bottom:6px}
+.qa .a{font-size:14.5px;color:#334155;line-height:1.6}
+/* nav */
+#navbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:rgba(8,12,28,.94);border-top:1px solid #1e293b;z-index:5}
+.nbtn{background:var(--accent);border:none;color:#fff;font-weight:700;font-size:14px;padding:11px 22px;border-radius:10px;cursor:pointer}
+.nbtn:disabled{opacity:.35;cursor:default}
+.nbtn.ghostb{background:transparent;border:1px solid #475569;color:#cbd5e1}
+#dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:50%}
+#dots i{width:8px;height:8px;border-radius:50%;background:#334155;cursor:pointer}
+#dots i.on{background:var(--accent);transform:scale(1.3)}
+.num{color:#94a3b8;font-size:12.5px;font-variant-numeric:tabular-nums}
+.swipe-hint{color:#64748b;font-size:12px;text-align:center;padding:4px}
+</style>
+
+<div id='deck'><div id='topbar'><span class='t'>Clarendon Oxford (DPhil)</span><span class='c' id='counter'></span></div>
+<div id='progress'><i></i></div><div id='stage'>
+<section class='slide cover' style="background-image:url('https://live.staticflickr.com/4826/46843068481_60b8155df5_z.jpg')"><div class='cover-veil'></div><div class='cover-inner'><span class='kicker'>Beasiswa S3 • Inggris</span><h1>Panduan DPhil Clarendon Oxford</h1><p class='sub'>Beasiswa penuh Clarendon Fund untuk program doktoral (DPhil/PhD) di University of Oxford — full course fees + tunjangan hidup, terbuka untuk semua kewarganegaraan.</p><div class='meta'><span class='pill'>Full Scholarship</span><span class='pill'>DPhil / PhD</span><span class='pill'>±20.780+/tahun</span><span class='pill'>Tanpa formulir terpisah</span></div><p class='hint'>Geser / klik panah / tekan &rarr; untuk mulai &mdash; 21 slide</p></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Gambaran</span><h2 class='s'>Sekilas Clarendon Fund</h2><p><b>Clarendon Fund</b> adalah skema beasiswa pascasarjana terbesar di University of Oxford. Setiap tahun ada <b>sekitar 140–200 beasiswa baru</b> untuk mahasiswa graduate — dan <b>mayoritas penerimanya adalah kandidat DPhil (PhD)</b>.</p><ul><li><b>Cakupan:</b> full course fees (termasuk overseas fees) + tunjangan hidup tahunan minimal setara UKRI doctoral stipend (±20.780 pada 2025–26).</li><li><b>Terbuka untuk semua kewarganegaraan</b> — tanpa kuota negara.</li><li><b>Semua bidang studi</b> yang bergelar (degree-bearing) di level graduate.</li><li><b>Tidak ada formulir beasiswa terpisah:</b> kamu otomatis dipertimbangkan saat melamar program graduate Oxford sebelum deadline Desember/Januari.</li><li>Bonus: bergabung dengan komunitas 700+ Clarendon scholars dari ~70 negara.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Catatan Jujur</span><h2 class='s'>⚠️ Catatan Jujur: Bukan Commonwealth</h2><div class='note'><b class='t'>Penting — baca dulu</b><p><b>Commonwealth PhD Scholarships TIDAK bisa dipakai WNI</b> — Indonesia bukan anggota Commonwealth sehingga tidak eligible. Deck ini sengaja memakai <b>Clarendon Fund</b> sebagai jalur yang legitimate dan terbuka untuk Indonesia.</p></div><ul><li>Kamu <b>harus diterima di program DPhil Oxford dulu</b> — beasiswa ini menempel pada aplikasi admission, bukan jalur pintas.</li><li>Sangat kompetitif: seleksi murni merit akademik. Mayoritas scholar punya first-class degree (setara GPA ≥3.7/4.0) atau S2 yang kuat.</li><li>Deadline Desember/Januari <b>tidak bisa ditawar</b> — lewat satu hari = tidak dipertimbangkan untuk pendanaan.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Cakupan</span><h2 class='s'>Apa Saja yang Ditanggung?</h2><table class='info'><tr><th>Komponen</th><th>Detail</th></tr><tr><td>Course fees</td><td>100% — termasuk <i>overseas fee</i> yang mahal untuk non-UK</td></tr><tr><td>College fees</td><td>100% ditanggung</td></tr><tr><td>Tunjangan hidup</td><td>Grant tahunan, minimal setara UKRI doctoral stipend (±20.780/tahun pada 2025–26), dibayar per termin</td></tr><tr><td>Durasi</td><td>Selama <i>period of fee liability</i> program (umumnya 3–4 tahun DPhil); beberapa divisi menambah perpanjangan dengan living grant saja</td></tr><tr><td>Paruh waktu</td><td>Ada skema study-support grant (1/6, 1/3, atau 1/2 stipend)</td></tr></table><p>Intinya: <b>kuliah + hidup ditanggung penuh</b> selama masa studi normal DPhil.</p></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Syarat</span><h2 class='s'>Syarat Eligibility</h2><ul><li>Melamar <b>program graduate baru</b> di Oxford (DPhil/PhD atau master) — semua jurusan, semua kewarganegaraan.</li><li>Mahasiswa master Oxford yang lanjut DPhil juga eligible.</li><li><b>Tidak eligible:</b> pemegang deferred offer, atau mahasiswa yang melanjutkan program yang sama tahun berikutnya.</li><li>Rekam akademik outstanding: umumnya first-class honours atau setara (GPA ≥3.7); S2 yang kuat bisa mengompensasi S1 yang pas-pasan.</li><li>Memenuhi syarat bahasa Inggris program yang dipilih (IELTS/TOEFL/Cambridge sesuai course page).</li><li>Yang dinilai: <b>prestasi akademik + potensi riset + motivasi + kecocokan dengan program</b>.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Seleksi</span><h2 class='s'>Format &amp; Tahapan Seleksi</h2><div class='card'><h3>1. Aplikasi Graduate Oxford (Des/Jan)</h3><p>Kamu submit aplikasi DPhil lengkap: transkrip, CV, personal statement, <b>research proposal</b>, referensi akademik, bukti bahasa Inggris — sebelum pukul 12 siang waktu UK di deadline coursemu.</p></div><div class='card'><h3>2. Nominasi Departemen (Feb–Apr)</h3><p>Departemen/fakultas menilai semua pelamar, lalu <b>menominasikan kandidat terkuat</b> ke divisi untuk Clarendon. Kamu tidak mengontrol tahap ini — kualitas aplikasilah yang berbicara.</p></div><div class='card'><h3>3. Seleksi Clarendon Fund</h3><p>Clarendon Fund memilih penerima dari seluruh nominasi lintas bidang. <b>Penawaran awal mayoritas dikirim akhir April</b>; sebagian kecil nominasi susulan bisa lebih lambat.</p></div></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Strategi 1</span><h2 class='s'>Strategi: Aplikasi yang Dinominasikan</h2><p>Karena tidak ada formulir terpisah, <b>aplikasi DPhil-mu ADALAH aplikasi beasiswamu</b>. Fokus:</p><ul><li><b>Pilih course + supervisor yang tepat:</b> riset calon supervisor, baca publikasinya, dan kirim email perkenalan sopan <i>sebelum</i> apply (banyak kandidat sukses berawal dari email ini).</li><li><b>Research proposal kelas dunia:</b> pertanyaan riset tajam, metodologi jelas, kontribusi orisinal — ini penentu utama untuk DPhil.</li><li><b>Personal statement:</b> narasi koheren — kenapa topik ini, kenapa Oxford, kenapa kamu orang yang tepat.</li><li><b>Referees:</b> hubungi dosen/pembimbing <b>2–3 bulan sebelum deadline</b>; beri mereka CV + draft proposal agar suratnya spesifik.</li><li>Submit <b>jauh sebelum deadline</b> — sistem bisa padat di hari terakhir.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Strategi 2</span><h2 class='s'>Strategi: Research Proposal DPhil</h2><ul><li>Panjang & format mengikuti ketentuan course page (umumnya 1.000–2.500 kata).</li><li>Struktur: latar & gap literatur → pertanyaan riset → tujuan → metodologi → signifikansi/kontribusi → timeline kasar → daftar pustaka.</li><li>Tunjukkan kamu paham <b>percakapan akademik terkini</b> di bidangmu — sitasi jurnal terbaru, bukan textbook lama.</li><li>Jelaskan <b>kecocokan dengan supervisor & fasilitas Oxford</b> (lab, arsip, pusat studi) — kenapa riset ini harus di Oxford.</li><li>Minta 2–3 akademisi mereview drafmu; proposal yang lolos biasanya direvisi 4–5 kali.</li><li>Hindari klaim bombastis (“penelitian pertama di dunia”) tanpa bukti.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Strategi 3</span><h2 class='s'>Strategi: Setelah Submit</h2><ul><li><b>Wawancara departemen:</b> sebagian program DPhil mengundang interview (Jan–Mar). Siapkan presentasi 5 menit tentang proposal + pertanyaan kritis tentang metodologimu.</li><li>Pantau email (termasuk spam) — undangan interview/offer datang via email.</li><li>Jika dapat <b>offer admission tanpa Clarendon</b>, jangan panik: cek skema pendanaan lain di course page (college bursaries, departmental studentships, LPDP).</li><li>Jika gagal tahun ini: minta feedback (tidak selalu diberikan), perkuat publikasi/pengalaman riset, coba lagi tahun depan — banyak scholar lolos di percobaan ke-2.</li><li>Catat: kamu <b>tidak bisa</b> “melobi” Clarendon — nominasi murni dari departemen.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Timeline</span><h2 class='s'>Timeline Persiapan (12 Bulan)</h2><table class='info'><tr><th>Bulan</th><th>Aksi</th></tr><tr><td>H-12 – H-9</td><td>Riset program DPhil & supervisor; siapkan IELTS/TOEFL; mulai draf research proposal</td></tr><tr><td>H-9 – H-6</td><td>Email calon supervisor; revisi proposal; hubungi referees</td></tr><tr><td>H-6 – H-4</td><td>Finalisasi personal statement & CV; kumpulkan transkrip & dokumen</td></tr><tr><td>H-3</td><td>Submit aplikasi graduate <b>sebelum deadline Des/Jan</b> (cek course page!)</td></tr><tr><td>H-2 – H+1</td><td>Persiapan interview departemen (jika diundang)</td></tr><tr><td>Apr</td><td>Pengumuman Clarendon (mayoritas offer akhir April)</td></tr><tr><td>Mei – Ags</td><td>Urus college, akomodasi, visa pelajar UK, persiapan keberangkatan</td></tr></table></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Dokumen</span><h2 class='s'>✓ Dokumen yang Dibutuhkan</h2><ul><li>Formulir aplikasi graduate Oxford (online) yang sudah lengkap</li><li>Transkrip & ijazah S1 (+ S2 bila ada) — beserta terjemahan resmi bila bukan berbahasa Inggris</li><li>CV akademik</li><li>Personal statement / statement of purpose</li><li><b>Research proposal</b> (wajib untuk DPhil)</li><li>Surat referensi akademik (biasanya 3, dikirim langsung oleh referee via sistem)</li><li>Bukti kemampuan bahasa Inggris (IELTS/TOEFL/Cambridge sesuai syarat course)</li><li>Sampel tulisan akademik (bila diminta course)</li><li>Paspor yang masih berlaku (untuk tahap visa nanti)</li></ul><p><b>Catatan:</b> tiap course bisa meminta dokumen tambahan — selalu cek course page program pilihanmu.</p></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Video Panduan</span><h2 class='s'>Tonton: Panduan &amp; Testimoni Clarendon</h2><div class='vidgrid'><div class='vid'><div class='frame'><iframe loading='lazy' src='https://www.youtube-nocookie.com/embed/ECsC7x2VYmo' title='Cara daftar: panduan step-by-step Clarendon 2027 (syarat, deadline Des/Jan, strategi SOP)' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div><div class='lbl'>Cara daftar: panduan step-by-step Clarendon 2027 (syarat, deadline Des/Jan, strategi SOP)</div></div><div class='vid'><div class='frame'><iframe loading='lazy' src='https://www.youtube-nocookie.com/embed/oS7FchrQPxM' title='Cara daftar: pengalaman lolos Clarendon untuk PhD + cara kerja nominasi departemen' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div><div class='lbl'>Cara daftar: pengalaman lolos Clarendon untuk PhD + cara kerja nominasi departemen</div></div><div class='vid'><div class='frame'><iframe loading='lazy' src='https://www.youtube-nocookie.com/embed/4VHaq3Ud9Mo' title='Suasana kampus: tur kampus University of Oxford' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div><div class='lbl'>Suasana kampus: tur kampus University of Oxford</div></div><div class='vid'><div class='frame'><iframe loading='lazy' src='https://www.youtube-nocookie.com/embed/Z33X17iPh-0' title='Testimoni: para penerima Clarendon bercerita (video resmi Oxford)' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div><div class='lbl'>Testimoni: para penerima Clarendon bercerita (video resmi Oxford)</div></div></div><p style='margin-top:10px;font-size:13px;color:#64748b'>Video 1–2: cara daftar & strategi lolos. Video 3: suasana kampus Oxford. Video 4: testimoni para Clarendon scholars (resmi Oxford).</p></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Tips Esai</span><h2 class='s'>Tips Personal Statement &amp; Proposal</h2><ul><li>Buka dengan <b>pertanyaan riset</b>, bukan autobiografi masa kecil.</li><li>Tunjukkan <i>trajectory</i>: skripsi → publikasi/proyek → topik DPhil — satu benang merah.</li><li>Spesifik soal Oxford: sebut <b>nama supervisor, lab, arsip, atau pusat studi</b> yang relevan.</li><li>Kuantifikasi pencapaian: IPK, peringkat, publikasi, konferensi, hibah.</li><li>Bahasa Inggris akademik yang presisi — minta native/proofreader cek.</li><li>Panjang sesuai ketentuan; jangan mengulang CV dalam bentuk paragraf.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Tips Wawancara</span><h2 class='s'>Tips Wawancara &amp; Hari-H</h2><ul><li>Interview DPhil biasanya 20–45 menit via video call dengan calon supervisor + anggota departemen.</li><li>Siapkan <b>pitch 5 menit</b>: masalah riset → gap → metodologimu → kontribusi yang diharapkan.</li><li>Antisipasi pertanyaan jebakan: “kenapa tidak pakai metode X?”, “apa kelemahan terbesar proposalmu?”</li><li>Siapkan 2–3 pertanyaan cerdas untuk pewawancara (soal arah riset grup, fasilitas, ekspektasi).</li><li>Tes teknis 15 menit sebelum call; pakai background rapi dan catatan poin (bukan naskah).</li><li>Follow-up: email terima kasih singkat 1×24 jam.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Realita</span><h2 class='s'>Realita Biaya Hidup di Oxford</h2><ul><li>Oxford termasuk kota termahal di UK — stipend ±20.780+/tahun <b>cukup untuk hidup hemat</b> (akomodasi college/g shared house, masak sendiri).</li><li>Sewa kamar: ³700–³1.100/bulan tergantung tipe; college accommodation biasanya lebih murah untuk tahun pertama.</li><li>Mahasiswa DPhil boleh kerja paruh waktu terbatas (umumnya ≤6 jam/minggu saat term) — tapi jangan andalkan untuk biaya pokok.</li><li>Siapkan <b>dana talangan awal</b> ³2.000–³3.000 untuk deposit sewa, visa, dan IHS sebelum stipend pertama cair.</li><li>Asuransi kesehatan: bayar Immigration Health Surcharge (IHS) saat aplikasi visa.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Sumber Resmi</span><h2 class='s'>Sumber Info Resmi</h2><ul><li><b>Clarendon Fund</b> — ox.ac.uk/admissions/graduate/fees-and-funding/funding/clarendon/about</li><li><b>Graduate Admissions Oxford</b> — ox.ac.uk/admissions/graduate (portal aplikasi & course search)</li><li><b>Fees & Funding pages</b> tiap course — untuk deadline Des/Jan yang spesifik</li><li><b>Clarendon Scholars’ Association</b> — komunitas & profil scholar</li></ul><div class='note'><b class='t'>Waspada</b><p>Abaikan situs “agen beasiswa” yang memungut biaya pendaftaran Clarendon — Clarendon <b>tidak pernah</b> memungut biaya dan tidak punya formulir terpisah. Satu-satunya jalur adalah aplikasi graduate Oxford.</p></div></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Link Resmi</span><h2 class='s'>Mulai dari Link Resmi Ini</h2><p>Semua pendaftaran DPhil + pertimbangan Clarendon otomatis berjalan lewat portal graduate Oxford. Klik & tandai deadline coursemu sekarang.</p><div class='linkrow'><div><div class='n'>Halaman resmi Clarendon Fund</div><div class='u'>https://www.ox.ac.uk/admissions/graduate/fees-and-funding/funding/clarendon/about</div></div><a class='btn' href='https://www.ox.ac.uk/admissions/graduate/fees-and-funding/funding/clarendon/about' target='_blank' rel='noopener'>Buka &rarr;</a></div><div class='linkrow'><div><div class='n'>Graduate Admissions Oxford (daftar DPhil)</div><div class='u'>https://www.ox.ac.uk/admissions/graduate</div></div><a class='btn' href='https://www.ox.ac.uk/admissions/graduate' target='_blank' rel='noopener'>Buka &rarr;</a></div><div class='linkrow'><div><div class='n'>Daftar course &amp; deadline tiap program</div><div class='u'>https://www.ox.ac.uk/admissions/graduate/courses</div></div><a class='btn' href='https://www.ox.ac.uk/admissions/graduate/courses' target='_blank' rel='noopener'>Buka &rarr;</a></div></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>FAQ</span><h2 class='s'>FAQ (1)</h2><div class='qa'><div class='q'>Apakah WNI benar-benar bisa dapat Clarendon?</div><div class='a'>Ya. Clarendon terbuka untuk semua kewarganegaraan tanpa kuota negara — seleksinya murni merit. Setiap tahun ada scholar dari puluhan negara Asia termasuk Indonesia.</div></div><div class='qa'><div class='q'>Apakah ada formulir beasiswa Clarendon yang harus diisi?</div><div class='a'>Tidak ada. Cukup submit aplikasi graduate sebelum deadline Desember/Januari coursemu — kamu otomatis dipertimbangkan.</div></div><div class='qa'><div class='q'>Berapa IPK minimal?</div><div class='a'>Tidak ada angka resmi, tapi mayoritas scholar punya first-class degree (setara GPA ≥3.7/4.0). S2 yang kuat + publikasi bisa mengompensasi.</div></div></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>FAQ</span><h2 class='s'>FAQ (2)</h2><div class='qa'><div class='q'>Kapan hasil Clarendon diumumkan?</div><div class='a'>Mayoritas penawaran awal dikirim paling lambat akhir April. Sebagian kecil nominasi susulan bisa keluar setelahnya.</div></div><div class='qa'><div class='q'>Bolehkah melamar DPhil tanpa master?</div><div class='a'>Tergantung course — sebagian program menerima lulusan S1 outstanding langsung ke DPhil, sebagian mewajibkan S2. Cek course page.</div></div><div class='qa'><div class='q'>Apakah Clarendon menanggung keluarga/dependant?</div><div class='a'>Tidak — grant dihitung untuk scholar. Biaya dependant (visa, IHS, hidup) ditanggung sendiri.</div></div></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Hindari</span><h2 class='s'>❌ Kesalahan Umum</h2><ul><li>Melewatkan deadline Des/Jan — tidak ada toleransi, tidak ada gelombang kedua untuk pendanaan.</li><li>Research proposal generik yang bisa dipakai untuk kampus mana saja (tidak menyebut Oxford secara spesifik).</li><li>Referee dihubungi mepet deadline — suratnya jadi generik dan lemah.</li><li>Mengira ada “jalur orang dalam” — nominasi murni dari kualitas aplikasi di mata departemen.</li><li>Fokus hanya ke Clarendon tanpa rencana B (college funding, departmental studentship, LPDP).</li><li>IELTS/TOEFL kedaluwarsa atau tidak memenuhi skor course saat apply.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Penutup</span><h2 class='s'>Langkah Pertamamu Hari Ini</h2><ul><li><b>1.</b> Buka <b>ox.ac.uk/admissions/graduate/courses</b> — cari 3 program DPhil yang paling cocok dengan risetmu, catat deadline & syaratnya.</li><li><b>2.</b> Buat daftar 5 calon supervisor + baca 2 publikasi terbaru masing-masing.</li><li><b>3.</b> Mulai draf research proposal 1 halaman (masalah → gap → metode).</li><li><b>4.</b> Cek masa berlaku IELTS/TOEFL-mu; jadwalkan tes bila perlu.</li></ul><p>Oxford menilai <b>kualitas pemikiran</b>, bukan kesempurnaan profil. Proposal yang tajam + aplikasi yang rapi = tiketmu ke meja nominasi Clarendon. Semangat! 🎓</p></div></section>
+</div>
+<div id='navbar'><button class='nbtn' id='prev'>&larr; Sebelumnya</button><div id='dots'></div><button class='nbtn' id='next'>Berikutnya &rarr;</button></div>
+<div class='swipe-hint' style='background:rgba(8,12,28,.94);color:#475569'>Geser layar / tombol panah keyboard untuk navigasi</div>
+</div>
+<script>
+let cur=0;const slides=[...document.querySelectorAll('.slide')];const dots=document.getElementById('dots');
+slides.forEach((_,i)=>{const d=document.createElement('i');d.onclick=()=>go(i);dots.appendChild(d)});
+function go(i){cur=Math.max(0,Math.min(slides.length-1,i));
+slides.forEach((s,k)=>s.classList.toggle('active',k===cur));
+[...dots.children].forEach((d,k)=>d.classList.toggle('on',k===cur));
+document.getElementById('counter').textContent=(cur+1)+' / '+slides.length;
+document.getElementById('progress').firstElementChild.style.width=((cur+1)/slides.length*100)+'%';
+document.getElementById('prev').disabled=cur===0;document.getElementById('next').disabled=cur===slides.length-1;
+document.querySelector('.slide.active').scrollTop=0;}
+document.getElementById('prev').onclick=()=>go(cur-1);document.getElementById('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')go(cur+1);
+if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);if(e.key==='Home')go(0);if(e.key==='End')go(slides.length-1)});
+let tx=0;const st=document.getElementById('stage');
+st.addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+st.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>60)go(cur+(dx<0?1:-1))},{passive:true});
+go(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body></html>

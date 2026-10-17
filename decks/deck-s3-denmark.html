@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panduan PhD Bergaji Denmark</title>
+<style>:root{--accent:#c8102e}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#0b5fff}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:#0d1117;color:#f0f4f8;overflow:hidden}
+.deck{position:relative;height:100dvh;width:100%}
+.slide{display:none;height:100%;width:100%;padding:56px 8vw 110px;overflow-y:auto;animation:fade .35s ease}
+.slide.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.kicker{display:inline-block;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px}
+h1{font-size:clamp(30px,5.4vw,58px);line-height:1.12;margin-bottom:18px}
+h2{font-size:clamp(24px,4vw,40px);line-height:1.2;margin-bottom:20px}
+.slide ul{list-style:none;display:flex;flex-direction:column;gap:14px;max-width:900px}
+.slide li{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px;font-size:clamp(15px,2.1vw,19px);line-height:1.55}
+.slide li b{color:#fff}
+.note{margin-top:22px;max-width:900px;background:rgba(255,193,7,.08);border:1px dashed rgba(255,193,7,.5);border-radius:10px;padding:14px 18px;font-size:15px;line-height:1.6;color:#ffe1a1}
+.note b{color:#ffd76a}
+.cover{position:relative;display:none}
+.cover.active{display:flex;flex-direction:column;justify-content:flex-end}
+.cover .bg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,15,.25) 0%,rgba(5,8,15,.55) 45%,rgba(5,8,15,.94) 100%);z-index:1}
+.cover .inner{position:relative;z-index:2}
+.cover h1{text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.cover .sub{font-size:clamp(16px,2.4vw,22px);color:#dbe4ee;max-width:800px;line-height:1.6;margin-bottom:22px}
+.credit{position:absolute;right:14px;bottom:86px;z-index:2;font-size:11px;color:rgba(255,255,255,.55)}
+.pill{display:inline-block;background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:8px 18px;border-radius:999px;margin-bottom:16px}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:1100px}
+.vcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden}
+.vcard .frame{position:relative;padding-top:56.25%;background:#000}
+.vcard iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vcard .cap{padding:12px 14px}
+.vcard .cap .tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+.vcard .cap .t{font-size:14px;font-weight:600;margin-top:4px;line-height:1.4}
+.vcard .cap .d{font-size:12.5px;color:#aeb9c6;margin-top:4px;line-height:1.45}
+@media(max-width:640px){.vgrid{grid-template-columns:1fr}.slide{padding:40px 6vw 120px}}
+.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:18px;padding:16px 34px;border-radius:12px;margin-top:8px}
+.btn:hover{filter:brightness(1.12)}
+.urlbox{margin-top:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:14px 18px;font-size:15px;word-break:break-all;max-width:700px}
+.controls{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 4vw;background:linear-gradient(180deg,transparent,rgba(5,8,15,.92) 40%)}
+.navbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:16px;font-weight:600;padding:10px 22px;border-radius:999px;cursor:pointer}
+.navbtn:hover{background:var(--accent);border-color:var(--accent)}
+.navbtn:disabled{opacity:.3;cursor:default}
+.counter{font-size:14px;color:#aeb9c6;font-weight:600;white-space:nowrap}
+.dots{display:flex;gap:6px;overflow-x:auto;max-width:44vw;padding:4px}
+.dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.22);cursor:pointer;border:0;padding:0}
+.dot.on{background:var(--accent);transform:scale(1.25)}
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--accent);z-index:11;width:0;transition:width .3s}
+.steps{display:flex;flex-direction:column;gap:12px;max-width:900px}
+.step{display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:14px 18px}
+.step .n{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:16px}
+.step .tx{font-size:clamp(15px,2vw,18px);line-height:1.55}
+table{border-collapse:collapse;max-width:900px;width:100%;font-size:clamp(13px,1.9vw,16px)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.12);line-height:1.5}
+th{color:var(--accent);text-transform:uppercase;font-size:12px;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="deck">
+<section class="slide cover active"><div class="bg" style="background-image:url('https://itin-dev.wanderlogstatic.com/freeImage/42IhDkWsNABkOn4RMbsxjdAUEUmNt3Ft')"></div><div class="shade"></div><div class="inner"><div class="pill">Salaried PhD Fellowship Denmark</div><h1>Panduan PhD Bergaji Denmark</h1><p class="sub">PhD di Denmark adalah posisi bergaji sebagai pegawai universitas (DTU, UCPH, AU) — tanpa tuition, gaji tinggi, plus pensiun dan cuti berbayar.</p><a class="btn" href="https://nyidanmark.dk" target="_blank" rel="noopener">Kunjungi Situs Resmi</a></div><div class="credit">Foto: Wanderlog (foto University of Copenhagen)</div></section><section class="slide"><div><span class="kicker">Gambaran Program</span><h2>PhD Bergaji ala Denmark</h2><ul><li><b>Salaried PhD Scholarship/Fellowship</b> — posisi PhD <b>3 tahun</b> sebagai <b>pegawai universitas</b> (mis. DTU, University of Copenhagen, Aarhus University).</li><li>Skema ini dijelaskan resmi oleh <b>layanan imigrasi Denmark (nyidanmark.dk)</b> — PhD diperlakukan sebagai pekerjaan, bukan sekadar studi.</li><li>Lowongan diiklankan <b>per proyek</b> di portal karier tiap universitas — terbuka untuk semua kewarganegaraan, termasuk WNI.</li><li>Contoh aktif: <b>Neuroscience Academy Denmark</b> (16 fully funded PhD fellowships), berbagai PhD scholarship di <b>DTU</b>.</li></ul><div class="note"><b>Catatan jujur:</b> deck ini menjelaskan <b>cara mencari & melamar lowongan PhD</b> — bukan formulir beasiswa terpusat, karena memang tidak ada.</div></div></section><section class="slide"><div><span class="kicker">Cakupan Pendanaan</span><h2>Gaji & Benefit</h2><ul><li><b>Tanpa biaya kuliah</b> (tuition waiver penuh).</li><li><b>Gaji ±DKK 29.000–35.000/bulan bruto</b> mengikuti perjanjian kolektif Denmark — termasuk yang tertinggi untuk PhD di dunia.</li><li><b>Kontribusi pensiun</b> dari pemberi kerja + <b>cuti berbayar</b> + jaminan sosial & kesehatan Denmark.</li><li>Fellowship khusus (mis. NAD, DARA) kadang menambah <b>dana riset/proyek</b> hingga ratusan ribu DKK.</li><li>Keluarga boleh ikut: pasangan boleh kerja full-time, anak akses pendidikan publik gratis.</li></ul><div class="note">Gaji PhD Denmark termasuk yang tertinggi di Eropa — bahkan setelah pajak & biaya hidup tinggi, daya simpannya tetap kuat.</div></div></section><section class="slide"><div><span class="kicker">Eligibilitas</span><h2>Siapa yang Bisa Melamar?</h2><ul><li>Bergelar <b>master 2 tahun (120 ECTS)</b> atau setara di bidang relevan.</li><li>Kemampuan bahasa Inggris akademik (sering: IELTS 6.5 / TOEFL 560 <b>atau</b> dibebaskan bila kuliah sebelumnya berbahasa Inggris).</li><li>Terbuka untuk <b>semua kewarganegaraan</b> — tidak ada kuota WNI khusus, seleksi murni merit.</li><li>Kecocokan dengan topik proyek di iklan lowongan adalah syarat mutlak.</li><li>Publikasi (bahkan 1 paper) sangat membantu — beberapa fellowship memintanya sebagai bahan diskusi.</li></ul></div></section><section class="slide"><div><span class="kicker">Format Seleksi</span><h2>Tahapan Rekrutmen</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx"><b>Temukan lowongan</b> di portal karier universitas (DTU, KU, AU, SDU, AAU) atau Euraxess/Nature Careers.</div></div><div class="step"><div class="n">2</div><div class="tx">Submit <b>1 file PDF</b> via sistem rekrutmen resmi: cover letter, CV, ijazah + transkrip (dikonversi ke skala nilai Denmark), kontak referensi, publikasi.</div></div><div class="step"><div class="n">3</div><div class="tx">Seleksi berkas oleh komite → <b>shortlist wawancara</b> (sering online untuk kandidat luar negeri).</div></div><div class="step"><div class="n">4</div><div class="tx">Keputusan + tawaran kontrak kerja → universitas memfasilitasi <b>ijin tinggal & kerja</b> via skema PhD Denmark.</div></div><div class="step"><div class="n">5</div><div class="tx">Tanda tangan kontrak → relokasi → mulai riset.</div></div></div></div></section><section class="slide"><div><span class="kicker">Strategi 1</span><h2>Menemukan Lowongan yang Tepat</h2><ul><li>Portal karier resmi: <b>dtu.dk, ku.dk, au.dk, sdu.dk, aau.dk</b> (bagian Vacant Positions/PhD positions).</li><li>Agregator: <b>Euraxess, Nature Careers, Academic Positions</b> — pasang alert kata kunci bidangmu.</li><li>Perhatikan <b>model PhD Denmark</b>: 5+3 (master 2 thn + PhD 3 thn), 4+4, atau 3+5 — pastikan jalurmu memenuhi syarat model yang diminta.</li><li>Lowongan dibuka <b>sepanjang tahun</b> per proyek — tidak ada musim tetap; yang rajin memantau yang menang.</li></ul></div></section><section class="slide"><div><span class="kicker">Strategi 2</span><h2>Berkas Lamaran Standar Denmark</h2><ul><li><b>Cover letter/motivation statement</b> — kaitkan pengalamanmu dengan <i>setiap</i> poin kualifikasi di iklan.</li><li><b>CV maks. 2 halaman</b> (tanpa foto — standar Skandinavia), fokus riset & skill.</li><li>Ijazah + transkrip S1 & S2 <b>dikonversi ke skala nilai Denmark</b> (7-trins-skalaen) bila diminta.</li><li>Kontak <b>1–2 referensi profesional</b>; lampirkan 1 publikasi pilihan bila diminta (bahan diskusi wawancara).</li></ul></div></section><section class="slide"><div><span class="kicker">Strategi 3</span><h2>Pendekatan ke Profesor</h2><ul><li>Untuk fellowship yang mensyaratkan <b>principal supervisor</b> (mis. DARA), kamu harus <b>mengamankan profesor</b> di institusi Denmark <i>sebelum</i> melamar.</li><li>Cari profesor via publikasi & laman departemen; kirim email personal + CV + ide riset singkat.</li><li>Alternatif: lamar lowongan &ldquo;PhD scholarship&rdquo; biasa yang supervisornya sudah ditentukan proyek.</li><li>Bangun rekam digital: Google Scholar, ORCID, LinkedIn/ResearchGate yang rapi — komite pasti mengecek.</li></ul></div></section><section class="slide"><div><span class="kicker">Timeline</span><h2>Rencana Persiapan 6–9 Bulan</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx"><b>B-9 s/d B-7:</b> petakan universitas & grup riset target; rapikan CV, publikasi, konversi nilai.</div></div><div class="step"><div class="n">2</div><div class="tx"><b>B-6 s/d B-4:</b> pantau lowongan harian; lamar batch pertama; hubungi calon supervisor untuk skema fellowship.</div></div><div class="step"><div class="n">3</div><div class="tx"><b>B-3 s/d B-2:</b> wawancara; siapkan referensi & legalisasi dokumen.</div></div><div class="step"><div class="n">4</div><div class="tx"><b>B-1:</b> terima tawaran → kontrak → proses <b>residence & work permit</b> via skema PhD (nyidanmark.dk).</div></div><div class="step"><div class="n">5</div><div class="tx"><b>Hari-H:</b> tiba di Denmark, dapat CPR number, buka rekening, mulai kontrak.</div></div></div></div></section><section class="slide"><div><span class="kicker">Checklist</span><h2>Checklist Dokumen</h2><ul><li>Cover letter/motivation statement (disesuaikan per lowongan).</li><li>CV maks. 2 halaman, tanpa foto.</li><li>Ijazah & transkrip S1+S2 (+ terjemahan Inggris tersertifikasi bila perlu).</li><li>Kontak 1–2 referensi profesional.</li><li>1 publikasi pilihan (bila diminta fellowship).</li><li>Bukti kemampuan bahasa Inggris (bila tidak dibebaskan).</li></ul></div></section><section class="slide"><div><span class="kicker">Keuangan</span><h2>Gaji vs Biaya Hidup Denmark</h2><ul><li>Gaji DKK 29–35rb/bln bruto → bersih ±DKK 18–22rb — <b>sangat layak</b> untuk single, bahkan cukup untuk keluarga kecil dengan perencanaan.</li><li>Sewa: kamar di Kopenhagen DKK 6–10rb/bln; Aarhus/Odense lebih murah.</li><li>Kesehatan & jaminan sosial tercakup sebagai pegawai; cuti berbayar dijamin.</li><li>Jalur PR: setelah PhD + pengalaman kerja, terbuka jalan ke <b>permanent residence</b> — nilai jangka panjang besar.</li></ul></div></section><section class="slide"><div><span class="kicker">Contoh Nyata</span><h2>Contoh Fellowship Terstruktur di Denmark</h2><ul><li><b>Neuroscience Academy Denmark (NAD):</b> 16 fully funded PhD fellowships — 4 tahun (1 tahun rotasi di 3 lab + 3 tahun riset), gaji bulanan + tuition + dana riset; untuk lulusan MSc/MD bidang neuroscience & terkait; <b>tanpa application fee</b>.</li><li><b>DARA Open PhD Fellowships</b> (Danish Advanced Research Academy): paket ±DKK 1.575.000 gaji 3 tahun + DKK 240.000 tuition + DKK 750.000 dana riset; syarat: punya <b>principal supervisor</b> di institusi riset Denmark.</li><li>Keduanya <b>terbuka untuk semua kewarganegaraan</b> — contoh nyata bahwa skema Denmark memang dirancang untuk talenta global.</li><li>Pola umum: fellowship terstruktur = gaji + tuition + dana riset; lowongan individual di universitas = gaji + tuition.</li></ul><div class="note">Contoh di atas bersifat ilustratif dan periodenya berganti — <b>selalu cek pengumuman terbaru</b> di laman resmi tiap fellowship.</div></div></section><section class="slide"><div><span class="kicker">Video Panduan</span><h2>Tonton Dulu: 4 Video Kunci</h2><div class="vgrid"><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/aI4RY-g7Xwk?rel=0" title="Beasiswa PhD Denmark (NAD Neuroscience): bedah lengkap" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Cara Daftar 1</div><div class="t">Beasiswa PhD Denmark (NAD Neuroscience): bedah lengkap</div><div class="d">Contoh nyata fellowship PhD bergaji di Denmark: syarat, dokumen, dan cara daftar — polanya sama untuk lowongan PhD lain.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/IfAzkgWbS6w?rel=0" title="Semua opsi kuliah gratis di Denmark (termasuk PhD)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Cara Daftar 2</div><div class="t">Semua opsi kuliah gratis di Denmark (termasuk PhD)</div><div class="d">Penjelasan sistem pendanaan Denmark yang desentralisasi + cara menemukan lowongan PhD bergaji.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/Lsg4UpixdUs?rel=0" title="South Campus, University of Copenhagen (resmi)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Suasana Kampus</div><div class="t">South Campus, University of Copenhagen (resmi)</div><div class="d">Video resmi UCPH — gambaran kampus modern, fasilitas belajar, dan lingkungan riset.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/eNWoporgcp0?rel=0" title="Life as a PhD student at Aarhus University (resmi)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Testimoni</div><div class="t">Life as a PhD student at Aarhus University (resmi)</div><div class="d">Video resmi Aarhus University: pengalaman hidup sebagai PhD student — yang sejatinya berstatus pegawai.</div></div></div></div><div class="note"><b>Catatan:</b> video-video di atas adalah materi publik di YouTube dari kreator/pihak ketiga — gunakan sebagai referensi awal, dan selalu verifikasi detail terbaru di situs resmi.</div></div></section><section class="slide"><div><span class="kicker">Sumber Resmi</span><h2>Sumber Informasi Resmi</h2><ul><li><b>nyidanmark.dk</b> — layanan imigrasi resmi Denmark (skema PhD, ijin tinggal & kerja).</li><li>Portal karier resmi: <b>dtu.dk, ku.dk, au.dk, sdu.dk, aau.dk</b> — sumber lowongan valid.</li><li><b>studyindenmark.dk</b> — portal studi resmi Denmark.</li><li>Euraxess & Nature Careers — agregator lowongan riset Eropa.</li><li>NAD (Neuroscience Academy Denmark) & DARA — contoh fellowship terstruktur dengan gaji penuh.</li></ul><div class="note">Semua lowongan valid terbit di domain universitas atau agregator resmi — jangan pernah membayar untuk &ldquo;akses lowongan&rdquo;.</div></div></section><section class="slide"><div><span class="kicker">Tips Wawancara</span><h2>Tips Wawancara</h2><ul><li>Siap menjelaskan <b>riset S2 dalam 5 menit</b> + kaitannya dengan proyek yang dilamar.</li><li>Pewawancara Denmark menghargai <b>kemandirian & inisiatif</b> — tunjukkan kamu bisa merancang riset sendiri.</li><li>Diskusikan publikasi pilihanmu secara kritis (kelebihan & keterbatasannya) — ini sering jadi bahan wawancara.</li><li>Tanyakan: struktur supervisi, ekspektasi publikasi, dana konferensi, dan peluang kolaborasi industri.</li><li>Santai tapi profesional — budaya kerja Denmark egaliter, tidak kaku.</li></ul></div></section><section class="slide"><div><span class="kicker">Setelah Diterima</span><h2>Setelah Diterima: Ijin Tinggal & Relokasi</h2><ul><li>Universitas memandu pengajuan <b>residence & work permit</b> via skema PhD di nyidanmark.dk.</li><li>Keluarga dapat ikut (family reunification): pasangan boleh kerja penuh, anak sekolah gratis.</li><li>Setiba: daftar alamat & dapatkan <b>CPR number</b> (kunci semua layanan publik), buka rekening bank.</li><li>Ikut kursus bahasa Denmark gratis yang disediakan komune — membantu integrasi & karier.</li><li>Manfaatkan serikat pekerja/PhD association di kampus untuk info hak-hak pegawai.</li></ul></div></section><section class="slide"><div><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (1)</h2><ul><li><b>Apakah ini beasiswa atau pekerjaan?</b><br><b>Pekerjaan</b> — kontrak pegawai universitas dengan gaji, pensiun, dan cuti.</li><li><b>Apakah WNI bisa melamar?</b><br>Bisa — lowongan terbuka untuk semua kewarganegaraan.</li><li><b>Berapa lama PhD di Denmark?</b><br>Umumnya <b>3 tahun</b> (model 5+3 standar).</li></ul></div></section><section class="slide"><div><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (2)</h2><ul><li><b>Apakah ada beasiswa terpusat seperti LPDP?</b><br>Tidak — pendanaan <b>desentralisasi</b> per universitas/proyek.</li><li><b>Apakah IELTS wajib?</b><br>Tergantung lowongan — sering bisa dibebaskan bila pendidikan sebelumnya berbahasa Inggris.</li><li><b>Bisakah membawa keluarga?</b><br>Bisa — dengan hak kerja penuh untuk pasangan dan sekolah gratis untuk anak.</li></ul></div></section><section class="slide"><div><span class="kicker">Hindari</span><h2>Kesalahan Umum yang Harus Dihindari</h2><ul><li>Mencari &ldquo;formulir beasiswa S3 Denmark&rdquo; — yang benar adalah <b>lowongan pekerjaan PhD</b>.</li><li>CV berfoto & berhalaman-halaman — standar Denmark: <b>maks. 2 halaman, tanpa foto</b>.</li><li>Tidak mengonversi transkrip ke <b>skala nilai Denmark</b> saat diminta.</li><li>Melamar tanpa membaca <b>model PhD</b> (5+3/4+4) yang disyaratkan fellowship.</li><li>Pasif menunggu satu lowongan — lamar <b>banyak & konsisten</b> sepanjang tahun.</li></ul></div></section><section class="slide closing"><div><span class="kicker">Langkah Berikutnya</span><h2>Mulai Pendaftaran Resmi</h2><ul><li>Semua informasi di deck ini merujuk ke sumber resmi. Jangan membayar ke pihak ketiga mana pun — pendaftaran program ini <b>tidak dipungut biaya perantara</b>.</li><li>Siapkan dokumen dari checklist, hubungi calon supervisor lebih awal, dan pantau tanggal penting di situs resmi.</li></ul><a class="btn" href="https://nyidanmark.dk" target="_blank" rel="noopener">Buka Situs Resmi Pendaftaran</a><div class="urlbox">https://nyidanmark.dk</div></div></section>
+</div>
+<div class="controls">
+<button class="navbtn" id="prev">&#8592; Sebelumnya</button>
+<div class="dots" id="dots"></div>
+<span class="counter" id="counter"></span>
+<button class="navbtn" id="next">Berikutnya &#8594;</button>
+</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let cur=0;
+const dots=document.getElementById('dots'),counter=document.getElementById('counter'),prog=document.getElementById('prog');
+slides.forEach((_,i)=>{const d=document.createElement('button');d.className='dot';d.setAttribute('aria-label','Slide '+(i+1));d.onclick=()=>go(i);dots.appendChild(d);});
+function go(i){cur=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,j)=>s.classList.toggle('active',j===cur));
+[...dots.children].forEach((d,j)=>d.classList.toggle('on',j===cur));
+counter.textContent=(cur+1)+' / '+slides.length;prog.style.width=((cur+1)/slides.length*100)+'%';
+document.getElementById('prev').disabled=cur===0;document.getElementById('next').disabled=cur===slides.length-1;
+const act=slides[cur];if(act.scrollTo)act.scrollTo(0,0);}
+document.getElementById('prev').onclick=()=>go(cur-1);document.getElementById('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(cur+1);}if(e.key==='ArrowLeft')go(cur-1);});
+let tx=0;document.addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>60){dx<0?go(cur+1):go(cur-1);}},{passive:true});
+go(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

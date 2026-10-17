@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panduan S3 Beasiswa Rusia</title>
+<style>:root{--accent:#0d47a1}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#0b5fff}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:#0d1117;color:#f0f4f8;overflow:hidden}
+.deck{position:relative;height:100dvh;width:100%}
+.slide{display:none;height:100%;width:100%;padding:56px 8vw 110px;overflow-y:auto;animation:fade .35s ease}
+.slide.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.kicker{display:inline-block;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px}
+h1{font-size:clamp(30px,5.4vw,58px);line-height:1.12;margin-bottom:18px}
+h2{font-size:clamp(24px,4vw,40px);line-height:1.2;margin-bottom:20px}
+.slide ul{list-style:none;display:flex;flex-direction:column;gap:14px;max-width:900px}
+.slide li{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px;font-size:clamp(15px,2.1vw,19px);line-height:1.55}
+.slide li b{color:#fff}
+.note{margin-top:22px;max-width:900px;background:rgba(255,193,7,.08);border:1px dashed rgba(255,193,7,.5);border-radius:10px;padding:14px 18px;font-size:15px;line-height:1.6;color:#ffe1a1}
+.note b{color:#ffd76a}
+.cover{position:relative;display:none}
+.cover.active{display:flex;flex-direction:column;justify-content:flex-end}
+.cover .bg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,15,.25) 0%,rgba(5,8,15,.55) 45%,rgba(5,8,15,.94) 100%);z-index:1}
+.cover .inner{position:relative;z-index:2}
+.cover h1{text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.cover .sub{font-size:clamp(16px,2.4vw,22px);color:#dbe4ee;max-width:800px;line-height:1.6;margin-bottom:22px}
+.credit{position:absolute;right:14px;bottom:86px;z-index:2;font-size:11px;color:rgba(255,255,255,.55)}
+.pill{display:inline-block;background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:8px 18px;border-radius:999px;margin-bottom:16px}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:1100px}
+.vcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden}
+.vcard .frame{position:relative;padding-top:56.25%;background:#000}
+.vcard iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vcard .cap{padding:12px 14px}
+.vcard .cap .tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+.vcard .cap .t{font-size:14px;font-weight:600;margin-top:4px;line-height:1.4}
+.vcard .cap .d{font-size:12.5px;color:#aeb9c6;margin-top:4px;line-height:1.45}
+@media(max-width:640px){.vgrid{grid-template-columns:1fr}.slide{padding:40px 6vw 120px}}
+.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:18px;padding:16px 34px;border-radius:12px;margin-top:8px}
+.btn:hover{filter:brightness(1.12)}
+.urlbox{margin-top:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:14px 18px;font-size:15px;word-break:break-all;max-width:700px}
+.controls{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 4vw;background:linear-gradient(180deg,transparent,rgba(5,8,15,.92) 40%)}
+.navbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:16px;font-weight:600;padding:10px 22px;border-radius:999px;cursor:pointer}
+.navbtn:hover{background:var(--accent);border-color:var(--accent)}
+.navbtn:disabled{opacity:.3;cursor:default}
+.counter{font-size:14px;color:#aeb9c6;font-weight:600;white-space:nowrap}
+.dots{display:flex;gap:6px;overflow-x:auto;max-width:44vw;padding:4px}
+.dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.22);cursor:pointer;border:0;padding:0}
+.dot.on{background:var(--accent);transform:scale(1.25)}
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--accent);z-index:11;width:0;transition:width .3s}
+.steps{display:flex;flex-direction:column;gap:12px;max-width:900px}
+.step{display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:14px 18px}
+.step .n{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:16px}
+.step .tx{font-size:clamp(15px,2vw,18px);line-height:1.55}
+table{border-collapse:collapse;max-width:900px;width:100%;font-size:clamp(13px,1.9vw,16px)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.12);line-height:1.5}
+th{color:var(--accent);text-transform:uppercase;font-size:12px;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="deck">
+<section class="slide cover active"><div class="bg" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Moscow_State_University_crop.jpg/1920px-Moscow_State_University_crop.jpg')"></div><div class="shade"></div><div class="inner"><div class="pill">Russian Government Quota — Postgraduate (PhD)</div><h1>Panduan S3 Beasiswa Rusia</h1><p class="sub">Kuota Pemerintah Rusia untuk studi pascasarjana (PhD): kuliah gratis penuh, asrama, kursus bahasa Rusia gratis — plus jalur kompetisi Open Doors.</p><a class="btn" href="https://en.misis.ru/applicants/scholarships/quota/" target="_blank" rel="noopener">Kunjungi Situs Resmi</a></div><div class="credit">Foto: Wikimedia Commons</div></section><section class="slide"><div><span class="kicker">Gambaran Program</span><h2>Sekilas Kuota Pemerintah Rusia (PhD)</h2><ul><li><b>Government Quota of the Russian Federation</b> — kuota APBN Rusia untuk warga asing, termasuk jenjang <b>pascasarjana (PhD)</b>.</li><li>Seleksi via <b>Rossotrudnichestvo / Kedutaan Rusia</b>; pendaftaran online di portal <b>education-in-russia.com</b>.</li><li><b>Jalur alternatif:</b> <b>Open Doors Russian Scholarship</b> (od.globaluni.ru) — kompetisi internasional dengan <b>Doctoral track</b>; pemenang berhak atas kuota pemerintah.</li><li>WNI eligible. Tidak ada tes bahasa Rusia di tahap aplikasi — tersedia <b>kursus persiapan bahasa Rusia gratis</b> bila dibutuhkan.</li><li>Pilih hingga <b>6 universitas</b> sesuai urutan prioritas dalam satu aplikasi.</li></ul></div></section><section class="slide"><div><span class="kicker">Cakupan Pendanaan</span><h2>Apa yang Ditanggung?</h2><ul><li><b>Biaya kuliah penuh</b> ditanggung APBN Rusia (tuition-free).</li><li><b>Beasiswa bulanan</b> (stipendium) + <b>tempat asrama</b>.</li><li><b>Kursus persiapan bahasa Rusia gratis</b> (1 tahun) bila program diambil dalam bahasa Rusia.</li><li>Open Doors: pemenang Doctoral track mendapat hak studi via kuota pemerintah + stipendium (besaran per universitas).</li><li>Yang <b>tidak</b> ditanggung: tiket pesawat, makan sehari-hari, asuransi, dan biaya pribadi.</li></ul><div class="note"><b>Catatan jujur:</b> tunjangan bulanan kuota Rusia <b>tergolong kecil</b> — biaya hidup sehari-hari tetap perlu dana tambahan dari kantong sendiri/tambahan lain. Rencanakan anggaran dengan realistis.</div></div></section><section class="slide"><div><span class="kicker">Eligibilitas</span><h2>Siapa yang Bisa Mendaftar?</h2><ul><li>Hanya <b>warga negara asing</b> (pemegang kewarganegaraan Rusia yang menetap di luar negeri ada ketentuan khusus).</li><li>Sudah (atau akan) bergelar <b>master/spesialis</b> sebelum mulai studi.</li><li>Belum pernah memakai jatah kuota pemerintah sebelumnya (aturan umum: satu award per orang).</li><li>Open Doors Doctoral track: usia <b>22–35 tahun</b>, tanpa IELTS — kemampuan bahasa dinilai universitas penerima.</li><li>Sehat jasmani — surat keterangan sehat diminta di tahap lanjutan.</li></ul></div></section><section class="slide"><div><span class="kicker">Format Seleksi</span><h2>Tahapan Seleksi Kuota</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx"><b>Registrasi</b> di education-in-russia.com → buat aplikasi baru di &ldquo;My Applications&rdquo;.</div></div><div class="step"><div class="n">2</div><div class="tx">Pilih <b>jenjang, bidang, dan hingga 6 universitas</b>; unggah paspor, ijazah, bukti prestasi (publikasi!), dan untuk PhD: <b>motivation letter + ringkasan riset/artikel</b>.</div></div><div class="step"><div class="n">3</div><div class="tx">Semua dokumen berbahasa asing <b>wajib diterjemahkan ke bahasa Rusia dan dilegalisasi notaris</b>.</div></div><div class="step"><div class="n">4</div><div class="tx">Submit sebelum deadline → seleksi oleh Rossotrudnichestvo/kedutaan (berkas, portofolio, kadang tes/wawancara).</div></div><div class="step"><div class="n">5</div><div class="tx">Terima undangan dari universitas → urus visa pelajar.</div></div></div></div></section><section class="slide"><div><span class="kicker">Jalur Open Doors</span><h2>Jalur Alternatif: Open Doors (Doctoral)</h2><ul><li>Kompetisi online internasional oleh Global Universities Association — <b>gratis, tanpa application fee</b>.</li><li>Dua tahap: <b>portofolio</b> (dokumen, motivation letter, entry test) → <b>tugas online ber-proctoring</b> untuk track Doctoral.</li><li>Pemenang & runner-up: kuliah gratis via kuota pemerintah + stipendium bulanan.</li><li>Siklus 2026: registrasi <b>20 Agustus – 1 November 2026</b>; tahap 1 s/d 13 Nov; tahap 2 s/d 21 Des 2026.</li><li>Situs resmi: <b>od.globaluni.ru</b> — daftar dan kerjakan langsung di platform resmi.</li></ul><div class="note">Dua jalur (kuota kedutaan & Open Doors) bisa dicoba paralel — keduanya bermuara ke pembiayaan kuota pemerintah.</div></div></section><section class="slide"><div><span class="kicker">Strategi 1</span><h2>Perkuat Portofolio Riset</h2><ul><li>Untuk PhD, <b>publikasi adalah raja</b>: kumpulkan paper (nasional/internasional), prosiding konferensi, dan sitasi bila ada.</li><li>Susun <b>ringkasan riset/artikel</b> terkait topik PhD yang akan diambil — ini dokumen wajib khusus pelamar pascasarjana.</li><li>Sertakan penghargaan, hibah riset, dan pengalaman asisten riset — semua diterjemahkan rapi.</li><li>Minta <b>surat rekomendasi</b> dari pembimbing S2; rekomendasi dari profesor universitas Rusia tujuan jadi nilai plus.</li></ul></div></section><section class="slide"><div><span class="kicker">Strategi 2</span><h2>Motivation Letter & Research Summary</h2><ul><li>Motivation letter: latar akademik → kenapa Rusia & universitas itu → rencana riset → rencana kontribusi sepulang studi.</li><li>Research summary: 2–3 halaman — masalah, metodologi, kebaruan, dan relevansi dengan kekuatan riset universitas tujuan.</li><li>Tulis dalam bahasa Inggris yang baik (atau Rusia bila mampu); hindari template generik.</li><li>Konsisten: topik di motivation letter = topik di research summary = bidang yang dipilih di aplikasi.</li></ul></div></section><section class="slide"><div><span class="kicker">Strategi 3</span><h2>Dokumen & Terjemahan Tersumpah</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx">Siapkan: paspor, ijazah & transkrip S2 (+S1), motivation letter, research summary/artikel, daftar publikasi & penghargaan, pas foto.</div></div><div class="step"><div class="n">2</div><div class="tx">Terjemahkan <b>semua dokumen ke bahasa Rusia</b> oleh penerjemah tersumpah, lalu <b>legalisasi notaris</b> — proses ini butuh minggu, jangan mepet deadline.</div></div><div class="step"><div class="n">3</div><div class="tx">Scan berkualitas tinggi untuk upload; simpan juga dokumen fisik untuk tahap lanjutan.</div></div><div class="step"><div class="n">4</div><div class="tx">Cek ulang: status aplikasi harus <b>&ldquo;submitted&rdquo;</b> — draft yang tidak disubmit tidak dinilai.</div></div></div></div></section><section class="slide"><div><span class="kicker">Timeline</span><h2>Rencana Persiapan 12 Bulan</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx"><b>B-12 s/d B-9:</b> riset 6 universitas & program PhD-nya; kumpulkan publikasi; mulai terjemahan dokumen.</div></div><div class="step"><div class="n">2</div><div class="tx"><b>B-8 s/d B-6:</b> tulis motivation letter & research summary; minta rekomendasi; selesaikan legalisasi.</div></div><div class="step"><div class="n">3</div><div class="tx"><b>B-5 s/d B-4:</b> daftar Open Doors bila mengikuti (deadline 1 Nov); siapkan portofolio & entry test.</div></div><div class="step"><div class="n">4</div><div class="tx"><b>B-3 s/d B-1:</b> submit aplikasi kuota di education-in-russia.com <b>sebelum 15 Januari</b>; ikuti seleksi/wawancara.</div></div><div class="step"><div class="n">5</div><div class="tx"><b>Setelah lolos:</b> medical check-up, visa pelajar, persiapan bahasa Rusia dasar.</div></div></div></div></section><section class="slide"><div><span class="kicker">Jadwal Penting</span><h2>Deadline Kunci</h2><table><tr><th>Jalur</th><th>Deadline</th></tr><tr><td>Kuota Rusia — negara CIS</td><td>15 Desember 2026</td></tr><tr><td>Kuota Rusia — negara lain (termasuk Indonesia)</td><td>15 Januari 2027</td></tr><tr><td>Open Doors — registrasi & portofolio</td><td>20 Agu – 1 Nov 2026</td></tr><tr><td>Open Doors — tahap 2</td><td>13 Nov – 21 Des 2026</td></tr></table><div class="note">Untuk tahun akademik 2027/2028. Selalu cek halaman kuota universitas tujuan karena tiap kampus bisa mengumumkan detail tambahan.</div></div></section><section class="slide"><div><span class="kicker">Checklist</span><h2>Checklist Dokumen</h2><ul><li>Paspor (scan); ijazah & transkrip S2 (+S1 bila diminta).</li><li><b>Motivation letter</b> + <b>research summary/artikel</b> (wajib untuk PhD).</li><li>Daftar publikasi, penghargaan, sertifikat prestasi.</li><li>Surat rekomendasi (akademik; dari profesor Rusia = plus).</li><li><b>Terjemahan bahasa Rusia + legalisasi notaris</b> untuk semua dokumen berbahasa asing.</li><li>Surat keterangan sehat (tahap lanjutan); pas foto sesuai ketentuan.</li></ul></div></section><section class="slide"><div><span class="kicker">Keuangan</span><h2>Anggaran Realistis</h2><ul><li>Kuliah <b>gratis</b> + asrama disediakan — ini penghemat terbesar.</li><li>Tunjangan bulanan <b>kecil</b>: siapkan dana hidup ± beberapa juta rupiah/bulan dari tabungan atau kerja paruh waktu (aturan kerja mahasiswa berlaku).</li><li>Tiket pesawat PP Indonesia–Rusia ditanggung sendiri (± belasan juta rupiah).</li><li>Asuransi kesehatan & biaya visa diurus mandiri; kursus bahasa Rusia persiapan <b>gratis</b> bila dibutuhkan.</li></ul></div></section><section class="slide"><div><span class="kicker">Video Panduan</span><h2>Tonton Dulu: 4 Video Kunci</h2><div class="vgrid"><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/-CVWSFFX7nc?rel=0" title="Open Doors Scholarship: panduan aplikasi lengkap" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Cara Daftar 1</div><div class="t">Open Doors Scholarship: panduan aplikasi lengkap</div><div class="d">Penjelasan lengkap eligibility, dokumen, tahapan seleksi, dan cara daftar online — termasuk jalur Doctoral (PhD).</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/BHgx4ontDh8?rel=0" title="Tutorial aplikasi Open Doors: submit portofolio" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Cara Daftar 2</div><div class="t">Tutorial aplikasi Open Doors: submit portofolio</div><div class="d">Praktik mengisi aplikasi, memilih track, entry test, dan motivation letter — langkah demi langkah.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/jmv5wAsAMbw?rel=0" title="Tur kampus HSE University, Moskow (resmi)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Suasana Kampus</div><div class="t">Tur kampus HSE University, Moskow (resmi)</div><div class="d">Tur resmi kampus Pokrovka HSE — gambaran fasilitas dan kehidupan kampus universitas Rusia.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/ymhSPtTODbY?rel=0" title="WNI peraih beasiswa: cara dapat beasiswa ke Rusia" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Testimoni</div><div class="t">WNI peraih beasiswa: cara dapat beasiswa ke Rusia</div><div class="d">Podcast bersama mahasiswa Indonesia di Rusia — strategi meraih beasiswa dan pengalaman studi di sana.</div></div></div></div><div class="note"><b>Catatan:</b> video-video di atas adalah materi publik di YouTube dari kreator/pihak ketiga — gunakan sebagai referensi awal, dan selalu verifikasi detail terbaru di situs resmi.</div></div></section><section class="slide"><div><span class="kicker">Sumber Resmi</span><h2>Sumber Informasi Resmi</h2><ul><li><b>education-in-russia.com</b> — portal aplikasi kuota resmi pemerintah Rusia.</li><li><b>en.misis.ru/applicants/scholarships/quota/</b> — halaman kuota resmi (contoh universitas; tiap kampus punya halaman serupa).</li><li><b>od.globaluni.ru</b> — situs resmi kompetisi Open Doors.</li><li>Kedutaan Besar Rusia / Rossotrudnichestvo di Indonesia — untuk seleksi kuota jalur kedutaan.</li><li>Abaikan pihak yang menjanjikan &ldquo;kuota pasti&rdquo; berbayar — seleksi resmi tidak dipungut biaya.</li></ul></div></section><section class="slide"><div><span class="kicker">Tips Wawancara</span><h2>Tips Seleksi & Wawancara</h2><ul><li>Kuasai research summary-mu: siap menjelaskan kontribusi dan metodologi secara lisan.</li><li>Untuk Open Doors tahap 2 (proctored tasks): latihan soal bidangmu dalam bahasa Inggris/Rusia; siapkan perangkat & koneksi stabil.</li><li>Tunjukkan motivasi belajar bahasa Rusia — kesiapan mengikuti preparatory course dinilai positif.</li><li>Jawab jujur soal rencana pasca-PhD; program menghargai kandidat yang jelas tujuannya.</li><li>Simpan semua bukti submit & korespondensi resmi — berguna jika ada verifikasi.</li></ul></div></section><section class="slide"><div><span class="kicker">Setelah Diterima</span><h2>Setelah Diterima: Visa & Keberangkatan</h2><ul><li>Terima <b>undangan resmi (invitation)</b> dari universitas → urus <b>visa pelajar</b> di Kedutaan Rusia.</li><li>Medical check-up & surat keterangan sehat sesuai persyaratan.</li><li>Ikuti <b>kursus persiapan bahasa Rusia</b> (gratis, ~1 tahun) bila program berbahasa Rusia.</li><li>Siapkan pakaian musim dingin serius — musim dingin Rusia ekstrem bagi yang belum terbiasa.</li><li>Pelajari dasar alfabet Kiril & frasa sehari-hari sebelum berangkat.</li></ul></div></section><section class="slide"><div><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (1)</h2><ul><li><b>Apakah harus bisa bahasa Rusia saat mendaftar?</b><br>Tidak — tersedia kursus persiapan gratis. Sebagian program (mis. Skoltech) berbahasa Inggris penuh.</li><li><b>Apakah WNI eligible?</b><br>Ya — kuota terbuka untuk warga asing, termasuk Indonesia.</li><li><b>Apakah tunjangannya cukup untuk hidup?</b><br><b>Tidak penuh</b> — tunjangan kecil, siapkan dana tambahan untuk biaya hidup sehari-hari.</li></ul></div></section><section class="slide"><div><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (2)</h2><ul><li><b>Apa beda kuota kedutaan vs Open Doors?</b><br>Kedutaan: seleksi berkas via Rossotrudnichestvo. Open Doors: kompetisi online 2 tahap. Keduanya berujung pada pembiayaan kuota pemerintah.</li><li><b>Bisakah memilih universitas?</b><br>Bisa — hingga 6 universitas sesuai prioritas di aplikasi kuota.</li><li><b>Apakah publikasi wajib?</b><br>Tidak wajib formal, tapi untuk PhD <b>sangat menentukan</b> — seleksi doktoral pada dasarnya kompetisi portofolio riset.</li></ul></div></section><section class="slide"><div><span class="kicker">Hindari</span><h2>Kesalahan Umum yang Harus Dihindari</h2><ul><li>Menunda <b>terjemahan & legalisasi notaris</b> — prosesnya berminggu-minggu dan sering jadi penyebab gagal submit.</li><li>Mengirim motivation letter generik tanpa menyebut universitas/bidang spesifik.</li><li>Lupa mensubmit aplikasi (status masih <b>draft</b>) — draft tidak dinilai.</li><li>Mengandalkan satu jalur saja — coba <b>paralel</b>: kuota kedutaan + Open Doors.</li><li>Meremehkan biaya hidup — siapkan anggaran realistis sejak awal, bukan setelah tiba.</li></ul></div></section><section class="slide closing"><div><span class="kicker">Langkah Berikutnya</span><h2>Mulai Pendaftaran Resmi</h2><ul><li>Semua informasi di deck ini merujuk ke sumber resmi. Jangan membayar ke pihak ketiga mana pun — pendaftaran program ini <b>tidak dipungut biaya perantara</b>.</li><li>Siapkan dokumen dari checklist, hubungi calon supervisor lebih awal, dan pantau tanggal penting di situs resmi.</li></ul><a class="btn" href="https://en.misis.ru/applicants/scholarships/quota/" target="_blank" rel="noopener">Buka Situs Resmi Pendaftaran</a><div class="urlbox">https://en.misis.ru/applicants/scholarships/quota/</div></div></section>
+</div>
+<div class="controls">
+<button class="navbtn" id="prev">&#8592; Sebelumnya</button>
+<div class="dots" id="dots"></div>
+<span class="counter" id="counter"></span>
+<button class="navbtn" id="next">Berikutnya &#8594;</button>
+</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let cur=0;
+const dots=document.getElementById('dots'),counter=document.getElementById('counter'),prog=document.getElementById('prog');
+slides.forEach((_,i)=>{const d=document.createElement('button');d.className='dot';d.setAttribute('aria-label','Slide '+(i+1));d.onclick=()=>go(i);dots.appendChild(d);});
+function go(i){cur=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,j)=>s.classList.toggle('active',j===cur));
+[...dots.children].forEach((d,j)=>d.classList.toggle('on',j===cur));
+counter.textContent=(cur+1)+' / '+slides.length;prog.style.width=((cur+1)/slides.length*100)+'%';
+document.getElementById('prev').disabled=cur===0;document.getElementById('next').disabled=cur===slides.length-1;
+const act=slides[cur];if(act.scrollTo)act.scrollTo(0,0);}
+document.getElementById('prev').onclick=()=>go(cur-1);document.getElementById('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(cur+1);}if(e.key==='ArrowLeft')go(cur-1);});
+let tx=0;document.addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>60){dx<0?go(cur+1):go(cur-1);}},{passive:true});
+go(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

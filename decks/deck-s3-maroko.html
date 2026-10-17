@@ -1,0 +1,241 @@
+<!DOCTYPE html><html lang='id'><head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Panduan S3 AMCI Maroko</title>
+<style>:root{--accent:#8c1d18}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#1a56db}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;background:#0b1020;color:#1e293b;overflow:hidden}
+#deck{position:fixed;inset:0;display:flex;flex-direction:column}
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:rgba(8,12,28,.92);color:#fff;z-index:5;border-bottom:3px solid var(--accent)}
+#topbar .t{font-weight:700;font-size:15px;letter-spacing:.3px}
+#topbar .c{font-size:13px;opacity:.85;font-variant-numeric:tabular-nums}
+#progress{height:4px;background:#1e293b}
+#progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+#stage{flex:1;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:34px 20px;overflow-y:auto;background:linear-gradient(160deg,#f8fafc,#eef2f7)}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.wrap{width:100%;max-width:920px}
+.kicker{display:inline-block;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+h1.s{font-size:clamp(24px,4.5vw,40px);line-height:1.2;color:#0f172a;margin-bottom:14px}
+h2.s{font-size:clamp(20px,3.6vw,30px);color:#0f172a;margin-bottom:12px}
+.slide p{font-size:clamp(14px,2.2vw,17px);line-height:1.65;color:#334155;margin-bottom:10px}
+.slide ul{margin:6px 0 12px 4px;list-style:none}
+.slide ul li{font-size:clamp(14px,2.2vw,16.5px);line-height:1.6;color:#334155;margin-bottom:9px;padding-left:30px;position:relative}
+.slide ul li::before{content:"";position:absolute;left:2px;top:7px;width:10px;height:10px;border-radius:3px;background:var(--accent)}
+.card{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 6px 24px rgba(15,23,42,.08);margin-bottom:12px;border-left:5px solid var(--accent)}
+.card h3{font-size:16px;color:#0f172a;margin-bottom:8px}
+.card p,.card li{font-size:14.5px}
+.note{background:#fffbeb;border:1px solid #fcd34d;border-left:6px solid #f59e0b;border-radius:12px;padding:16px 18px;margin:12px 0}
+.note b.t{display:block;color:#92400e;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.note p{color:#78350f;font-size:14.5px}
+table.info{width:100%;border-collapse:collapse;margin:10px 0;font-size:14.5px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(15,23,42,.06)}
+table.info th{background:var(--accent);color:#fff;text-align:left;padding:10px 14px}
+table.info td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top}
+table.info tr:last-child td{border-bottom:none}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+/* cover */
+.slide.cover{padding:0;justify-content:flex-end;align-items:stretch;background-size:cover;background-position:center}
+.cover-veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,20,.25) 0%,rgba(5,8,20,.55) 45%,rgba(5,8,20,.92) 100%)}
+.cover-inner{position:relative;z-index:2;padding:46px 34px;color:#fff;max-width:920px;margin:0 auto;width:100%}
+.cover-inner .kicker{color:#fcd34d}
+.cover-inner h1{font-size:clamp(30px,6vw,54px);line-height:1.12;margin-bottom:10px;text-shadow:0 2px 18px rgba(0,0,0,.5)}
+.cover-inner p.sub{font-size:clamp(15px,2.6vw,20px);color:#e2e8f0;max-width:640px}
+.cover-inner .meta{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:13px;font-weight:600;padding:7px 14px;border-radius:999px;backdrop-filter:blur(4px)}
+.hint{margin-top:22px;font-size:13.5px;color:#cbd5e1}
+/* videos */
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;margin-top:6px}
+.vid{background:#0f172a;border-radius:12px;overflow:hidden;box-shadow:0 6px 20px rgba(15,23,42,.25)}
+.vid .lbl{padding:9px 12px;color:#fff;font-size:12.5px;font-weight:600;line-height:1.4;min-height:52px;display:flex;align-items:center}
+.vid .frame{position:relative;padding-top:56.25%;background:#000}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* cta */
+.btn{display:inline-block;background:var(--accent);color:#fff!important;font-weight:700;font-size:15px;padding:13px 22px;border-radius:10px;text-decoration:none;margin:6px 8px 6px 0;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.btn.ghost{background:#fff;color:var(--accent)!important;border:2px solid var(--accent);box-shadow:none}
+.linkrow{background:#fff;border-radius:12px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 4px 14px rgba(15,23,42,.06);flex-wrap:wrap}
+.linkrow .u{font-size:13px;color:#64748b;word-break:break-all}
+.linkrow .n{font-weight:700;color:#0f172a;font-size:15px}
+/* faq */
+.qa{background:#fff;border-radius:12px;padding:14px 18px;margin-bottom:10px;box-shadow:0 4px 14px rgba(15,23,42,.06)}
+.qa .q{font-weight:700;color:var(--accent);font-size:15px;margin-bottom:6px}
+.qa .a{font-size:14.5px;color:#334155;line-height:1.6}
+/* nav */
+#navbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:rgba(8,12,28,.94);border-top:1px solid #1e293b;z-index:5}
+.nbtn{background:var(--accent);border:none;color:#fff;font-weight:700;font-size:14px;padding:11px 22px;border-radius:10px;cursor:pointer}
+.nbtn:disabled{opacity:.35;cursor:default}
+.nbtn.ghostb{background:transparent;border:1px solid #475569;color:#cbd5e1}
+#dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:50%}
+#dots i{width:8px;height:8px;border-radius:50%;background:#334155;cursor:pointer}
+#dots i.on{background:var(--accent);transform:scale(1.3)}
+.num{color:#94a3b8;font-size:12.5px;font-variant-numeric:tabular-nums}
+.swipe-hint{color:#64748b;font-size:12px;text-align:center;padding:4px}
+</style>
+
+<div id='deck'><div id='topbar'><span class='t'>AMCI Maroko (S3)</span><span class='c' id='counter'></span></div>
+<div id='progress'><i></i></div><div id='stage'>
+<section class='slide cover' style="background-image:url('https://ar.ladepeche24.com/wp-content/uploads/2024/12/Universite-Mohammed-V-Rabat.jpg')"><div class='cover-veil'></div><div class='cover-inner'><span class='kicker'>Beasiswa S3 • Maroko</span><h1>Panduan S3 AMCI Maroko</h1><p class='sub'>Beasiswa Pemerintah Maroko via AMCI hingga jenjang doktoral — kuliah di universitas publik + tunjangan, jalur WNI via Kemenag/Kedutaan Maroko Jakarta.</p><div class='meta'><span class='pill'>Full (dengan catatan)</span><span class='pill'>Hingga doktoral</span><span class='pill'>1.750 MAD/bln</span><span class='pill'>Via Kemenag/Kedubes</span></div><p class='hint'>Geser / klik panah / tekan &rarr; untuk mulai &mdash; 21 slide</p></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Gambaran</span><h2 class='s'>Sekilas Beasiswa AMCI</h2><p><b>Moroccan Agency for International Cooperation (AMCI)</b> menyalurkan beasiswa Pemerintah Kerajaan Maroko untuk mahasiswa negara mitra — <b>termasuk Indonesia</b> — hingga jenjang <b>doktoral</b>.</p><ul><li><b>Jalur WNI:</b> via <b>Kemenag RI</b> (seleksi nasional) dan <b>Kedutaan Maroko Jakarta</b>. Kuota Indonesia: 50 (2024), 30 (2023); 44 mahasiswa berangkat 2025.</li><li><b>Manfaat:</b> kuliah di universitas publik Maroko, tunjangan <b>1.750 MAD/bulan</b> (±USD 175–190), tiket pesawat PP, asuransi kesehatan, +500 MAD/bulan bila tanpa asrama.</li><li>Program AMCI resmi mencakup jenjang hingga doktoral (terkonfirmasi di pengumuman pemerintah negara mitra).</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Catatan Jujur</span><h2 class='s'>⚠️ Catatan Jujur: Baca Sebelum Mimpi</h2><div class='note'><b class='t'>Jujur soal realita</b><p><b>1.750 MAD/bulan (±Rp 3 jutaan) tergolong KECIL</b> untuk biaya hidup — cukup untuk hidup sangat hemat di kota kecil, pas-pasan di Rabat/Casablanca. <b>Bahasa pengantar mayoritas PRANCIS</b> (plus Arab); ada kursus bahasa Prancis wajib di Rabat sebelum kuliah. Jalur Kemenag selama ini <b>fokus S1</b> — untuk S3, <b>konfirmasi langsung ke Kedutaan Maroko Jakarta / Kemenag</b> soal mekanisme & kuota doktoral tahun berjalan.</p></div><ul><li>Untuk S3 siapkan <b>research proposal + persetujuan calon supervisor</b> di universitas Maroko tujuan.</li><li>Seleksi pola Kemenag: verifikasi dokumen → <b>CBT Bahasa Arab</b> → wawancara.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Cakupan</span><h2 class='s'>Rincian Manfaat</h2><table class='info'><tr><th>Komponen</th><th>Detail</th></tr><tr><td>Tuition</td><td>Kuliah di universitas publik Maroko</td></tr><tr><td>Tunjangan</td><td><b>1.750 MAD/bulan</b> (±USD 175–190)</td></tr><tr><td>Asrama</td><td>Tambahan <b>500 MAD/bulan</b> bila tanpa asrama</td></tr><tr><td>Tiket</td><td>Pesawat PP Indonesia–Maroko</td></tr><tr><td>Kesehatan</td><td>Asuransi kesehatan</td></tr><tr><td>Bahasa</td><td>Kursus bahasa (Prancis/Arab) tahap awal di Rabat</td></tr></table><p>Strategi: bawa <b>dana cadangan 6–12 bulan</b> — tunjangan kecil + keterlambatan pencairan awal lumrah terjadi.</p></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Syarat</span><h2 class='s'>Syarat &amp; Jalur WNI</h2><ul><li>WNI; untuk jalur Kemenag selama ini: lulusan MA/PDF Ulya/muadalah (pola S1) — <b>untuk S3 tanyakan mekanisme terbaru ke Kemenag/Kedubes Maroko</b>.</li><li>Ijazah + transkrip S2 (untuk jenjang doktoral) yang dilegalisasi.</li><li>Pas foto, surat izin orang tua/wali (pola seleksi Kemenag).</li><li><b>Kemampuan Bahasa Arab</b> diuji via CBT (pola Kemenag) — plus kesiapan belajar <b>Prancis</b>.</li><li>Untuk S3: <b>research proposal</b> yang jelas + rekomendasi akademik.</li><li>Sehat jasmani; siap adaptasi budaya & bahasa.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Seleksi</span><h2 class='s'>Format &amp; Tahapan Seleksi</h2><div class='card'><h3>1. Pendaftaran via Kemenag</h3><p>Buat akun di portal/aplikasi seleksi Kemenag (pola terakhir: Pusaka Superapps / pusatbahasaptki.or.id), pilih lokasi seleksi, upload dokumen.</p></div><div class='card'><h3>2. Verifikasi dokumen</h3><p>Panitia memverifikasi berkas; yang lolos membayar biaya seleksi & lanjut tahap berikut.</p></div><div class='card'><h3>3. CBT Bahasa Arab (online)</h3><p>Tes Qira'ah (membaca), Mufradat (kosakata), Tarkib (struktur kalimat) — dari rumah masing-masing.</p></div><div class='card'><h3>4. Wawancara</h3><p>Peserta lolos CBT diwawancara (offline di titik seleksi); pengumuman final via portal Kemenag.</p></div><p><b>Catatan:</b> pola di atas dari seleksi S1 Kemenag — untuk S3, konfirmasi tahapannya ke Kemenag/Kedubes karena bisa berbeda.</p></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Strategi 1</span><h2 class='s'>Strategi: Jalur S3 yang Tepat</h2><ul><li><b>Langkah 1:</b> hubungi <b>Kedutaan Maroko Jakarta</b> & Ditjen Pendidikan Islam Kemenag — tanyakan: apakah kuota doktoral dibuka tahun ini? mekanisme & deadline-nya?</li><li><b>Langkah 2:</b> paralel, riset <b>universitas Maroko</b> tujuan (UM5 Rabat, Cadi Ayyad Marrakech, Hassan II Casablanca...) + calon supervisor yang publikasinya relevan.</li><li><b>Langkah 3:</b> siapkan <b>research proposal bilingual</b> (Prancis/Inggris + Arab bila relevan) — ini pembeda utama kandidat S3.</li><li><b>Langkah 4:</b> ikuti pola seleksi yang diumumkan resmi; jangan percaya “jalur belakang”.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Strategi 2</span><h2 class='s'>Strategi: Bahasa = Kunci</h2><ul><li><b>Prancis akademik</b> adalah investasi terbesar: target DELF B2 sebelum berangkat (kampus, literatur, administrasi berbahasa Prancis).</li><li><b>Bahasa Arab</b>: asah Qira'ah, Mufradat, Tarkib untuk CBT seleksi Kemenag.</li><li>Manfaatkan kursus bahasa tahap awal di Rabat — tapi jangan datang dari nol.</li><li>Sumber belajar: aplikasi (Duolingo/Busuu untuk Prancis), kitab kuning & nahwu-sharaf untuk Arab, tutor online.</li><li>Untuk S3 sains/teknik: Inggris + Prancis cukup; untuk syariah/humaniora: Arab kuat wajib.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Strategi 3</span><h2 class='s'>Strategi: Proposal &amp; Supervisor S3</h2><ul><li>Proposal doktoral: masalah → gap literatur (termasuk literatur Prancis/Arab bila relevan) → metodologi → kontribusi.</li><li>Cari supervisor via direktori fakultas universitas Maroko; email dalam <b>bahasa Prancis yang sopan</b> + lampirkan CV & abstrak proposal.</li><li>Tekankan <b>relevansi bilateral</b>: topik yang menghubungkan Indonesia–Maroko (studi Islam, linguistik Arab, ekonomi syariah, dll) punya nilai plus.</li><li>Siapkan juga <b>rencana publikasi</b> — universitas Maroko menghargai output riset.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Timeline</span><h2 class='s'>Timeline Persiapan</h2><table class='info'><tr><th>Bulan</th><th>Aksi</th></tr><tr><td>H-12 – H-9</td><td>Konfirmasi mekanisme S3 ke Kemenag/Kedubes; intensifkan Prancis (target B2) & Arab</td></tr><tr><td>H-9 – H-6</td><td>Riset universitas + kontak calon supervisor; tulis research proposal</td></tr><tr><td>H-6 – H-4</td><td>Legalisasi ijazah/transkrip; siapkan dokumen; latihan CBT Arab</td></tr><tr><td>H-3 – H-1</td><td>Pendaftaran seleksi dibuka (pola: Mei) — daftar & upload dokumen</td></tr><tr><td>H-0</td><td>Verifikasi → CBT → wawancara → pengumuman</td></tr><tr><td>H+2 – H+3</td><td>Pre-departure; kursus bahasa tahap awal di Rabat; mulai kuliah</td></tr></table></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Dokumen</span><h2 class='s'>✓ Dokumen yang Dibutuhkan</h2><ul><li>Ijazah & transkrip (S2 untuk S3) yang dilegalisasi</li><li>Pas foto berwarna 3x4</li><li>Surat izin orang tua/wali</li><li>Paspor yang masih berlaku</li><li><b>Research proposal</b> (untuk jenjang S3)</li><li>CV akademik + surat rekomendasi</li><li>Sertifikat bahasa (Prancis/Arab bila ada — nilai plus)</li><li>Dokumen tambahan sesuai pengumuman seleksi tahun berjalan</li></ul><p>Selalu rujuk <b>pengumuman resmi Kemenag</b> tahun berjalan — daftar dokumen bisa berubah.</p></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Video Panduan</span><h2 class='s'>Tonton: Panduan &amp; Testimoni Maroko</h2><div class='vidgrid'><div class='vid'><div class='frame'><iframe loading='lazy' src='https://www.youtube-nocookie.com/embed/7vCqSFyiBoU' title='Cara daftar: panduan beasiswa Pemerintah Maroko 2026-27 via AMCI (S1/S2/PhD)' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div><div class='lbl'>Cara daftar: panduan beasiswa Pemerintah Maroko 2026-27 via AMCI (S1/S2/PhD)</div></div><div class='vid'><div class='frame'><iframe loading='lazy' src='https://www.youtube-nocookie.com/embed/utv8nCsbNjs' title='Gambaran: kenapa kuliah di Maroko? (video singkat Bahasa Indonesia)' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div><div class='lbl'>Gambaran: kenapa kuliah di Maroko? (video singkat Bahasa Indonesia)</div></div><div class='vid'><div class='frame'><iframe loading='lazy' src='https://www.youtube-nocookie.com/embed/hSj_fUuCsTk' title='Suasana kampus: profil video Université Mohammed V, Rabat' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div><div class='lbl'>Suasana kampus: profil video Université Mohammed V, Rabat</div></div><div class='vid'><div class='frame'><iframe loading='lazy' src='https://www.youtube-nocookie.com/embed/19cSxy4A6k8' title='Testimoni: perspektif WNI tentang Islam &amp; kehidupan di Maroko' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div><div class='lbl'>Testimoni: perspektif WNI tentang Islam &amp; kehidupan di Maroko</div></div></div><p style='margin-top:10px;font-size:13px;color:#64748b'>Video 1: panduan aplikasi beasiswa Pemerintah Maroko via AMCI. Video 2: gambaran kuliah di Maroko (singkat, Bahasa Indonesia). Video 3: profil Université Mohammed V Rabat. Video 4: perspektif WNI di Maroko.</p></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Tips Esai</span><h2 class='s'>Tips Proposal &amp; Motivasi</h2><ul><li>Motivation letter: tekankan <b>niat menimba ilmu + menjaga nama baik bangsa</b> — nilai yang ditekankan Kemenag & AMCI.</li><li>Proposal S3: jelas, feasible, dan tunjukkan kamu paham konteks akademik Maroko (rujukan karya ulama/akademisi Maroko = plus).</li><li>Hindari proposal yang hanya bisa dikerjakan di Indonesia — harus ada alasan kuat <b>kenapa harus di Maroko</b>.</li><li>Tulis dengan bahasa yang rapi; bila dalam Prancis, minta proofreader.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Tips Wawancara</span><h2 class='s'>Tips Wawancara &amp; Hari-H</h2><ul><li>Wawancara menilai: <b>motivasi, kesiapan bahasa, akhlak/adab, dan komitmen menyelesaikan studi</b>.</li><li>Siapkan jawaban: kenapa Maroko (bukan Mesir/Yaman)? rencana setelah lulus? kesiapan jauh dari keluarga?</li><li>Tunjukkan <b>adab & kesopanan</b> — pewawancara Kemenag & perwakilan Maroko memperhatikan ini.</li><li>Bawa dokumen asli untuk verifikasi; datang 1 jam lebih awal ke titik seleksi.</li><li>CBT Arab: latihan soal Qira'ah cepat + Mufradat intensif 2 bulan sebelumnya.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Realita</span><h2 class='s'>Realita Hidup di Maroko</h2><ul><li><b>1.750 MAD ±Rp 3 juta/bulan:</b> hidup hemat bisa (asrama + masak), tapi sempit di kota besar. Dana cadangan wajib.</li><li>Bahasa sehari-hari: <b>Darija</b> (Arab Maroko) + Prancis — berbeda dari Arab fusha yang dipelajari di pesantren.</li><li>Cuaca: panas kering di dalam negeri, sejuk di pesisir; musim dingin bisa menusuk di daerah tinggi.</li><li>Komunitas WNI/PPI Maroko aktif — jadikan support system awal.</li><li>Adaptasi ibadah: perbedaan mazhab/praktik wajar — jadikan kekayaan, bukan konflik (pesan Kemenag).</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Sumber Resmi</span><h2 class='s'>Sumber Info Resmi</h2><ul><li><b>amci.ma</b> — situs resmi AMCI (formulir & info program)</li><li><b>kemenag.go.id</b> — pengumuman seleksi untuk WNI</li><li><b>Kedutaan Maroko Jakarta</b> — konfirmasi kuota & mekanisme S3</li></ul><div class='note'><b class='t'>Waspada</b><p>Seleksi resmi <b>hanya via Kemenag/Kedubes</b>. Abaikan oknum yang memungut biaya “jaminan lolos” — tidak ada jalur seperti itu.</p></div></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Link Resmi</span><h2 class='s'>Mulai dari Link Resmi Ini</h2><p>Cek situs AMCI untuk info program, lalu konfirmasi mekanisme S3 terbaru ke Kemenag & Kedutaan Maroko Jakarta.</p><div class='linkrow'><div><div class='n'>Situs resmi AMCI</div><div class='u'>https://www.amci.ma</div></div><a class='btn' href='https://www.amci.ma' target='_blank' rel='noopener'>Buka &rarr;</a></div><div class='linkrow'><div><div class='n'>Kemenag RI – info seleksi</div><div class='u'>https://kemenag.go.id/</div></div><a class='btn' href='https://kemenag.go.id/' target='_blank' rel='noopener'>Buka &rarr;</a></div><div class='linkrow'><div><div class='n'>Kedutaan Maroko Jakarta</div><div class='u'>https://www.embassyofmorocco.id/</div></div><a class='btn' href='https://www.embassyofmorocco.id/' target='_blank' rel='noopener'>Buka &rarr;</a></div></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>FAQ</span><h2 class='s'>FAQ (1)</h2><div class='qa'><div class='q'>Apakah S3 benar-benar dicakup AMCI?</div><div class='a'>Ya — program AMCI resmi mencakup hingga jenjang doktoral. Namun jalur Kemenag untuk WNI selama ini fokus S1; <b>konfirmasi mekanisme S3</b> ke Kemenag/Kedubes Maroko untuk tahun berjalan.</div></div><div class='qa'><div class='q'>Apakah tunjangan cukup untuk hidup?</div><div class='a'>Pas-pasan. 1.750 MAD/bulan cukup untuk hidup hemat; siapkan dana cadangan.</div></div><div class='qa'><div class='q'>Bahasa pengantarnya apa?</div><div class='a'>Mayoritas <b>Prancis</b> (umum & sains), Arab untuk studi keislaman. Kursus bahasa tahap awal di Rabat disediakan.</div></div></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>FAQ</span><h2 class='s'>FAQ (2)</h2><div class='qa'><div class='q'>Apakah ada batas usia?</div><div class='a'>Ikuti pengumuman seleksi tahun berjalan — untuk S3 tidak ada angka baku yang dipublikasikan luas; tanyakan ke Kemenag/Kedubes.</div></div><div class='qa'><div class='q'>Bisakah memilih universitas sendiri?</div><div class='a'>Penempatan diputuskan otoritas Maroko berdasarkan kuota & bidang; preferensi bisa disampaikan tapi tidak dijamin.</div></div><div class='qa'><div class='q'>Apakah tiket pesawat ditanggung?</div><div class='a'>Ya — tiket PP Indonesia–Maroko termasuk manfaat beasiswa.</div></div></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Hindari</span><h2 class='s'>❌ Kesalahan Umum</h2><ul><li>Datang dengan Prancis nol besar — kuliah jadi sangat berat.</li><li>Mengandalkan tunjangan 1.750 MAD tanpa dana cadangan.</li><li>Tidak konfirmasi mekanisme S3, mengira otomatis sama dengan jalur S1.</li><li>Dokumen tidak dilegalisasi / tidak lengkap saat verifikasi.</li><li>Latihan CBT Arab dadakan H-1 minggu.</li><li>Percaya calo “jaminan lolos” berbayar.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Penutup</span><h2 class='s'>Langkah Pertamamu Hari Ini</h2><ul><li><b>1.</b> Hubungi <b>Kedutaan Maroko Jakarta / Kemenag</b> — tanyakan kuota & mekanisme S3 tahun berjalan.</li><li><b>2.</b> Mulai belajar <b>Prancis intensif</b> (target B2) + asah Arab.</li><li><b>3.</b> Riset 3 universitas Maroko + calon supervisor; draf research proposal.</li><li><b>4.</b> Siapkan dana cadangan 6–12 bulan biaya hidup.</li></ul><p>Maroko = <b>gerbang Afrika–Eropa dengan tradisi ilmu yang tua</b>. Dengan bahasa yang siap dan ekspektasi yang jujur, S3 di sana bisa jadi pengalaman luar biasa. Semangat! 🇲🇦</p></div></section>
+</div>
+<div id='navbar'><button class='nbtn' id='prev'>&larr; Sebelumnya</button><div id='dots'></div><button class='nbtn' id='next'>Berikutnya &rarr;</button></div>
+<div class='swipe-hint' style='background:rgba(8,12,28,.94);color:#475569'>Geser layar / tombol panah keyboard untuk navigasi</div>
+</div>
+<script>
+let cur=0;const slides=[...document.querySelectorAll('.slide')];const dots=document.getElementById('dots');
+slides.forEach((_,i)=>{const d=document.createElement('i');d.onclick=()=>go(i);dots.appendChild(d)});
+function go(i){cur=Math.max(0,Math.min(slides.length-1,i));
+slides.forEach((s,k)=>s.classList.toggle('active',k===cur));
+[...dots.children].forEach((d,k)=>d.classList.toggle('on',k===cur));
+document.getElementById('counter').textContent=(cur+1)+' / '+slides.length;
+document.getElementById('progress').firstElementChild.style.width=((cur+1)/slides.length*100)+'%';
+document.getElementById('prev').disabled=cur===0;document.getElementById('next').disabled=cur===slides.length-1;
+document.querySelector('.slide.active').scrollTop=0;}
+document.getElementById('prev').onclick=()=>go(cur-1);document.getElementById('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')go(cur+1);
+if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);if(e.key==='Home')go(0);if(e.key==='End')go(slides.length-1)});
+let tx=0;const st=document.getElementById('stage');
+st.addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+st.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>60)go(cur+(dx<0?1:-1))},{passive:true});
+go(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body></html>

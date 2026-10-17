@@ -1,0 +1,241 @@
+<!DOCTYPE html><html lang='id'><head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Panduan PhD TDTU Vietnam</title>
+<style>:root{--accent:#0d5c2e}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#1a56db}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;background:#0b1020;color:#1e293b;overflow:hidden}
+#deck{position:fixed;inset:0;display:flex;flex-direction:column}
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:rgba(8,12,28,.92);color:#fff;z-index:5;border-bottom:3px solid var(--accent)}
+#topbar .t{font-weight:700;font-size:15px;letter-spacing:.3px}
+#topbar .c{font-size:13px;opacity:.85;font-variant-numeric:tabular-nums}
+#progress{height:4px;background:#1e293b}
+#progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+#stage{flex:1;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:34px 20px;overflow-y:auto;background:linear-gradient(160deg,#f8fafc,#eef2f7)}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.wrap{width:100%;max-width:920px}
+.kicker{display:inline-block;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+h1.s{font-size:clamp(24px,4.5vw,40px);line-height:1.2;color:#0f172a;margin-bottom:14px}
+h2.s{font-size:clamp(20px,3.6vw,30px);color:#0f172a;margin-bottom:12px}
+.slide p{font-size:clamp(14px,2.2vw,17px);line-height:1.65;color:#334155;margin-bottom:10px}
+.slide ul{margin:6px 0 12px 4px;list-style:none}
+.slide ul li{font-size:clamp(14px,2.2vw,16.5px);line-height:1.6;color:#334155;margin-bottom:9px;padding-left:30px;position:relative}
+.slide ul li::before{content:"";position:absolute;left:2px;top:7px;width:10px;height:10px;border-radius:3px;background:var(--accent)}
+.card{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 6px 24px rgba(15,23,42,.08);margin-bottom:12px;border-left:5px solid var(--accent)}
+.card h3{font-size:16px;color:#0f172a;margin-bottom:8px}
+.card p,.card li{font-size:14.5px}
+.note{background:#fffbeb;border:1px solid #fcd34d;border-left:6px solid #f59e0b;border-radius:12px;padding:16px 18px;margin:12px 0}
+.note b.t{display:block;color:#92400e;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.note p{color:#78350f;font-size:14.5px}
+table.info{width:100%;border-collapse:collapse;margin:10px 0;font-size:14.5px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(15,23,42,.06)}
+table.info th{background:var(--accent);color:#fff;text-align:left;padding:10px 14px}
+table.info td{padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:top}
+table.info tr:last-child td{border-bottom:none}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+/* cover */
+.slide.cover{padding:0;justify-content:flex-end;align-items:stretch;background-size:cover;background-position:center}
+.cover-veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,20,.25) 0%,rgba(5,8,20,.55) 45%,rgba(5,8,20,.92) 100%)}
+.cover-inner{position:relative;z-index:2;padding:46px 34px;color:#fff;max-width:920px;margin:0 auto;width:100%}
+.cover-inner .kicker{color:#fcd34d}
+.cover-inner h1{font-size:clamp(30px,6vw,54px);line-height:1.12;margin-bottom:10px;text-shadow:0 2px 18px rgba(0,0,0,.5)}
+.cover-inner p.sub{font-size:clamp(15px,2.6vw,20px);color:#e2e8f0;max-width:640px}
+.cover-inner .meta{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:13px;font-weight:600;padding:7px 14px;border-radius:999px;backdrop-filter:blur(4px)}
+.hint{margin-top:22px;font-size:13.5px;color:#cbd5e1}
+/* videos */
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;margin-top:6px}
+.vid{background:#0f172a;border-radius:12px;overflow:hidden;box-shadow:0 6px 20px rgba(15,23,42,.25)}
+.vid .lbl{padding:9px 12px;color:#fff;font-size:12.5px;font-weight:600;line-height:1.4;min-height:52px;display:flex;align-items:center}
+.vid .frame{position:relative;padding-top:56.25%;background:#000}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* cta */
+.btn{display:inline-block;background:var(--accent);color:#fff!important;font-weight:700;font-size:15px;padding:13px 22px;border-radius:10px;text-decoration:none;margin:6px 8px 6px 0;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.btn.ghost{background:#fff;color:var(--accent)!important;border:2px solid var(--accent);box-shadow:none}
+.linkrow{background:#fff;border-radius:12px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 4px 14px rgba(15,23,42,.06);flex-wrap:wrap}
+.linkrow .u{font-size:13px;color:#64748b;word-break:break-all}
+.linkrow .n{font-weight:700;color:#0f172a;font-size:15px}
+/* faq */
+.qa{background:#fff;border-radius:12px;padding:14px 18px;margin-bottom:10px;box-shadow:0 4px 14px rgba(15,23,42,.06)}
+.qa .q{font-weight:700;color:var(--accent);font-size:15px;margin-bottom:6px}
+.qa .a{font-size:14.5px;color:#334155;line-height:1.6}
+/* nav */
+#navbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:rgba(8,12,28,.94);border-top:1px solid #1e293b;z-index:5}
+.nbtn{background:var(--accent);border:none;color:#fff;font-weight:700;font-size:14px;padding:11px 22px;border-radius:10px;cursor:pointer}
+.nbtn:disabled{opacity:.35;cursor:default}
+.nbtn.ghostb{background:transparent;border:1px solid #475569;color:#cbd5e1}
+#dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:50%}
+#dots i{width:8px;height:8px;border-radius:50%;background:#334155;cursor:pointer}
+#dots i.on{background:var(--accent);transform:scale(1.3)}
+.num{color:#94a3b8;font-size:12.5px;font-variant-numeric:tabular-nums}
+.swipe-hint{color:#64748b;font-size:12px;text-align:center;padding:4px}
+</style>
+
+<div id='deck'><div id='topbar'><span class='t'>TDTU Vietnam (PhD)</span><span class='c' id='counter'></span></div>
+<div id='progress'><i></i></div><div id='stage'>
+<section class='slide cover' style="background-image:url('https://cdn.tgdd.vn//GameApp/1334715//dai-hoc-ton-duc-thang-800x466.jpg')"><div class='cover-veil'></div><div class='cover-inner'><span class='kicker'>Beasiswa S3 • Vietnam</span><h1>Panduan PhD TDTU Vietnam</h1><p class='sub'>TDTU Graduate Scholarship jalur PhD — 100% tuition + asrama. JUJUR: tanpa tunjangan hidup (partial). Prioritas untuk ASEAN termasuk Indonesia.</p><div class='meta'><span class='pill'>Partial</span><span class='pill'>PhD</span><span class='pill'>100% tuition + asrama</span><span class='pill'>Tanpa living allowance</span></div><p class='hint'>Geser / klik panah / tekan &rarr; untuk mulai &mdash; 21 slide</p></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Gambaran</span><h2 class='s'>Sekilas TDTU Graduate Scholarship</h2><p><b>Ton Duc Thang University (TDTU)</b> — universitas riset terkemuka Vietnam di Ho Chi Minh City — menawarkan <b>Graduate Scholarship</b> untuk master & PhD bagi mahasiswa internasional dari <b>semua negara</b>, dengan <b>prioritas ASEAN (termasuk Indonesia)</b>.</p><ul><li><b>Tier 100%:</b> full tuition + asrama + admission fee (GPA ≥3.5/4.0).</li><li><b>Tier 50%:</b> 50% tuition + asrama + 50% admission fee (GPA ≥3.0/4.0).</li><li>Beasiswa tahun ke-2 dst: dievaluasi tahunan (IPK ≥8.0/10 untuk 100%).</li><li>Program PhD berbahasa Inggris: Accounting, Business Administration, Computer Science, Civil Engineering, Computational Science, Electrical Engineering, dll.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Catatan Jujur</span><h2 class='s'>⚠️ Catatan Jujur: Ini PARTIAL</h2><div class='note'><b class='t'>Jujur soal “full scholarship”</b><p>Label <b>“full scholarship” TDTU = 100% tuition + 100% asrama SAJA — TANPA tunjangan hidup/bulanan</b>. Karena full versi kami mensyaratkan living allowance, deck ini diklasifikasikan <b>Partial</b>. Opsi terbatas: monthly allowance VND 3.500.000 untuk segelintir mahasiswa yang menjadi asisten fakultas ≥20 jam/minggu — <b>jangan andalkan ini</b>.</p></div><ul><li>Artinya: siapkan <b>dana hidup sendiri</b> ±USD 300–500/bulan (HCMC relatif murah).</li><li>Deadline: <b>15 Mei</b> (Fall) / <b>15 November</b> (Spring).</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Cakupan</span><h2 class='s'>Rincian Tiap Tier (Graduate)</h2><table class='info'><tr><th>Tier</th><th>Cakupan tahun pertama</th></tr><tr><td><b>100%</b> (GPA ≥3.5)</td><td>100% tuition + 100% asrama + 100% admission fee</td></tr><tr><td><b>50%</b> (GPA ≥3.0)</td><td>50% tuition + 100% asrama + 50% admission fee</td></tr><tr><td>Research scholarship</td><td>Berbasis publikasi/prestasi riset (cek pengumuman terbaru)</td></tr></table><p><b>Tidak ditanggung:</b> biaya hidup, tiket pesawat, asuransi, biaya pengulangan mata kuliah. Evaluasi tahunan: IPK ≥8.0/10 → pertahankan 100%; ≥7.0/10 → 50%.</p></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Syarat</span><h2 class='s'>Syarat Eligibility (PhD)</h2><ul><li>Lulusan <b>S2</b> (master) dengan GPA memenuhi tier (≥3.5 untuk 100%, ≥3.0 untuk 50%).</li><li><b>English proficiency (PhD):</b> TOEFL iBT 45 / IELTS 5.0 / PET-FCE 160 (atau setara standar TDTU terbaru).</li><li><b>Publikasi riset</b> (untuk pelamar PhD) — nilai plus besar.</li><li>Statement of purpose 500 kata + surat referensi (dari pembimbing thesis S2).</li><li>Memenuhi syarat masuk program PhD pilihan (cek tiap fakultas).</li><li>Sehat jasmani (health check report < 6 bulan).</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Seleksi</span><h2 class='s'>Format &amp; Tahapan Seleksi</h2><div class='card'><h3>1. Aplikasi online</h3><p>Isi form di <b>gradadmissions.tdtu.edu.vn</b> (atau kirim scan dokumen via email graduate studies) + upload: CV, transkrip & ijazah, SOP 500 kata, bukti English, KTP/paspor, foto 3x4, health check, publikasi.</p></div><div class='card'><h3>2. Screening akademik</h3><p>Fakultas menilai GPA, latar belakang, kecocokan riset, dan publikasi.</p></div><div class='card'><h3>3. Keputusan beasiswa</h3><p>Tier beasiswa (100%/50%) ditentukan dari GPA & kualitas profil; diumumkan per intake.</p></div><div class='card'><h3>4. Evaluasi tahunan</h3><p>Beasiswa diperpanjang per 6 bulan berdasarkan IPK & progress riset.</p></div></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Strategi 1</span><h2 class='s'>Strategi: Menangkan Tier 100%</h2><ul><li>GPA adalah <b>gerbang tier</b>: ≥3.5/4.0 = kandidat 100%. Bila GPA-mu 3.0–3.4, bidik tier 50% + rencanakan naik tier di evaluasi tahunan.</li><li><b>Publikasi</b> = pembeda utama PhD: 1–2 paper (Scopus lebih baik) jauh mengangkat profilmu.</li><li>Pilih program PhD yang <b>linier</b> dengan S2-mu — lompat bidang tanpa dasar melemahkan aplikasi.</li><li>Kontak calon supervisor di TDTU <b>sebelum</b> apply: kirim CV + abstrak ide riset.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Strategi 2</span><h2 class='s'>Strategi: SOP 500 Kata</h2><ul><li>Struktur: siapa kamu (2 kalimat) → kenapa PhD di TDTU → topik riset & relevansinya → kenapa kamu kandidat tepat → rencana kontribusi.</li><li>Sebut <b>spesifik</b>: nama fakultas/lab/supervisor TDTU yang relevan.</li><li>Sambungkan ke <b>kekuatan TDTU</b>: riset terapan, kolaborasi industri (FPT, Intel, Samsung...), publikasi internasional.</li><li>Hindari template generik “universitas ternama...” — reviewer mengenali copy-paste.</li><li>Bahasa Inggris jernih; proofread 2 orang.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Strategi 3</span><h2 class='s'>Strategi: Jaga Beasiswa Tiap Tahun</h2><ul><li>Beasiswa <b>dievaluasi tiap tahun</b>: target IPK ≥8.0/10 + progress riset on-track + rekam disiplin bersih.</li><li>Dari semester 1: bangun relasi dengan supervisor, ikut grup riset, targetkan 1 publikasi/tahun.</li><li>Manfaatkan fasilitas: Inspire Library, lab, sports complex — TDTU kuat di fasilitas.</li><li>Opsi <b>asisten fakultas</b> (≥20 jam/minggu → allowance VND 3,5jt/bulan) — daftar awal karena kuota terbatas.</li><li>Pertimbangkan kursus <b>bahasa Vietnam dasar</b> (B2 disubsidi untuk program Vietnam-taught; berguna juga untuk hidup sehari-hari).</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Timeline</span><h2 class='s'>Timeline Persiapan</h2><table class='info'><tr><th>Bulan</th><th>Aksi</th></tr><tr><td>H-8 – H-6</td><td>Riset program PhD TDTU + kontak calon supervisor; siapkan IELTS/TOEFL</td></tr><tr><td>H-6 – H-4</td><td>Tulis SOP 500 kata; rapikan publikasi; kumpulkan transkrip & terjemahan</td></tr><tr><td>H-4 – H-2</td><td>Medical check-up; foto; minta surat referensi pembimbing S2</td></tr><tr><td>H-1</td><td>Submit aplikasi online (<b>15 Mei</b> Fall / <b>15 Nov</b> Spring)</td></tr><tr><td>H+1 – H+2</td><td>Pengumuman; urus visa pelajar Vietnam; siapkan dana hidup</td></tr><tr><td>Intake</td><td>Berangkat — asrama internasional disiapkan TDTU</td></tr></table></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Dokumen</span><h2 class='s'>✓ Dokumen yang Dibutuhkan</h2><ul><li>Formulir aplikasi online (gradadmissions.tdtu.edu.vn)</li><li>CV</li><li>Transkrip & ijazah S2 (asli/salinan resmi)</li><li>Statement of purpose (500 kata)</li><li>Bukti English proficiency (TOEFL iBT 45 / IELTS 5.0 utk PhD)</li><li>Surat referensi (pembimbing thesis S2)</li><li>Paspor + KTP + foto 3x4 (2 lembar)</li><li>Health check report (< 6 bulan)</li><li><b>Publikasi riset</b> (wajib dilampirkan untuk PhD)</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Video Panduan</span><h2 class='s'>Tonton: Panduan &amp; Testimoni TDTU</h2><div class='vidgrid'><div class='vid'><div class='frame'><iframe loading='lazy' src='https://www.youtube-nocookie.com/embed/Z3Ye4zsTDDM' title='Cara daftar: panduan beasiswa graduate TDTU (syarat, dokumen, deadline)' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div><div class='lbl'>Cara daftar: panduan beasiswa graduate TDTU (syarat, dokumen, deadline)</div></div><div class='vid'><div class='frame'><iframe loading='lazy' src='https://www.youtube-nocookie.com/embed/56aurrl6lYw' title='Cara daftar: beasiswa graduate TDTU 200 kursi — prosedur aplikasi' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div><div class='lbl'>Cara daftar: beasiswa graduate TDTU 200 kursi — prosedur aplikasi</div></div><div class='vid'><div class='frame'><iframe loading='lazy' src='https://www.youtube-nocookie.com/embed/dq-YC8Yroa8' title='Suasana kampus: campus life &amp; fasilitas Ton Duc Thang University' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div><div class='lbl'>Suasana kampus: campus life &amp; fasilitas Ton Duc Thang University</div></div><div class='vid'><div class='frame'><iframe loading='lazy' src='https://www.youtube-nocookie.com/embed/MctSu_Cy9wI' title='Testimoni: kisah scholar Filipina kuliah di Vietnam (adaptasi &amp; tantangan)' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div><div class='lbl'>Testimoni: kisah scholar Filipina kuliah di Vietnam (adaptasi &amp; tantangan)</div></div></div><p style='margin-top:10px;font-size:13px;color:#64748b'>Video 1–2: cara daftar beasiswa graduate TDTU. Video 3: campus life & fasilitas TDTU. Video 4: testimoni scholar asing kuliah di Vietnam (gambaran adaptasi).</p></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Tips Esai</span><h2 class='s'>Tips SOP &amp; Proposal</h2><ul><li>500 kata = ±1 halaman: padat, tanpa basa-basi.</li><li>Tekankan <b>research fit</b>: topikmu nyambung dengan riset berjalan di fakultas tujuan.</li><li>Lampirkan <b>daftar publikasi</b> dengan link/DOI — bukti, bukan klaim.</li><li>Bila GPA pas-pasan (3.0–3.4): tonjolkan publikasi & pengalaman riset sebagai kompensasi.</li><li>Konsisten: CV, SOP, dan referensi harus bercerita satu narasi.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Tips Wawancara</span><h2 class='s'>Tips Hari-H &amp; Deadline</h2><ul><li>Seleksi TDTU umumnya <b>berbasis dokumen</b>; fakultas bisa menghubungimu untuk klarifikasi via email/video call.</li><li>Siapkan pitch 3 menit: topik riset → metode → kenapa TDTU.</li><li>Hari-H deadline: submit <b>H-7</b>; portal & email kampus responsif tapi jangan mepet.</li><li>Setelah diterima: konfirmasi <b>asrama internasional</b> lebih awal (kapasitas terbatas).</li><li>Urus visa pelajar Vietnam via Kedubes Vietnam Jakarta — siapkan LoA/admission letter dari TDTU.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Realita</span><h2 class='s'>Realita Biaya Hidup (HCMC)</h2><ul><li>Asrama <b>ditanggung beasiswa</b> — penghematan terbesar.</li><li>Biaya hidup mahasiswa di HCMC: ±USD 300–500/bulan (makan lokal murah & enak!).</li><li>Siapkan dana <b>USD 4.000–6.000/tahun</b> dari kantong sendiri/orang tua/tambahan kerja asisten.</li><li>Transport: motor sewaan populer; Grab murah meriah.</li><li>Bahasa: Inggris cukup di kampus internasional; Vietnam dasar sangat membantu sehari-hari.</li><li>Komunitas: cari PPI Vietnam & senior TDTU sebelum berangkat.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Sumber Resmi</span><h2 class='s'>Sumber Info Resmi</h2><ul><li><b>fss.tdtu.edu.vn</b> — halaman resmi TDTU Graduate Scholarship</li><li><b>tdtu.edu.vn</b> — situs resmi universitas</li><li><b>gradadmissions.tdtu.edu.vn</b> — portal aplikasi</li><li><b>international.tdtu.edu.vn</b> — info mahasiswa internasional & testimoni</li></ul><div class='note'><b class='t'>Waspada</b><p>Abaikan situs yang mengklaim TDTU “fully funded dengan uang saku” — <b>tidak ada living allowance</b> dalam skema resmi. Selalu verifikasi di situs TDTU.</p></div></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Link Resmi</span><h2 class='s'>Mulai dari Link Resmi Ini</h2><p>Baca detail skema di halaman resmi TDTU, lalu ajukan aplikasimu via portal graduate sebelum deadline intake.</p><div class='linkrow'><div><div class='n'>Halaman resmi TDTU Graduate Scholarship</div><div class='u'>https://fss.tdtu.edu.vn/index.php/en/news/2023-03/ton-duc-thang-university-graduate-scholarship</div></div><a class='btn' href='https://fss.tdtu.edu.vn/index.php/en/news/2023-03/ton-duc-thang-university-graduate-scholarship' target='_blank' rel='noopener'>Buka &rarr;</a></div><div class='linkrow'><div><div class='n'>Situs resmi TDTU</div><div class='u'>https://www.tdtu.edu.vn/</div></div><a class='btn' href='https://www.tdtu.edu.vn/' target='_blank' rel='noopener'>Buka &rarr;</a></div><div class='linkrow'><div><div class='n'>Portal aplikasi graduate TDTU</div><div class='u'>http://gradadmissions.tdtu.edu.vn</div></div><a class='btn' href='http://gradadmissions.tdtu.edu.vn' target='_blank' rel='noopener'>Buka &rarr;</a></div></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>FAQ</span><h2 class='s'>FAQ (1)</h2><div class='qa'><div class='q'>Apakah “full scholarship” TDTU termasuk uang saku?</div><div class='a'><b>Tidak.</b> Full = 100% tuition + 100% asrama. Biaya hidup tanggung sendiri — itulah kenapa diklasifikasikan partial.</div></div><div class='qa'><div class='q'>Apakah ada bantuan biaya hidup sama sekali?</div><div class='a'>Ada opsi terbatas: allowance VND 3.500.000/bulan bagi mahasiswa yang menjadi asisten fakultas ≥20 jam/minggu. Kuota terbatas.</div></div><div class='qa'><div class='q'>Apakah WNI diprioritaskan?</div><div class='a'>Ya — mahasiswa ASEAN mendapat prioritas, dan Indonesia termasuk.</div></div></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>FAQ</span><h2 class='s'>FAQ (2)</h2><div class='qa'><div class='q'>Kapan deadline?</div><div class='a'><b>15 Mei</b> (intake Fall/September) dan <b>15 November</b> (intake Spring/Januari).</div></div><div class='qa'><div class='q'>Apakah program PhD berbahasa Inggris?</div><div class='a'>Ya — banyak program PhD tersedia dalam bahasa Inggris (cek daftar terbaru per fakultas).</div></div><div class='qa'><div class='q'>Apakah beasiswa bisa dicabut?</div><div class='a'>Dievaluasi tahunan: IPK < 7.0/10 atau progress buruk bisa menurunkan/menghentikan beasiswa.</div></div></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Hindari</span><h2 class='s'>❌ Kesalahan Umum</h2><ul><li>Mengira “full” = semua ditanggung, lalu kaget harus bayar biaya hidup sendiri.</li><li>Apply tanpa publikasi untuk jenjang PhD — profil lemah.</li><li>SOP generik tanpa menyebut TDTU secara spesifik.</li><li>Melewatkan deadline intake (Mei/November).</li><li>Tidak menyiapkan dana hidup 1 tahun pertama.</li><li>Lupa evaluasi tahunan — IPK jeblok = beasiswa turun tier.</li></ul></div></section>
+<section class='slide'><div class='wrap'><span class='kicker'>Penutup</span><h2 class='s'>Langkah Pertamamu Hari Ini</h2><ul><li><b>1.</b> Buka <b>fss.tdtu.edu.vn</b> — baca detail Graduate Scholarship terbaru.</li><li><b>2.</b> Pilih 2–3 program PhD English-taught yang linier dengan S2-mu.</li><li><b>3.</b> Email calon supervisor di TDTU + draf SOP 500 kata.</li><li><b>4.</b> Hitung budget hidup 1 tahun & siapkan dananya.</li></ul><p>TDTU = <b>riset berkualitas ASEAN dengan biaya terjangkau</b>. Dengan ekspektasi jujur soal partial-nya, ini tetap peluang S3 yang sangat masuk akal. Semangat! 🇻🇳</p></div></section>
+</div>
+<div id='navbar'><button class='nbtn' id='prev'>&larr; Sebelumnya</button><div id='dots'></div><button class='nbtn' id='next'>Berikutnya &rarr;</button></div>
+<div class='swipe-hint' style='background:rgba(8,12,28,.94);color:#475569'>Geser layar / tombol panah keyboard untuk navigasi</div>
+</div>
+<script>
+let cur=0;const slides=[...document.querySelectorAll('.slide')];const dots=document.getElementById('dots');
+slides.forEach((_,i)=>{const d=document.createElement('i');d.onclick=()=>go(i);dots.appendChild(d)});
+function go(i){cur=Math.max(0,Math.min(slides.length-1,i));
+slides.forEach((s,k)=>s.classList.toggle('active',k===cur));
+[...dots.children].forEach((d,k)=>d.classList.toggle('on',k===cur));
+document.getElementById('counter').textContent=(cur+1)+' / '+slides.length;
+document.getElementById('progress').firstElementChild.style.width=((cur+1)/slides.length*100)+'%';
+document.getElementById('prev').disabled=cur===0;document.getElementById('next').disabled=cur===slides.length-1;
+document.querySelector('.slide.active').scrollTop=0;}
+document.getElementById('prev').onclick=()=>go(cur-1);document.getElementById('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')go(cur+1);
+if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);if(e.key==='Home')go(0);if(e.key==='End')go(slides.length-1)});
+let tx=0;const st=document.getElementById('stage');
+st.addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+st.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>60)go(cur+(dx<0?1:-1))},{passive:true});
+go(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body></html>

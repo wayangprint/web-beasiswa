@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panduan S3 Stipendium Hungaricum</title>
+<style>:root{--accent:#2a9d48}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#0b5fff}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:#0d1117;color:#f0f4f8;overflow:hidden}
+.deck{position:relative;height:100dvh;width:100%}
+.slide{display:none;height:100%;width:100%;padding:56px 8vw 110px;overflow-y:auto;animation:fade .35s ease}
+.slide.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.kicker{display:inline-block;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px}
+h1{font-size:clamp(30px,5.4vw,58px);line-height:1.12;margin-bottom:18px}
+h2{font-size:clamp(24px,4vw,40px);line-height:1.2;margin-bottom:20px}
+.slide ul{list-style:none;display:flex;flex-direction:column;gap:14px;max-width:900px}
+.slide li{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px;font-size:clamp(15px,2.1vw,19px);line-height:1.55}
+.slide li b{color:#fff}
+.note{margin-top:22px;max-width:900px;background:rgba(255,193,7,.08);border:1px dashed rgba(255,193,7,.5);border-radius:10px;padding:14px 18px;font-size:15px;line-height:1.6;color:#ffe1a1}
+.note b{color:#ffd76a}
+.cover{position:relative;display:none}
+.cover.active{display:flex;flex-direction:column;justify-content:flex-end}
+.cover .bg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,15,.25) 0%,rgba(5,8,15,.55) 45%,rgba(5,8,15,.94) 100%);z-index:1}
+.cover .inner{position:relative;z-index:2}
+.cover h1{text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.cover .sub{font-size:clamp(16px,2.4vw,22px);color:#dbe4ee;max-width:800px;line-height:1.6;margin-bottom:22px}
+.credit{position:absolute;right:14px;bottom:86px;z-index:2;font-size:11px;color:rgba(255,255,255,.55)}
+.pill{display:inline-block;background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:8px 18px;border-radius:999px;margin-bottom:16px}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:1100px}
+.vcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden}
+.vcard .frame{position:relative;padding-top:56.25%;background:#000}
+.vcard iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vcard .cap{padding:12px 14px}
+.vcard .cap .tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+.vcard .cap .t{font-size:14px;font-weight:600;margin-top:4px;line-height:1.4}
+.vcard .cap .d{font-size:12.5px;color:#aeb9c6;margin-top:4px;line-height:1.45}
+@media(max-width:640px){.vgrid{grid-template-columns:1fr}.slide{padding:40px 6vw 120px}}
+.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:18px;padding:16px 34px;border-radius:12px;margin-top:8px}
+.btn:hover{filter:brightness(1.12)}
+.urlbox{margin-top:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:14px 18px;font-size:15px;word-break:break-all;max-width:700px}
+.controls{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 4vw;background:linear-gradient(180deg,transparent,rgba(5,8,15,.92) 40%)}
+.navbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:16px;font-weight:600;padding:10px 22px;border-radius:999px;cursor:pointer}
+.navbtn:hover{background:var(--accent);border-color:var(--accent)}
+.navbtn:disabled{opacity:.3;cursor:default}
+.counter{font-size:14px;color:#aeb9c6;font-weight:600;white-space:nowrap}
+.dots{display:flex;gap:6px;overflow-x:auto;max-width:44vw;padding:4px}
+.dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.22);cursor:pointer;border:0;padding:0}
+.dot.on{background:var(--accent);transform:scale(1.25)}
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--accent);z-index:11;width:0;transition:width .3s}
+.steps{display:flex;flex-direction:column;gap:12px;max-width:900px}
+.step{display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:14px 18px}
+.step .n{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:16px}
+.step .tx{font-size:clamp(15px,2vw,18px);line-height:1.55}
+table{border-collapse:collapse;max-width:900px;width:100%;font-size:clamp(13px,1.9vw,16px)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.12);line-height:1.5}
+th{color:var(--accent);text-transform:uppercase;font-size:12px;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="deck">
+<section class="slide cover active"><div class="bg" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/9/9e/Budapest_ELTE_Univ_central_building.jpg')"></div><div class="shade"></div><div class="inner"><div class="pill">Stipendium Hungaricum — Doctoral Programme</div><h1>Panduan S3 Stipendium Hungaricum</h1><p class="sub">Beasiswa penuh pemerintah Hungaria untuk program doktoral: bebas biaya kuliah, tunjangan bulanan, akomodasi, dan asuransi kesehatan.</p><a class="btn" href="https://stipendiumhungaricum.hu/" target="_blank" rel="noopener">Kunjungi Situs Resmi</a></div><div class="credit">Foto: Wikimedia Commons</div></section><section class="slide"><div><span class="kicker">Gambaran Program</span><h2>Sekilas Stipendium Hungaricum Doctoral</h2><ul><li>Beasiswa pemerintah Hungaria (dikelola <b>Tempus Public Foundation</b>) untuk jenjang <b>doktoral (PhD)</b> — bagian dari program yang berjalan sejak 2013.</li><li><b>Indonesia tercatat sebagai sending partner</b> (Republic of Indonesia) — WNI eligible mendaftar.</li><li>Ratusan program doktoral berbahasa Inggris tersedia di universitas-universitas Hungaria.</li><li>Pendaftaran <b>gratis</b> (tanpa application fee) via portal <b>apply.stipendiumhungaricum.hu</b> + nominasi sending partner Indonesia.</li><li>Pelamar PhD <b>wajib</b> melampirkan research plan, surat rekomendasi, dan <b>pernyataan dukungan supervisor</b>.</li></ul></div></section><section class="slide"><div><span class="kicker">Cakupan Pendanaan</span><h2>Apa yang Ditanggung?</h2><ul><li><b>Bebas biaya kuliah</b> penuh selama studi doktoral.</li><li><b>Tunjangan bulanan:</b> HUF 140.000/bulan (semester 1–4) dan <b>HUF 180.000/bulan</b> (semester 5–8) — PhD mendapat tunjangan lebih besar dari jenjang S1/S2.</li><li><b>Akomodasi:</b> tempat di asrama <b>atau</b> kontribusi HUF 40.000/bulan bila tinggal di luar asrama.</li><li><b>Asuransi kesehatan</b> + layanan perpustakaan gratis.</li><li>Tidak ada tiket pesawat — biaya perjalanan ditanggung sendiri.</li></ul><div class="note"><b>Jujur:</b> menurut ketentuan resmi, tunjangan ini adalah <b>kontribusi</b> biaya hidup, bukan penutup penuh — siapkan dana tambahan, terutama jika studi di Budapest yang biaya sewanya lebih tinggi.</div></div></section><section class="slide"><div><span class="kicker">Eligibilitas</span><h2>Siapa yang Bisa Mendaftar?</h2><ul><li>Warga negara dari negara sending partner — <b>termasuk Indonesia</b>.</li><li>Sudah (atau akan) bergelar <b>master (MSc/MA)</b> sebelum masa studi dimulai; gelar diverifikasi otoritas pendidikan Hungaria.</li><li>Memenuhi syarat akademik program doktoral yang dipilih (cek tiap universitas — bisa ada syarat tambahan).</li><li>Bahasa Inggris: syarat bervariasi per program — banyak yang <b>tidak mewajibkan IELTS</b>, selalu cek di laman program.</li><li>Tidak sedang menerima beasiswa Hungaria lain di periode yang sama.</li></ul></div></section><section class="slide"><div><span class="kicker">Format Seleksi</span><h2>Tahapan Seleksi</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx"><b>Daftar di portal</b> apply.stipendiumhungaricum.hu — pilih maksimal <b>2 program</b> sesuai urutan prioritas.</div></div><div class="step"><div class="n">2</div><div class="tx"><b>Nominasi sending partner:</b> ajukan juga ke sending partner Indonesia (biasanya via Kemendikbudristek) — <b>kedua jalur wajib</b>; lolos satu jalur saja = gugur.</div></div><div class="step"><div class="n">3</div><div class="tx"><b>Evaluasi universitas:</b> universitas menilai dokumen dan mengadakan <b>wawancara masuk (entrance interview)</b>, mis. via Skype.</div></div><div class="step"><div class="n">4</div><div class="tx"><b>Keputusan akhir</b> oleh Tempus Public Foundation berdasarkan nominasi + hasil evaluasi universitas.</div></div><div class="step"><div class="n">5</div><div class="tx">Pengumuman hasil — siapkan dokumen visa & keberangkatan.</div></div></div></div></section><section class="slide"><div><span class="kicker">Strategi 1</span><h2>Amankan Supervisor Sejak Dini</h2><ul><li>Untuk PhD, <b>dukungan supervisor bersifat wajib</b> — tanpa pernyataan supervisor, aplikasi doktoral tidak valid.</li><li>Cari topik & daftar supervisor di <b>Study Finder</b> situs resmi, lalu hubungi langsung via email.</li><li>Email: perkenalkan diri + latar riset + ketertarikan pada topiknya (sebut 1–2 publikasinya) + lampirkan CV dan ringkasan research plan.</li><li>Mulai 4–6 bulan sebelum deadline; supervisor yang merespons positif biasanya mau diskusi research plan-mu.</li></ul><div class="note">Jangan mendaftar PhD tanpa kontak supervisor terlebih dahulu — ini pembeda utama antara aplikasi S3 dan S1/S2.</div></div></section><section class="slide"><div><span class="kicker">Strategi 2</span><h2>Research Plan & Motivation Letter</h2><ul><li>Research plan: masalah, tinjauan pustaka singkat, metodologi, target luaran (publikasi), dan timeline 4 tahun (8 semester).</li><li>Selaraskan topik dengan <b>kekuatan riset universitas & supervisor</b> tujuan — tunjukkan kamu sudah riset mendalam.</li><li>Motivation letter: kenapa Hungaria, kenapa program itu, dan rencana kontribusi setelah lulus (program ini menghargai dampak ke negara asal).</li><li>Minta 2 orang (dosen/pembimbing) me-review sebelum submit; bahasa Inggris formal dan bebas typo.</li></ul></div></section><section class="slide"><div><span class="kicker">Strategi 3</span><h2>Dokumen & Portal Aplikasi</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx">Siapkan: ijazah & transkrip S2 (+S1 bila diminta), research plan, motivation letter, CV, paspor, surat keterangan sehat (medical certificate), bukti bahasa Inggris, surat rekomendasi.</div></div><div class="step"><div class="n">2</div><div class="tx">Buat akun di <b>apply.stipendiumhungaricum.hu</b>, isi profil, pilih maksimal 2 program.</div></div><div class="step"><div class="n">3</div><div class="tx">Unggah semua dokumen sesuai format (PDF, ukuran sesuai ketentuan portal).</div></div><div class="step"><div class="n">4</div><div class="tx">Submit di portal <b>DAN</b> ajukan nominasi ke sending partner Indonesia — simpan bukti submit keduanya.</div></div><div class="step"><div class="n">5</div><div class="tx">Pantau email untuk undangan wawancara dari universitas.</div></div></div></div></section><section class="slide"><div><span class="kicker">Timeline</span><h2>Rencana Persiapan 12 Bulan</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx"><b>B-12 s/d B-9:</b> riset program di Study Finder; hubungi calon supervisor; siapkan tes bahasa Inggris bila program meminta.</div></div><div class="step"><div class="n">2</div><div class="tx"><b>B-8 s/d B-6:</b> tulis research plan & motivation letter; kumpulkan ijazah/transkrip (legalisasi bila perlu).</div></div><div class="step"><div class="n">3</div><div class="tx"><b>B-5 s/d B-4:</b> minta surat rekomendasi & medical certificate; finalisasi dokumen.</div></div><div class="step"><div class="n">4</div><div class="tx"><b>B-3 s/d B-1:</b> portal biasanya buka <b>November</b> — submit aplikasi + ajukan nominasi sending partner sebelum <b>deadline ±15 Januari</b>.</div></div><div class="step"><div class="n">5</div><div class="tx"><b>Setelah submit:</b> siapkan wawancara (biasanya hingga April); pantau pengumuman hasil.</div></div></div><div class="note">Pola tahunan: buka November, tutup pertengahan Januari — tetapi <b>selalu konfirmasi tanggal resmi</b> saat Call for Application terbit.</div></div></section><section class="slide"><div><span class="kicker">Jadwal Penting</span><h2>Tanggal-Tanggal Kunci (Siklus 2027)</h2><table><tr><th>Tahap</th><th>Perkiraan Waktu</th></tr><tr><td>Call for Application terbit</td><td>November 2026</td></tr><tr><td>Deadline aplikasi portal + nominasi</td><td>± 15 Januari 2027</td></tr><tr><td>Evaluasi & wawancara universitas</td><td>Februari – April 2027</td></tr><tr><td>Pengumuman hasil</td><td>Musim panas 2027</td></tr><tr><td>Keberangkatan & mulai kuliah</td><td>September 2027</td></tr></table><div class="note">Tanggal di atas mengikuti <b>pola tahunan</b> program — angka pasti menunggu pengumuman resmi tiap siklus.</div></div></section><section class="slide"><div><span class="kicker">Checklist</span><h2>Checklist Dokumen</h2><ul><li>Ijazah & transkrip S2 (terjemahan Inggris bila perlu).</li><li>Research plan & motivation letter.</li><li>CV akademik; paspor yang masih berlaku.</li><li>Surat rekomendasi (sesuai jumlah yang diminta portal).</li><li><b>Pernyataan dukungan supervisor</b> (wajib untuk PhD).</li><li>Medical certificate; bukti kemampuan bahasa Inggris (sesuai syarat program).</li><li>Bukti submit <b>kedua jalur</b>: portal Tempus + sending partner.</li></ul></div></section><section class="slide"><div><span class="kicker">Keuangan</span><h2>Anggaran Realistis</h2><ul><li>Tunjangan PhD: HUF 140rb/bln (sem 1–4) → HUF 180rb/bln (sem 5–8) — cukup untuk hidup hemat di kota kecil; di <b>Budapest siapkan tambahan</b>.</li><li>Kontribusi akomodasi HUF 40rb/bln <b>tidak menutup penuh</b> sewa di kota besar — asrama adalah opsi paling hemat.</li><li>Siapkan dana awal: tiket pesawat, visa, dokumen, deposit sewa — tunjangan biasanya <b>tidak langsung cair</b> di bulan pertama.</li><li>Mahasiswa internasional boleh kerja paruh waktu sesuai aturan — cek regulasi terbaru sebelum mengandalkan ini.</li></ul></div></section><section class="slide"><div><span class="kicker">Video Panduan</span><h2>Tonton Dulu: 4 Video Kunci</h2><div class="vgrid"><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/OAAe7OkY8ZI?rel=0" title="Stipendium Hungaricum 2027: panduan lengkap semua jenjang" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Cara Daftar 1</div><div class="t">Stipendium Hungaricum 2027: panduan lengkap semua jenjang</div><div class="d">Cakupan beasiswa, syarat, dan langkah pendaftaran resmi — termasuk jalur PhD.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/BAkt7Heiom8?rel=0" title="Panduan aplikasi Stipendium Hungaricum langkah demi langkah" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Cara Daftar 2</div><div class="t">Panduan aplikasi Stipendium Hungaricum langkah demi langkah</div><div class="d">Dari cek sending partner sampai nominasi — proses aplikasi dari awal sampai akhir.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/8Bkqt08pBH0?rel=0" title="Video resmi program Stipendium Hungaricum" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Suasana Kampus</div><div class="t">Video resmi program Stipendium Hungaricum</div><div class="d">Gambaran resmi kehidupan studi dan kampus di Hungaria dari pengelola program.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/Fgg31_cH-Cs?rel=0" title="Biaya sebenarnya penerima Stipendium Hungaricum" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Testimoni</div><div class="t">Biaya sebenarnya penerima Stipendium Hungaricum</div><div class="d">Pengalaman jujur penerima beasiswa: berapa biaya yang tetap harus disiapkan sebelum dan sesudah tiba.</div></div></div></div><div class="note"><b>Catatan:</b> video-video di atas adalah materi publik di YouTube dari kreator/pihak ketiga — gunakan sebagai referensi awal, dan selalu verifikasi detail terbaru di situs resmi.</div></div></section><section class="slide"><div><span class="kicker">Sumber Resmi</span><h2>Sumber Informasi Resmi</h2><ul><li><b>stipendiumhungaricum.hu</b> — situs utama program & Call for Application.</li><li><b>apply.stipendiumhungaricum.hu</b> — portal aplikasi resmi (satu-satunya jalur aplikasi online).</li><li><b>Study Finder</b> di situs resmi — daftar program & supervisor per universitas.</li><li><b>Operational Regulations</b> — unduh dan baca; isinya hak & kewajiban penerima beasiswa.</li><li>Sending partner Indonesia — pantau pengumuman nominasi (biasanya via Kemendikbudristek).</li></ul><div class="note">Waspada penipuan: aplikasi resmi <b>gratis</b> — abaikan siapa pun yang meminta &ldquo;biaya jasa lolos&rdquo;.</div></div></section><section class="slide"><div><span class="kicker">Tips Wawancara</span><h2>Tips Entrance Interview</h2><ul><li>Wawancara biasanya via Skype/online, diadakan universitas tujuan (batas umum hingga April).</li><li>Kuasai research plan: siap menjelaskan gap riset, metodologi, dan ekspektasi luaran dalam 5 menit.</li><li>Tunjukkan pengetahuan tentang Hungaria & universitas tujuan — pewawancara menilai keseriusanmu.</li><li>Siapkan pertanyaan balik (fasilitas lab, kolaborasi, ekspektasi publikasi).</li><li>Tes koneksi & audio sebelumnya; tampil formal meski dari rumah.</li></ul></div></section><section class="slide"><div><span class="kicker">Setelah Diterima</span><h2>Setelah Diterima: Visa & Keberangkatan</h2><ul><li>Urus <b>visa pelajar/residence permit</b> dengan Letter of Award — mulai segera setelah hasil keluar.</li><li>Siapkan dana awal 2–3 bulan (tiket, deposit, biaya hidup) karena tunjangan tidak langsung cair.</li><li>Daftar asrama lebih awal bila memilih opsi dormitory.</li><li>Pelajari dasar bahasa Hungaria & sistem transport kota tujuan.</li><li>Gabung grup/forum penerima Stipendium Hungaricum untuk info praktis dari senior.</li></ul></div></section><section class="slide"><div><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (1)</h2><ul><li><b>Apakah WNI eligible?</b><br>Ya — Indonesia adalah sending partner resmi program ini.</li><li><b>Apakah perlu LoA saat mendaftar?</b><br>Tidak perlu LoA admisi; yang wajib untuk PhD adalah <b>pernyataan dukungan supervisor</b> + nominasi sending partner.</li><li><b>Apakah IELTS wajib?</b><br>Tergantung program — banyak program tidak mewajibkan IELTS. Cek syarat tiap program di Study Finder.</li></ul></div></section><section class="slide"><div><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (2)</h2><ul><li><b>Bisakah memilih 2 program?</b><br>Bisa — maksimal 2 program dengan urutan prioritas.</li><li><b>Apakah tunjangan cukup untuk hidup?</b><br>Untuk PhD relatif lebih longgar dibanding S1/S2, tapi tetap <b>bukan penutup penuh</b> — siapkan dana cadangan.</li><li><b>Apakah boleh membawa keluarga?</b><br>Tunjangan dihitung untuk individu; bawa keluarga berarti butuh dana tambahan signifikan — hitung matang.</li></ul></div></section><section class="slide"><div><span class="kicker">Hindari</span><h2>Kesalahan Umum yang Harus Dihindari</h2><ul><li>Hanya daftar di portal <b>tanpa</b> mengajukan nominasi ke sending partner (atau sebaliknya) — otomatis gugur.</li><li>Mendaftar PhD <b>tanpa menghubungi supervisor</b> terlebih dahulu.</li><li>Research plan generik yang bisa dipakai untuk universitas mana pun.</li><li>Menunda medical certificate & legalisasi dokumen hingga H-7 deadline.</li><li>Mengandalkan info agen — selalu cek <b>Call for Application resmi</b> tiap ada perbedaan info.</li></ul></div></section><section class="slide closing"><div><span class="kicker">Langkah Berikutnya</span><h2>Mulai Pendaftaran Resmi</h2><ul><li>Semua informasi di deck ini merujuk ke sumber resmi. Jangan membayar ke pihak ketiga mana pun — pendaftaran program ini <b>tidak dipungut biaya perantara</b>.</li><li>Siapkan dokumen dari checklist, hubungi calon supervisor lebih awal, dan pantau tanggal penting di situs resmi.</li></ul><a class="btn" href="https://stipendiumhungaricum.hu/" target="_blank" rel="noopener">Buka Situs Resmi Pendaftaran</a><div class="urlbox">https://stipendiumhungaricum.hu/</div></div></section>
+</div>
+<div class="controls">
+<button class="navbtn" id="prev">&#8592; Sebelumnya</button>
+<div class="dots" id="dots"></div>
+<span class="counter" id="counter"></span>
+<button class="navbtn" id="next">Berikutnya &#8594;</button>
+</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let cur=0;
+const dots=document.getElementById('dots'),counter=document.getElementById('counter'),prog=document.getElementById('prog');
+slides.forEach((_,i)=>{const d=document.createElement('button');d.className='dot';d.setAttribute('aria-label','Slide '+(i+1));d.onclick=()=>go(i);dots.appendChild(d);});
+function go(i){cur=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,j)=>s.classList.toggle('active',j===cur));
+[...dots.children].forEach((d,j)=>d.classList.toggle('on',j===cur));
+counter.textContent=(cur+1)+' / '+slides.length;prog.style.width=((cur+1)/slides.length*100)+'%';
+document.getElementById('prev').disabled=cur===0;document.getElementById('next').disabled=cur===slides.length-1;
+const act=slides[cur];if(act.scrollTo)act.scrollTo(0,0);}
+document.getElementById('prev').onclick=()=>go(cur-1);document.getElementById('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(cur+1);}if(e.key==='ArrowLeft')go(cur-1);});
+let tx=0;document.addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>60){dx<0?go(cur+1):go(cur-1);}},{passive:true});
+go(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

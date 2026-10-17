@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panduan PhD Bergaji Finlandia</title>
+<style>:root{--accent:#002f6c}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#0b5fff}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:#0d1117;color:#f0f4f8;overflow:hidden}
+.deck{position:relative;height:100dvh;width:100%}
+.slide{display:none;height:100%;width:100%;padding:56px 8vw 110px;overflow-y:auto;animation:fade .35s ease}
+.slide.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.kicker{display:inline-block;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px}
+h1{font-size:clamp(30px,5.4vw,58px);line-height:1.12;margin-bottom:18px}
+h2{font-size:clamp(24px,4vw,40px);line-height:1.2;margin-bottom:20px}
+.slide ul{list-style:none;display:flex;flex-direction:column;gap:14px;max-width:900px}
+.slide li{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px;font-size:clamp(15px,2.1vw,19px);line-height:1.55}
+.slide li b{color:#fff}
+.note{margin-top:22px;max-width:900px;background:rgba(255,193,7,.08);border:1px dashed rgba(255,193,7,.5);border-radius:10px;padding:14px 18px;font-size:15px;line-height:1.6;color:#ffe1a1}
+.note b{color:#ffd76a}
+.cover{position:relative;display:none}
+.cover.active{display:flex;flex-direction:column;justify-content:flex-end}
+.cover .bg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,15,.25) 0%,rgba(5,8,15,.55) 45%,rgba(5,8,15,.94) 100%);z-index:1}
+.cover .inner{position:relative;z-index:2}
+.cover h1{text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.cover .sub{font-size:clamp(16px,2.4vw,22px);color:#dbe4ee;max-width:800px;line-height:1.6;margin-bottom:22px}
+.credit{position:absolute;right:14px;bottom:86px;z-index:2;font-size:11px;color:rgba(255,255,255,.55)}
+.pill{display:inline-block;background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:8px 18px;border-radius:999px;margin-bottom:16px}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:1100px}
+.vcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden}
+.vcard .frame{position:relative;padding-top:56.25%;background:#000}
+.vcard iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vcard .cap{padding:12px 14px}
+.vcard .cap .tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+.vcard .cap .t{font-size:14px;font-weight:600;margin-top:4px;line-height:1.4}
+.vcard .cap .d{font-size:12.5px;color:#aeb9c6;margin-top:4px;line-height:1.45}
+@media(max-width:640px){.vgrid{grid-template-columns:1fr}.slide{padding:40px 6vw 120px}}
+.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:18px;padding:16px 34px;border-radius:12px;margin-top:8px}
+.btn:hover{filter:brightness(1.12)}
+.urlbox{margin-top:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:14px 18px;font-size:15px;word-break:break-all;max-width:700px}
+.controls{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 4vw;background:linear-gradient(180deg,transparent,rgba(5,8,15,.92) 40%)}
+.navbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:16px;font-weight:600;padding:10px 22px;border-radius:999px;cursor:pointer}
+.navbtn:hover{background:var(--accent);border-color:var(--accent)}
+.navbtn:disabled{opacity:.3;cursor:default}
+.counter{font-size:14px;color:#aeb9c6;font-weight:600;white-space:nowrap}
+.dots{display:flex;gap:6px;overflow-x:auto;max-width:44vw;padding:4px}
+.dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.22);cursor:pointer;border:0;padding:0}
+.dot.on{background:var(--accent);transform:scale(1.25)}
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--accent);z-index:11;width:0;transition:width .3s}
+.steps{display:flex;flex-direction:column;gap:12px;max-width:900px}
+.step{display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:14px 18px}
+.step .n{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:16px}
+.step .tx{font-size:clamp(15px,2vw,18px);line-height:1.55}
+table{border-collapse:collapse;max-width:900px;width:100%;font-size:clamp(13px,1.9vw,16px)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.12);line-height:1.5}
+th{color:var(--accent);text-transform:uppercase;font-size:12px;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="deck">
+<section class="slide cover active"><div class="bg" style="background-image:url('https://www.campusland.com.tr/_next/image?url=%2Fimages%2Funiversities%2Fhelsinki-universitesi.jpg&w=1080&q=75')"></div><div class="shade"></div><div class="inner"><div class="pill">Salaried Doctoral Researcher Finlandia</div><h1>Panduan PhD Bergaji Finlandia</h1><p class="sub">Posisi Doctoral Researcher bergaji di universitas Finlandia (mis. program RESDOC University of Helsinki) — kontrak 4 tahun, gaji bulanan, tanpa tuition.</p><a class="btn" href="https://www.helsinki.fi/en/research/doctoral-school/resdoc-project" target="_blank" rel="noopener">Kunjungi Situs Resmi</a></div><div class="credit">Foto: CampusLand</div></section><section class="slide"><div><span class="kicker">Gambaran Program</span><h2>PhD Bergaji ala Finlandia</h2><ul><li><b>Salaried Doctoral Researcher</b> — posisi doktoral sebagai <b>pegawai universitas</b> (bukan penerima beasiswa).</li><li>Contoh: <b>RESDOC Doctoral Training Project</b> — University of Helsinki (MSCA COFUND): rekrutmen <b>30 posisi doktoral</b>, kontrak penuh <b>4 tahun</b>.</li><li>Posisi serupa dibuka juga di <b>Aalto University</b> dan universitas Finlandia lain — umumnya lewat proyek/doctoral network.</li><li>Bahasa kerja: Inggris. Tanpa tuition fee untuk posisi bergaji.</li><li>Terbuka untuk kandidat internasional yang memenuhi syarat mobilitas.</li></ul><div class="note"><b>Catatan jujur:</b> call RESDOC 2026 <b>sudah ditutup</b> (deadline 31 Agustus 2026, tahap evaluasi berjalan). Lowongan bersifat <b>per-periode</b> — deck ini membekalimu cara memantau dan melamar call berikutnya.</div></div></section><section class="slide"><div><span class="kicker">Cakupan Pendanaan</span><h2>Gaji & Benefit</h2><ul><li>Kontrak kerja penuh <b>4 tahun</b> sebagai doctoral researcher.</li><li>Gaji ±<b>€2.900/bulan bruto</b> (contoh RESDOC; posisi lain ±€2.500–2.900 tergantung universitas & proyek).</li><li><b>Tunjangan keluarga</b> ±€660/bulan bila memenuhi syarat (untuk skema MSCA).</li><li><b>Occupational healthcare</b> (layanan kesehatan kerja) + <b>dukungan relokasi</b>.</li><li>Tanpa biaya kuliah — kamu pegawai, bukan mahasiswa berbayar.</li></ul></div></section><section class="slide"><div><span class="kicker">Eligibilitas</span><h2>Siapa yang Bisa Melamar?</h2><ul><li>Bergelar <b>master</b> di bidang relevan (atau akan lulus sebelum tanggal rekrutmen).</li><li><b>Belum bergelar PhD</b> (syarat standar skema doctoral network/MSCA).</li><li><b>Syarat mobilitas MSCA:</b> tidak tinggal/bekerja di Finlandia <b>lebih dari 12 bulan dalam 36 bulan terakhir</b>.</li><li>Bahasa Inggris akademik yang baik; kemampuan bahasa Finlandia <b>tidak</b> disyaratkan.</li><li>Untuk WNI yang belum pernah tinggal di Finlandia: syarat mobilitas otomatis terpenuhi.</li></ul></div></section><section class="slide"><div><span class="kicker">Format Seleksi</span><h2>Tahapan Rekrutmen</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx"><b>Pantau call</b> di portal lowongan universitas (mis. helsinki.fi/jobs) — lowongan dibuka per periode.</div></div><div class="step"><div class="n">2</div><div class="tx">Submit <b>1 file PDF</b> via sistem rekrutmen: CV (format rekomendasi TENK Finlandia), motivation letter, ijazah & transkrip, kontak 2 referensi, bukti bahasa Inggris bila diminta.</div></div><div class="step"><div class="n">3</div><div class="tx">Beberapa posisi meminta <b>jawaban tertulis atas pertanyaan spesifik</b> (mis. 4 pertanyaan, maks. 200–300 kata tiap jawaban) — wajib dilengkapi, yang tidak lengkap <b>tidak dinilai</b>.</div></div><div class="step"><div class="n">4</div><div class="tx"><b>Wawancara online</b> (academic alignment interview) bagi yang shortlist.</div></div><div class="step"><div class="n">5</div><div class="tx">Keputusan → kontrak kerja → relokasi ke Finlandia.</div></div></div></div></section><section class="slide"><div><span class="kicker">Strategi 1</span><h2>Memantau Lowongan per Periode</h2><ul><li>Sumber utama: <b>helsinki.fi/jobs</b>, laman open positions tiap universitas (Aalto, UEF, Åbo Akademi, Tampere, Turku).</li><li>Agregator: Euraxess, Academic Positions, Nature Careers — pasang alert &ldquo;doctoral researcher Finland&rdquo;.</li><li>Call besar (seperti RESDOC) diumumkan jauh-jauh hari — catat polanya untuk antisipasi call berikutnya.</li><li>Jangan hanya menunggu satu call: <b>posisi doctoral researcher dibuka terus</b> di berbagai proyek MSCA & grup riset.</li></ul></div></section><section class="slide"><div><span class="kicker">Strategi 2</span><h2>Berkas Lamaran Standar Finlandia</h2><ul><li>CV memakai <b>template yang direkomendasikan TENK</b> (Finnish Advisory Board on Research Integrity) + daftar publikasi.</li><li>Motivation letter: ketertarikan pada <b>proyek spesifik</b>, latar yang relevan, dan pemenuhan syarat mobilitas.</li><li>Jawab <b>semua pertanyaan tertulis</b> sesuai batas kata & sertakan referensi bila diminta — ketidaklengkapan = gugur.</li><li>Ijazah & transkrip S1+S2; bukti kelulusan sebelum tanggal rekrutmen bila belum wisuda saat melamar.</li></ul></div></section><section class="slide"><div><span class="kicker">Strategi 3</span><h2>Research Proposal yang Selaras</h2><ul><li>Untuk call tematik (mis. RESDOC): pilih <b>tema riset</b> yang diumumkan dan selaraskan proposalmu.</li><li>Struktur: tujuan, metodologi, kebaruan, dampak — tunjukkan <b>interdisipliner & keberlanjutan</b> bila relevan dengan tema call.</li><li>Sebutkan kesesuaian dengan kekuatan riset universitas/proyek — perekrut mencari <i>fit</i>, bukan proposal paling ambisius.</li><li>Minta review dosen/mentor sebelum submit; bahasa Inggris presisi.</li></ul></div></section><section class="slide"><div><span class="kicker">Timeline</span><h2>Rencana Persiapan 9–12 Bulan</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx"><b>B-12 s/d B-9:</b> petakan universitas & proyek; rapikan CV format TENK; kumpulkan publikasi.</div></div><div class="step"><div class="n">2</div><div class="tx"><b>B-8 s/d B-6:</b> tulis draft research proposal & motivation letter; pantau pengumuman call.</div></div><div class="step"><div class="n">3</div><div class="tx"><b>B-5 s/d B-3:</b> saat call buka → finalisasi semua dokumen; jawab pertanyaan tertulis; submit <b>1 PDF</b> via sistem rekrutmen.</div></div><div class="step"><div class="n">4</div><div class="tx"><b>B-2 s/d B-1:</b> wawancara online; siapkan referensi; urus legalisasi dokumen.</div></div><div class="step"><div class="n">5</div><div class="tx"><b>Setelah diterima:</b> kontrak → residence permit peneliti → relokasi (dengan dukungan universitas).</div></div></div></div></section><section class="slide"><div><span class="kicker">Checklist</span><h2>Checklist Dokumen</h2><ul><li>CV detail (format TENK) + daftar publikasi.</li><li>Motivation letter untuk posisi/proyek spesifik.</li><li>Ijazah & transkrip S1 dan S2 (atau bukti kelulusan sebelum rekrutmen).</li><li>Kontak 2 referensi (dan/atau surat referensi).</li><li>Jawaban tertulis atas pertanyaan spesifik call (lengkap + sesuai batas kata).</li><li>Bukti kemampuan bahasa Inggris (bila disyaratkan posisi).</li></ul></div></section><section class="slide"><div><span class="kicker">Keuangan</span><h2>Gaji vs Biaya Hidup Finlandia</h2><ul><li>Gaji €2.900/bln bruto → bersih ±€2.200–2.400 — <b>layak untuk single</b>, bahkan di Helsinki dengan budgeting.</li><li>Sewa: kamar/studio Helsinki €700–1.200/bln; kota lain (Tampere, Turku, Jyväskylä) lebih murah.</li><li>Occupational healthcare & tunjangan keluarga (bila eligible) menekan pengeluaran.</li><li>Mahasiswa/pegawai dapat diskon transport & makan siang bersubsidi — manfaatkan benefit lokal.</li></ul></div></section><section class="slide"><div><span class="kicker">Contoh Nyata</span><h2>Contoh Posisi Doctoral Researcher</h2><ul><li><b>RESDOC (Univ. Helsinki, MSCA COFUND):</b> 30 posisi, kontrak 4 tahun, ±€2.900/bln — call 2026 sudah tutup; pantau pengumuman call berikutnya.</li><li><b>MSCA Doctoral Networks</b> (contoh: FAroGels di UH): posisi Doctoral Candidate bergaji + tunjangan keluarga ±€660/bln; aplikasi 1 PDF + jawaban atas pertanyaan spesifik.</li><li><b>Åbo Akademi, Univ. of Eastern Finland, Tampere:</b> posisi doctoral researcher dibuka rutin via portal lowongan masing-masing universitas.</li><li>Pola umum: semua posisi mensyaratkan <b>belum bergelar PhD</b> + memenuhi <b>syarat mobilitas</b> (tidak tinggal di Finlandia >12 bulan dalam 36 bulan terakhir).</li></ul><div class="note">Contoh di atas untuk menggambarkan pola lowongan — posisi aktif berubah tiap bulan, pantau portal lowongan universitas secara rutin.</div></div></section><section class="slide"><div><span class="kicker">Video Panduan</span><h2>Tonton Dulu: 4 Video Kunci</h2><div class="vgrid"><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/LW-ED5RUYLA?rel=0" title="PhD di Finlandia bergaji €2500: cara daftar" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Cara Daftar 1</div><div class="t">PhD di Finlandia bergaji €2500: cara daftar</div><div class="d">Bedah lowongan Doctoral Researcher di Finlandia: syarat, dokumen, dan langkah aplikasi.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/1Gf2F0V_Axg?rel=0" title="PhD Jobs Finlandia 2026: panduan melamar" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Cara Daftar 2</div><div class="t">PhD Jobs Finlandia 2026: panduan melamar</div><div class="d">Cara menemukan lowongan PhD di universitas Finlandia dan proses aplikasinya.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/J5NRkS7OuRk?rel=0" title="Tur kampus Meilahti, University of Helsinki (resmi)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Suasana Kampus</div><div class="t">Tur kampus Meilahti, University of Helsinki (resmi)</div><div class="d">Video resmi University of Helsinki — tur salah satu dari empat kampusnya.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/Bo8_Ny697NY?rel=0" title="Perjalanan meraih PhD di Finlandia + cara daftar" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Testimoni</div><div class="t">Perjalanan meraih PhD di Finlandia + cara daftar</div><div class="d">Cerita dan strategi seorang doktoral di Finlandia: proses aplikasi, pendanaan, dan riset di sana.</div></div></div></div><div class="note"><b>Catatan:</b> video-video di atas adalah materi publik di YouTube dari kreator/pihak ketiga — gunakan sebagai referensi awal, dan selalu verifikasi detail terbaru di situs resmi.</div></div></section><section class="slide"><div><span class="kicker">Sumber Resmi</span><h2>Sumber Informasi Resmi</h2><ul><li><b>helsinki.fi/en/research/doctoral-school/resdoc-project</b> — halaman resmi program RESDOC.</li><li><b>helsinki.fi/jobs</b> — portal lowongan resmi University of Helsinki.</li><li>Laman open positions: Aalto University, UEF, Åbo Akademi, Tampere University, University of Turku.</li><li><b>studyinfo.fi</b> — portal pendidikan resmi Finlandia.</li><li>Euraxess — agregator lowongan riset Eropa.</li></ul><div class="note">Karena lowongan bersifat per-periode, <b>jadikan memantau portal di atas rutinitas mingguan</b> — call bagus tidak menunggu.</div></div></section><section class="slide"><div><span class="kicker">Tips Wawancara</span><h2>Tips Academic Alignment Interview</h2><ul><li>Wawancara menilai <b>keselarasan akademik</b>: proposalmu vs tema & kapasitas proyek.</li><li>Siap menjelaskan metodologi dan rencana kerja 4 tahun secara konkret.</li><li>Tunjukkan pemahaman syarat mobilitas & kesiapan relokasi ke Finlandia.</li><li>Tanyakan: struktur supervisi, ekspektasi publikasi, dukungan konferensi, dan jenjang karier pasca-PhD.</li><li>Tenang & jujur — budaya Finlandia menghargai keterusterangan, bukan jawaban &ldquo;sempurna&rdquo;.</li></ul></div></section><section class="slide"><div><span class="kicker">Setelah Diterima</span><h2>Setelah Diterima: Ijin Tinggal & Relokasi</h2><ul><li>Urus <b>residence permit peneliti</b> dengan kontrak kerja sebagai dasar — ikuti panduan HRD universitas.</li><li>Manfaatkan <b>dukungan relokasi</b> (info hunian, antar-jemput, bantuan administrasi).</li><li>Daftar ke Digital and Population Data Services Agency setiba di Finlandia; buka rekening bank.</li><li>Occupational healthcare aktif via pemberi kerja — pahami cara aksesnya.</li><li>Ikut orientasi internasional & kursus bahasa Finlandia dasar (membantu integrasi, tidak wajib untuk kerja).</li></ul></div></section><section class="slide"><div><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (1)</h2><ul><li><b>Apakah ini beasiswa?</b><br>Bukan — ini <b>kontrak kerja 4 tahun</b> sebagai doctoral researcher bergaji.</li><li><b>Apakah call RESDOC masih buka?</b><br>Call 2026 <b>sudah tutup</b> (deadline 31 Agu 2026). Pantau portal untuk call berikutnya & posisi lain.</li><li><b>Apakah WNI eligible?</b><br>Ya — terbuka internasional; syarat mobilitas justru <b>mudah dipenuhi</b> WNI yang belum pernah tinggal di Finlandia.</li></ul></div></section><section class="slide"><div><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (2)</h2><ul><li><b>Harus bisa bahasa Finlandia?</b><br>Tidak — bahasa kerja Inggris.</li><li><b>Berapa gaji doctoral researcher?</b><br>±<b>€2.500–2.900/bulan bruto</b> tergantung universitas/proyek, + tunjangan keluarga bila eligible.</li><li><b>Apakah ada application fee?</b><br><b>Tidak ada</b> — melamar posisi doktoral gratis.</li></ul></div></section><section class="slide"><div><span class="kicker">Hindari</span><h2>Kesalahan Umum yang Harus Dihindari</h2><ul><li>Mengirim aplikasi <b>tidak lengkap</b> (mis. melewatkan jawaban pertanyaan tertulis) — langsung tidak dinilai.</li><li>CV tidak mengikuti <b>format TENK</b> yang direkomendasikan.</li><li>Proposal generik yang tidak menyentuh <b>tema call</b> yang diumumkan.</li><li>Menunggu satu call besar saja — posisi doctoral researcher <b>dibuka terus</b> di banyak proyek.</li><li>Mengabaikan syarat mobilitas MSCA — pastikan riwayat tinggalmu memenuhi.</li></ul></div></section><section class="slide closing"><div><span class="kicker">Langkah Berikutnya</span><h2>Mulai Pendaftaran Resmi</h2><ul><li>Semua informasi di deck ini merujuk ke sumber resmi. Jangan membayar ke pihak ketiga mana pun — pendaftaran program ini <b>tidak dipungut biaya perantara</b>.</li><li>Siapkan dokumen dari checklist, hubungi calon supervisor lebih awal, dan pantau tanggal penting di situs resmi.</li></ul><a class="btn" href="https://www.helsinki.fi/en/research/doctoral-school/resdoc-project" target="_blank" rel="noopener">Buka Situs Resmi Pendaftaran</a><div class="urlbox">https://www.helsinki.fi/en/research/doctoral-school/resdoc-project</div></div></section>
+</div>
+<div class="controls">
+<button class="navbtn" id="prev">&#8592; Sebelumnya</button>
+<div class="dots" id="dots"></div>
+<span class="counter" id="counter"></span>
+<button class="navbtn" id="next">Berikutnya &#8594;</button>
+</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let cur=0;
+const dots=document.getElementById('dots'),counter=document.getElementById('counter'),prog=document.getElementById('prog');
+slides.forEach((_,i)=>{const d=document.createElement('button');d.className='dot';d.setAttribute('aria-label','Slide '+(i+1));d.onclick=()=>go(i);dots.appendChild(d);});
+function go(i){cur=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,j)=>s.classList.toggle('active',j===cur));
+[...dots.children].forEach((d,j)=>d.classList.toggle('on',j===cur));
+counter.textContent=(cur+1)+' / '+slides.length;prog.style.width=((cur+1)/slides.length*100)+'%';
+document.getElementById('prev').disabled=cur===0;document.getElementById('next').disabled=cur===slides.length-1;
+const act=slides[cur];if(act.scrollTo)act.scrollTo(0,0);}
+document.getElementById('prev').onclick=()=>go(cur-1);document.getElementById('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(cur+1);}if(e.key==='ArrowLeft')go(cur-1);});
+let tx=0;document.addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>60){dx<0?go(cur+1):go(cur-1);}},{passive:true});
+go(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>

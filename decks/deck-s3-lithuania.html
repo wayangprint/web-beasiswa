@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 39 panduan beasiswa S3 ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panduan PhD Lithuania</title>
+<style>:root{--accent:#006a44}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#0b5fff}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:#0d1117;color:#f0f4f8;overflow:hidden}
+.deck{position:relative;height:100dvh;width:100%}
+.slide{display:none;height:100%;width:100%;padding:56px 8vw 110px;overflow-y:auto;animation:fade .35s ease}
+.slide.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.kicker{display:inline-block;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px}
+h1{font-size:clamp(30px,5.4vw,58px);line-height:1.12;margin-bottom:18px}
+h2{font-size:clamp(24px,4vw,40px);line-height:1.2;margin-bottom:20px}
+.slide ul{list-style:none;display:flex;flex-direction:column;gap:14px;max-width:900px}
+.slide li{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px;font-size:clamp(15px,2.1vw,19px);line-height:1.55}
+.slide li b{color:#fff}
+.note{margin-top:22px;max-width:900px;background:rgba(255,193,7,.08);border:1px dashed rgba(255,193,7,.5);border-radius:10px;padding:14px 18px;font-size:15px;line-height:1.6;color:#ffe1a1}
+.note b{color:#ffd76a}
+.cover{position:relative;display:none}
+.cover.active{display:flex;flex-direction:column;justify-content:flex-end}
+.cover .bg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,15,.25) 0%,rgba(5,8,15,.55) 45%,rgba(5,8,15,.94) 100%);z-index:1}
+.cover .inner{position:relative;z-index:2}
+.cover h1{text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.cover .sub{font-size:clamp(16px,2.4vw,22px);color:#dbe4ee;max-width:800px;line-height:1.6;margin-bottom:22px}
+.credit{position:absolute;right:14px;bottom:86px;z-index:2;font-size:11px;color:rgba(255,255,255,.55)}
+.pill{display:inline-block;background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:8px 18px;border-radius:999px;margin-bottom:16px}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:1100px}
+.vcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden}
+.vcard .frame{position:relative;padding-top:56.25%;background:#000}
+.vcard iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vcard .cap{padding:12px 14px}
+.vcard .cap .tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+.vcard .cap .t{font-size:14px;font-weight:600;margin-top:4px;line-height:1.4}
+.vcard .cap .d{font-size:12.5px;color:#aeb9c6;margin-top:4px;line-height:1.45}
+@media(max-width:640px){.vgrid{grid-template-columns:1fr}.slide{padding:40px 6vw 120px}}
+.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:18px;padding:16px 34px;border-radius:12px;margin-top:8px}
+.btn:hover{filter:brightness(1.12)}
+.urlbox{margin-top:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:14px 18px;font-size:15px;word-break:break-all;max-width:700px}
+.controls{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 4vw;background:linear-gradient(180deg,transparent,rgba(5,8,15,.92) 40%)}
+.navbtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:16px;font-weight:600;padding:10px 22px;border-radius:999px;cursor:pointer}
+.navbtn:hover{background:var(--accent);border-color:var(--accent)}
+.navbtn:disabled{opacity:.3;cursor:default}
+.counter{font-size:14px;color:#aeb9c6;font-weight:600;white-space:nowrap}
+.dots{display:flex;gap:6px;overflow-x:auto;max-width:44vw;padding:4px}
+.dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.22);cursor:pointer;border:0;padding:0}
+.dot.on{background:var(--accent);transform:scale(1.25)}
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--accent);z-index:11;width:0;transition:width .3s}
+.steps{display:flex;flex-direction:column;gap:12px;max-width:900px}
+.step{display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:14px 18px}
+.step .n{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:16px}
+.step .tx{font-size:clamp(15px,2vw,18px);line-height:1.55}
+table{border-collapse:collapse;max-width:900px;width:100%;font-size:clamp(13px,1.9vw,16px)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.12);line-height:1.5}
+th{color:var(--accent);text-transform:uppercase;font-size:12px;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="deck">
+<section class="slide cover active"><div class="bg" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Vilnius_University_Great_Courtyard_1%2C_Vilnius%2C_Lithuania_-_Diliff.jpg/1280px-Vilnius_University_Great_Courtyard_1%2C_Vilnius%2C_Lithuania_-_Diliff.jpg')"></div><div class="shade"></div><div class="inner"><div class="pill">State-funded PhD Lithuania</div><h1>Panduan PhD Lithuania</h1><p class="sub">State-funded PhD places di Lithuania: bebas biaya kuliah + beasiswa negara €1.330–€1.540/bulan — via kompetisi admisi doktoral per universitas.</p><a class="btn" href="https://studyin.lt/institutions/lithuanian-energy-institute/" target="_blank" rel="noopener">Kunjungi Situs Resmi</a></div><div class="credit">Foto: Wikimedia Commons (Diliff)</div></section><section class="slide"><div><span class="kicker">Gambaran Program</span><h2>State-funded PhD Lithuania</h2><ul><li><b>Lithuanian state-funded PhD places</b> — tempat doktoral yang didanai negara: <b>bebas biaya kuliah</b> + <b>beasiswa negara</b>.</li><li>Contoh terverifikasi: <b>Lithuanian Energy Institute (LEI), Kaunas</b> — bidang energi, lingkungan, dan ekonomi (info: study@lei.lt).</li><li>Universitas lain yang membuka admisi doktoral: <b>Vilnius University, Kaunas University of Technology (KTU)</b>, dan lainnya.</li><li>Terbuka untuk pendaftar asing, termasuk WNI — seleksi berbasis kompetisi akademik.</li><li>Portal nasional: <b>studyin.lt</b> — direktori institusi & program.</li></ul><div class="note"><b>Catatan jujur:</b> tidak ada program &ldquo;beasiswa S3 Lithuania untuk WNI&rdquo; yang <b>terpusat</b> seperti LPDP/Stipendium Hungaricum. Pendanaan diperoleh lewat <b>kompetisi admisi doktoral di tiap institusi</b> — tempat state-funded <b>terbatas</b>. Kelola ekspektasi: ini jalur nyata tapi kompetitif.</div></div></section><section class="slide"><div><span class="kicker">Cakupan Pendanaan</span><h2>Apa yang Ditanggung?</h2><ul><li><b>Bebas biaya kuliah</b> penuh untuk state-funded place.</li><li><b>Beasiswa negara:</b> ±<b>€1.330/bulan</b> (tahun pertama) → ±<b>€1.540/bulan</b> (tahun ke-2–4).</li><li>Durasi standar program doktoral: <b>4 tahun</b>.</li><li>Catatan: angka dapat sedikit berbeda antar institusi/tahun — konfirmasi di pengumuman admisi tiap universitas.</li><li>Biaya hidup Lithuania relatif <b>lebih murah</b> dibanding Eropa Barat — beasiswa di atas cukup untuk hidup layak single.</li></ul></div></section><section class="slide"><div><span class="kicker">Eligibilitas</span><h2>Siapa yang Bisa Mendaftar?</h2><ul><li>Bergelar <b>master</b> di bidang relevan (atau akan lulus sebelum pendaftaran).</li><li>Memenuhi syarat akademik tiap institusi — umumnya IPK baik + latar riset yang selaras.</li><li>Bahasa Inggris akademik (program doktoral umumnya berbahasa Inggris).</li><li>Terbuka untuk <b>pendaftar asing</b>; tidak ada kewarganegaraan yang dikecualikan.</li><li>Untuk LEI: latar teknik/energi/lingkungan/ekonomi sesuai topik disertasi yang dibuka.</li></ul></div></section><section class="slide"><div><span class="kicker">Format Seleksi</span><h2>Tahapan Kompetisi Admisi</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx"><b>Pantau pengumuman admisi doktoral</b> di laman tiap universitas/institut (biasanya 1–2 kali setahun).</div></div><div class="step"><div class="n">2</div><div class="tx">Siapkan: ijazah & transkrip, CV, <b>research proposal</b>, motivation letter, publikasi, referensi.</div></div><div class="step"><div class="n">3</div><div class="tx"><b>Hubungi calon supervisor</b>/departemen sebelum mendaftar — kecocokan topik sangat menentukan.</div></div><div class="step"><div class="n">4</div><div class="tx">Submit aplikasi → <b>evaluasi berkas + wawancara</b> (sering online untuk pelamar asing).</div></div><div class="step"><div class="n">5</div><div class="tx">Pengumuman → kandidat terbaik mendapat <b>state-funded place</b>; sisanya mungkin ditawari self-funded.</div></div></div></div></section><section class="slide"><div><span class="kicker">Strategi 1</span><h2>Memetakan Institusi & Topik</h2><ul><li>Mulai dari <b>studyin.lt</b> → daftar institusi → buka laman doctoral studies tiap kampus.</li><li>Fokus: <b>LEI</b> (energi/lingkungan), <b>Vilnius University</b> (berbagai bidang, 160+ tim riset), <b>KTU</b> (teknik/teknologi).</li><li>Catat <b>topik disertasi yang dibuka</b> tiap periode — berbeda tiap tahun tergantung dana & supervisor.</li><li>Buat spreadsheet: institusi, topik, deadline, kontak, syarat — pantau tiap 2 minggu.</li></ul></div></section><section class="slide"><div><span class="kicker">Strategi 2</span><h2>Research Proposal yang Menang</h2><ul><li>Struktur: latar & gap → tujuan → metodologi → kebaruan → rencana publikasi → timeline 4 tahun.</li><li>Selaraskan dengan <b>topik yang diumumkan</b> institusi — proposal &ldquo;di luar topik&rdquo; sulit menang kompetisi.</li><li>Tonjolkan pengalaman riset relevan (proyek, publikasi, konferensi) — kompetisi state-funded menilai rekam riset.</li><li>Minta review dosen pembimbing; bahasa Inggris akademik rapi.</li></ul></div></section><section class="slide"><div><span class="kicker">Strategi 3</span><h2>Kontak Supervisor & Berkas</h2><ul><li>Email calon supervisor: perkenalan + ketertarikan pada topiknya + CV + ringkasan proposal (1 hal.).</li><li>Dukungan informal supervisor <b>menaikkan peluang</b> signifikan di kompetisi terbatas.</li><li>Siapkan dokumen: ijazah & transkrip (terjemahan Inggris bila perlu), CV, motivation letter, daftar publikasi.</li><li>Tanyakan juga opsi <b>proyek berdana</b> (funded project positions) — kadang ada di luar kuota state-funded.</li></ul></div></section><section class="slide"><div><span class="kicker">Timeline</span><h2>Rencana Persiapan 9–12 Bulan</h2><div class="steps"><div class="step"><div class="n">1</div><div class="tx"><b>B-12 s/d B-9:</b> petakan institusi & topik; hubungi calon supervisor; rapikan publikasi.</div></div><div class="step"><div class="n">2</div><div class="tx"><b>B-8 s/d B-6:</b> tulis research proposal & motivation letter; siapkan terjemahan dokumen.</div></div><div class="step"><div class="n">3</div><div class="tx"><b>B-5 s/d B-3:</b> pantau pengumuman admisi; finalisasi berkas.</div></div><div class="step"><div class="n">4</div><div class="tx"><b>B-2 s/d B-1:</b> submit aplikasi; ikuti wawancara.</div></div><div class="step"><div class="n">5</div><div class="tx"><b>Setelah diterima:</b> urus visa pelajar (TRP), akomodasi, dan keberangkatan.</div></div></div></div></section><section class="slide"><div><span class="kicker">Checklist</span><h2>Checklist Dokumen</h2><ul><li>Ijazah & transkrip S2 (+S1 bila diminta) — terjemahan Inggris bila perlu.</li><li>Research proposal (sesuai topik yang diumumkan).</li><li>Motivation letter & CV akademik.</li><li>Daftar publikasi, penghargaan, sertifikat.</li><li>Surat rekomendasi (1–2, sesuai ketentuan institusi).</li><li>Paspor; bukti bahasa Inggris (bila disyaratkan).</li></ul></div></section><section class="slide"><div><span class="kicker">Keuangan</span><h2>Beasiswa vs Biaya Hidup</h2><ul><li>Beasiswa €1.330–1.540/bln — di Vilnius/Kaunas cukup untuk <b>hidup layak single</b> (sewa kamar €250–450/bln).</li><li>Dibanding Jerman/Belanda nominalnya lebih kecil — tapi <b>biaya hidup Lithuania juga jauh lebih rendah</b>.</li><li>Tidak ada tuition untuk state-funded place — pengeluaran utama hanya biaya hidup.</li><li>Siapkan dana awal: tiket, visa/TRP, deposit sewa 1–2 bulan pertama.</li></ul></div></section><section class="slide"><div><span class="kicker">Institusi</span><h2>Peta Institusi Tujuan</h2><table><tr><th>Institusi</th><th>Kekuatan Bidang</th><th>Info/Kontak</th></tr><tr><td>Lithuanian Energy Institute (LEI), Kaunas</td><td>Energi, lingkungan, ekonomi</td><td>study@lei.lt</td></tr><tr><td>Vilnius University</td><td>Berbagai bidang; 160+ tim riset</td><td>vu.lt — laman doctoral studies</td></tr><tr><td>Kaunas Univ. of Technology (KTU)</td><td>Teknik & teknologi</td><td>ktu.edu — laman doctoral studies</td></tr></table><div class="note">Jumlah state-funded place & topik disertasi <b>berubah tiap periode</b> — cek pengumuman admisi masing-masing institusi, jangan mengandalkan data tahun lalu.</div></div></section><section class="slide"><div><span class="kicker">Video Panduan</span><h2>Tonton Dulu: 4 Video Kunci</h2><div class="vgrid"><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/1zM_LdKYZxw?rel=0" title="PhD di Lithuania: panduan langkah demi langkah" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Cara Daftar 1</div><div class="t">PhD di Lithuania: panduan langkah demi langkah</div><div class="d">Cara menemukan peluang PhD, syarat, pendanaan, dan strategi visa — lengkap dengan sesi tanya jawab.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/OVOXWSQoeHA?rel=0" title="Vilnius University: program &amp; pendaftaran" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Cara Daftar 2</div><div class="t">Vilnius University: program &amp; pendaftaran</div><div class="d">Gambaran universitas No.1 Lithuania: program PhD, beasiswa, dan cara mendaftar untuk intake berikutnya.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/fSPMc6SRaCg?rel=0" title="Tur Vilnius University (gedung bersejarah &amp; fasilitas)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Suasana Kampus</div><div class="t">Tur Vilnius University (gedung bersejarah &amp; fasilitas)</div><div class="d">Tur kampus Vilnius University — dari bangunan bersejarah 1579 hingga fasilitas modern.</div></div></div><div class="vcard"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/iUA7YFjUbHs?rel=0" title="Wawancara PhD student di Lithuania" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><div class="cap"><div class="tag">Testimoni</div><div class="t">Wawancara PhD student di Lithuania</div><div class="d">Wawancara jujur dengan mahasiswa PhD di Lithuania: aturan baru, peluang riset, biaya hidup, dan pengalaman nyata.</div></div></div></div><div class="note"><b>Catatan:</b> video-video di atas adalah materi publik di YouTube dari kreator/pihak ketiga — gunakan sebagai referensi awal, dan selalu verifikasi detail terbaru di situs resmi.</div></div></section><section class="slide"><div><span class="kicker">Sumber Resmi</span><h2>Sumber Informasi Resmi</h2><ul><li><b>studyin.lt</b> — portal nasional resmi &ldquo;Study in Lithuania&rdquo; (direktori institusi & program).</li><li><b>Lithuanian Energy Institute</b> — halaman institusi di studyin.lt; kontak: <b>study@lei.lt</b>.</li><li>Laman doctoral studies: <b>Vilnius University (vu.lt), KTU (ktu.edu)</b>.</li><li>Kedutaan Lithuania — info visa pelajar/TRP.</li><li>Selalu verifikasi ke laman institusi — pengumuman admisi & jumlah state-funded place <b>berubah tiap periode</b>.</li></ul></div></section><section class="slide"><div><span class="kicker">Tips Wawancara</span><h2>Tips Wawancara Admisi</h2><ul><li>Kuasai proposal: siap menjelaskan gap, metodologi, dan rencana publikasi.</li><li>Tunjukkan pengetahuan tentang <b>topik & grup riset</b> institusi tujuan.</li><li>Jelaskan kenapa memilih Lithuania & institusi itu — pewawancara menilai keseriusan.</li><li>Siapkan pertanyaan: ekspektasi publikasi, fasilitas lab, kolaborasi, dukungan konferensi.</li><li>Komunikasi lugas & profesional; tes koneksi sebelum wawancara online.</li></ul></div></section><section class="slide"><div><span class="kicker">Setelah Diterima</span><h2>Setelah Diterima: Visa & Keberangkatan</h2><ul><li>Urus <b>visa pelajar / Temporary Residence Permit (TRP)</b> dengan Letter of Acceptance.</li><li>Tingkat keberhasilan visa pelajar Lithuania tergolong <b>tinggi</b> untuk berkas lengkap.</li><li>Cari akomodasi: asrama universitas (terbatas) atau sewa kamar — mulai sebelum tiba.</li><li>Pasangan diizinkan ikut (spouse allowed) — hitung anggaran tambahan.</li><li>Pelajari dasar kehidupan lokal: transport, cuaca dingin, dan layanan kesehatan mahasiswa.</li></ul></div></section><section class="slide"><div><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (1)</h2><ul><li><b>Apakah ada beasiswa S3 Lithuania terpusat untuk WNI?</b><br><b>Tidak ada.</b> Pendanaan via <b>kompetisi admisi doktoral per institusi</b> (state-funded places, terbatas).</li><li><b>Apakah WNI eligible?</b><br>Ya — state-funded places terbuka untuk pendaftar asing.</li><li><b>Berapa beasiswanya?</b><br>±<b>€1.330/bln</b> (tahun 1) → ±<b>€1.540/bln</b> (tahun 2–4) + bebas kuliah.</li></ul></div></section><section class="slide"><div><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (2)</h2><ul><li><b>Institusi mana yang pasti membuka?</b><br>Tidak ada yang &ldquo;pasti&rdquo; tiap tahun — contoh terverifikasi: <b>LEI</b>; cek juga VU & KTU tiap periode.</li><li><b>Apakah IELTS wajib?</b><br>Seringkali <b>tidak wajib</b> — kemampuan Inggris dinilai dari dokumen/wawancara. Cek tiap pengumuman.</li><li><b>Bisakah membawa keluarga?</b><br>Bisa (spouse allowed) — siapkan anggaran tambahan di luar beasiswa.</li></ul></div></section><section class="slide"><div><span class="kicker">Hindari</span><h2>Kesalahan Umum yang Harus Dihindari</h2><ul><li>Mengira ada &ldquo;beasiswa S3 Lithuania&rdquo; terpusat yang tinggal diisi formulirnya.</li><li>Mendaftar tanpa mengecek <b>topik disertasi yang dibuka</b> periode itu.</li><li>Proposal generik yang tidak selaras dengan kekuatan riset institusi.</li><li>Tidak menghubungi calon supervisor — di kompetisi terbatas, ini merugikan.</li><li>Hanya memantau satu institusi — <b>pantau beberapa kampus paralel</b> karena kuota tiap tempat sedikit.</li></ul></div></section><section class="slide closing"><div><span class="kicker">Langkah Berikutnya</span><h2>Mulai Pendaftaran Resmi</h2><ul><li>Semua informasi di deck ini merujuk ke sumber resmi. Jangan membayar ke pihak ketiga mana pun — pendaftaran program ini <b>tidak dipungut biaya perantara</b>.</li><li>Siapkan dokumen dari checklist, hubungi calon supervisor lebih awal, dan pantau tanggal penting di situs resmi.</li></ul><a class="btn" href="https://studyin.lt/institutions/lithuanian-energy-institute/" target="_blank" rel="noopener">Buka Situs Resmi Pendaftaran</a><div class="urlbox">https://studyin.lt/institutions/lithuanian-energy-institute/</div></div></section>
+</div>
+<div class="controls">
+<button class="navbtn" id="prev">&#8592; Sebelumnya</button>
+<div class="dots" id="dots"></div>
+<span class="counter" id="counter"></span>
+<button class="navbtn" id="next">Berikutnya &#8594;</button>
+</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let cur=0;
+const dots=document.getElementById('dots'),counter=document.getElementById('counter'),prog=document.getElementById('prog');
+slides.forEach((_,i)=>{const d=document.createElement('button');d.className='dot';d.setAttribute('aria-label','Slide '+(i+1));d.onclick=()=>go(i);dots.appendChild(d);});
+function go(i){cur=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,j)=>s.classList.toggle('active',j===cur));
+[...dots.children].forEach((d,j)=>d.classList.toggle('on',j===cur));
+counter.textContent=(cur+1)+' / '+slides.length;prog.style.width=((cur+1)/slides.length*100)+'%';
+document.getElementById('prev').disabled=cur===0;document.getElementById('next').disabled=cur===slides.length-1;
+const act=slides[cur];if(act.scrollTo)act.scrollTo(0,0);}
+document.getElementById('prev').onclick=()=>go(cur-1);document.getElementById('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(cur+1);}if(e.key==='ArrowLeft')go(cur-1);});
+let tx=0;document.addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>60){dx<0?go(cur+1):go(cur-1);}},{passive:true});
+go(0);
+</script>
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/s3/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan DPhil Clarendon Oxford", "slug": "deck-s3-inggris"},{"label": "Panduan PhD Bergaji Belanda", "slug": "deck-s3-belanda"},{"label": "Panduan PhD Bergaji Denmark", "slug": "deck-s3-denmark"},{"label": "Panduan PhD Bergaji Finlandia", "slug": "deck-s3-finlandia"},{"label": "Panduan PhD Bergaji Swedia", "slug": "deck-s3-swedia"},{"label": "Panduan PhD CGRS-D Kanada", "slug": "deck-s3-kanada"},{"label": "Panduan PhD FCT Portugal", "slug": "deck-s3-portugal"},{"label": "Panduan PhD KAIST Korea", "slug": "deck-s3-kaist"},{"label": "Panduan PhD KAUST Arab Saudi", "slug": "deck-s3-arabsaudi"},{"label": "Panduan PhD Lithuania", "slug": "deck-s3-lithuania"},{"label": "Panduan PhD MBZUAI UEA", "slug": "deck-s3-uea"},{"label": "Panduan PhD Monash Australia", "slug": "deck-s3-monash"},{"label": "Panduan PhD NTU Singapura", "slug": "deck-s3-ntu"},{"label": "Panduan PhD NUS Singapura", "slug": "deck-s3-nus"},{"label": "Panduan PhD POSTECH Korea", "slug": "deck-s3-postech"},{"label": "Panduan PhD TDTU Vietnam", "slug": "deck-s3-vietnam"},{"label": "Panduan PhD UNSW Australia", "slug": "deck-s3-unsw"},{"label": "Panduan PhD la Caixa Spanyol", "slug": "deck-s3-spanyol"},{"label": "Panduan S3 AMCI Maroko", "slug": "deck-s3-maroko"},{"label": "Panduan S3 Beasiswa Rusia", "slug": "deck-s3-rusia"},{"label": "Panduan S3 CSC Tiongkok", "slug": "deck-s3-csc"},{"label": "Panduan S3 Chulalongkorn Thailand", "slug": "deck-s3-thailand"},{"label": "Panduan S3 DAAD Jerman", "slug": "deck-s3-jerman"},{"label": "Panduan S3 Fulbright AS", "slug": "deck-s3-as"},{"label": "Panduan S3 GKS Korea", "slug": "deck-s3-gks"},{"label": "Panduan S3 GOIPG Irlandia", "slug": "deck-s3-irlandia"},{"label": "Panduan S3 Heydar Aliyev Azerbaijan", "slug": "deck-s3-azerbaijan"},{"label": "Panduan S3 ICCR India", "slug": "deck-s3-india"},{"label": "Panduan S3 Kazakhstan", "slug": "deck-s3-kazakhstan"},{"label": "Panduan S3 LPDP Doktor", "slug": "deck-s3-indonesia"},{"label": "Panduan S3 MAECI Italia", "slug": "deck-s3-italia"},{"label": "Panduan S3 MEXT Jepang", "slug": "deck-s3-mext"},{"label": "Panduan S3 Qatar University", "slug": "deck-s3-qatar"},{"label": "Panduan S3 Rumania", "slug": "deck-s3-rumania"},{"label": "Panduan S3 Sophia University Jepang", "slug": "deck-s3-sophia"},{"label": "Panduan S3 Stipendium Hungaricum", "slug": "deck-s3-hungaria"},{"label": "Panduan S3 TaiwanICDF Taiwan", "slug": "deck-s3-taiwan"},{"label": "Panduan S3 Türkiye Burslari", "slug": "deck-s3-turkiye"},{"label": "Panduan S3 World in Serbia", "slug": "deck-s3-serbia"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script></body>
+</html>
