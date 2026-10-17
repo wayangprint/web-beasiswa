@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="data:," />
+  <title>MEXT Undergraduate — Panduan Beasiswa S1 Jepang</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --navy: #1a1446;
+      --navy-2: #232a68;
+      --purple: #7c3aed;
+      --purple-2: #a855f7;
+      --ink: #191632;
+      --muted: #615d76;
+      --paper: #f6f5fb;
+      --surface: #ffffff;
+      --soft: #ece9f7;
+      --line: #dcd7ea;
+      --good: #0c7b62;
+      --warn: #b85b00;
+      --bad: #b2344a;
+      --shadow: 0 18px 50px rgba(26, 20, 70, .13);
+      --shadow-soft: 0 8px 24px rgba(26, 20, 70, .09);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f3f1fb;
+        --muted: #c6c1d8;
+        --paper: #0f0d1e;
+        --surface: #19162a;
+        --soft: #26213b;
+        --line: #3e3855;
+        --good: #53d5b3;
+        --warn: #ffbc73;
+        --bad: #ff91a4;
+        --shadow: 0 18px 50px rgba(0, 0, 0, .32);
+        --shadow-soft: 0 8px 24px rgba(0, 0, 0, .2);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-height: 100%; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, a { font: inherit; }
+    button { color: inherit; }
+    .app { height: 100dvh; min-height: 520px; display: grid; grid-template-rows: 6px 1fr auto; }
+    .progress-track { background: var(--line); overflow: hidden; }
+    .progress-bar { width: 5%; height: 100%; background: linear-gradient(90deg, var(--navy-2), var(--purple), var(--purple-2)); transition: width .28s ease; }
+    .stage { position: relative; overflow: hidden; }
+    .slide {
+      position: absolute; inset: 0; padding: clamp(24px, 4vw, 62px) clamp(24px, 6vw, 96px);
+      display: grid; grid-template-rows: auto 1fr auto; gap: clamp(18px, 2.8vh, 30px);
+      opacity: 0; visibility: hidden; transform: translateX(30px); pointer-events: none;
+      transition: opacity .28s ease, transform .32s ease, visibility 0s linear .32s;
+      overflow-y: auto; overscroll-behavior: contain;
+      background:
+        radial-gradient(circle at 93% 8%, color-mix(in srgb, var(--purple) 9%, transparent), transparent 26%),
+        var(--paper);
+    }
+    .slide.active { opacity: 1; visibility: visible; transform: none; pointer-events: auto; transition-delay: 0s; }
+    .slide.before { transform: translateX(-30px); }
+    .slide.cover {
+      color: #fff;
+      background:
+        radial-gradient(circle at 84% 25%, rgba(168,85,247,.44), transparent 28%),
+        radial-gradient(circle at 70% 85%, rgba(124,58,237,.3), transparent 28%),
+        linear-gradient(135deg, #141036 0%, var(--navy-2) 58%, #351365 100%);
+    }
+    .slide.cover::after {
+      content: ""; position: absolute; width: min(48vw, 560px); aspect-ratio: 1; right: -11vw; bottom: -26%; border-radius: 50%;
+      border: clamp(28px, 5vw, 72px) solid rgba(255,255,255,.09); pointer-events: none;
+    }
+    .slide-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; position: relative; z-index: 1; }
+    .pill { display: inline-flex; align-items: center; max-width: 100%; padding: 8px 14px; border-radius: 999px; color: #fff; background: linear-gradient(100deg, var(--navy-2), var(--purple)); font-size: clamp(11px, 1.3vw, 14px); font-weight: 800; letter-spacing: .055em; text-transform: uppercase; }
+    .cover .pill { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.24); }
+    .deck-mark { font-size: 12px; font-weight: 800; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+    .cover .deck-mark { color: rgba(255,255,255,.72); }
+    .content { position: relative; z-index: 1; display: grid; align-content: center; min-height: 0; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 22px; max-width: 900px; font-size: clamp(42px, 7vw, 84px); line-height: .96; letter-spacing: -.055em; }
+    h2 { margin-bottom: 22px; max-width: 900px; font-size: clamp(31px, 4.7vw, 58px); line-height: 1.02; letter-spacing: -.045em; color: var(--navy); }
+    @media (prefers-color-scheme: dark) { h2 { color: #ddd7ff; } }
+    h3 { margin-bottom: 8px; font-size: clamp(18px, 2vw, 24px); line-height: 1.15; }
+    .lead { max-width: 800px; margin-bottom: 24px; font-size: clamp(18px, 2.2vw, 28px); line-height: 1.42; color: var(--muted); }
+    .cover .lead { max-width: 680px; color: rgba(255,255,255,.78); }
+    .cover-kicker { margin: 0 0 16px; font-size: clamp(16px, 1.8vw, 22px); font-weight: 800; color: #d8c5ff; }
+    .cover-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .cover-meta span { padding: 9px 13px; border-radius: 10px; background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.13); font-size: 14px; font-weight: 700; }
+    .grid-2, .grid-3, .split { display: grid; gap: 16px; }
+    .grid-2, .split { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .card { padding: clamp(18px, 2.4vw, 28px); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow-soft); border: 1px solid var(--line); }
+    .card.emph { color: #fff; border: 0; background: linear-gradient(140deg, var(--navy-2), var(--purple)); }
+    .card.emph .muted { color: rgba(255,255,255,.75); }
+    .card h3:last-child, .card p:last-child, .card ul:last-child { margin-bottom: 0; }
+    .metric { display: block; margin-bottom: 6px; font-size: clamp(34px, 4.7vw, 60px); line-height: 1; font-weight: 900; letter-spacing: -.05em; color: var(--purple); }
+    .emph .metric { color: #fff; }
+    .small-metric { display: block; margin-bottom: 7px; font-size: clamp(24px, 3vw, 36px); font-weight: 900; line-height: 1; color: var(--navy-2); }
+    @media (prefers-color-scheme: dark) { .small-metric { color: #bca9ff; } }
+    .muted { color: var(--muted); }
+    .mini { font-size: 12px; line-height: 1.5; }
+    .note { padding: 14px 16px; border-radius: 14px; background: var(--soft); color: var(--muted); font-size: clamp(13px, 1.5vw, 16px); line-height: 1.45; }
+    .note strong { color: var(--ink); }
+    .quote { max-width: 850px; font-size: clamp(24px, 3.4vw, 44px); font-weight: 800; letter-spacing: -.035em; line-height: 1.18; }
+    ul.clean { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
+    ul.clean li { position: relative; padding-left: 27px; line-height: 1.42; }
+    ul.clean li::before { content: ""; position: absolute; left: 0; top: .52em; width: 10px; height: 10px; border-radius: 3px; background: linear-gradient(135deg, var(--navy-2), var(--purple)); }
+    ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; counter-reset: step; }
+    ol.steps li { counter-increment: step; display: grid; grid-template-columns: 46px 1fr; gap: 14px; align-items: start; }
+    ol.steps li::before { content: counter(step, decimal-leading-zero); display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; color: #fff; background: linear-gradient(135deg, var(--navy-2), var(--purple)); font-weight: 900; }
+    ol.steps strong { display: block; margin-bottom: 4px; }
+    .timeline { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .timeline::before { content: ""; position: absolute; left: 7%; right: 7%; top: 19px; height: 3px; background: var(--line); }
+    .timepoint { position: relative; padding-top: 54px; }
+    .timepoint::before { content: ""; position: absolute; top: 10px; left: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); border: 6px solid var(--purple); box-shadow: 0 0 0 5px var(--paper); }
+    .timepoint.current::before { border-color: var(--bad); }
+    .timepoint strong { display: block; margin-bottom: 6px; color: var(--navy-2); }
+    @media (prefers-color-scheme: dark) { .timepoint strong { color: #bca9ff; } }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 9px; }
+    .tag { display: inline-flex; padding: 8px 11px; border-radius: 999px; background: var(--soft); color: var(--ink); font-size: 13px; font-weight: 750; }
+    .status { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 13px; font-size: 13px; font-weight: 850; color: var(--good); }
+    .status::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 16%, transparent); }
+    .status.warn { color: var(--warn); }
+    .status.bad { color: var(--bad); }
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .compare .card:first-child { border-top: 6px solid var(--good); }
+    .compare .card:last-child { border-top: 6px solid var(--warn); }
+    .check-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .check-item { display: flex; gap: 12px; align-items: flex-start; padding: 14px 15px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); }
+    .check-item span:first-child { flex: 0 0 22px; width: 22px; height: 22px; border-radius: 7px; border: 2px solid var(--purple); }
+    .exam-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
+    .exam { padding: 18px; text-align: center; border-radius: 18px; background: var(--soft); }
+    .exam b { display: block; font-size: 18px; margin-bottom: 4px; }
+    .video-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .video-card { overflow: hidden; border-radius: 20px; background: #0b0917; box-shadow: var(--shadow); border: 1px solid var(--line); }
+    .video-card iframe { display: block; width: 100%; aspect-ratio: 16/9; border: 0; }
+    .video-card p { margin: 0; padding: 12px 15px 15px; color: #eeeafb; font-size: 13px; }
+    .video-source { display: block; margin-top: 7px; color: #bdb6d3; font-size: 11px; font-weight: 750; letter-spacing: .035em; text-transform: uppercase; }
+    .cta { display: inline-flex; align-items: center; justify-content: center; width: fit-content; min-height: 50px; padding: 0 20px; border-radius: 14px; color: #fff; text-decoration: none; background: linear-gradient(100deg, var(--navy-2), var(--purple)); font-weight: 850; box-shadow: 0 10px 22px rgba(124,58,237,.26); }
+    .cta:hover, .cta:focus-visible { filter: brightness(1.08); outline: 3px solid color-mix(in srgb, var(--purple) 35%, transparent); outline-offset: 3px; }
+    .source { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.4; }
+    .cover .source { color: rgba(255,255,255,.62); }
+    .controls {
+      position: relative; z-index: 20; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 14px;
+      padding: 12px max(18px, env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+      background: var(--surface); border-top: 1px solid var(--line);
+    }
+    .ctrl-group { display: flex; align-items: center; gap: 9px; }
+    .ctrl-group:last-child { justify-content: flex-end; }
+    .nav-btn, .toc-btn, .close-btn {
+      min-height: 42px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-soft); cursor: pointer; font-weight: 800;
+    }
+    .nav-btn { min-width: 118px; padding: 0 15px; }
+    .nav-btn.primary { color: #fff; border: 0; background: linear-gradient(100deg, var(--navy-2), var(--purple)); }
+    .nav-btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+    .toc-btn { width: 44px; padding: 0; font-size: 18px; }
+    .counter { min-width: 64px; text-align: center; font-variant-numeric: tabular-nums; font-weight: 900; color: var(--navy-2); }
+    @media (prefers-color-scheme: dark) { .counter { color: #c9bdff; } }
+    .toc {
+      position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 20px; background: rgba(10,8,26,.72); backdrop-filter: blur(8px);
+      opacity: 0; visibility: hidden; transition: opacity .2s ease, visibility 0s linear .2s;
+    }
+    .toc.open { opacity: 1; visibility: visible; transition-delay: 0s; }
+    .toc-panel { width: min(1050px, 100%); max-height: min(82dvh, 780px); overflow: auto; padding: clamp(20px, 3vw, 32px); border-radius: 26px; background: var(--paper); box-shadow: 0 30px 90px rgba(0,0,0,.35); }
+    .toc-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+    .toc-top h2 { margin: 0; font-size: clamp(28px, 4vw, 42px); }
+    .close-btn { width: 44px; padding: 0; font-size: 24px; }
+    .toc-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .toc-item { min-height: 92px; padding: 14px; text-align: left; border-radius: 16px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); cursor: pointer; }
+    .toc-item:hover, .toc-item:focus-visible { border-color: var(--purple); outline: 2px solid color-mix(in srgb, var(--purple) 20%, transparent); }
+    .toc-item.active { color: #fff; border-color: transparent; background: linear-gradient(135deg, var(--navy-2), var(--purple)); }
+    .toc-num { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 900; opacity: .72; }
+    .toc-title { font-size: 13px; font-weight: 800; line-height: 1.25; }
+    @media (max-width: 760px) {
+      .app { min-height: 460px; }
+      .slide { padding: 22px 20px 18px; gap: 16px; overflow-x: hidden; }
+      .slide h1, .slide h2, .slide p, .slide li { overflow-wrap: anywhere; }
+      .slide-head { align-items: flex-start; }
+      .deck-mark { display: none; }
+      .grid-3, .grid-2, .split, .compare, .video-grid, .check-grid { grid-template-columns: 1fr; }
+      .content { align-content: start; }
+      .card { border-radius: 18px; padding: 18px; }
+      .timeline { grid-template-columns: 1fr 1fr; }
+      .timeline::before { display: none; }
+      .timepoint { padding-top: 34px; }
+      .timepoint::before { top: 0; }
+      .exam-row { grid-template-columns: 1fr; }
+      .controls { grid-template-columns: 1fr auto 1fr; padding-top: 9px; }
+      .nav-btn { min-width: 44px; width: 44px; padding: 0; font-size: 0; }
+      .nav-btn::after { font-size: 22px; }
+      #prevBtn::after { content: "‹"; }
+      #nextBtn::after { content: "›"; }
+      .toc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .toc-panel { border-radius: 20px; }
+    }
+    @media (max-height: 690px) and (min-width: 761px) {
+      .slide { padding-top: 28px; padding-bottom: 20px; gap: 14px; }
+      h2 { margin-bottom: 14px; }
+      .card { padding: 18px; }
+      .lead { margin-bottom: 14px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .slide, .progress-bar, .toc { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" aria-label="Presentasi MEXT Undergraduate Scholarship">
+    <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="stage" id="stage">
+      <section class="slide cover active" data-title="MEXT Undergraduate" aria-hidden="false">
+        <header class="slide-head"><span class="pill">Panduan Beasiswa S1</span><span class="deck-mark">Jepang · Embassy Recommendation</span></header>
+        <div class="content">
+          <p class="cover-kicker">Kuliah penuh. Persiapan bahasa. Pengalaman lintas budaya.</p>
+          <h1>MEXT Undergraduate Scholarship</h1>
+          <p class="lead">Peta jalan beasiswa pemerintah Jepang untuk pelajar Indonesia melalui jalur rekomendasi Kedutaan Besar.</p>
+          <div class="cover-meta"><span>20 slide</span><span>Intake 2027: sudah tutup</span><span>Siklus berikutnya: diperkirakan Mei 2027</span></div>
+        </div>
+        <p class="source">Ringkasan riset MEXT · dikompilasi 15 Oktober 2026 · Sumber utama: Kedutaan Besar Jepang di Indonesia</p>
+      </section>
+
+      <section class="slide" data-title="Sekilas program" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Gambaran besar</span><span class="deck-mark">02</span></header>
+        <div class="content">
+          <h2>Satu program, dua tahap perjalanan</h2>
+          <div class="grid-2">
+            <article class="card emph"><span class="metric">1 tahun</span><h3>Sekolah persiapan</h3><p class="muted">Bahasa Jepang dan persiapan akademik sebelum masuk universitas.</p></article>
+            <article class="card"><span class="metric">4 tahun</span><h3>Program sarjana</h3><p class="muted">Studi S1 di universitas nasional Jepang setelah tahap persiapan.</p></article>
+          </div>
+          <div class="note" style="margin-top:16px"><strong>Total normal: 5 tahun.</strong> Jalur kedokteran dan kedokteran gigi dapat berlangsung lebih lama.</div>
+        </div>
+        <p class="source">Sumber: ringkasan MEXT Undergraduate, Embassy Recommendation — research report 15 Okt 2026</p>
+      </section>
+
+      <section class="slide" data-title="Kenapa menarik" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Nilai utama</span><span class="deck-mark">03</span></header>
+        <div class="content">
+          <h2>Kenapa MEXT layak diperjuangkan?</h2>
+          <div class="grid-3">
+            <article class="card"><span class="small-metric">Penuh</span><h3>Biaya akademik</h3><p class="muted">Biaya kuliah, penerimaan, dan ujian ditanggung.</p></article>
+            <article class="card"><span class="small-metric">¥117.000</span><h3>Uang saku bulanan</h3><p class="muted">Dukungan hidup bulanan untuk mahasiswa S1.</p></article>
+            <article class="card"><span class="small-metric">PP</span><h3>Tiket pesawat</h3><p class="muted">Perjalanan ekonomi pergi dan pulang sesuai ketentuan program.</p></article>
+          </div>
+          <p class="quote" style="margin:24px 0 0">Bukan sekadar potongan UKT—ini jalur pendanaan menyeluruh untuk membangun fondasi kuliah di Jepang.</p>
+        </div>
+        <p class="source">Sumber nilai cakupan: MEXT Undergraduate notes; jalur Indonesia melalui Kedutaan Besar Jepang</p>
+      </section>
+
+      <section class="slide" data-title="Manfaat: biaya kuliah" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Manfaat akademik</span><span class="deck-mark">04</span></header>
+        <div class="content">
+          <h2>Biaya akademik: ditanggung penuh</h2>
+          <div class="split">
+            <article class="card emph"><span class="metric">100%</span><h3>Tuition</h3><p class="muted">Biaya kuliah program sarjana ditanggung selama masa pendanaan normal.</p></article>
+            <article class="card"><ul class="clean"><li>Biaya penerimaan universitas</li><li>Biaya ujian yang tercakup program</li><li>Biaya sekolah persiapan tahun pertama</li></ul></article>
+          </div>
+          <div class="note" style="margin-top:16px">Pendanaan mengikuti ketentuan MEXT dan durasi program. Selalu cocokkan rincian terbaru dengan pengumuman Kedutaan Besar Jepang.</div>
+        </div>
+        <p class="source">Sumber: MEXT Undergraduate research report — coverage, 15 Okt 2026</p>
+      </section>
+
+      <section class="slide" data-title="Manfaat: uang saku" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Manfaat hidup</span><span class="deck-mark">05</span></header>
+        <div class="content">
+          <h2>Uang saku bulanan</h2>
+          <div class="grid-2">
+            <article class="card emph"><span class="metric">¥117.000</span><h3>per bulan</h3><p class="muted">Nominal untuk penerima MEXT Undergraduate dalam ringkasan siklus ini.</p></article>
+            <article class="card"><h3>Gunakan dengan rencana</h3><ul class="clean"><li>Prioritaskan hunian dan kebutuhan harian</li><li>Siapkan dana awal sebelum pencairan pertama</li><li>Sesuaikan anggaran dengan kota penempatan</li></ul></article>
+          </div>
+          <div class="note" style="margin-top:16px"><strong>Penting:</strong> akomodasi bukan manfaat gratis penuh. Bantuan mencari hunian tidak sama dengan biaya sewa ditanggung.</div>
+        </div>
+        <p class="source">Sumber nominal: MEXT Undergraduate notes (indoriinjapan.com; montessoriline.com; fulbrightscholarships.com), diringkas 15 Okt 2026</p>
+      </section>
+
+      <section class="slide" data-title="Manfaat: tiket & perjalanan" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Mobilitas</span><span class="deck-mark">06</span></header>
+        <div class="content">
+          <h2>Tiket pesawat pergi–pulang</h2>
+          <div class="grid-2">
+            <article class="card"><span class="status">Berangkat</span><h3>Indonesia → Jepang</h3><p class="muted">Tiket kelas ekonomi untuk keberangkatan awal, mengikuti rute dan ketentuan penempatan.</p></article>
+            <article class="card"><span class="status">Pulang</span><h3>Jepang → Indonesia</h3><p class="muted">Tiket kelas ekonomi setelah menyelesaikan program sesuai ketentuan beasiswa.</p></article>
+          </div>
+          <p class="lead" style="margin:22px 0 0">Cakupan ini mengurangi salah satu biaya terbesar studi luar negeri—tetapi detail rute tetap mengikuti aturan resmi.</p>
+        </div>
+        <p class="source">Sumber: MEXT Undergraduate research report — round-trip economy airfare</p>
+      </section>
+
+      <section class="slide" data-title="Persiapan & dukungan" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Tahun pertama</span><span class="deck-mark">07</span></header>
+        <div class="content">
+          <h2>Setahun untuk membangun fondasi</h2>
+          <div class="grid-3">
+            <article class="card"><span class="small-metric">日本語</span><h3>Bahasa Jepang</h3><p class="muted">Persiapan bahasa sebelum memasuki program sarjana.</p></article>
+            <article class="card"><span class="small-metric">01</span><h3>Adaptasi akademik</h3><p class="muted">Menyelaraskan kebiasaan belajar dan kesiapan masuk universitas.</p></article>
+            <article class="card"><span class="small-metric">05</span><h3>Total tahun</h3><p class="muted">Satu tahun persiapan + empat tahun kuliah S1.</p></article>
+          </div>
+          <div class="note" style="margin-top:16px">Program reguler berlangsung 5 tahun; durasi kedokteran atau kedokteran gigi dapat 6–7 tahun termasuk persiapan.</div>
+        </div>
+        <p class="source">Sumber: MEXT Undergraduate notes — duration and preparatory school</p>
+      </section>
+
+      <section class="slide" data-title="Yang tidak ditanggung" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Batas cakupan</span><span class="deck-mark">08</span></header>
+        <div class="content">
+          <h2>Yang perlu kamu anggarkan sendiri</h2>
+          <div class="compare">
+            <article class="card"><span class="status">Ditanggung</span><ul class="clean"><li>Biaya kuliah dan biaya akademik terkait</li><li>Uang saku ¥117.000 per bulan</li><li>Tiket pesawat ekonomi pergi–pulang</li></ul></article>
+            <article class="card"><span class="status warn">Tidak penuh</span><ul class="clean"><li>Akomodasi: dibantu, bukan otomatis gratis</li><li>Pengeluaran pribadi di luar uang saku</li><li>Selisih biaya bila pengeluaran melebihi dukungan</li></ul></article>
+          </div>
+          <div class="note" style="margin-top:16px"><strong>Intinya:</strong> MEXT adalah full scholarship, tetapi tetap butuh disiplin anggaran—terutama untuk hunian.</div>
+        </div>
+        <p class="source">Sumber: MEXT Undergraduate research report — accommodation assistance only, not fully covered</p>
+      </section>
+
+      <section class="slide" data-title="Syarat dasar" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Kelayakan</span><span class="deck-mark">09</span></header>
+        <div class="content">
+          <h2>Tiga pintu masuk utama</h2>
+          <div class="grid-3">
+            <article class="card"><span class="small-metric">ID</span><h3>Kewarganegaraan</h3><p class="muted">Warga negara dari negara yang memiliki hubungan diplomatik dengan Jepang; Indonesia memenuhi.</p></article>
+            <article class="card"><span class="small-metric">02·04·2002</span><h3>Batas lahir</h3><p class="muted">Untuk intake 2027: lahir pada atau setelah 2 April 2002.</p></article>
+            <article class="card"><span class="small-metric">12</span><h3>Tahun sekolah</h3><p class="muted">Telah menuntaskan pendidikan sekolah selama 12 tahun.</p></article>
+          </div>
+          <div class="note" style="margin-top:16px">Batas usia berubah mengikuti tahun intake. Jangan menyalin batas intake 2027 untuk siklus berikutnya tanpa cek pengumuman terbaru.</div>
+        </div>
+        <p class="source">Sumber: MEXT Undergraduate notes — eligibility for 2027 intake</p>
+      </section>
+
+      <section class="slide" data-title="Akademik & bahasa" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Kesiapan seleksi</span><span class="deck-mark">10</span></header>
+        <div class="content">
+          <h2>Bukan hanya nilai rapor</h2>
+          <div class="grid-2">
+            <article class="card"><h3>Kelayakan akademik</h3><ul class="clean"><li>Rekam akademik yang kuat</li><li>Siap mengikuti ujian tulis</li><li>Sehat secara medis untuk menjalani studi</li></ul></article>
+            <article class="card"><h3>Mata ujian jalur Kedubes</h3><div class="exam-row"><div class="exam"><b>Matematika</b><span class="muted mini">fondasi problem-solving</span></div><div class="exam"><b>Inggris</b><span class="muted mini">pemahaman bahasa</span></div><div class="exam"><b>Jepang</b><span class="muted mini">uji kemampuan awal</span></div></div></article>
+          </div>
+          <div class="note" style="margin-top:16px">Tidak boleh sedang menerima beasiswa pemerintah Jepang lain secara bersamaan.</div>
+        </div>
+        <p class="source">Sumber: MEXT Undergraduate notes — written exam subjects and eligibility</p>
+      </section>
+
+      <section class="slide" data-title="Timeline & deadline" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Jadwal</span><span class="deck-mark">11</span></header>
+        <div class="content">
+          <h2>Kapan harus bergerak?</h2>
+          <div class="timeline">
+            <article class="timepoint current"><strong>Mei–Juni 2026</strong><span class="muted">Jendela Indonesia yang biasanya dipakai untuk intake 2027; kini sudah tutup.</span></article>
+            <article class="timepoint"><strong>~Februari 2027</strong><span class="muted">Perkiraan hasil akhir siklus intake 2027.</span></article>
+            <article class="timepoint"><strong>April 2027</strong><span class="muted">Perkiraan kedatangan penerima intake 2027 di Jepang.</span></article>
+            <article class="timepoint"><strong>~Mei 2027</strong><span class="muted">Perkiraan pembukaan siklus berikutnya untuk kedatangan April 2028.</span></article>
+          </div>
+          <div class="note" style="margin-top:18px"><strong>Catatan verifikasi:</strong> deadline spesifik Indonesia tidak terkonfirmasi dalam riset ini. Jendela Mei–Juni adalah pola umum; cek pengumuman Kedubes.</div>
+        </div>
+        <p class="source">Sumber: MEXT Undergraduate notes; pembanding deadline India 25 Mei 2026. Jadwal Indonesia perlu verifikasi resmi.</p>
+      </section>
+
+      <section class="slide" data-title="Cara daftar: langkah 1–2" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Alur pendaftaran</span><span class="deck-mark">12</span></header>
+        <div class="content">
+          <h2>Langkah 1–2: mulai dari sumber resmi</h2>
+          <ol class="steps">
+            <li><div><strong>Pantau pengumuman Kedutaan Besar Jepang</strong><span class="muted">Cari pembukaan MEXT Undergraduate / Gakubu untuk siklus terbaru.</span></div></li>
+            <li><div><strong>Cocokkan kelayakanmu</strong><span class="muted">Periksa batas lahir, 12 tahun pendidikan, status kewarganegaraan, kondisi medis, dan larangan beasiswa ganda.</span></div></li>
+          </ol>
+          <div class="note" style="margin-top:18px">Gunakan hanya petunjuk siklus terbaru. Tanggal dan formulir tahun sebelumnya bisa berubah.</div>
+        </div>
+        <p class="source">Sumber alur: Embassy Recommendation selection path dalam MEXT Undergraduate research report</p>
+      </section>
+
+      <section class="slide" data-title="Cara daftar: langkah 3–4" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Alur pendaftaran</span><span class="deck-mark">13</span></header>
+        <div class="content">
+          <h2>Langkah 3–4: berkas lalu ujian</h2>
+          <ol class="steps" style="counter-reset:step 2">
+            <li><div><strong>Siapkan dan kirim berkas sesuai pengumuman</strong><span class="muted">Pastikan data identitas, riwayat sekolah, dan dokumen akademik konsisten.</span></div></li>
+            <li><div><strong>Hadapi ujian tulis Kedubes</strong><span class="muted">Fokus pada matematika, bahasa Inggris, dan bahasa Jepang.</span></div></li>
+          </ol>
+          <div class="tag-row" style="margin-top:20px"><span class="tag">Matematika</span><span class="tag">Bahasa Inggris</span><span class="tag">Bahasa Jepang</span><span class="tag">Disiplin waktu</span></div>
+        </div>
+        <p class="source">Sumber: MEXT Undergraduate notes — document screening and written exam</p>
+      </section>
+
+      <section class="slide" data-title="Cara daftar: langkah 5" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Alur pendaftaran</span><span class="deck-mark">14</span></header>
+        <div class="content">
+          <h2>Langkah 5: wawancara dan seleksi kedua</h2>
+          <div class="grid-2">
+            <article class="card emph"><span class="small-metric" style="color:#fff">Wawancara</span><h3>Di Kedutaan Besar</h3><p class="muted">Jelaskan alasan studi, kesiapan akademik, dan komitmen menjalani persiapan sebelum S1.</p></article>
+            <article class="card"><span class="small-metric">Tahap 2</span><h3>Seleksi oleh MEXT</h3><p class="muted">Lolos tahap Kedubes belum menjadi hasil akhir; berkas berlanjut ke penilaian MEXT.</p></article>
+          </div>
+          <div class="note" style="margin-top:16px"><strong>Alur resmi:</strong> berkas → ujian tulis → wawancara Kedubes → seleksi tahap kedua MEXT.</div>
+        </div>
+        <p class="source">Sumber: MEXT Undergraduate notes — selection sequence</p>
+      </section>
+
+      <section class="slide" data-title="Checklist dokumen" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Persiapan berkas</span><span class="deck-mark">15</span></header>
+        <div class="content">
+          <h2>Checklist kerja—bukan daftar resmi</h2>
+          <div class="check-grid">
+            <div class="check-item"><span aria-hidden="true"></span><div><strong>Formulir siklus terbaru</strong><div class="muted mini">Unduh dari kanal resmi Kedubes.</div></div></div>
+            <div class="check-item"><span aria-hidden="true"></span><div><strong>Bukti kewarganegaraan</strong><div class="muted mini">Sesuai format yang diminta.</div></div></div>
+            <div class="check-item"><span aria-hidden="true"></span><div><strong>Riwayat 12 tahun pendidikan</strong><div class="muted mini">Bukti kelulusan/pendidikan sesuai pengumuman.</div></div></div>
+            <div class="check-item"><span aria-hidden="true"></span><div><strong>Dokumen akademik</strong><div class="muted mini">Rekam nilai yang menunjukkan kesiapan studi.</div></div></div>
+            <div class="check-item"><span aria-hidden="true"></span><div><strong>Dokumen kondisi medis</strong><div class="muted mini">Ikuti formulir dan prosedur resmi.</div></div></div>
+            <div class="check-item"><span aria-hidden="true"></span><div><strong>Salinan & format tambahan</strong><div class="muted mini">Jumlah, legalisasi, dan terjemahan wajib dicek di panduan.</div></div></div>
+          </div>
+          <div class="note" style="margin-top:14px"><strong>Open question:</strong> riset tidak memuat daftar dokumen resmi lengkap. Jadikan pengumuman Kedubes sebagai satu-satunya checklist final.</div>
+        </div>
+        <p class="source">Dasar checklist: eligibility MEXT dalam research report; rincian dokumen harus diverifikasi di halaman resmi Kedubes</p>
+      </section>
+
+      <section class="slide" data-title="Tips lolos" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Strategi</span><span class="deck-mark">16</span></header>
+        <div class="content">
+          <h2>Persiapkan diri seperti maraton</h2>
+          <div class="grid-3">
+            <article class="card"><span class="small-metric">01</span><h3>Latihan terjadwal</h3><p class="muted">Pisahkan sesi matematika, Inggris, dan Jepang; ukur progres tiap pekan.</p></article>
+            <article class="card"><span class="small-metric">02</span><h3>Jawaban konsisten</h3><p class="muted">Pastikan cerita di berkas sejalan dengan jawaban saat wawancara.</p></article>
+            <article class="card"><span class="small-metric">03</span><h3>Siapkan alasan</h3><p class="muted">Pahami mengapa bidangmu, mengapa Jepang, dan bagaimana kamu akan belajar serius.</p></article>
+          </div>
+          <div class="note" style="margin-top:16px">Tips ini adalah strategi persiapan, bukan kriteria penilaian resmi. Prioritaskan petunjuk Kedubes.</div>
+        </div>
+        <p class="source">Dasar strategi: tahapan ujian dan wawancara dalam MEXT Undergraduate notes</p>
+      </section>
+
+      <section class="slide" data-title="Kesalahan umum" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Hindari ini</span><span class="deck-mark">17</span></header>
+        <div class="content">
+          <h2>Kesalahan yang mudah dicegah</h2>
+          <div class="grid-2">
+            <article class="card"><span class="status bad">Jangan</span><ul class="clean"><li>Memakai batas usia dari intake lama</li><li>Menganggap akomodasi pasti gratis</li><li>Menunggu pengumuman baru mulai belajar</li><li>Mengabaikan mata ujian bahasa Jepang</li></ul></article>
+            <article class="card"><span class="status">Lakukan</span><ul class="clean"><li>Cek tanggal resmi pada siklus berjalan</li><li>Buat anggaran hunian dari uang saku</li><li>Latihan sebelum pendaftaran dibuka</li><li>Periksa konsistensi seluruh dokumen</li></ul></article>
+          </div>
+        </div>
+        <p class="source">Dasar: caveat deadline, accommodation assistance, dan tahapan ujian dalam research report</p>
+      </section>
+
+      <section class="slide" data-title="Pro, kontra & kecocokan" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Penilaian jujur</span><span class="deck-mark">18</span></header>
+        <div class="content">
+          <h2>Apakah MEXT cocok untukmu?</h2>
+          <div class="compare">
+            <article class="card"><span class="status">Kekuatan</span><ul class="clean"><li>Pendanaan akademik penuh</li><li>Uang saku bulanan dan tiket PP</li><li>Persiapan bahasa selama satu tahun</li><li>Tidak ada ikatan dinas/return bond</li></ul></article>
+            <article class="card"><span class="status warn">Tantangan</span><ul class="clean"><li>Seleksi berlapis dan ujian tertulis</li><li>Durasi normal lima tahun</li><li>Akomodasi tidak gratis penuh</li><li>Harus siap adaptasi bahasa dan budaya</li></ul></article>
+          </div>
+          <div class="note" style="margin-top:16px"><strong>Cocok untuk:</strong> pelajar dengan fondasi akademik kuat, mau belajar bahasa Jepang, siap proses panjang, dan nyaman mengelola anggaran hunian.</div>
+        </div>
+        <p class="source">Sumber: MEXT Undergraduate research report — coverage, duration, selection, accommodation, no bonding</p>
+      </section>
+
+      <section class="slide" data-title="Video referensi" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Tonton & catat</span><span class="deck-mark">19</span></header>
+        <div class="content">
+          <h2>Video referensi MEXT</h2>
+          <div class="video-grid"><article class="video-card"><iframe src="https://www.youtube-nocookie.com/embed/nYwoyzmVmVs" title="SPILL TRIK UJIAN WAWANCARA!? | Bahas Tuntas Beasiswa kuliah ke Jepang MEXT w/ awardee! PART 1" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><p><b>Cara mendaftar.</b> SPILL TRIK UJIAN WAWANCARA!? | Bahas Tuntas Beasiswa kuliah ke Jepang MEXT w/ awardee! PART 1<span class="video-source">Sumber: YouTube</span></p></article><article class="video-card"><iframe src="https://www.youtube-nocookie.com/embed/HNj-OEvwYfY" title="Cara Gampang! Raih Beasiswa Jepang with Rafyoga (Penerima Beasiswa MEXT)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><p><b>Cara mendaftar.</b> Cara Gampang! Raih Beasiswa Jepang with Rafyoga (Penerima Beasiswa MEXT)<span class="video-source">Sumber: YouTube</span></p></article><article class="video-card"><iframe src="https://www.youtube-nocookie.com/embed/_nuHt19Tuoo" title="University of Tokyo | Tour of Japan's Top University" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><p><b>Suasana &amp; fasilitas kampus.</b> University of Tokyo | Tour of Japan's Top University<span class="video-source">Sumber: YouTube</span></p></article><article class="video-card"><iframe src="https://www.youtube-nocookie.com/embed/pDqHTyZ-4UM" title="Beasiswa Jepang Sekali Daftar Langsung Lolos (Pengalaman Awardee MEXT di Okayama University)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><p><b>Testimoni alumni.</b> Beasiswa Jepang Sekali Daftar Langsung Lolos (Pengalaman Awardee MEXT di Okayama University)<span class="video-source">Sumber: YouTube</span></p></article></div>
+        </div>
+        <p class="source">Video YouTube disematkan melalui mode privacy-enhanced; detail resmi tetap merujuk Kedutaan Besar Jepang</p>
+      </section>
+
+      <section class="slide" data-title="Mulai dari sini" aria-hidden="true">
+        <header class="slide-head"><span class="pill">Langkah berikutnya</span><span class="deck-mark">20</span></header>
+        <div class="content">
+          <p class="cover-kicker" style="color:var(--purple)">Targetkan siklus berikutnya</p>
+          <h2>Mulai persiapan sebelum Mei 2027</h2>
+          <p class="lead">Periksa pengumuman resmi, bangun ritme latihan ujian, dan rapikan dokumen akademikmu. Satu langkah kecil minggu ini jauh lebih berharga daripada menunggu deadline.</p>
+          <a class="cta" href="https://www.id.emb-japan.go.jp/sch.html" target="_blank" rel="noopener noreferrer">Buka halaman resmi Kedubes Jepang ↗</a>
+          <div class="note" style="margin-top:18px; max-width:760px"><strong>Status per 15 Oktober 2026:</strong> intake 2027 sudah tutup; pembukaan berikutnya diperkirakan sekitar Mei 2027 untuk kedatangan April 2028. Tanggal harus dikonfirmasi kembali.</div>
+        </div>
+        <p class="source">Sumber resmi: id.emb-japan.go.jp/sch.html · Ringkasan riset disusun 15 Okt 2026</p>
+      </section>
+    </div>
+
+    <nav class="controls" aria-label="Navigasi slide">
+      <div class="ctrl-group"><button class="nav-btn" id="prevBtn" type="button">Sebelumnya</button></div>
+      <div class="ctrl-group"><button class="toc-btn" id="tocBtn" type="button" aria-label="Buka daftar isi" aria-haspopup="dialog">☰</button><span class="counter" id="counter" aria-live="polite">1 / 20</span></div>
+      <div class="ctrl-group"><button class="nav-btn primary" id="nextBtn" type="button">Berikutnya</button></div>
+    </nav>
+  </main>
+
+  <div class="toc" id="toc" role="dialog" aria-modal="true" aria-labelledby="tocTitle" inert>
+    <div class="toc-panel">
+      <div class="toc-top"><h2 id="tocTitle">Daftar isi</h2><button class="close-btn" id="closeToc" type="button" aria-label="Tutup daftar isi">×</button></div>
+      <div class="toc-grid" id="tocGrid"></div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+      var total = slides.length;
+      var current = 0;
+      var prevBtn = document.getElementById('prevBtn');
+      var nextBtn = document.getElementById('nextBtn');
+      var counter = document.getElementById('counter');
+      var progressBar = document.getElementById('progressBar');
+      var toc = document.getElementById('toc');
+      var tocBtn = document.getElementById('tocBtn');
+      var closeToc = document.getElementById('closeToc');
+      var tocGrid = document.getElementById('tocGrid');
+      var touchStartX = null;
+      var lastFocus = null;
+
+      slides.forEach(function (slide, index) {
+        var item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'toc-item';
+        item.innerHTML = '<span class="toc-num">SLIDE ' + String(index + 1).padStart(2, '0') + '</span><span class="toc-title">' + slide.getAttribute('data-title') + '</span>';
+        item.addEventListener('click', function () { show(index); closeMenu(); });
+        tocGrid.appendChild(item);
+      });
+
+      function show(index) {
+        index = Math.max(0, Math.min(total - 1, index));
+        current = index;
+        slides.forEach(function (slide, i) {
+          slide.classList.toggle('active', i === current);
+          slide.classList.toggle('before', i < current);
+          slide.setAttribute('aria-hidden', i === current ? 'false' : 'true');
+          if (i === current) slide.scrollTop = 0;
+        });
+        Array.prototype.forEach.call(tocGrid.children, function (item, i) { item.classList.toggle('active', i === current); });
+        counter.textContent = (current + 1) + ' / ' + total;
+        progressBar.style.width = ((current + 1) / total * 100) + '%';
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === total - 1;
+        document.title = slides[current].getAttribute('data-title') + ' — MEXT Undergraduate';
+      }
+
+      function openMenu() {
+        lastFocus = document.activeElement;
+        toc.removeAttribute('inert');
+        toc.classList.add('open');
+        tocBtn.setAttribute('aria-expanded', 'true');
+        closeToc.focus();
+      }
+      function closeMenu() {
+        toc.classList.remove('open');
+        toc.setAttribute('inert', '');
+        tocBtn.setAttribute('aria-expanded', 'false');
+        if (lastFocus) lastFocus.focus();
+      }
+
+      prevBtn.addEventListener('click', function () { show(current - 1); });
+      nextBtn.addEventListener('click', function () { show(current + 1); });
+      tocBtn.addEventListener('click', openMenu);
+      closeToc.addEventListener('click', closeMenu);
+      toc.addEventListener('click', function (event) { if (event.target === toc) closeMenu(); });
+
+      document.addEventListener('keydown', function (event) {
+        if (toc.classList.contains('open')) {
+          if (event.key === 'Escape') closeMenu();
+          return;
+        }
+        if (event.key === 'ArrowRight' || event.key === 'PageDown') { event.preventDefault(); show(current + 1); }
+        if (event.key === 'ArrowLeft' || event.key === 'PageUp') { event.preventDefault(); show(current - 1); }
+        if (event.key === 'Home') { event.preventDefault(); show(0); }
+        if (event.key === 'End') { event.preventDefault(); show(total - 1); }
+      });
+
+      document.getElementById('stage').addEventListener('touchstart', function (event) { touchStartX = event.changedTouches[0].clientX; }, { passive: true });
+      document.getElementById('stage').addEventListener('touchend', function (event) {
+        if (touchStartX === null) return;
+        var dx = event.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 60) show(current + (dx < 0 ? 1 : -1));
+        touchStartX = null;
+      }, { passive: true });
+
+      show(0);
+    })();
+  </script>
+
+<div id="wb-sample-banner" style="position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:9999;background:linear-gradient(135deg,#1a1446,#3b2a8f);color:#fff;padding:10px 18px;border-radius:999px;font-family:system-ui,sans-serif;font-size:14px;box-shadow:0 4px 20px rgba(0,0,0,.4);display:flex;gap:10px;align-items:center;white-space:nowrap;">
+<span>🎓 Sampel gratis</span>
+<a href="https://wayangprint.github.io/web-beasiswa/" style="color:#ffd75e;font-weight:700;text-decoration:none;">Buka 166 Panduan →</a>
+<button onclick="document.getElementById('wb-sample-banner').remove()" style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;">×</button>
+</div>
+</body>
+</html>
