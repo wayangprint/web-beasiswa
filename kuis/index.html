@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kuis: Beasiswa Apa yang Cocok Untukmu? — Portal Beasiswa</title>
+<meta name="description" content="Jawab 5 pertanyaan singkat dan temukan beasiswa yang paling cocok untukmu — dari 166+ panduan beasiswa S1, S2, S3 di Portal Beasiswa.">
+<meta property="og:title" content="Kuis: Beasiswa Apa yang Cocok Untukmu?">
+<meta property="og:description" content="Jawab 5 pertanyaan, temukan beasiswa impianmu. Gratis!">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#0f0c29;color:#e8e6f0;line-height:1.6;min-height:100vh}
+.wrap{max-width:640px;margin:0 auto;padding:24px 16px 80px}
+.progress{height:6px;background:#2c2560;border-radius:99px;margin-bottom:28px;overflow:hidden}
+.progress>div{height:100%;background:linear-gradient(90deg,#ffd75e,#ff9d5e);border-radius:99px;transition:width .4s}
+.card{background:#1a1446;border:1px solid #2c2560;border-radius:16px;padding:28px 24px;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h1{font-size:1.5rem;color:#fff;margin-bottom:8px}
+h2{font-size:1.2rem;color:#fff;margin-bottom:16px}
+p.lead{color:#a9a5c4;margin-bottom:20px}
+.opt{display:block;width:100%;text-align:left;background:#241d5e;border:1px solid #3a3290;color:#fff;border-radius:12px;padding:14px 18px;margin-bottom:10px;font-size:1rem;cursor:pointer;transition:all .15s}
+.opt:hover{border-color:#ffd75e;background:#2d2470}
+.btn{display:inline-block;background:#ffd75e;color:#1a1446;font-weight:700;padding:14px 32px;border-radius:999px;border:0;font-size:1.05rem;cursor:pointer;text-decoration:none}
+.btn:hover{filter:brightness(1.08)}
+.center{text-align:center}
+.result-card{background:#241d5e;border:1px solid #ffd75e66;border-radius:12px;padding:18px;margin-bottom:12px}
+.result-card .rank{display:inline-block;background:#ffd75e;color:#1a1446;font-weight:700;font-size:.8rem;border-radius:99px;padding:2px 12px;margin-bottom:8px}
+.result-card h3{color:#fff;font-size:1.1rem;margin-bottom:4px}
+.result-card p{font-size:.92rem;color:#a9a5c4}
+.cta{margin-top:24px;background:linear-gradient(135deg,#1a1446,#3b2a8f);border:1px solid #ffd75e55;border-radius:16px;padding:26px;text-align:center}
+.cta p{margin-bottom:16px;font-size:1.05rem}
+.small{font-size:.85rem;color:#6b6788;margin-top:20px;text-align:center}
+.emoji{font-size:3rem;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="progress"><div id="bar" style="width:5%"></div></div>
+<div id="app"></div>
+</div>
+<script>
+const Q = [
+ {q:"Kamu sekarang di jenjang apa?", opts:[
+   {t:"SMA / sederajat (atau baru lulus)", v:"sma"},
+   {t:"Mahasiswa / lulusan S1", v:"s1"},
+   {t:"Mahasiswa / lulusan S2", v:"s2"}]},
+ {q:"Negara mana yang paling kamu impikan?", opts:[
+   {t:"🇯🇵 Jepang", v:"jepang"},
+   {t:"🇰🇷 Korea Selatan", v:"korea"},
+   {t:"🇹🇷 Turki", v:"turki"},
+   {t:"🇪🇺 Eropa", v:"eropa"},
+   {t:"🇦🇺 Australia / 🇺🇸 Amerika", v:"aus-usa"},
+   {t:"🌏 Bebas, yang penting bagus", v:"bebas"}]},
+ {q:"Budget kuliahmu gimana?", opts:[
+   {t:"Harus fully funded (gratis total)", v:"full"},
+   {t:"Bisa partial (ada potongan biaya)", v:"partial"},
+   {t:"Ada budget, yang penting lolos", v:"bebas"}]},
+ {q:"Skor bahasa Inggrismu?", opts:[
+   {t:"Sudah punya IELTS / TOEFL", v:"punya"},
+   {t:"Sedang persiapan", v:"proses"},
+   {t:"Belum mulai", v:"belum"}]},
+ {q:"Bidang apa yang kamu minati?", opts:[
+   {t:"🔬 Teknik / Sains", v:"teknik"},
+   {t:"💼 Bisnis / Ekonomi", v:"bisnis"},
+   {t:"📚 Sosial / Humaniora", v:"sosial"},
+   {t:"🎨 Seni / Desain / lainnya", v:"lain"}]}
+];
+const B = [
+ {n:"Beasiswa MEXT", neg:"Jepang", d:"Beasiswa penuh pemerintah Jepang — kuliah + tunjangan hidup + tiket pesawat. Ada jalur S1 (undergraduate) dan S2/S3 (research).", tag:{jenjang:["sma","s1","s2"],negara:["jepang","bebas"],budget:["full"],bhs:["punya","proses","belum"]}},
+ {n:"Global Korea Scholarship (GKS)", neg:"Korea Selatan", d:"Fully funded pemerintah Korea untuk S1/S2/S3, termasuk kursus bahasa Korea 1 tahun.", tag:{jenjang:["sma","s1","s2"],negara:["korea","bebas"],budget:["full"],bhs:["punya","proses","belum"]}},
+ {n:"Türkiye Burslari", neg:"Turki", d:"Beasiswa penuh pemerintah Turki untuk S1/S2/S3 + kursus bahasa Turki gratis.", tag:{jenjang:["sma","s1","s2"],negara:["turki","bebas"],budget:["full"],bhs:["punya","proses","belum"]}},
+ {n:"Beasiswa LPDP", neg:"Indonesia", d:"Beasiswa penuh pemerintah Indonesia untuk S2/S3 di dalam & luar negeri. Wajib kembali mengabdi.", tag:{jenjang:["s1","s2"],negara:["bebas","eropa","aus-usa"],budget:["full"],bhs:["punya","proses"]}},
+ {n:"Chevening", neg:"Inggris", d:"Beasiswa S2 penuh pemerintah Inggris — 1 tahun master, jaringan alumni global.", tag:{jenjang:["s1"],negara:["eropa","bebas"],budget:["full"],bhs:["punya","proses"]}},
+ {n:"Fulbright", neg:"Amerika Serikat", d:"Beasiswa S2/S3 prestisius ke AS — penuh, termasuk riset dan pertukaran budaya.", tag:{jenjang:["s1","s2"],negara:["aus-usa","bebas"],budget:["full"],bhs:["punya","proses"]}},
+ {n:"Australia Awards", neg:"Australia", d:"Beasiswa penuh pemerintah Australia untuk S2/S3, prioritas pembangunan.", tag:{jenjang:["s1","s2"],negara:["aus-usa","bebas"],budget:["full"],bhs:["punya","proses"]}},
+ {n:"DAAD", neg:"Jerman", d:"Beasiswa S2/S3 ke Jerman — kuliah di Jerman bahkan gratis (tanpa tuition fee).", tag:{jenjang:["s1","s2"],negara:["eropa","bebas"],budget:["full","partial"],bhs:["punya","proses"]}},
+ {n:"Stipendium Hungaricum", neg:"Hungaria", d:"Fully funded pemerintah Hungaria untuk S1/S2/S3 — salah satu yang persaingannya paling bersahabat di Eropa.", tag:{jenjang:["sma","s1","s2"],negara:["eropa","bebas"],budget:["full"],bhs:["punya","proses","belum"]}},
+ {n:"IISMA", neg:"Program Exchange", d:"Beasiswa pertukaran 1 semester ke kampus top dunia untuk mahasiswa S1 Indonesia.", tag:{jenjang:["s1"],negara:["bebas","eropa","aus-usa","jepang","korea"],budget:["full"],bhs:["punya","proses"]}},
+ {n:"Beasiswa Unggulan Kemendikbud", neg:"Indonesia", d:"Beasiswa penuh untuk S1/S2/S3 dalam & luar negeri dari Kemendikbud.", tag:{jenjang:["sma","s1","s2"],negara:["bebas"],budget:["full"],bhs:["punya","proses","belum"]}},
+ {n:"Eiffel Excellence", neg:"Prancis", d:"Beasiswa S2/S3 pemerintah Prancis — tunjangan bulanan + fasilitas.", tag:{jenjang:["s1","s2"],negara:["eropa","bebas"],budget:["full","partial"],bhs:["punya","proses"]}}
+];
+let step = -1, ans = {};
+function render(){
+ const app = document.getElementById('app');
+ const bar = document.getElementById('bar');
+ if(step < 0){
+  bar.style.width = '5%';
+  app.innerHTML = `<div class="card center"><div class="emoji">🎓</div><h1>Beasiswa Apa yang Cocok Untukmu?</h1><p class="lead">Jawab 5 pertanyaan singkat (±1 menit) dan dapatkan rekomendasi beasiswa yang paling pas buat kamu.</p><button class="btn" onclick="next()">Mulai Kuis →</button></div>`;
+  return;
+ }
+ if(step < Q.length){
+  bar.style.width = ((step+1)/(Q.length+1)*100) + '%';
+  const q = Q[step];
+  app.innerHTML = `<div class="card"><p class="lead">Pertanyaan ${step+1} dari ${Q.length}</p><h2>${q.q}</h2>` +
+   q.opts.map((o,i)=>`<button class="opt" onclick="jawab(${i})">${o.t}</button>`).join('') + `</div>`;
+  return;
+ }
+ showResult();
+}
+function next(){ step++; render(); }
+function jawab(i){
+ const keys = ["jenjang","negara","budget","bhs","bidang"];
+ ans[keys[step]] = Q[step].opts[i].v;
+ step++; render();
+}
+function showResult(){
+ const bar = document.getElementById('bar'); bar.style.width = '100%';
+ const scored = B.map(b=>{
+  let s = 0;
+  if(b.tag.jenjang.includes(ans.jenjang)) s += 3;
+  if(b.tag.negara.includes(ans.negara)) s += 3;
+  if(b.tag.budget.includes(ans.budget)) s += 2;
+  if(b.tag.bhs.includes(ans.bhs)) s += 1;
+  return {...b, s};
+ }).sort((a,b)=>b.s-a.s).slice(0,3);
+ const app = document.getElementById('app');
+ app.innerHTML = `<div class="card center"><div class="emoji">🎉</div><h1>Ini 3 Beasiswa Paling Cocok Untukmu!</h1><p class="lead">Berdasarkan jawabanmu, ini rekomendasi terbaik:</p></div>` +
+  scored.map((b,i)=>`<div class="result-card"><span class="rank">#${i+1} ${b.neg}</span><h3>${b.n}</h3><p>${b.d}</p></div>`).join('') +
+  `<div class="cta"><p>Mau panduan <strong>step-by-step</strong> daftar ${scored[0].n} — plus <strong>166+ panduan beasiswa</strong> S1/S2/S3 lainnya?<br>Hanya <strong>Rp100.000</strong> sekali bayar, akses selamanya.</p><a class="btn" href="https://wayangprint.github.io/web-beasiswa/" target="_blank" rel="noopener">Buka Portal Beasiswa →</a></div>` +
+  `<p class="small"><a href="javascript:location.reload()" style="color:#ffd75e">↻ Ulangi kuis</a> &nbsp;•&nbsp; Bagikan kuis ini ke temanmu!</p>`;
+}
+render();
+</script>
+</body>
+</html>
