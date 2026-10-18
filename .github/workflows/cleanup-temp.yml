@@ -1,0 +1,16 @@
+name: Cleanup temp files
+on:
+  workflow_dispatch:
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          git config user.name wayangprint
+          git config user.email wayangprint@users.noreply.github.com
+          git rm -q .github/workflows/deploy-gks-deck.yml .github/workflows/cleanup-temp.yml tmp-merge-tool.html deck-gks-korea.html deck-nav-snippet.html deck-guard-snippet-v4.html
+          git commit -m "Cleanup temp deploy files"
+          git push
