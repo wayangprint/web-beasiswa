@@ -1,69 +1,6 @@
 <!doctype html>
 <html lang="id">
 <head>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
-<script>
-/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
-(function(){
-  var HOME='https://wayangprint.github.io/web-beasiswa/';
-  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
-  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
-  var de=document.documentElement;
-  try{ de.style.display='none'; }catch(e){}
-  function lockBody(title, desc){
-    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
-  }
-  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 44 panduan beasiswa ini.');
-  var DEVICE_BODY=lockBody('Batas 3 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun sudah dipakai di 3 perangkat. Pindah device tidak diizinkan \u2014 daftar akun baru untuk memakai perangkat ini.');
-  function doLock(body){
-    try{
-      document.title='Terkunci \u2014 Web Beasiswa';
-      if(document.body){ document.body.innerHTML=body; }
-      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
-      de.style.display='';
-    }catch(e){}
-  }
-  function lockPage(kind){
-    var applied=false;
-    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
-    try{
-      if(document.readyState==='loading'){
-        document.addEventListener('DOMContentLoaded', apply);
-        setTimeout(apply, 5000);
-      } else { apply(); }
-    }catch(e){ apply(); }
-  }
-  function unlock(){ try{ de.style.display=''; }catch(e){} }
-  var done=false;
-  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
-  setTimeout(function(){ fail('member'); }, 12000);
-  function init(){
-    var client, uid;
-    try{
-      if(typeof supabase==='undefined'){ fail('member'); return; }
-      client=supabase.createClient(URL, KEY);
-    }catch(e){ fail('member'); return; }
-    client.auth.getSession().then(function(res){
-      var s=res && res.data && res.data.session;
-      if(!s){ fail('member'); return; }
-      uid=s.user.id;
-      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
-    }).then(function(r){
-      if(!r){ return; }
-      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
-      var deviceId=null;
-      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
-      if(!deviceId){ fail('device'); return; }
-      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
-        if(done) return; done=true;
-        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
-      }).catch(function(){ if(done) return; done=true; unlock(); });
-    }).catch(function(){ fail('member'); });
-  }
-  setTimeout(init, 60);
-})();
-</script>
-
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="light dark" />
@@ -310,16 +247,15 @@
       </div>
     </section>
 
-    <section class="slide" data-title="Timeline & deadline">
+    <section class="slide" data-title="Jadwal & dua jalur">
       <div class="page">
         <span class="section-pill">Jadwal <span class="slide-no">11</span></span>
-        <h2>Jendela 2026: 15 September–31 Oktober</h2>
-        <div class="timeline">
-          <div class="time"><div class="dot"></div><b>Sekitar September</b><span>Embassy Track</span></div>
-          <div class="time"><div class="dot"></div><b>Sekitar Oktober</b><span>University Track</span></div>
-          <div class="time"><div class="dot"></div><b>31 Oktober 2026</b><span>Akhir jendela yang diumumkan</span></div>
+        <h2>Dua jalur, dua status berbeda</h2>
+        <div class="compare">
+          <article class="card"><h3>University Track — MASIH BUKA</h3><p class="muted">Pendaftaran langsung ke universitas masih terbuka. Tenggatnya berbeda-beda di tiap kampus, umumnya dalam rentang September–November 2026 — tidak ada satu tanggal penutup untuk semua universitas.</p><div class="tagrow"><span class="tag">Tenggat mengikuti masing-masing universitas</span></div></article>
+          <article class="card"><h3>Embassy Track — TUTUP</h3><p class="muted">Pendaftaran lewat kedutaan sudah ditutup pada <strong>30 September 2026 pukul 18.00 KST</strong>. Jalur ini tidak lagi menerima aplikasi untuk siklus 2026.</p><div class="tagrow"><span class="tag">Ditutup 30 Sep 2026 · 18.00 KST</span></div></article>
         </div>
-        <p class="callout"><strong>Status perlu diverifikasi.</strong> Korea.net mengumumkan periode 15 Sep–31 Okt 2026, tetapi jadwal per jalur/instansi dapat berbeda. Cek Study in Korea untuk tanggal final.</p>
+        <p class="callout"><strong>Fokus sekarang:</strong> satu-satunya jalur yang masih terbuka adalah University Track. Sebelum menyiapkan berkas, cek pedoman resmi kampus tujuanmu — dan portal Study in Korea — untuk memastikan tenggat kampus tersebut belum lewat.</p>
       </div>
     </section>
 
@@ -557,5 +493,68 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classL
 var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 44 panduan beasiswa ini.');
+  var DEVICE_BODY=lockBody('Batas 3 perangkat tercapai','Perangkat ini tidak terdaftar dan akun sudah dipakai di 3 perangkat. Pindah device tidak diizinkan \u2014 daftar akun baru untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
 </body>
 </html>
