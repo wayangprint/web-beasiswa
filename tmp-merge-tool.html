@@ -2,25 +2,23 @@
 <html>
 <head><meta charset="utf-8"><title>Merge Tool</title></head>
 <body>
-<h2>Deck Merge Tool</h2>
-<p>1. Deck HTML: <input type="file" id="f1" accept=".html"></p>
-<p>2. Nav snippet: <input type="file" id="f2" accept=".html"></p>
-<p>3. Guard snippet: <input type="file" id="f3" accept=".html"></p>
-<p><button id="go" type="button">Merge Files</button></p>
-<p id="st" style="font-weight:bold"></p>
+<h2>Deck Merge Tool (fetch)</h2>
+<p><button id="go" type="button">Fetch and Merge Files</button></p>
+<p id="st" style="font-weight:bold">Click the button to fetch the three files and merge them.</p>
 <p><a id="dl" download="deck-gks-korea.html" style="display:none;font-size:18px">Download merged deck-gks-korea.html</a></p>
 <script>
 document.getElementById('go').onclick = async function() {
   var st = document.getElementById('st');
-  st.textContent = 'Working...';
+  st.textContent = 'Fetching...';
   try {
-    var f1 = document.getElementById('f1').files[0];
-    var f2 = document.getElementById('f2').files[0];
-    var f3 = document.getElementById('f3').files[0];
-    if (!f1 || !f2 || !f3) { st.textContent = 'ERROR: select all three files'; return; }
-    var t1 = await f1.text();
-    var t2 = await f2.text();
-    var t3 = await f3.text();
+    var base = 'https://raw.githubusercontent.com/wayangprint/web-beasiswa/main/';
+    var r1 = await fetch(base + 'deck-gks-korea.html');
+    var r2 = await fetch(base + 'deck-nav-snippet.html');
+    var r3 = await fetch(base + 'deck-guard-snippet-v4.html');
+    if (!r1.ok || !r2.ok || !r3.ok) { st.textContent = 'ERROR: fetch failed ' + r1.status + '/' + r2.status + '/' + r3.status; return; }
+    var t1 = await r1.text();
+    var t2 = await r2.text();
+    var t3 = await r3.text();
     var idx = t1.lastIndexOf('</body>');
     if (idx < 0) { st.textContent = 'ERROR: no </body> in deck'; return; }
     var merged = t1.slice(0, idx) + t2 + '\n' + t3 + '\n' + t1.slice(idx);
