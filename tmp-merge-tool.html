@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Merge Tool</title></head>
+<body>
+<h2>Deck Merge Tool</h2>
+<p>1. Deck HTML: <input type="file" id="f1" accept=".html"></p>
+<p>2. Nav snippet: <input type="file" id="f2" accept=".html"></p>
+<p>3. Guard snippet: <input type="file" id="f3" accept=".html"></p>
+<p><button id="go" type="button">Merge Files</button></p>
+<p id="st" style="font-weight:bold"></p>
+<p><a id="dl" download="deck-gks-korea.html" style="display:none;font-size:18px">Download merged deck-gks-korea.html</a></p>
+<script>
+document.getElementById('go').onclick = async function() {
+  var st = document.getElementById('st');
+  st.textContent = 'Working...';
+  try {
+    var f1 = document.getElementById('f1').files[0];
+    var f2 = document.getElementById('f2').files[0];
+    var f3 = document.getElementById('f3').files[0];
+    if (!f1 || !f2 || !f3) { st.textContent = 'ERROR: select all three files'; return; }
+    var t1 = await f1.text();
+    var t2 = await f2.text();
+    var t3 = await f3.text();
+    var idx = t1.lastIndexOf('</body>');
+    if (idx < 0) { st.textContent = 'ERROR: no </body> in deck'; return; }
+    var merged = t1.slice(0, idx) + t2 + '\n' + t3 + '\n' + t1.slice(idx);
+    var blob = new Blob([merged], {type: 'text/html'});
+    var a = document.getElementById('dl');
+    a.href = URL.createObjectURL(blob);
+    a.style.display = 'inline';
+    st.textContent = 'OK! Merged ' + merged.length + ' chars. Last </body> at index ' + idx + '. Click download below.';
+  } catch (err) { st.textContent = 'ERROR: ' + err.message; }
+};
+</script>
+</body>
+</html>
