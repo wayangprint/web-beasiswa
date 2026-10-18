@@ -1,16 +1,31 @@
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"><title>Merge Tool v2</title></head>
+<head><meta charset="utf-8"><title>Merge Tool v3</title></head>
 <body>
-<h2>Deck Merge Tool v2 (chunked output)</h2>
+<h2>Deck Merge Tool v3 (20 chunks)</h2>
 <p><button id="go" type="button">Fetch and Merge Files</button></p>
-<p id="st" style="font-weight:bold">Click the button to fetch the three files and merge them.</p>
+<p id="st" style="font-weight:bold">Click the button.</p>
 <div id="out" style="display:none">
-<p>Chunk 1:</p><textarea id="c1" readonly rows="4" cols="80"></textarea>
-<p>Chunk 2:</p><textarea id="c2" readonly rows="4" cols="80"></textarea>
-<p>Chunk 3:</p><textarea id="c3" readonly rows="4" cols="80"></textarea>
-<p>Chunk 4:</p><textarea id="c4" readonly rows="4" cols="80"></textarea>
-<p>Chunk 5:</p><textarea id="c5" readonly rows="4" cols="80"></textarea>
+<textarea id="c1" readonly rows="2" cols="80"></textarea>
+<textarea id="c2" readonly rows="2" cols="80"></textarea>
+<textarea id="c3" readonly rows="2" cols="80"></textarea>
+<textarea id="c4" readonly rows="2" cols="80"></textarea>
+<textarea id="c5" readonly rows="2" cols="80"></textarea>
+<textarea id="c6" readonly rows="2" cols="80"></textarea>
+<textarea id="c7" readonly rows="2" cols="80"></textarea>
+<textarea id="c8" readonly rows="2" cols="80"></textarea>
+<textarea id="c9" readonly rows="2" cols="80"></textarea>
+<textarea id="c10" readonly rows="2" cols="80"></textarea>
+<textarea id="c11" readonly rows="2" cols="80"></textarea>
+<textarea id="c12" readonly rows="2" cols="80"></textarea>
+<textarea id="c13" readonly rows="2" cols="80"></textarea>
+<textarea id="c14" readonly rows="2" cols="80"></textarea>
+<textarea id="c15" readonly rows="2" cols="80"></textarea>
+<textarea id="c16" readonly rows="2" cols="80"></textarea>
+<textarea id="c17" readonly rows="2" cols="80"></textarea>
+<textarea id="c18" readonly rows="2" cols="80"></textarea>
+<textarea id="c19" readonly rows="2" cols="80"></textarea>
+<textarea id="c20" readonly rows="2" cols="80"></textarea>
 </div>
 <script>
 document.getElementById('go').onclick = async function() {
@@ -21,19 +36,19 @@ document.getElementById('go').onclick = async function() {
     var r1 = await fetch(base + 'deck-gks-korea.html');
     var r2 = await fetch(base + 'deck-nav-snippet.html');
     var r3 = await fetch(base + 'deck-guard-snippet-v4.html');
-    if (!r1.ok || !r2.ok || !r3.ok) { st.textContent = 'ERROR: fetch failed ' + r1.status + '/' + r2.status + '/' + r3.status; return; }
+    if (!r1.ok || !r2.ok || !r3.ok) { st.textContent = 'ERROR'; return; }
     var t1 = await r1.text();
     var t2 = await r2.text();
     var t3 = await r3.text();
     var idx = t1.lastIndexOf('</body>');
-    if (idx < 0) { st.textContent = 'ERROR: no </body> in deck'; return; }
+    if (idx < 0) { st.textContent = 'ERROR: no body'; return; }
     var merged = t1.slice(0, idx) + t2 + '\n' + t3 + '\n' + t1.slice(idx);
-    var n = Math.ceil(merged.length / 5);
-    for (var i = 0; i < 5; i++) {
+    var n = Math.ceil(merged.length / 20);
+    for (var i = 0; i < 20; i++) {
       document.getElementById('c' + (i+1)).value = merged.slice(i*n, (i+1)*n);
     }
     document.getElementById('out').style.display = 'block';
-    st.textContent = 'OK! Merged ' + merged.length + ' chars into 5 chunks. Last </body> at index ' + idx + '.';
+    st.textContent = 'OK! ' + merged.length + ' chars in 20 chunks.';
   } catch (err) { st.textContent = 'ERROR: ' + err.message; }
 };
 </script>
