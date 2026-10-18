@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Global UGRAD AS: Student Exchange</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--c1:#0d2b6b;--c2:#b8860b;--c3:#ef4444}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0f172a;color:#1e293b;overflow:hidden}
+.deck{height:100vh;height:100dvh;position:relative}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;padding:56px 8vw 96px;overflow-y:auto;background:#fff}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.slide h1{font-size:clamp(1.6rem,4.5vw,2.8rem);color:var(--c1);margin-bottom:18px;text-align:center;line-height:1.25}
+.slide h2{font-size:clamp(1.3rem,3.5vw,2rem);color:var(--c1);margin-bottom:16px;text-align:center}
+.slide h3{font-size:1.05rem;color:var(--c2);margin:14px 0 6px}
+.content{max-width:860px;width:100%}
+.content p{margin:8px 0;line-height:1.65;font-size:clamp(.95rem,2.2vw,1.1rem)}
+.content ul,.content ol{margin:8px 0 8px 22px;line-height:1.7;font-size:clamp(.95rem,2.2vw,1.08rem)}
+.content li{margin:6px 0}
+.card{background:#f1f5f9;border-left:5px solid var(--c2);border-radius:10px;padding:14px 18px;margin:10px 0}
+.card b{color:var(--c1)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.grid2 .card{margin:0}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:clamp(.85rem,2vw,1rem)}
+th{background:var(--c1);color:#fff;padding:10px}
+td{padding:10px;border-bottom:1px solid #e2e8f0}
+tr:nth-child(even) td{background:#f8fafc}
+.kicker{display:inline-block;background:var(--c2);color:#fff;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:999px;margin-bottom:14px}
+.cover{background:linear-gradient(135deg,var(--c1),#1e3a8a);color:#fff;text-align:center}
+.cover.hasimg{background-size:cover;background-position:center}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.78))}
+.cover .inner{position:relative;z-index:2;max-width:800px;padding:0 24px}
+.cover h1{color:#fff;font-size:clamp(2rem,6vw,3.6rem);margin:10px 0 14px;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.cover p{font-size:clamp(1rem,2.6vw,1.3rem);opacity:.92;line-height:1.6}
+.cover .kicker{background:rgba(255,255,255,.2);backdrop-filter:blur(4px)}
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:980px}
+.vid{background:#0f172a;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+.vid p{padding:10px 14px;font-size:.85rem;color:#e2e8f0;line-height:1.45}
+.vid p b{color:#fff}
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:rgba(15,23,42,.96);z-index:10}
+.nav button{background:var(--c2);color:#fff;border:0;border-radius:10px;padding:12px 26px;font-size:1rem;font-weight:700;cursor:pointer;min-width:120px}
+.nav button:disabled{opacity:.35;cursor:default}
+.nav button:active{transform:scale(.96)}
+#counter{color:#fff;font-weight:700;font-size:.95rem}
+#barwrap{position:fixed;top:0;left:0;right:0;height:5px;background:#1e293b;z-index:10}
+#bar{height:100%;width:5%;background:linear-gradient(90deg,var(--c2),var(--c3));transition:width .3s}
+.hint{position:fixed;bottom:74px;right:16px;color:#94a3b8;font-size:.75rem;z-index:10}
+.faq{background:#f8fafc;border-radius:10px;padding:12px 16px;margin:8px 0;border:1px solid #e2e8f0}
+.faq b{color:var(--c1);display:block;margin-bottom:4px}
+.linkbtn{display:inline-block;background:var(--c1);color:#fff!important;text-decoration:none;padding:12px 24px;border-radius:10px;font-weight:700;margin:6px 8px 6px 0}
+.badge{display:inline-block;background:#fef3c7;color:#92400e;font-weight:700;font-size:.8rem;padding:4px 12px;border-radius:999px;margin:2px}
+@media(max-width:640px){.vidgrid,.grid2{grid-template-columns:1fr}.slide{padding:44px 6vw 100px}.nav button{min-width:96px;padding:11px 18px}}
+</style>
+</head>
+<body>
+<div id="barwrap"><div id="bar"></div></div>
+<div class="deck" id="deck">
+<section class="slide cover hasimg" style="background-image:url('https://images.unsplash.com/photo-1562774053-701939374585?w=1600&q=80')"><div class="shade"></div><div class="inner"><span class="kicker">Student Exchange • Amerika Serikat</span><h1>Global UGRAD AS: Student Exchange</h1><p>Pertukaran 1 semester, fully funded, di 70+ kampus Amerika Serikat via AMINEF untuk mahasiswa S1 Indonesia. Syarat, tahapan, timeline, dan strategi lolos.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Sekilas Program</span><h2>Apa Itu Global UGRAD?</h2>
+<p><b>Global Undergraduate Exchange Program (Global UGRAD)</b> adalah program pertukaran dari <b>Biro Pendidikan &amp; Kebudayaan Departemen Luar Negeri AS</b>, dikelola <b>World Learning</b>. Di Indonesia, seleksi dijalankan oleh <b>AMINEF (American Indonesian Exchange Foundation)</b>.</p>
+<div class="card"><b>Konsep:</b> kamu kuliah <b>1 semester penuh (non-gelar)</b> di salah satu dari <b>70+ universitas AS</b> — mengambil mata kuliah reguler, wajib 1 mata kuliah <b>US Studies</b>, menyelesaikan <b>20 jam pengabdian masyarakat</b>, lalu pulang membawa pengalaman &amp; jaringan global.</div>
+<ul>
+<li>Berjalan sejak <b>2008</b>; <b>~250 mahasiswa</b> dari puluhan negara terpilih tiap tahun, dengan <b>3.000+ alumni</b> global.</li>
+<li>Di akhir program ada <b>workshop kepemimpinan di Washington, DC</b> bersama peserta sedunia.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Benefit</span><h2>Cakupan Beasiswa (Fully Funded)</h2>
+<div class="grid2">
+<div class="card"><b>🎓 Biaya kuliah</b><br>Tuition &amp; fees di universitas tuan rumah AS.</div>
+<div class="card"><b>🏠 Akomodasi</b><br>Asrama kampus + meal plan (makan).</div>
+<div class="card"><b>✈️ Tiket &amp; asuransi</b><br>Tiket pesawat internasional PP + asuransi kesehatan/kecelakaan.</div>
+<div class="card"><b>💰 Stipend</b><br>Tunjangan bulanan + dana buku &amp; materi kuliah.</div>
+</div>
+<p><span class="badge">Nilai</span> Total paket bernilai <b>ratusan juta rupiah</b> untuk satu semester di AS — tanpa biaya apapun dari kantongmu.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Syarat</span><h2>Syarat Pendaftar (Indonesia)</h2>
+<ol>
+<li><b>Warga Negara Indonesia</b>, berusia minimal <b>18 tahun</b>.</li>
+<li>Mahasiswa aktif <b>S1/D4</b> di PT terakreditasi Indonesia dengan prestasi akademik baik.</li>
+<li>Telah menyelesaikan <b>minimal 1 semester</b>; tersisa <b>minimal 1 tahun akademik</b> setelah program selesai — <b>prioritas semester 3–5</b>.</li>
+<li>Skor bahasa Inggris: <b>TOEFL ITP 500 / TOEFL iBT 48</b> (atau IELTS/Duolingo setara, sesuai ketentuan tahun berjalan).</li>
+<li>Menunjukkan <b>potensi kepemimpinan</b> lewat prestasi akademik, komunitas, &amp; ekstrakurikuler.</li>
+<li><b>Berkomitmen kembali ke Indonesia</b> setelah program selesai.</li>
+<li>Diutamakan yang <b>belum/tidak banyak pengalaman ke AS</b>.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Dokumen</span><h2>Dokumen yang Dibutuhkan</h2>
+<ol>
+<li><b>Dua surat rekomendasi</b> (bahasa Inggris): satu dari dosen jurusan, satu dari dosen lain/atasan/pelatih/pembina komunitas.</li>
+<li><b>Fotokopi KTP</b>.</li>
+<li><b>Transkrip nilai terbaru</b> dalam bahasa Indonesia <b>dan</b> bahasa Inggris.</li>
+<li><b>Sertifikat bahasa Inggris</b> (TOEFL ITP/Prediction/iBT, IELTS, atau Duolingo).</li>
+<li><b>Dua esai</b> (topik terlihat setelah registrasi akun aplikasi).</li>
+</ol>
+<div class="card"><b>💡 Alur khusus Indonesia:</b> setelah submit formulir online, <b>kirim scan sertifikat bahasa Inggris</b> via email ke AMINEF (info.scholarship@aminef.or.id) dengan subjek <b>"[Nama Lengkap] – Completed Global UGRAD Online Form"</b>.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Tahapan</span><h2>Tahapan Seleksi</h2>
+<ol>
+<li><b>Pendaftaran online</b> — buat akun, isi formulir, unggah dokumen &amp; esai.</li>
+<li><b>Kirim sertifikat bahasa Inggris</b> via email ke AMINEF.</li>
+<li><b>Seleksi berkas</b> — administrasi, esai, dan rekomendasi.</li>
+<li><b>Wawancara</b> — bagi yang lolos seleksi berkas.</li>
+<li><b>Tes TOEFL</b> (jika diminta pada tahap lanjutan).</li>
+<li><b>Pengumuman finalis</b> &amp; alternates.</li>
+<li><b>Persiapan keberangkatan</b> — visa J-1, orientasi pra-program.</li>
+<li><b>Pelaksanaan 1 semester di AS</b> + workshop penutup di Washington, DC.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Timeline</span><h2>Timeline (Pola Tahunan)</h2>
+<table>
+<tr><th>Tahapan</th><th>Jadwal (pola)</th></tr>
+<tr><td><b>Pendaftaran dibuka</b></td><td><b>November – Desember</b></td></tr>
+<tr><td>Seleksi berkas</td><td>Januari – Februari</td></tr>
+<tr><td>Wawancara</td><td>Maret – April</td></tr>
+<tr><td>Pengumuman</td><td>April – Mei</td></tr>
+<tr><td>Persiapan &amp; visa</td><td>Mei – Juli</td></tr>
+<tr><td><b>Keberangkatan</b></td><td><b>Agustus (gugur) / Januari (semi)</b></td></tr>
+</table>
+<p><span class="badge">Catatan</span> Pendaftaran dibuka <b>setiap akhir tahun</b>. Siapkan TOEFL &amp; esai sejak <b>pertengahan tahun</b> — jangan menunggu pengumuman resmi.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Cara Daftar</span><h2>Langkah Pendaftaran Online</h2>
+<ol>
+<li>Buka portal aplikasi resmi (<b>globalugrad.org/apply</b> saat periode dibuka).</li>
+<li>Klik <b>Sign Up</b> — buat akun dengan nama &amp; email.</li>
+<li>Aktivasi via email, lalu <b>isi formulir</b> lengkap sesuai data diri.</li>
+<li>Lewati <b>eligibility test</b> (tes kelayakan) dengan jujur &amp; teliti.</li>
+<li>Tulis <b>dua esai</b> sesuai topik yang diberikan.</li>
+<li><b>Unggah dokumen</b> (rekomendasi, KTP, transkrip ID+EN).</li>
+<li>Klik <b>Submit</b> — data tersimpan otomatis, bisa dicicil sebelum submit final.</li>
+<li><b>Kirim sertifikat TOEFL</b> via email ke AMINEF (lihat slide Dokumen).</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>Strategi Esai UGRAD</h2>
+<ul>
+<li><b>Dua esai, dua fokus:</b> biasanya satu tentang <b>kepemimpinan</b> dan satu tentang <b>motivasi</b> — baca topiknya baik-baik setelah registrasi.</li>
+<li><b>Metode STAR</b> untuk esai kepemimpinan: Situation → Task → Action → Result.</li>
+<li><b>Spesifik &amp; personal:</b> ceritakan pengalaman nyatamu, bukan teori kepemimpinan.</li>
+<li><b>Hubungkan ke AS:</b> jelaskan apa yang ingin kamu pelajari di AS dan <b>kontribusimu sepulang program</b>.</li>
+<li><b>Bahasa Inggris yang rapi:</b> minta <i>proofread</i> ke teman/mentor yang fasih.</li>
+<li><b>Jujur:</b> jangan mengarang pengalaman — pewawancara akan menggali esaimu.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>Strategi Wawancara &amp; TOEFL</h2>
+<h3>Wawancara</h3>
+<ul>
+<li>Pertanyaan seputar: <b>esaimu, motivasi, kesiapan lintas budaya, rencana pasca-program</b>.</li>
+<li>Kuasai isi esaimu sendiri — pewawancara akan menanyakan detailnya.</li>
+<li>Tunjukkan <b>kematangan &amp; keterbukaan</b> terhadap perbedaan budaya.</li>
+</ul>
+<h3>TOEFL</h3>
+<ul>
+<li>Target aman: <b>ITP 550+ / iBT 70+</b> — di atas syarat minimal agar kompetitif.</li>
+<li>TOEFL Prediction <b>bisa dipakai</b> untuk tahap awal (cek ketentuan tahun berjalan).</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>7 Tips Lolos Global UGRAD</h2>
+<ol>
+<li><b>Amankan TOEFL sejak dini</b> — jangan menunggu pendaftaran dibuka.</li>
+<li><b>Aktif di organisasi/komunitas</b> — bukti kepemimpinan adalah nyawa aplikasi ini.</li>
+<li><b>Tulis esai yang personal</b> dengan cerita &amp; hasil konkret.</li>
+<li><b>Pilih pemberi rekomendasi yang mengenalmu</b> — bukan sekadar yang jabatannya tinggi.</li>
+<li><b>Siapkan transkrip bilingual</b> dari jauh hari (birokrasi kampus butuh waktu).</li>
+<li><b>Jangan lupa email sertifikat TOEFL ke AMINEF</b> setelah submit — banyak yang gugur karena langkah ini terlewat!</li>
+<li><b>Latihan wawancara bahasa Inggris</b> dengan alumni UGRAD.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Hindari</span><h2>5 Kesalahan Umum</h2>
+<ol>
+<li><b>Lupa kirim sertifikat TOEFL via email ke AMINEF</b> — aplikasi dianggap tidak lengkap.</li>
+<li><b>Esai generik</b> tanpa pengalaman &amp; rencana yang konkret.</li>
+<li><b>Rekomendasi asal-asalan</b> dari dosen yang tidak mengenalmu.</li>
+<li><b>Transkrip hanya bahasa Indonesia</b> — wajib ada versi bahasa Inggris.</li>
+<li><b>Sudah semester akhir</b> — tidak memenuhi syarat sisa masa studi.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Selama</span><h2>Selama 1 Semester di AS</h2>
+<ul>
+<li><b>Kuliah penuh waktu</b> — mata kuliah sesuai jurusan + 1 mata kuliah wajib <b>US Studies</b>.</li>
+<li>Tinggal di <b>asrama kampus</b> bersama mahasiswa AS.</li>
+<li>Menyelesaikan <b>20 jam pengabdian masyarakat</b>.</li>
+<li>Mengikuti <b>workshop penutup di Washington, DC</b> — leadership &amp; networking global.</li>
+<li><b>Kamu adalah duta Indonesia:</b> aktif berbagi budaya &amp; bangun jejaring.</li>
+<li><b>Sepulang program:</b> terapkan ilmu &amp; pengalamanmu untuk komunitas — dan bergabung dengan <b>jaringan 3.000+ alumni UGRAD</b>.</li>
+</ul></div></section>
+<section class="slide"><div class="content" style="max-width:1000px"><span class="kicker">Video Panduan</span><h2>Video Panduan Global UGRAD</h2><div class="vidgrid"><div class="vid"><iframe src="https://www.youtube.com/embed/SUrkcLxgwqI" title="Application Process of My Global Undergraduate Exchange Program" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Proses Aplikasi Global UGRAD</b><br>Cara daftar #1 — Panduan proses aplikasi Global UGRAD dari awal sampai pengumuman.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/MozHe4YkIvE" title="Kupas Tuntas Essay Global UGRAD" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Kupas Tuntas Esai Global UGRAD</b><br>Cara daftar #2 — Bedah cara menulis esai Global UGRAD yang kuat (Bahasa Indonesia).</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/B_yKJaW9H1I" title="Global UGRAD - Menjadi Mahasiswa Lokal di USA" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Jadi Mahasiswa Lokal di AS</b><br>Suasana kampus — Vlog kehidupan awardee Global UGRAD Indonesia sebagai mahasiswa di Amerika (Bahasa Indonesia).</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/0v0lffGwt3M" title="Pengalaman Global UGRAD AMINEF Part 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Pengalaman Beasiswa Global UGRAD</b><br>Testimoni — Cerita awardee Global UGRAD AMINEF Indonesia: pengalaman kuliah 1 semester di AS (Bahasa Indonesia).</p></div></div></div></section>
+<section class="slide"><div class="content"><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (1)</h2>
+<div class="faq"><b>1. Apakah mahasiswa PTS bisa ikut?</b>Bisa, selama PT-mu terakreditasi dan memenuhi syarat lainnya.</div>
+<div class="faq"><b>2. Apakah SKS-nya diakui kampus asal?</b>Program ini non-gelar; konversi SKS mengikuti kebijakan kampus masing-masing — konsultasikan ke akademik/ KUI kampusmu.</div>
+<div class="faq"><b>3. Bisakah memilih universitasnya?</b>Penempatan ditentukan panitia; kamu tidak memilih kampus spesifik.</div>
+<div class="faq"><b>4. Apakah ada ikatan dinas?</b>Tidak — hanya komitmen moral untuk kembali &amp; berkontribusi di Indonesia.</div>
+<div class="faq"><b>5. Apakah TOEFL Prediction diterima?</b>Bisa untuk tahap awal sesuai ketentuan tahun berjalan; finalis biasanya diminta tes resmi.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (2)</h2>
+<div class="faq"><b>6. Kapan pendaftaran dibuka?</b>Pola tahunan: <b>November–Desember</b>. Pantau website &amp; media sosial AMINEF.</div>
+<div class="faq"><b>7. Saya semester 2, bisa daftar?</b>Bisa mendaftar, tapi <b>prioritas diberikan semester 3–5</b>.</div>
+<div class="faq"><b>8. Apakah harus jurusan tertentu?</b>Tidak — <b>semua jurusan</b> bisa mendaftar.</div>
+<div class="faq"><b>9. Bagaimana jika tidak lolos tahun ini?</b>Bisa mencoba lagi tahun berikutnya selama masih memenuhi syarat masa studi.</div>
+<div class="faq"><b>10. Ke mana bertanya?</b>Email: <b>info.scholarship@aminef.or.id</b> — cantumkan subjek yang jelas.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Link Resmi</span><h2>Link Resmi &amp; Kontak</h2>
+<ul>
+<li><b>Portal aplikasi:</b> globalugrad.org/apply (saat periode dibuka)</li>
+<li><b>AMINEF:</b> aminef.or.id — info khusus pendaftar Indonesia</li>
+<li><b>Email:</b> info.scholarship@aminef.or.id</li>
+<li><b>World Learning:</b> worldlearning.org — pengelola program global</li>
+<li><b>Facebook:</b> GlobalUGRAD — info &amp; komunitas</li>
+<li><b>Tips:</b> ikuti sosialisasi AMINEF di kampus-kampus &amp; webinar @america</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Checklist</span><h2>Checklist Persiapan</h2>
+<ul>
+<li>☐ Ikut tes TOEFL (target di atas syarat minimal)</li>
+<li>☐ Aktif di organisasi/komunitas — kumpulkan bukti kepemimpinan</li>
+<li>☐ Minta transkrip bilingual (ID + EN) ke akademik</li>
+<li>☐ Hubungi 2 pemberi rekomendasi sejak awal</li>
+<li>☐ Tulis draf 2 esai + minta proofread</li>
+<li>☐ Scan KTP &amp; siapkan dokumen digital</li>
+<li>☐ Buat akun aplikasi saat periode dibuka</li>
+<li>☐ Jangan lupa: email sertifikat TOEFL ke AMINEF setelah submit!</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Rangkuman</span><h2>Rangkuman 60 Detik</h2>
+<div class="card"><b>Global UGRAD = 1 semester GRATIS di 70+ kampus AS</b> — tuition, asrama, tiket, asuransi, stipend, buku ditanggung via AMINEF.</div>
+<ul>
+<li><b>Untuk:</b> WNI S1/D4 aktif (prioritas smt 3–5), TOEFL ITP 500/iBT 48, jiwa kepemimpinan, siap kembali ke Indonesia.</li>
+<li><b>Kunci lolos:</b> esai personal + rekomendasi kuat + jangan lupa email TOEFL ke AMINEF.</li>
+<li><b>Daftar:</b> globalugrad.org/apply (pola tahunan: Nov–Des).</li>
+<li><b>Plus:</b> 20 jam community service + workshop penutup di Washington, DC.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Penutup</span><h2>Siap Kuliah 1 Semester di Amerika?</h2>
+<p>Global UGRAD adalah <b>kesempatan emas sekali seumur hidup</b>: merasakan jadi mahasiswa AS sungguhan — kuliah, asrama, budaya, dan jaringan global — semuanya gratis.</p>
+<div class="card"><b>Mulai hari ini:</b> kejar skor TOEFL, aktif berorganisasi, tulis esaimu, dan siapkan dirimu sebelum November tiba.</div>
+<p style="text-align:center;margin-top:16px">🇺🇸 <b>Satu semester yang mengubah hidupmu!</b></p></div></section>
+</div>
+<div class="nav">
+<button id="prev" onclick="go(cur-1)">&#8592; Sebelumnya</button>
+<span id="counter">1 / 21</span>
+<button id="next" onclick="go(cur+1)">Lanjut &#8594;</button>
+</div>
+<div class="hint">Geser / panah &#8592; &#8594; untuk navigasi</div>
+<script>
+var cur=0;
+var slides=document.querySelectorAll('.slide');
+var N=slides.length;
+function go(n){cur=((n%N)+N)%N;
+slides.forEach(function(s,i){s.classList.toggle('active',i===cur)});
+document.getElementById('counter').textContent=(cur+1)+' / '+N;
+document.getElementById('bar').style.width=((cur+1)/N*100)+'%';
+document.getElementById('prev').disabled=(cur===0);
+document.getElementById('next').disabled=(cur===N-1);
+slides[cur].scrollTop=0;}
+document.addEventListener('keydown',function(e){
+if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(cur+1);}
+if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+if(e.key==='Home'){go(0);} if(e.key==='End'){go(N-1);}});
+var tx=0,ty=0;
+document.getElementById('deck').addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.getElementById('deck').addEventListener('touchend',function(e){
+var dx=e.changedTouches[0].clientX-tx,dy=e.touches[0].clientY-ty;
+if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){if(dx<0)go(cur+1);else go(cur-1);}},{passive:true});
+go(0);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 14 panduan grant ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/grant/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan AIESEC Global Talent", "slug": "deck-grant-aiesec-talent"},{"label": "Panduan AIESEC Global Volunteer", "slug": "deck-grant-aiesec-volunteer"},{"label": "Panduan Amgen Scholars Asia", "slug": "deck-grant-amgen-asia"},{"label": "Panduan Au Pair", "slug": "deck-grant-aupair"},{"label": "Panduan Ausbildung Jerman", "slug": "deck-grant-ausbildung"},{"label": "Panduan DAAD RISE Jerman", "slug": "deck-grant-rise-jerman"},{"label": "Panduan Erasmus+", "slug": "deck-grant-erasmus"},{"label": "Panduan Global UGRAD AS", "slug": "deck-grant-ugrad-as"},{"label": "Panduan IISMA", "slug": "deck-grant-iisma"},{"label": "Panduan IISMAVO", "slug": "deck-grant-iismavo"},{"label": "Panduan JET Programme", "slug": "deck-grant-jet"},{"label": "Panduan MITACS Globalink Kanada", "slug": "deck-grant-mitacs-kanada"},{"label": "Panduan OIST Research Internship", "slug": "deck-grant-oist-jepang"},{"label": "Panduan Short Course Luar Negeri", "slug": "deck-grant-shortcourse"},{"label": "Panduan Summer/Winter School", "slug": "deck-grant-summerschool"},{"label": "Panduan Travel Grant", "slug": "deck-grant-travel"},{"label": "Panduan Work & Travel USA", "slug": "deck-grant-worktravel"},{"label": "Panduan Working Holiday Visa", "slug": "deck-grant-whv"},{"label": "Panduan YSEALI Fellowship", "slug": "deck-grant-yseali-as"},{"label": "Panduan Youth Summit", "slug": "deck-grant-summit"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script>
+</body>
+</html>

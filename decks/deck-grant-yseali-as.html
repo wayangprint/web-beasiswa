@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan YSEALI Academic Fellowship AS</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--c1:#0d2b6b;--c2:#b8860b;--c3:#ef4444}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0f172a;color:#1e293b;overflow:hidden}
+.deck{height:100vh;height:100dvh;position:relative}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;padding:56px 8vw 96px;overflow-y:auto;background:#fff}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.slide h1{font-size:clamp(1.6rem,4.5vw,2.8rem);color:var(--c1);margin-bottom:18px;text-align:center;line-height:1.25}
+.slide h2{font-size:clamp(1.3rem,3.5vw,2rem);color:var(--c1);margin-bottom:16px;text-align:center}
+.slide h3{font-size:1.05rem;color:var(--c2);margin:14px 0 6px}
+.content{max-width:860px;width:100%}
+.content p{margin:8px 0;line-height:1.65;font-size:clamp(.95rem,2.2vw,1.1rem)}
+.content ul,.content ol{margin:8px 0 8px 22px;line-height:1.7;font-size:clamp(.95rem,2.2vw,1.08rem)}
+.content li{margin:6px 0}
+.card{background:#f1f5f9;border-left:5px solid var(--c2);border-radius:10px;padding:14px 18px;margin:10px 0}
+.card b{color:var(--c1)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.grid2 .card{margin:0}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:clamp(.85rem,2vw,1rem)}
+th{background:var(--c1);color:#fff;padding:10px}
+td{padding:10px;border-bottom:1px solid #e2e8f0}
+tr:nth-child(even) td{background:#f8fafc}
+.kicker{display:inline-block;background:var(--c2);color:#fff;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:999px;margin-bottom:14px}
+.cover{background:linear-gradient(135deg,var(--c1),#1e3a8a);color:#fff;text-align:center}
+.cover.hasimg{background-size:cover;background-position:center}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.78))}
+.cover .inner{position:relative;z-index:2;max-width:800px;padding:0 24px}
+.cover h1{color:#fff;font-size:clamp(2rem,6vw,3.6rem);margin:10px 0 14px;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.cover p{font-size:clamp(1rem,2.6vw,1.3rem);opacity:.92;line-height:1.6}
+.cover .kicker{background:rgba(255,255,255,.2);backdrop-filter:blur(4px)}
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:980px}
+.vid{background:#0f172a;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+.vid p{padding:10px 14px;font-size:.85rem;color:#e2e8f0;line-height:1.45}
+.vid p b{color:#fff}
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:rgba(15,23,42,.96);z-index:10}
+.nav button{background:var(--c2);color:#fff;border:0;border-radius:10px;padding:12px 26px;font-size:1rem;font-weight:700;cursor:pointer;min-width:120px}
+.nav button:disabled{opacity:.35;cursor:default}
+.nav button:active{transform:scale(.96)}
+#counter{color:#fff;font-weight:700;font-size:.95rem}
+#barwrap{position:fixed;top:0;left:0;right:0;height:5px;background:#1e293b;z-index:10}
+#bar{height:100%;width:5%;background:linear-gradient(90deg,var(--c2),var(--c3));transition:width .3s}
+.hint{position:fixed;bottom:74px;right:16px;color:#94a3b8;font-size:.75rem;z-index:10}
+.faq{background:#f8fafc;border-radius:10px;padding:12px 16px;margin:8px 0;border:1px solid #e2e8f0}
+.faq b{color:var(--c1);display:block;margin-bottom:4px}
+.linkbtn{display:inline-block;background:var(--c1);color:#fff!important;text-decoration:none;padding:12px 24px;border-radius:10px;font-weight:700;margin:6px 8px 6px 0}
+.badge{display:inline-block;background:#fef3c7;color:#92400e;font-weight:700;font-size:.8rem;padding:4px 12px;border-radius:999px;margin:2px}
+@media(max-width:640px){.vidgrid,.grid2{grid-template-columns:1fr}.slide{padding:44px 6vw 100px}.nav button{min-width:96px;padding:11px 18px}}
+</style>
+</head>
+<body>
+<div id="barwrap"><div id="bar"></div></div>
+<div class="deck" id="deck">
+<section class="slide cover hasimg" style="background-image:url('https://images.unsplash.com/photo-1501466044931-62695aada8e9?w=1600&q=80')"><div class="shade"></div><div class="inner"><span class="kicker">Fellowship • Amerika Serikat</span><h1>YSEALI Academic Fellowship AS</h1><p>Fellowship 5 minggu, fully funded, di universitas Amerika Serikat untuk pemuda ASEAN usia 18–25 tahun. Syarat, tahapan, timeline, dan strategi lolos.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Sekilas Program</span><h2>Apa Itu YSEALI Academic Fellowship?</h2>
+<p><b>YSEALI (Young Southeast Asian Leaders Initiative)</b> adalah inisiatif dari <b>Departemen Luar Negeri Amerika Serikat</b> untuk membangun jaringan pemimpin muda Asia Tenggara. <b>YSEALI Academic Fellowship</b> membawa pemuda ASEAN ke AS selama <b>5 minggu</b>: 4 minggu residensi akademik di kampus AS + 1 minggu pengalaman lapangan terpadu (termasuk di Washington, DC).</p>
+<div class="card"><b>Konsep:</b> kamu mengikuti seminar, diskusi, presentasi kelompok, <i>study tour</i>, kegiatan pengabdian masyarakat, dan membangun <b>rencana aksi (follow-on project)</b> untuk diterapkan sepulang ke Indonesia.</div>
+<ul>
+<li>Setiap tahun ada <b>dua gelombang</b> (musim semi &amp; musim gugur) dengan ratusan peserta dari 11 negara ASEAN.</li>
+<li>Tidak ada ikatan dinas — kamu diharapkan menjadi <b>agen perubahan</b> di komunitasmu.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Tema</span><h2>Empat Tema Fellowship</h2>
+<div class="grid2">
+<div class="card"><b>🤝 Civic Engagement</b><br>Keterlibatan sipil, kepemimpinan komunitas, dan partisipasi publik.</div>
+<div class="card"><b>🌿 Lingkungan &amp; Sumber Daya Alam</b><br>Isu lingkungan, konservasi, dan pengelolaan sumber daya.</div>
+<div class="card"><b>💡 Social Entrepreneurship</b><br>Kewirausahaan sosial &amp; pemberdayaan ekonomi masyarakat.</div>
+<div class="card"><b>🏛️ Masyarakat &amp; Tata Kelola</b><br>Tata kelola, kebijakan publik, dan penguatan masyarakat sipil.</div>
+</div>
+<div class="card"><b>💡 Tips:</b> pilih <b>satu tema yang paling sesuai</b> dengan latar belakang dan proyek komunitasmu — konsistensi ini dinilai seleksi.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Benefit</span><h2>Cakupan Beasiswa (Fully Funded)</h2>
+<div class="grid2">
+<div class="card"><b>🎓 Program akademik</b><br>Seluruh biaya program 5 minggu di universitas AS.</div>
+<div class="card"><b>✈️ Perjalanan</b><br>Tiket pesawat internasional PP + biaya visa J-1.</div>
+<div class="card"><b>🏠 Akomodasi &amp; hidup</b><br>Tempat tinggal + biaya hidup selama di AS.</div>
+<div class="card"><b>🌍 Study tour</b><br>Perjalanan edukasi, kunjungan lapangan, dan kegiatan budaya.</div>
+</div>
+<p><span class="badge">Nilai</span> Tidak ada biaya partisipasi — seluruhnya ditanggung program dari pemerintah AS.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Syarat</span><h2>Syarat Pendaftar</h2>
+<ol>
+<li>Berusia <b>18–25 tahun</b> saat periode pendaftaran (pelamar luar biasa di atas 25 bisa dipertimbangkan).</li>
+<li><b>Warga negara Indonesia</b> dan berdomisili di negara ASEAN.</li>
+<li>Mahasiswa S1 <b>penuh/waktu paruh</b>, atau <b>lulusan S1 maksimal 4 tahun terakhir</b>.</li>
+<li><b>Mahir bahasa Inggris</b> lisan &amp; tulisan (seluruh seleksi berbahasa Inggris; TOEFL/IELTS tidak wajib).</li>
+<li><b>Bukan</b> warga negara/penduduk tetap AS; bukan keluarga pegawai pemerintah AS.</li>
+<li><b>Belum pernah</b> mengikuti YSEALI Academic Fellowship sebelumnya.</li>
+<li>Memenuhi syarat <b>visa J-1</b> AS.</li>
+<li><b>Diutamakan</b> yang belum/tidak banyak pengalaman ke AS.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Dokumen</span><h2>Dokumen &amp; Berkas Aplikasi</h2>
+<ol>
+<li><b>Formulir online</b> di ysealiafp.org/apply — diisi dalam <b>bahasa Inggris</b>.</li>
+<li><b>Esai singkat</b> (umumnya ~250 kata per pertanyaan): motivasi, pengalaman kepemimpinan, dan rencana kontribusi.</li>
+<li><b>CV</b> — tonjolkan pengalaman organisasi, proyek komunitas, dan kepemimpinan.</li>
+<li>Dokumen identitas &amp; bukti status mahasiswa/lulusan.</li>
+<li>Kontak referensi (jika diminta).</li>
+</ol>
+<div class="card"><b>💡 Tips:</b> dokumentasikan proyek komunitasmu dengan <b>foto, testimoni, dan data dampak</b> — ini amunisi esai &amp; wawancaramu.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Tahapan</span><h2>Tahapan Seleksi</h2>
+<ol>
+<li><b>Pendaftaran online</b> — isi formulir + esai dalam bahasa Inggris.</li>
+<li><b>Seleksi administrasi</b> — kelengkapan &amp; memenuhi syarat usia/kewarganegaraan.</li>
+<li><b>Review esai &amp; CV</b> — dinilai: kepemimpinan, pengalaman relevan tema, dan potensi dampak.</li>
+<li><b>Wawancara</b> — dengan pihak Kedutaan/Konsulat AS; dalam bahasa Inggris.</li>
+<li><b>Pengumuman finalis</b> — hanya kandidat terpilih yang dihubungi.</li>
+<li><b>Persiapan keberangkatan</b> — visa J-1, briefing, dan orientasi pra-program.</li>
+<li><b>Pelaksanaan 5 minggu di AS</b> + proyek lanjutan sepulang program.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Timeline</span><h2>Timeline (Contoh Gelombang 2027)</h2>
+<table>
+<tr><th>Tahapan</th><th>Jadwal</th></tr>
+<tr><td><b>Pendaftaran dibuka</b></td><td><b>3 Oktober 2025</b></td></tr>
+<tr><td><b>Batas pendaftaran</b></td><td><b>12 Oktober 2026</b></td></tr>
+<tr><td>Seleksi &amp; wawancara</td><td>Akhir 2026</td></tr>
+<tr><td>Pengumuman</td><td>Awal 2027</td></tr>
+<tr><td><b>Pelaksanaan program</b></td><td><b>Musim semi &amp; gugur 2027</b></td></tr>
+</table>
+<p><span class="badge">Catatan</span> Pola tahunan: pendaftaran dibuka sekitar <b>Oktober</b>. Pantau akun media sosial <b>Kedutaan Besar AS Jakarta</b> &amp; ysealiafp.org.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Cara Daftar</span><h2>Langkah Pendaftaran Online</h2>
+<ol>
+<li>Buka <b>ysealiafp.org/apply</b> → klik <b>Apply Here</b>.</li>
+<li>Buat akun dan isi <b>data diri lengkap dalam bahasa Inggris</b>.</li>
+<li>Pilih <b>tema fellowship</b> yang sesuai minatmu.</li>
+<li>Tulis <b>esai</b> (±250 kata per pertanyaan) — masa lalu, peran saat ini, rencana masa depan.</li>
+<li>Unggah <b>CV &amp; dokumen pendukung</b>.</li>
+<li>Review semuanya, klik <b>Submit</b> sebelum deadline.</li>
+<li>Tunggu kabar — hanya kandidat terpilih yang dihubungi untuk wawancara.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>Strategi Esai YSEALI (±250 Kata)</h2>
+<ul>
+<li><b>Struktur 3 bagian:</b> pengalaman masa lalu → peran aktifmu saat ini → rencana kontribusimu ke depan.</li>
+<li><b>Tunjukkan kepemimpinan nyata:</b> proyek komunitas, organisasi, inisiatif sosial — dengan <b>angka dampak</b> (berapa orang terbantu).</li>
+<li><b>Konsisten dengan tema:</b> semua jawaban mengarah ke satu tema yang kamu pilih.</li>
+<li><b>Visi jangka panjang:</b> jelaskan rencana <i>follow-on project</i> sepulang program — ini yang paling dinilai.</li>
+<li><b>Gunakan active voice</b> dan kata kunci yang mudah dipindai reviewer.</li>
+<li><b>Minta review</b> ke alumni YSEALI sebelum submit.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>Strategi Wawancara</h2>
+<ul>
+<li>Pewawancara biasanya dari <b>Kedubes/Konjen AS</b> — dalam bahasa Inggris.</li>
+<li>Pertanyaan seputar: <b>latar belakang, motivasi, passion, pencapaian, dan proyekmu</b>.</li>
+<li>Tekankan <b>keinginan berkontribusi untuk Indonesia</b> dan bagaimana ilmu dari program membantumu.</li>
+<li>Siapkan cerita <b>2–3 menit</b> tentang proyek komunitasmu: masalah → aksimu → hasilnya.</li>
+<li>Tunjukkan <b>antusiasme &amp; ketulusan</b> — jangan menghafal jawaban.</li>
+<li>Latihan <i>mock interview</i> dalam bahasa Inggris dengan teman/mentor.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>7 Tips Lolos YSEALI</h2>
+<ol>
+<li><b>Mulai proyek komunitas dari sekarang</b> — pengalaman nyata mengalahkan nilai IPK di sini.</li>
+<li><b>Pilih tema sesuai passion &amp; background</b> — jangan asal pilih yang terlihat keren.</li>
+<li><b>Bangun portofolio kepemimpinan</b> yang konsisten &amp; terdokumentasi.</li>
+<li><b>Latih bahasa Inggris aktif</b> — seleksi &amp; program 100% berbahasa Inggris.</li>
+<li><b>Tulis esai yang personal &amp; spesifik</b> — hindari kalimat generik.</li>
+<li><b>Cari surat rekomendasi dari mentor</b> yang benar-benar mengenal kerjamu (bukan keluarga/teman).</li>
+<li><b>Siapkan diri untuk wawancara</b> — kuasai aplikasimu sendiri luar-dalam.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Hindari</span><h2>5 Kesalahan Umum</h2>
+<ol>
+<li><b>Esai generik</b> tanpa cerita &amp; data dampak yang konkret.</li>
+<li><b>Tidak punya pengalaman komunitas</b> — YSEALI mencari pemimpin muda, bukan sekadar mahasiswa berprestasi.</li>
+<li><b>Aplikasi tidak lengkap</b> atau melewati deadline.</li>
+<li><b>Bahasa Inggris pas-pasan</b> saat wawancara — padahal programnya full English.</li>
+<li><b>Tidak punya rencana pasca-program</b> — reviewer ingin tahu dampakmu setelah pulang.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Selama</span><h2>Selama 5 Minggu di AS</h2>
+<ul>
+<li><b>Residensi akademik 4 minggu</b> di kampus AS: seminar, diskusi, presentasi kelompok, bacaan.</li>
+<li><b>Pengalaman lapangan 1 minggu</b> — termasuk kunjungan ke Washington, DC.</li>
+<li><b>Pengabdian masyarakat</b> &amp; kegiatan layanan komunitas lokal.</li>
+<li><b>Study tour edukatif</b> &amp; pertukaran budaya.</li>
+<li>Membangun <b>jaringan pemimpin muda se-ASEAN</b> + alumni global YSEALI.</li>
+<li><b>Sepulang program:</b> jalankan <i>follow-on project</i> di komunitasmu — ini bagian dari komitmen fellowship.</li>
+</ul></div></section>
+<section class="slide"><div class="content" style="max-width:1000px"><span class="kicker">Video Panduan</span><h2>Video Panduan YSEALI</h2><div class="vidgrid"><div class="vid"><iframe src="https://www.youtube.com/embed/fsA0qbDi7nA" title="Cara Daftar dan Tips Lolos YSEALI Academic Fellowship" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Cara Daftar &amp; Tips Lolos YSEALI</b><br>Cara daftar #1 — Panduan lengkap pendaftaran dan strategi lolos YSEALI Academic Fellowship (Bahasa Indonesia).</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/ZAPMgNs_Dsc" title="Join YSEALI and apply to be a YSEALI Fellow" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Profil Program YSEALI</b><br>Cara daftar #2 — Video resmi pengenalan YSEALI dan ajakan mendaftar fellowship.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/s3evQzzgPgQ" title="YSEALI Fellow experience in the US" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Pengalaman Fellow di AS</b><br>Suasana program — Kegiatan fellow YSEALI di Amerika Serikat: ekspedisi, komunitas, dan pertukaran budaya.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/UA--yJkL018" title="Niomi Pridina - YSEALI 2016" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Cerita Alumni Indonesia</b><br>Testimoni — Pengalaman Niomi Pridina, alumni YSEALI 2016 dari Indonesia.</p></div></div></div></section>
+<section class="slide"><div class="content"><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (1)</h2>
+<div class="faq"><b>1. Apakah ada syarat TOEFL/IELTS?</b>Tidak wajib — tapi seluruh seleksi &amp; program berbahasa Inggris, jadi kemampuan bahasa Inggris aktif sangat penting.</div>
+<div class="faq"><b>2. Apakah mahasiswa baru boleh mendaftar?</b>Bisa, selama berusia 18–25 tahun dan memenuhi syarat lainnya. Pengalaman organisasi menjadi nilai plus.</div>
+<div class="faq"><b>3. Apakah program ini gratis?</b>Ya, <b>fully funded</b> — tidak ada biaya partisipasi.</div>
+<div class="faq"><b>4. Apakah harus kembali ke Indonesia?</b>Ya — kamu diharapkan menerapkan ilmu &amp; menjalankan proyek lanjutan di komunitasmu.</div>
+<div class="faq"><b>5. Saya sudah pernah ke AS, masih bisa daftar?</b>Bisa, tapi <b>diutamakan</b> yang belum/tidak banyak pengalaman ke AS.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (2)</h2>
+<div class="faq"><b>6. Kapan pendaftaran dibuka?</b>Pola tahunan sekitar <b>Oktober</b> (contoh: 3 Okt 2025 – 12 Okt 2026 untuk gelombang 2027).</div>
+<div class="faq"><b>7. Di kampus mana program diadakan?</b>Berbeda tiap gelombang &amp; tema — diumumkan ke finalis terpilih. Contoh tuan rumah: University of Nebraska Omaha.</div>
+<div class="faq"><b>8. Apakah ada batasan jurusan?</b>Tidak — semua jurusan bisa mendaftar; yang dinilai adalah kepemimpinan &amp; relevansi dengan tema.</div>
+<div class="faq"><b>9. Bagaimana jika gagal tahun ini?</b>Bisa mencoba lagi tahun berikutnya selama masih memenuhi syarat usia — banyak alumni lolos setelah mencoba berkali-kali.</div>
+<div class="faq"><b>10. Ke mana bertanya?</b>Email resmi: <b>ysealiafp@umontana.edu</b> atau hubungi Kedubes AS di negaramu.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Link Resmi</span><h2>Link Resmi &amp; Kontak</h2>
+<ul>
+<li><b>Website &amp; pendaftaran:</b> ysealiafp.org/apply</li>
+<li><b>Email:</b> ysealiafp@umontana.edu</li>
+<li><b>Kedutaan Besar AS Jakarta</b> — media sosial untuk info pendaftaran Indonesia</li>
+<li><b>Komunitas alumni YSEALI Indonesia</b> — untuk mentoring &amp; info sesi tanya jawab</li>
+<li><b>Tips:</b> ikuti info session yang diadakan kedutaan sebelum mendaftar</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Checklist</span><h2>Checklist Persiapan</h2>
+<ul>
+<li>☐ Mulai/aktif di proyek komunitas atau organisasi</li>
+<li>☐ Dokumentasikan kegiatan: foto, data dampak, testimoni</li>
+<li>☐ Latih bahasa Inggris aktif (speaking &amp; writing)</li>
+<li>☐ Tentukan satu tema yang paling sesuai</li>
+<li>☐ Tulis draf esai ±250 kata + minta review alumni</li>
+<li>☐ Siapkan CV dalam bahasa Inggris</li>
+<li>☐ Cari mentor untuk surat rekomendasi</li>
+<li>☐ Pantau ysealiafp.org &amp; medsos Kedubes AS</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Rangkuman</span><h2>Rangkuman 60 Detik</h2>
+<div class="card"><b>YSEALI Academic Fellowship = 5 minggu GRATIS di AS</b> untuk pemuda ASEAN 18–25 tahun — program akademik, study tour, &amp; jaringan pemimpin muda.</div>
+<ul>
+<li><b>Untuk:</b> WNI 18–25 thn, mahasiswa/lulusan baru, bahasa Inggris aktif, belum pernah ikut YSEALI.</li>
+<li><b>Kunci lolos:</b> pengalaman komunitas nyata + esai personal + rencana proyek pasca-program.</li>
+<li><b>Daftar:</b> ysealiafp.org/apply (pola tahunan: Oktober).</li>
+<li><b>4 tema:</b> civic engagement • lingkungan • social entrepreneurship • tata kelola.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Penutup</span><h2>Siap Jadi Pemimpin Muda ASEAN?</h2>
+<p>YSEALI bukan sekadar jalan-jalan ke Amerika — ini <b>investasi kepemimpinan</b>: 5 minggu yang mengubah cara pandangmu, plus jaringan seumur hidup dengan changemaker se-Asia Tenggara.</p>
+<div class="card"><b>Mulai hari ini:</b> aktif di komunitas, dokumentasikan dampakmu, asah bahasa Inggrismu, dan siapkan esai terbaikmu sebelum Oktober tiba.</div>
+<p style="text-align:center;margin-top:16px">🌏 <b>Perubahan dimulai dari komunitasmu!</b></p></div></section>
+</div>
+<div class="nav">
+<button id="prev" onclick="go(cur-1)">&#8592; Sebelumnya</button>
+<span id="counter">1 / 21</span>
+<button id="next" onclick="go(cur+1)">Lanjut &#8594;</button>
+</div>
+<div class="hint">Geser / panah &#8592; &#8594; untuk navigasi</div>
+<script>
+var cur=0;
+var slides=document.querySelectorAll('.slide');
+var N=slides.length;
+function go(n){cur=((n%N)+N)%N;
+slides.forEach(function(s,i){s.classList.toggle('active',i===cur)});
+document.getElementById('counter').textContent=(cur+1)+' / '+N;
+document.getElementById('bar').style.width=((cur+1)/N*100)+'%';
+document.getElementById('prev').disabled=(cur===0);
+document.getElementById('next').disabled=(cur===N-1);
+slides[cur].scrollTop=0;}
+document.addEventListener('keydown',function(e){
+if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(cur+1);}
+if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+if(e.key==='Home'){go(0);} if(e.key==='End'){go(N-1);}});
+var tx=0,ty=0;
+document.getElementById('deck').addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.getElementById('deck').addEventListener('touchend',function(e){
+var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){if(dx<0)go(cur+1);else go(cur-1);}},{passive:true});
+go(0);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 14 panduan grant ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/grant/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan AIESEC Global Talent", "slug": "deck-grant-aiesec-talent"},{"label": "Panduan AIESEC Global Volunteer", "slug": "deck-grant-aiesec-volunteer"},{"label": "Panduan Amgen Scholars Asia", "slug": "deck-grant-amgen-asia"},{"label": "Panduan Au Pair", "slug": "deck-grant-aupair"},{"label": "Panduan Ausbildung Jerman", "slug": "deck-grant-ausbildung"},{"label": "Panduan DAAD RISE Jerman", "slug": "deck-grant-rise-jerman"},{"label": "Panduan Erasmus+", "slug": "deck-grant-erasmus"},{"label": "Panduan Global UGRAD AS", "slug": "deck-grant-ugrad-as"},{"label": "Panduan IISMA", "slug": "deck-grant-iisma"},{"label": "Panduan IISMAVO", "slug": "deck-grant-iismavo"},{"label": "Panduan JET Programme", "slug": "deck-grant-jet"},{"label": "Panduan MITACS Globalink Kanada", "slug": "deck-grant-mitacs-kanada"},{"label": "Panduan OIST Research Internship", "slug": "deck-grant-oist-jepang"},{"label": "Panduan Short Course Luar Negeri", "slug": "deck-grant-shortcourse"},{"label": "Panduan Summer/Winter School", "slug": "deck-grant-summerschool"},{"label": "Panduan Travel Grant", "slug": "deck-grant-travel"},{"label": "Panduan Work & Travel USA", "slug": "deck-grant-worktravel"},{"label": "Panduan Working Holiday Visa", "slug": "deck-grant-whv"},{"label": "Panduan YSEALI Fellowship", "slug": "deck-grant-yseali-as"},{"label": "Panduan Youth Summit", "slug": "deck-grant-summit"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script>
+</body>
+</html>

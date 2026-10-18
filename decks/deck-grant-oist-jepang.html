@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OIST Research Internship Jepang — Portal Beasiswa</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+    background:#0f0c29; color:#f4f1ff;
+    overflow:hidden;
+  }
+  #deck { position:relative; width:100vw; height:100vh; }
+  .slide {
+    position:absolute; inset:0;
+    display:none; flex-direction:column; justify-content:center;
+    padding:56px 8vw;
+    background:linear-gradient(135deg,#0f0c29 0%,#1a1446 60%,#241b58 100%);
+    overflow-y:auto;
+  }
+  .slide.active { display:flex; }
+  h1 { font-size:clamp(2rem,5.5vw,3.6rem); color:#ffd75e; margin-bottom:14px; line-height:1.15; }
+  h2 { font-size:clamp(1.4rem,3.4vw,2.2rem); color:#ffd75e; margin-bottom:18px; border-left:5px solid #ffd75e; padding-left:16px; }
+  h3 { font-size:1.1rem; color:#ffd75e; margin:12px 0 6px; }
+  p, li { font-size:clamp(0.95rem,2vw,1.15rem); line-height:1.65; color:#e8e4ff; }
+  ul, ol { margin:10px 0 10px 22px; }
+  li { margin-bottom:8px; }
+  .accent { color:#ffd75e; font-weight:700; }
+  .card {
+    background:rgba(255,215,94,0.07); border:1px solid rgba(255,215,94,0.35);
+    border-radius:14px; padding:18px 20px; margin:10px 0;
+  }
+  .card p, .card li { font-size:clamp(0.9rem,1.9vw,1.05rem); }
+  .badge {
+    display:inline-block; background:#ffd75e; color:#0f0c29; font-weight:800;
+    padding:8px 20px; border-radius:999px; margin-top:18px; font-size:1rem;
+  }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:10px; }
+  .mini { background:rgba(255,215,94,.07); border:1px solid rgba(255,215,94,.35); border-radius:12px; padding:14px 16px; }
+  .mini h3 { margin-top:0; }
+  .mini p { font-size:clamp(.88rem,1.9vw,1rem); }
+  /* cover */
+  #cover { padding:0; justify-content:flex-end; }
+  .cover-bg {
+    position:absolute; inset:0;
+    background:url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+  }
+  .cover-overlay {
+    position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(15,12,41,0.95) 20%, rgba(15,12,41,0.45) 60%, rgba(15,12,41,0.25) 100%);
+  }
+  .cover-content { position:relative; padding:0 8vw 9vh; }
+  .cover-content h1 { font-size:clamp(2.2rem,6.5vw,4.2rem); text-shadow:0 3px 18px rgba(0,0,0,.6); }
+  .cover-sub { font-size:clamp(1.05rem,2.6vw,1.6rem); color:#fff; margin-top:8px; }
+  /* nav */
+  #nav {
+    position:fixed; bottom:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 20px;
+    background:rgba(10,8,26,0.85); backdrop-filter:blur(6px);
+    border-top:1px solid rgba(255,215,94,0.25);
+  }
+  #nav button {
+    background:#ffd75e; color:#0f0c29; border:none; font-weight:800;
+    padding:10px 22px; border-radius:10px; cursor:pointer; font-size:1rem;
+  }
+  #nav button:disabled { opacity:0.3; cursor:default; }
+  #counter { color:#ffd75e; font-weight:700; font-size:1.05rem; letter-spacing:1px; }
+  .slide-number { position:absolute; top:18px; right:26px; color:rgba(255,215,94,.5); font-size:.9rem; }
+  /* video grid */
+  .video-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:10px; }
+  .video-item { background:rgba(0,0,0,.35); border-radius:12px; overflow:hidden; border:1px solid rgba(255,215,94,.25); }
+  .video-item iframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .video-item p { padding:8px 12px; font-size:.85rem; color:#ffd75e; font-weight:600; }
+  .video-link-card { display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; min-height:180px; padding:20px; gap:10px; }
+  .video-link-card p { color:#e8e4ff; }
+  .video-link-card a {
+    display:inline-block; background:#ffd75e; color:#0f0c29; font-weight:800;
+    padding:10px 20px; border-radius:10px; text-decoration:none; font-size:.95rem;
+  }
+  .faq-q { font-weight:700; color:#ffd75e; margin-top:14px; }
+  .faq-a { margin-bottom:6px; }
+  table { width:100%; border-collapse:collapse; margin-top:12px; font-size:clamp(.85rem,1.9vw,1.02rem); }
+  th, td { border:1px solid rgba(255,215,94,.3); padding:10px 12px; text-align:left; }
+  th { background:rgba(255,215,94,.12); color:#ffd75e; }
+  a { color:#ffd75e; }
+  .warn { border:1px solid #ff8a8a; background:rgba(255,80,80,.08); border-radius:14px; padding:18px 20px; margin:10px 0; }
+  .warn p, .warn li { color:#ffd9d9; }
+  @media (max-width:640px) {
+    .slide { padding:40px 6vw 90px; }
+    .video-grid { grid-template-columns:1fr; gap:10px; }
+    .grid2 { grid-template-columns:1fr; }
+    #nav button { padding:8px 14px; font-size:.9rem; }
+    table { font-size:.82rem; }
+  }
+</style>
+</head>
+<body>
+<div id="deck">
+
+<!-- 1. COVER -->
+<section class="slide active" id="cover">
+  <div class="cover-bg"></div>
+  <div class="cover-overlay"></div>
+  <div class="cover-content">
+    <h1>OIST Research Internship</h1>
+    <p class="cover-sub">Magang Riset 3&ndash;6 Bulan di Okinawa, Jepang</p>
+    <span class="badge">&#127471;&#127477; Jepang</span>
+  </div>
+</section>
+
+<!-- 2. SEKILAS OIST & PROGRAM -->
+<section class="slide">
+  <span class="slide-number">2 / 21</span>
+  <h2>Sekilas OIST &amp; Programnya</h2>
+  <div class="card">
+    <p><span class="accent">OIST</span> = <span class="accent">Okinawa Institute of Science and Technology Graduate University</span> &mdash; universitas riset pascasarjana di Onna, Okinawa, Jepang.</p>
+  </div>
+  <ul>
+    <li>Program <span class="accent">Research Internship</span>: magang riset <span class="accent">4&ndash;6 bulan</span> (minimal 120 hari) di salah satu <span class="accent">research unit</span> OIST</li>
+    <li>Dibimbing langsung oleh <span class="accent">profesor / fakultas OIST</span> &mdash; kamu mengerjakan proyek riset nyata, bukan pekerjaan administratif</li>
+    <li>Universitas riset <span class="accent">interdisipliner tanpa departemen kaku</span> &mdash; biologi, fisika, kimia, neuroscience, komputasi, ilmu kelautan, lingkungan, teknik bisa berkolaborasi</li>
+    <li><span class="accent">Bahasa resmi: Inggris</span>; komunitas internasional dari <span class="accent">50+ negara</span></li>
+    <li>Ditujukan bagi yang ingin menambah pengalaman riset &mdash; dan berpotensi melanjutkan ke <span class="accent">program PhD OIST</span></li>
+  </ul>
+</section>
+
+<!-- 3. KENAPA ISTIMEWA -->
+<section class="slide">
+  <span class="slide-number">3 / 21</span>
+  <h2>Kenapa OIST Istimewa?</h2>
+  <ul>
+    <li><span class="accent">Tanpa syarat IELTS/TOEFL</span> &mdash; skor bahasa Inggris bersifat opsional; yang dinilai adalah kemampuanmu berkomunikasi &amp; bekerja dalam bahasa Inggris</li>
+    <li><span class="accent">Terbuka untuk SEMUA negara</span> &mdash; termasuk Indonesia; tidak ada batasan kewarganegaraan</li>
+    <li><span class="accent">Tanpa departemen kaku</span> &mdash; kamu bisa mengeksplorasi riset lintas disiplin, langka untuk ukuran universitas riset</li>
+    <li><span class="accent">Didanai penuh</span> &mdash; tunjangan harian, tiket pesawat PP, akomodasi, bantuan visa</li>
+    <li><span class="accent">Bimbing 1-on-1 oleh profesor</span> &mdash; akses langsung ke ilmuwan kelas dunia, bukan sekadar asisten</li>
+    <li><span class="accent">Jalur menuju PhD</span> &mdash; magang &ge;4 bulan bisa dihitung sebagai <span class="accent">rotasi lab</span> jika kamu lanjut ke PhD di OIST</li>
+  </ul>
+</section>
+
+<!-- 4. CAKUPAN & FUNDING -->
+<section class="slide">
+  <span class="slide-number">4 / 21</span>
+  <h2>Cakupan &amp; Funding Detail</h2>
+  <table>
+    <tr><th>Komponen</th><th>Detail</th></tr>
+    <tr><td>Tunjangan magang</td><td><span class="accent">&yen;2.400 per hari kerja</span> (akhir pekan tidak dihitung; bebas pajak)</td></tr>
+    <tr><td>Tiket pesawat</td><td><span class="accent">Satu tiket PP langsung</span> dari negara asal ke Okinawa, Jepang</td></tr>
+    <tr><td>Akomodasi</td><td><span class="accent">Apartemen furnished</span> di dalam atau luar kampus, didanai OIST/unit riset</td></tr>
+    <tr><td>Transportasi lokal</td><td><span class="accent">Shuttle bus pass OIST</span> untuk mobilitas ke/dari kampus</td></tr>
+    <tr><td>Visa &amp; administrasi</td><td>Bantuan <span class="accent">pengurusan visa (CoE)</span>, asuransi, dan registrasi lokal</td></tr>
+    <tr><td>Asuransi</td><td>Bantuan prosedur asuransi selama magang (peserta dari institusi Jepang membawa asuransi sendiri: Gakkensai + Gakkenbai)</td></tr>
+  </table>
+  <div class="card">
+    <p>Intinya: biaya besar (penerbangan, tempat tinggal, tunjangan hidup) sudah ditanggung &mdash; kamu fokus riset.</p>
+  </div>
+</section>
+
+<!-- 5. SYARAT -->
+<section class="slide">
+  <span class="slide-number">5 / 21</span>
+  <h2>Syarat Pendaftaran</h2>
+  <ul>
+    <li>Mahasiswa <span class="accent">2 tahun terakhir jenjang S1</span>, <span class="accent">mahasiswa S2 tahun berapa pun</span>, ATAU <span class="accent">baru lulus S1/S2</span> (universitas dalam/luar Jepang)</li>
+    <li>Bidang <span class="accent">STEM</span>: fisika, kimia, biologi, neuroscience, matematika, komputasi, lingkungan/ekologi, ilmu kelautan, teknik, kedokteran</li>
+    <li>Latar belakang akademik <span class="accent">sesuai dengan research unit</span> yang dipilih di OIST</li>
+    <li>Mahasiswa yang masih kuliah wajib punya <span class="accent">izin dari institusi asal</span></li>
+    <li><span class="accent">Skor IELTS/TOEFL TIDAK wajib</span> (opsional, boleh dilampirkan bila memperkuat aplikasi)</li>
+  </ul>
+  <div class="warn">
+    <p><span class="accent">Tidak boleh mendaftar:</span> mahasiswa PhD yang sedang berjalan maupun yang sudah lulus PhD (mereka diarahkan ke program lain seperti Workshops atau Careers at OIST).</p>
+  </div>
+</section>
+
+<!-- 6. DOKUMEN -->
+<section class="slide">
+  <span class="slide-number">6 / 21</span>
+  <h2>Dokumen yang Dibutuhkan</h2>
+  <p>Semua dokumen disiapkan dalam <span class="accent">bahasa Inggris</span> dan diunggah sebagai <span class="accent">PDF</span> via portal aplikasi online:</p>
+  <ul>
+    <li><span class="accent">Statement of Purpose</span> &mdash; maksimal <span class="accent">250 kata (1500 karakter)</span></li>
+    <li><span class="accent">Transkrip akademik + ijazah</span> (scan; transkrip tidak resmi boleh; yang belum lulus: sertifikat enrollment berisi perkiraan tanggal lulus)</li>
+    <li><span class="accent">CV</span> terkini (latar akademik, pengalaman riset, skill)</li>
+    <li><span class="accent">1&ndash;3 surat rekomendasi</span> &mdash; dari dosen level profesor; <span class="accent">minimal 1 HARUS sudah masuk ke sistem</span> sebelum kamu bisa menekan tombol submit</li>
+    <li><span class="accent">Foto ID</span> terbaru (JPG, maks 5 MB, gaya paspor)</li>
+    <li><span class="accent">Paspor</span> &mdash; nomor + scan halaman foto (boleh diganti ID resmi lain bila belum punya paspor)</li>
+    <li>Skor bahasa Inggris &mdash; <span class="accent">opsional</span></li>
+  </ul>
+  <div class="warn">
+    <p>Ada <span class="accent">application fee yang tidak refundable</span> &mdash; <span class="accent">cek nominal terbaru di situs resmi OIST</span> sebelum mendaftar (besaran dapat berubah tiap periode).</p>
+  </div>
+</section>
+
+<!-- 7. MEMILIH RESEARCH UNIT -->
+<section class="slide">
+  <span class="slide-number">7 / 21</span>
+  <h2>Cara Memilih Research Unit yang Tepat</h2>
+  <p>Pilihan unit adalah <span class="accent">jantung aplikasimu</span> &mdash; kesalahannya fatal. Strateginya:</p>
+  <ul>
+    <li>Buka daftar <span class="accent">research unit &amp; ketersediaan proyek</span> di situs resmi (<em>Faculty and Project Availability</em>) &mdash; pilih yang topiknya benar-benar nyambung dengan latar belakangmu</li>
+    <li><span class="accent">Baca publikasi terbaru unit</span> (Google Scholar / halaman unit) &mdash; pahami metode dan pertanyaan riset mereka</li>
+    <li>Boleh memilih <span class="accent">lebih dari satu unit</span> &mdash; tapi dalam Statement of Purpose, jelaskan kecocokanmu untuk <span class="accent">masing-masing unit secara singkat</span></li>
+    <li>Prioritaskan unit yang <span class="accent">skill spesifikmu dibutuhkan</span> (mis. analisis data, kultur sel, pemrograman) &mdash; profesor mencari intern yang langsung bisa berkontribusi</li>
+    <li>Hindari memilih unit hanya karena namanya terkenal &mdash; <span class="accent">kecocokan &gt; gengsi</span></li>
+  </ul>
+</section>
+
+<!-- 8. TAHAPAN SELEKSI -->
+<section class="slide">
+  <span class="slide-number">8 / 21</span>
+  <h2>Tahapan Seleksi</h2>
+  <ol>
+    <li><span class="accent">Buat akun</span> di portal aplikasi online OIST (bisa dikerjakan bertahap / disimpan dulu)</li>
+    <li><span class="accent">Isi formulir</span> &mdash; data pribadi, latar akademik, research unit pilihan, periode magang</li>
+    <li><span class="accent">Unggah semua dokumen</span> (Inggris, PDF) &mdash; SOP, transkrip, CV, foto, paspor</li>
+    <li><span class="accent">Daftarkan pemberi rekomendasi</span> &mdash; mereka menerima email dari OIST dan mengunggah surat <span class="accent">langsung ke sistem</span> (bukan lewat kamu)</li>
+    <li><span class="accent">Bayar application fee</span> (non-refundable)</li>
+    <li><span class="accent">Submit</span> &mdash; tombol submit baru aktif setelah <span class="accent">minimal 1 surat rekomendasi diterima sistem</span></li>
+    <li><span class="accent">Review oleh unit riset</span> &mdash; profesor menilai kecocokan akademik &amp; ketersediaan proyek</li>
+    <li><span class="accent">Pengumuman hasil</span> &mdash; maksimal <span class="accent">3 bulan setelah deadline</span></li>
+  </ol>
+</section>
+
+<!-- 9. TIMELINE -->
+<section class="slide">
+  <span class="slide-number">9 / 21</span>
+  <h2>Timeline &amp; Jadwal (2 Ronde per Tahun)</h2>
+  <table>
+    <tr><th>Ronde</th><th>Deadline</th><th>Pengumuman</th><th>Periode Magang</th></tr>
+    <tr><td><span class="accent">Spring 2027</span></td><td>15 Okt 2026, 23:59 JST</td><td>Pertengahan Des 2026</td><td>1 Apr &ndash; 30 Sep 2027</td></tr>
+    <tr><td><span class="accent">Fall 2027</span></td><td>15 Apr 2027, 23:59 JST</td><td>Pertengahan Jun 2027</td><td>1 Okt 2027 &ndash; 31 Mar 2028</td></tr>
+  </table>
+  <div class="warn">
+    <p>Jadwal bersifat <span class="accent">tentatif dan dapat berubah</span> &mdash; selalu cek halaman resmi <em>Apply to Research Internship</em> untuk jadwal terbaru. Durasi magang: <span class="accent">minimal 4 bulan (120 hari), maksimal 6 bulan</span> dalam satu periode.</p>
+  </div>
+</section>
+
+<!-- 10. STRATEGI SOP -->
+<section class="slide">
+  <span class="slide-number">10 / 21</span>
+  <h2>Strategi Lolos: Statement of Purpose</h2>
+  <p>Hanya <span class="accent">250 kata / 1500 karakter</span> &mdash; setiap kata harus bekerja. OIST meminta 3 poin ini:</p>
+  <ol>
+    <li><span class="accent">Kecocokan dengan unit pilihan</span> &mdash; hubungkan skill &amp; pengalamanmu dengan riset spesifik unit itu. Sebutkan metode/paper mereka bila relevan.</li>
+    <li><span class="accent">Apa yang ingin kamu capai di OIST</span> &mdash; target konkret (mis. "menguasai teknik X untuk proyek Y"), bukan kalimat umum seperti "ingin belajar banyak".</li>
+    <li><span class="accent">Kesesuaian dengan rencana karier</span> &mdash; jelaskan bagaimana magang ini mengantar ke tujuan jangka panjangmu (S2/S3, riset industri, dsb.).</li>
+  </ol>
+  <div class="card">
+    <p><span class="accent">Tips:</span> tulis draf &rarr; potong 30% &rarr; minta dosen/teman baca &rarr; revisi. Hindari klise ("sejak kecil saya bermimpi..."). Satu statement untuk semua unit pilihan &mdash; bila pilih beberapa unit, bahas kecocokan tiap unit secara ringkas.</p>
+  </div>
+</section>
+
+<!-- 11. STRATEGI CV & TRANSKRIP -->
+<section class="slide">
+  <span class="slide-number">11 / 21</span>
+  <h2>Strategi Lolos: CV &amp; Transkrip</h2>
+  <div class="grid2">
+    <div class="mini">
+      <h3>&#128203; CV Akademik</h3>
+      <p>Tonjolkan <span class="accent">pengalaman riset</span>: proyek lab, skripsi/thesis, publikasi, poster, asisten riset &mdash; lengkap dengan metode &amp; tools yang kamu kuasai (Python, R, mikroskopi, dsb.).</p>
+      <p>Format bebas (standar akademik), 1&ndash;2 halaman, rapi, tanpa typo. Cantumkan IPK bila kuat.</p>
+    </div>
+    <div class="mini">
+      <h3>&#127891; Transkrip &amp; Ijazah</h3>
+      <p>Scan <span class="accent">transkrip terbaru + transkrip jenjang sebelumnya</span> (PDF). Transkrip tidak resmi boleh diunggah.</p>
+      <p>Transkrip berbahasa Indonesia? Sertakan <span class="accent">penjelasan dalam bahasa Inggris</span>. Belum lulus? Ganti ijazah dengan <span class="accent">surat keterangan enrollment</span> + perkiraan tanggal lulus.</p>
+    </div>
+  </div>
+  <div class="card">
+    <p>Penilai OIST mencari <span class="accent">bukti kamu siap riset</span>, bukan sekadar nilai bagus &mdash; pengalaman lab sekecil apa pun (praktikum, proyek mandiri) layak dicantumkan.</p>
+  </div>
+</section>
+
+<!-- 12. STRATEGI REKOMENDASI -->
+<section class="slide">
+  <span class="slide-number">12 / 21</span>
+  <h2>Strategi Lolos: Surat Rekomendasi</h2>
+  <div class="warn">
+    <p><span class="accent">Aturan keras:</span> kamu <span class="accent">TIDAK bisa submit aplikasi</span> sebelum <span class="accent">minimal 1 surat rekomendasi masuk ke sistem</span>. Rekomendasi telat = aplikasi hangus. Urus ini PALING AWAL.</p>
+  </div>
+  <ul>
+    <li>Butuh <span class="accent">1&ndash;3 surat</span> dari <span class="accent">dosen level profesor</span> yang mengenal kerjamu &mdash; surat dari anggota lab/postdoc <span class="accent">tidak diterima</span></li>
+    <li>Pemberi rekomendasi mengunggah <span class="accent">langsung via sistem</span> (email undangan dari OIST) &mdash; kamu tidak boleh mengirimkan sendiri</li>
+    <li>Minta <span class="accent">4&ndash;6 minggu sebelum deadline</span>; beri mereka CV + draf SOP + daftar unit pilihan agar suratnya spesifik</li>
+    <li>Kirim pengingat sopan <span class="accent">2 minggu dan 3 hari</span> sebelum deadline &mdash; dosen sibuk, ini normal</li>
+    <li>Siapkan <span class="accent">pemberi rekomendasi cadangan</span> bila yang utama tak kunjung merespons</li>
+  </ul>
+</section>
+
+<!-- 13. VIDEO -->
+<section class="slide">
+  <span class="slide-number">13 / 21</span>
+  <h2>Video Panduan &amp; Testimoni</h2>
+  <div class="video-grid">
+    <div class="video-item">
+      <iframe src="https://www.youtube-nocookie.com/embed/xCdyLPUayhc" title="OIST Internship Jepang: Penjelasan Lengkap &amp; Cara Daftar" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      <p>OIST Internship Jepang: Penjelasan Lengkap &amp; Cara Daftar</p>
+    </div>
+    <div class="video-item">
+      <iframe src="https://www.youtube-nocookie.com/embed/OLeylXbZDpo" title="Tur Kampus OIST Okinawa (Video Resmi)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      <p>Tur Kampus OIST Okinawa (Video Resmi OIST)</p>
+    </div>
+    <div class="video-item video-link-card">
+      <p><span class="accent">&#128270; Pengalaman Peserta OIST</span><br>Cari testimoni intern OIST di YouTube:</p>
+      <a href="https://www.youtube.com/results?search_query=OIST+research+internship+experience" target="_blank" rel="noopener">&#9654; Cari &ldquo;OIST internship experience&rdquo;</a>
+    </div>
+    <div class="video-item video-link-card">
+      <p><span class="accent">&#128270; Panduan Aplikasi OIST Lainnya</span><br>Cari tutorial &amp; tips aplikasi terbaru:</p>
+      <a href="https://www.youtube.com/results?search_query=OIST+internship+how+to+apply" target="_blank" rel="noopener">&#9654; Cari &ldquo;OIST internship how to apply&rdquo;</a>
+    </div>
+  </div>
+</section>
+
+<!-- 14. FAQ -->
+<section class="slide">
+  <span class="slide-number">14 / 21</span>
+  <h2>FAQ (1)</h2>
+  <p class="faq-q">Q: Apakah mahasiswa S1 tingkat awal boleh mendaftar?</p>
+  <p class="faq-a">A: Syarat resmi: <span class="accent">2 tahun terakhir S1</span> (atau sudah berada di 2 tahun terakhir saat magang dimulai), S2 tahun berapa pun, atau lulusan baru S1/S2.</p>
+  <p class="faq-q">Q: Apakah IELTS/TOEFL wajib?</p>
+  <p class="faq-a">A: <span class="accent">Tidak wajib.</span> Boleh dilampirkan bila kamu yakin memperkuat aplikasi &mdash; tapi bukan penentu.</p>
+  <p class="faq-q">Q: Apakah orang Indonesia / semua negara bisa daftar?</p>
+  <p class="faq-a">A: <span class="accent">Ya</span> &mdash; program terbuka untuk semua kewarganegaraan, termasuk Indonesia.</p>
+  <p class="faq-q">Q: Apakah ada application fee?</p>
+  <p class="faq-a">A: <span class="accent">Ada, dan tidak refundable.</span> Cek nominal terbaru di situs resmi OIST sebelum mendaftar.</p>
+</section>
+
+<!-- 15. FAQ LANJUTAN -->
+<section class="slide">
+  <span class="slide-number">15 / 21</span>
+  <h2>FAQ (2)</h2>
+  <p class="faq-q">Q: Bisakah magang diperpanjang?</p>
+  <p class="faq-a">A: <span class="accent">Tidak ada perpanjangan.</span> Durasi 4&ndash;6 bulan (min. 120 hari) ditetapkan di awal dalam satu periode internship.</p>
+  <p class="faq-q">Q: Apakah magang ini membantu masuk PhD OIST?</p>
+  <p class="faq-a">A: <span class="accent">Ya.</span> Program memang dirancang untuk yang tertarik PhD OIST; magang &ge;4 bulan bisa dihitung sebagai <span class="accent">satu rotasi lab</span> bila kamu diterima PhD.</p>
+  <p class="faq-q">Q: Harus bisa bahasa Jepang?</p>
+  <p class="faq-a">A: <span class="accent">Tidak.</span> Bahasa resmi kampus adalah Inggris. Bahasa Jepang hanya membantu kehidupan sehari-hari di Okinawa &mdash; OIST menyediakan kursus survival Japanese.</p>
+</section>
+
+<!-- 16. KESALAHAN UMUM -->
+<section class="slide">
+  <span class="slide-number">16 / 21</span>
+  <h2>Kesalahan Umum Pendaftar</h2>
+  <ul>
+    <li><span class="accent">Meminta rekomendasi mepet deadline</span> &mdash; surat telat = tidak bisa submit. Ini penyebab gagal paling umum.</li>
+    <li><span class="accent">Statement of Purpose generik</span> &mdash; tidak menyebut unit/proyek spesifik, penuh klise, melebihi batas kata.</li>
+    <li><span class="accent">Memilih unit asal-asalan</span> &mdash; background tidak nyambung dengan riset unit; profesor langsung menolak.</li>
+    <li><span class="accent">Dokumen bukan bahasa Inggris / bukan PDF</span> &mdash; aplikasi bisa dianggap tidak lengkap.</li>
+    <li><span class="accent">Lupa izin institusi asal</span> &mdash; mahasiswa aktif wajib punya persetujuan kampus.</li>
+    <li><span class="accent">Menunggu deadline untuk membuat akun</span> &mdash; buat akun &amp; isi bertahap dari jauh hari; sistem membolehkan menyimpan progres.</li>
+  </ul>
+</section>
+
+<!-- 17. CHECKLIST 3 BULAN -->
+<section class="slide">
+  <span class="slide-number">17 / 21</span>
+  <h2>Checklist Persiapan 3 Bulan</h2>
+  <ol>
+    <li><span class="accent">Bulan 1:</span> riset research unit &amp; proyek yang tersedia; pendekkan jadi 1&ndash;3 pilihan; minta surat rekomendasi ke dosen; urus izin kampus asal</li>
+    <li><span class="accent">Bulan 2:</span> tulis draf Statement of Purpose (250 kata); perbarui CV akademik; siapkan scan transkrip, ijazah/enrollment, paspor, foto ID</li>
+    <li><span class="accent">Bulan 3 (awal):</span> buat akun portal OIST; isi formulir; unggah dokumen; daftarkan pemberi rekomendasi</li>
+    <li><span class="accent">H-14:</span> pastikan minimal 1 rekomendasi sudah masuk sistem; review ulang seluruh aplikasi</li>
+    <li><span class="accent">H-7:</span> bayar application fee; submit aplikasi &mdash; jangan menunggu hari terakhir (risiko gangguan teknis)</li>
+    <li><span class="accent">Setelah submit:</span> simpan bukti; pantau email; hasil maksimal 3 bulan setelah deadline</li>
+  </ol>
+</section>
+
+<!-- 18. INFO PRAKTIS -->
+<section class="slide">
+  <span class="slide-number">18 / 21</span>
+  <h2>Info Praktis: Visa, Biaya Hidup &amp; Budaya</h2>
+  <div class="grid2">
+    <div class="mini">
+      <h3>&#128179; Visa</h3>
+      <p>OIST membantu pengurusan <span class="accent">Certificate of Eligibility (CoE)</span> untuk visa &mdash; proses administrasi didampingi tim OIST, bukan urus sendiri.</p>
+    </div>
+    <div class="mini">
+      <h3>&#127965;&#65039; Biaya Hidup Okinawa</h3>
+      <p>Tunjangan <span class="accent">&yen;2.400/hari kerja</span> (&plusmn;&yen;48.000&ndash;52.000/bulan) umumnya cukup untuk makan &amp; kebutuhan harian karena <span class="accent">akomodasi sudah ditanggung</span>. Okinawa lebih murah dari Tokyo/Osaka.</p>
+    </div>
+    <div class="mini">
+      <h3>&#127796; Budaya Okinawa</h3>
+      <p>Okinawa subtropis &mdash; pantai, snorkeling, dan budaya Ryukyu yang hangat. Kampus OIST di Onna relatif terpencil; <span class="accent">shuttle bus pass</span> adalah andalan mobilitas.</p>
+    </div>
+    <div class="mini">
+      <h3>&#128172; Bahasa Sehari-hari</h3>
+      <p>Di kampus full Inggris. Di luar kampus, bahasa Jepang dasar sangat membantu &mdash; OIST menyediakan <span class="accent">kursus survival Japanese</span> untuk intern.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 19. SETELAH DITERIMA -->
+<section class="slide">
+  <span class="slide-number">19 / 21</span>
+  <h2>Setelah Diterima: Orientasi &amp; Tips Sukses</h2>
+  <ul>
+    <li><span class="accent">Orientasi OIST</span> &mdash; ikuti sesi orientasi: registrasi lokal, asuransi, pengenalan lab &amp; fasilitas, dan kursus survival Japanese</li>
+    <li><span class="accent">Tetapkan ekspektasi dengan mentor</span> di minggu pertama: target proyek, jadwal meeting rutin (umumnya 1-on-1 mingguan), dan deliverable akhir</li>
+    <li><span class="accent">Dokumentasikan semuanya</span> &mdash; lab notebook rapi = modal publikasi &amp; surat rekomendasi kuat dari profesor OIST</li>
+    <li><span class="accent">Manfaatkan fasilitas</span> &mdash; core facilities, seminar, workshop; jangan hanya duduk di lab sendiri</li>
+    <li><span class="accent">Bangun jaringan</span> &mdash; intern &amp; PhD student dari 50+ negara; komunitas kecil OIST membuat koneksi bertahan lama</li>
+    <li><span class="accent">Rencanakan output</span> &mdash; targetkan poster/presentasi akhir magang; bila performa bagus, diskusikan peluang lanjut PhD dengan mentormu</li>
+  </ul>
+</section>
+
+<!-- 20. LINK RESMI -->
+<section class="slide">
+  <span class="slide-number">20 / 21</span>
+  <h2>Link Resmi</h2>
+  <ul>
+    <li><span class="accent">Halaman program:</span><br><a href="https://www.oist.jp/admissions/research-internship" target="_blank" rel="noopener">oist.jp/admissions/research-internship</a></li>
+    <li><span class="accent">Cara mendaftar &amp; jadwal resmi:</span> halaman <em>Apply to Research Internship</em> di situs yang sama</li>
+    <li><span class="accent">Daftar research unit &amp; ketersediaan proyek:</span> <em>Research Internship Program Faculty and Project Availability</em></li>
+    <li><span class="accent">FAQ resmi:</span> <em>Research Internship FAQ</em> di situs OIST</li>
+  </ul>
+  <div class="warn">
+    <p>Jadwal, nominal fee, dan ketentuan dokumen <span class="accent">dapat berubah tiap periode</span> &mdash; jadikan situs resmi OIST sebagai satu-satunya acuan final sebelum submit.</p>
+  </div>
+</section>
+
+<!-- 21. PENUTUP -->
+<section class="slide">
+  <span class="slide-number">21 / 21</span>
+  <h2>Penutup</h2>
+  <div class="card">
+    <p>OIST Research Internship adalah salah satu <span class="accent">magang riset paling prestisius di Asia</span> &mdash; didanai penuh, dibimbing profesor kelas dunia, tanpa syarat IELTS, dan terbuka untuk semua negara.</p>
+  </div>
+  <p>Kompetisinya ketat, tapi polanya jelas: <span class="accent">unit yang tepat + SOP yang tajam + rekomendasi yang masuk tepat waktu</span>.</p>
+  <p style="margin-top:16px;">Mulai riset unit dari sekarang, minta rekomendasi jauh-jauh hari, dan tulis SOP yang benar-benar menunjukkan kamu siap riset. <span class="accent">Okinawa menunggumu.</span> &#127796;</p>
+</section>
+
+</div><!-- /deck -->
+
+<nav id="nav">
+  <button id="prev" onclick="goSlide(-1)">&#8592; Sebelumnya</button>
+  <span id="counter">1 / 21</span>
+  <button id="next" onclick="goSlide(1)">Berikutnya &#8594;</button>
+</nav>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+  const counter = document.getElementById('counter');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+
+  function show(i) {
+    if (i < 0) i = 0;
+    if (i >= total) i = total - 1;
+    slides[current].classList.remove('active');
+    current = i;
+    slides[current].classList.add('active');
+    slides[current].scrollTop = 0;
+    counter.textContent = (current + 1) + ' / ' + total;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === total - 1;
+  }
+  function goSlide(d) { show(current + d); }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') goSlide(1);
+    if (e.key === 'ArrowLeft') goSlide(-1);
+  });
+  // touch swipe
+  let touchStartX = 0;
+  document.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].clientX;
+  }, {passive:true});
+  document.addEventListener('touchend', function(e) {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) goSlide(dx < 0 ? 1 : -1);
+  }, {passive:true});
+  show(0);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 14 panduan grant ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/grant/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan AIESEC Global Talent", "slug": "deck-grant-aiesec-talent"},{"label": "Panduan AIESEC Global Volunteer", "slug": "deck-grant-aiesec-volunteer"},{"label": "Panduan Amgen Scholars Asia", "slug": "deck-grant-amgen-asia"},{"label": "Panduan Au Pair", "slug": "deck-grant-aupair"},{"label": "Panduan Ausbildung Jerman", "slug": "deck-grant-ausbildung"},{"label": "Panduan DAAD RISE Jerman", "slug": "deck-grant-rise-jerman"},{"label": "Panduan Erasmus+", "slug": "deck-grant-erasmus"},{"label": "Panduan Global UGRAD AS", "slug": "deck-grant-ugrad-as"},{"label": "Panduan IISMA", "slug": "deck-grant-iisma"},{"label": "Panduan IISMAVO", "slug": "deck-grant-iismavo"},{"label": "Panduan JET Programme", "slug": "deck-grant-jet"},{"label": "Panduan MITACS Globalink Kanada", "slug": "deck-grant-mitacs-kanada"},{"label": "Panduan OIST Research Internship", "slug": "deck-grant-oist-jepang"},{"label": "Panduan Short Course Luar Negeri", "slug": "deck-grant-shortcourse"},{"label": "Panduan Summer/Winter School", "slug": "deck-grant-summerschool"},{"label": "Panduan Travel Grant", "slug": "deck-grant-travel"},{"label": "Panduan Work & Travel USA", "slug": "deck-grant-worktravel"},{"label": "Panduan Working Holiday Visa", "slug": "deck-grant-whv"},{"label": "Panduan YSEALI Fellowship", "slug": "deck-grant-yseali-as"},{"label": "Panduan Youth Summit", "slug": "deck-grant-summit"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script>
+</body>
+</html>

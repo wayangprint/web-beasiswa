@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Amgen Scholars Asia: Summer Research</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--c1:#0d2b6b;--c2:#b8860b;--c3:#ef4444}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0f172a;color:#1e293b;overflow:hidden}
+.deck{height:100vh;height:100dvh;position:relative}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;padding:56px 8vw 96px;overflow-y:auto;background:#fff}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.slide h1{font-size:clamp(1.6rem,4.5vw,2.8rem);color:var(--c1);margin-bottom:18px;text-align:center;line-height:1.25}
+.slide h2{font-size:clamp(1.3rem,3.5vw,2rem);color:var(--c1);margin-bottom:16px;text-align:center}
+.slide h3{font-size:1.05rem;color:var(--c2);margin:14px 0 6px}
+.content{max-width:860px;width:100%}
+.content p{margin:8px 0;line-height:1.65;font-size:clamp(.95rem,2.2vw,1.1rem)}
+.content ul,.content ol{margin:8px 0 8px 22px;line-height:1.7;font-size:clamp(.95rem,2.2vw,1.08rem)}
+.content li{margin:6px 0}
+.card{background:#f1f5f9;border-left:5px solid var(--c2);border-radius:10px;padding:14px 18px;margin:10px 0}
+.card b{color:var(--c1)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.grid2 .card{margin:0}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:clamp(.85rem,2vw,1rem)}
+th{background:var(--c1);color:#fff;padding:10px}
+td{padding:10px;border-bottom:1px solid #e2e8f0}
+tr:nth-child(even) td{background:#f8fafc}
+.kicker{display:inline-block;background:var(--c2);color:#fff;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:999px;margin-bottom:14px}
+.cover{background:linear-gradient(135deg,var(--c1),#1e3a8a);color:#fff;text-align:center}
+.cover.hasimg{background-size:cover;background-position:center}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.78))}
+.cover .inner{position:relative;z-index:2;max-width:800px;padding:0 24px}
+.cover h1{color:#fff;font-size:clamp(2rem,6vw,3.6rem);margin:10px 0 14px;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.cover p{font-size:clamp(1rem,2.6vw,1.3rem);opacity:.92;line-height:1.6}
+.cover .kicker{background:rgba(255,255,255,.2);backdrop-filter:blur(4px)}
+.vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:980px}
+.vid{background:#0f172a;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+.vid iframe{width:100%;aspect-ratio:16/9;border:0;display:block}
+.vid p{padding:10px 14px;font-size:.85rem;color:#e2e8f0;line-height:1.45}
+.vid p b{color:#fff}
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:rgba(15,23,42,.96);z-index:10}
+.nav button{background:var(--c2);color:#fff;border:0;border-radius:10px;padding:12px 26px;font-size:1rem;font-weight:700;cursor:pointer;min-width:120px}
+.nav button:disabled{opacity:.35;cursor:default}
+.nav button:active{transform:scale(.96)}
+#counter{color:#fff;font-weight:700;font-size:.95rem}
+#barwrap{position:fixed;top:0;left:0;right:0;height:5px;background:#1e293b;z-index:10}
+#bar{height:100%;width:5%;background:linear-gradient(90deg,var(--c2),var(--c3));transition:width .3s}
+.hint{position:fixed;bottom:74px;right:16px;color:#94a3b8;font-size:.75rem;z-index:10}
+.faq{background:#f8fafc;border-radius:10px;padding:12px 16px;margin:8px 0;border:1px solid #e2e8f0}
+.faq b{color:var(--c1);display:block;margin-bottom:4px}
+.linkbtn{display:inline-block;background:var(--c1);color:#fff!important;text-decoration:none;padding:12px 24px;border-radius:10px;font-weight:700;margin:6px 8px 6px 0}
+.badge{display:inline-block;background:#fef3c7;color:#92400e;font-weight:700;font-size:.8rem;padding:4px 12px;border-radius:999px;margin:2px}
+@media(max-width:640px){.vidgrid,.grid2{grid-template-columns:1fr}.slide{padding:44px 6vw 100px}.nav button{min-width:96px;padding:11px 18px}}
+</style>
+</head>
+<body>
+<div id="barwrap"><div id="bar"></div></div>
+<div class="deck" id="deck">
+<section class="slide cover hasimg" style="background-image:url('https://images.unsplash.com/photo-1579154204601-01588f351e67?w=1600&q=80')"><div class="shade"></div><div class="inner"><span class="kicker">Research Internship Asia</span><h1>Amgen Scholars Asia: Summer Research</h1><p>Riset musim panas 8 minggu, fully funded, di NUS Singapura &amp; Kyoto University Jepang untuk mahasiswa S1 Asia. Syarat, tahapan, timeline, dan strategi lolos.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Sekilas Program</span><h2>Apa Itu Amgen Scholars Asia?</h2>
+<p><b>Amgen Scholars</b> adalah program <b>riset musim panas</b> dari <b>Amgen Foundation</b> (berjalan global sejak 2006) yang memberi mahasiswa S1 pengalaman riset langsung di laboratorium kelas dunia. Di Asia, program ini diadakan di <b>National University of Singapore (NUS)</b>, <b>Kyoto University</b>, <b>University of Tokyo</b>, dan <b>Tsinghua University</b>.</p>
+<div class="card"><b>Konsep:</b> selama <b>8 minggu (Juni–Agustus)</b> kamu bergabung dengan grup riset di bawah bimbingan profesor, mengerjakan proyek nyata, lalu mempresentasikannya di <b>Amgen Scholars Asia Symposium</b> bersama peserta dari seluruh Asia.</div>
+<ul>
+<li>Bidang: <b>biologi, bioteknologi, neurosains, life sciences</b>, dan ilmu terkait.</li>
+<li>Cocok untuk kamu yang <b>berminat lanjut S2/S3 (PhD)</b> — program ini dirancang sebagai batu loncatan ke sekolah pascasarjana.</li>
+<li>Peserta NUS 2026: stipend <b>SGD 6.000</b> + tiket pesawat + akomodasi + simposium di Jepang.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Benefit</span><h2>Cakupan Beasiswa (Fully Funded)</h2>
+<div class="grid2">
+<div class="card"><b>💰 Stipend</b><br>NUS: SGD 6.000 untuk 8 minggu; Kyoto: ¥180.000; UTokyo: ¥270.000–280.000.</div>
+<div class="card"><b>✈️ Tiket pesawat</b><br>Tiket PP dari negara asal ditanggung program (termasuk travel grant hingga SGD 1.500 di NUS).</div>
+<div class="card"><b>🏠 Akomodasi</b><br>Tempat tinggal disediakan universitas selama program.</div>
+<div class="card"><b>🎓 Simposium &amp; kegiatan</b><br>Amgen Scholars Asia Symposium, seminar, workshop, kegiatan budaya &amp; networking.</div>
+</div>
+<p><span class="badge">Nilai</span> Total paket bernilai <b>puluhan hingga ratusan juta rupiah</b> — plus pengalaman riset yang sangat dihargai pendaftar S2/S3.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Kampus Tuan Rumah</span><h2>Pilihan Universitas di Asia</h2>
+<table>
+<tr><th>Universitas</th><th>Negara</th><th>Catatan</th></tr>
+<tr><td><b>NUS</b></td><td>Singapura</td><td>Stipend SGD 6.000; riset biologi, biomedis, neurosains, biologi komputasional</td></tr>
+<tr><td><b>Kyoto University</b></td><td>Jepang</td><td>Stipend ¥180.000; bioteknologi, biologi molekuler, imunologi</td></tr>
+<tr><td><b>University of Tokyo</b></td><td>Jepang</td><td>Stipend ¥270.000+; lab kedokteran, teknik, sains, farmasi</td></tr>
+<tr><td><b>Tsinghua University</b></td><td>China</td><td>Program 2026 dibuka; aplikasi via email langsung</td></tr>
+</table>
+<div class="card"><b>💡 Tips:</b> kamu bisa melamar ke <b>lebih dari satu</b> universitas tuan rumah — cek deadline masing-masing karena bisa berbeda (Kyoto/UTokyo: ~1 Februari; Tsinghua: ~15 Maret).</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Syarat</span><h2>Syarat Pendaftar</h2>
+<ol>
+<li>Mahasiswa <b>S1 di universitas Asia</b> (termasuk Indonesia).</li>
+<li>Telah menyelesaikan <b>minimal 1 tahun</b> studi saat program dimulai.</li>
+<li><b>Belum lulus</b> sebelum program dimulai dan masih memiliki <b>minimal 1 semester</b> tersisa setelah program.</li>
+<li><b>Rekam akademik yang kuat</b> (IPK tinggi diutamakan).</li>
+<li>Kemampuan <b>bahasa Inggris baik</b> — umumnya diminta TOEFL iBT 72 / IELTS 5.5 (atau bukti kuliah berbahasa Inggris).</li>
+<li>Minat yang jelas untuk <b>melanjutkan studi riset (S2/S3/PhD)</b> di masa depan.</li>
+<li>Bidang studi relevan: sains, teknik hayati, dan bidang terkait (cek tiap universitas).</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Dokumen</span><h2>Dokumen yang Dibutuhkan</h2>
+<ol>
+<li><b>Curriculum Vitae (CV)</b> — tonjolkan pengalaman riset, asisten lab, publikasi/proyek.</li>
+<li><b>Transkrip akademik resmi</b> (ditandatangani &amp; distempel).</li>
+<li><b>Statement of Purpose</b> — motivasi riset + rencana studi lanjut.</li>
+<li><b>Dua surat rekomendasi</b> — minimal satu dari dosen.</li>
+<li><b>Bukti kemampuan bahasa Inggris</b> (TOEFL/IELTS atau surat keterangan kuliah berbahasa Inggris).</li>
+<li><b>Formulir aplikasi</b> sesuai template tiap universitas.</li>
+</ol>
+<div class="card"><b>💡 Tips:</b> minta surat rekomendasi ke dosen yang <b>pernah membimbing risetmu</b> — jauh lebih kuat daripada dosen yang hanya mengenalmu di kelas.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Tahapan</span><h2>Tahapan Seleksi</h2>
+<ol>
+<li><b>Pendaftaran online</b> — isi formulir + unggah dokumen (Kyoto/UTokyo via portal TAO; Tsinghua via email).</li>
+<li><b>Seleksi administrasi</b> — kelengkapan dokumen &amp; memenuhi syarat minimal.</li>
+<li><b>Review akademik</b> — panitia menilai transkrip, SOP, dan rekomendasi (Februari–Maret).</li>
+<li><b>Pengumuman hasil</b> — via portal/email (sekitar Maret–April).</li>
+<li><b>Persiapan keberangkatan</b> — visa, tiket, akomodasi diatur bersama panitia.</li>
+<li><b>Pelaksanaan program</b> — 8 minggu riset penuh (Juni–Agustus) + presentasi poster + simposium Asia.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Timeline</span><h2>Timeline (Contoh Batch 2026)</h2>
+<table>
+<tr><th>Tahapan</th><th>Jadwal</th></tr>
+<tr><td><b>Pendaftaran dibuka</b></td><td><b>1 November 2025</b></td></tr>
+<tr><td>Deadline Kyoto / UTokyo</td><td>1 Februari 2026</td></tr>
+<tr><td>Deadline Tsinghua</td><td>15 Maret 2026</td></tr>
+<tr><td>Review &amp; seleksi</td><td>Februari – April 2026</td></tr>
+<tr><td>Pengumuman</td><td>Maret – April 2026</td></tr>
+<tr><td><b>Pelaksanaan program</b></td><td><b>Juni – Agustus 2026</b></td></tr>
+</table>
+<p><span class="badge">Catatan</span> Pendaftaran dibuka <b>setiap November</b>. Mulai siapkan dokumen &amp; tes bahasa Inggris sejak <b>semester ganjil</b> tahun sebelumnya.</p></div></section>
+<section class="slide"><div class="content"><span class="kicker">Cara Daftar</span><h2>Langkah Pendaftaran (Contoh UTokyo)</h2>
+<ol>
+<li>Buka website resmi program → akses portal aplikasi (<b>TAO</b> untuk UTokyo).</li>
+<li>Registrasi akun dengan <b>nama lengkap sesuai identitas</b>.</li>
+<li>Isi formulir: data pribadi, akademik, dan latar belakang.</li>
+<li>Unggah dokumen: transkrip, CV, bukti bahasa Inggris, personal statement.</li>
+<li><b>Minta dua rekomendasi</b> via sistem (minimal satu dari dosen).</li>
+<li>Review kelengkapan — <b>tidak bisa diedit setelah submit</b>.</li>
+<li>Submit sebelum deadline, pantau email untuk pengumuman.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>Strategi Statement of Purpose</h2>
+<ul>
+<li><b>Ceritakan perjalanan risetmu:</b> proyek/lab apa yang pernah kamu ikuti, apa yang kamu pelajari, keterampilan apa yang dikuasai.</li>
+<li><b>Spesifik soal minat riset:</b> sebutkan topik/bidang yang ingin didalami — panitia mencocokkanmu dengan lab.</li>
+<li><b>Sambungkan ke masa depan:</b> jelaskan rencana S2/S3/PhD — program ini memang mencari calon ilmuwan.</li>
+<li><b>Riset universitas tujuan:</b> sebutkan lab/kelompok riset yang menarik minatmu di kampus tersebut.</li>
+<li><b>Jujur soal motivasi:</b> hindari kalimat generik seperti "saya suka sains sejak kecil" tanpa bukti konkret.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Strategi</span><h2>7 Tips Lolos Amgen Scholars</h2>
+<ol>
+<li><b>Bangun pengalaman riset sejak dini:</b> jadi asisten riset dosen atau ikut proyek lab kampus.</li>
+<li><b>Jaga IPK tinggi</b> — seleksi sangat kompetitif, rekam akademik adalah filter utama.</li>
+<li><b>Amankan skor TOEFL/IELTS</b> jauh sebelum November.</li>
+<li><b>Pilih pemberi rekomendasi yang tepat:</b> dosen pembimbing riset &gt; dosen wali.</li>
+<li><b>Lamar ke lebih dari satu kampus tuan rumah</b> untuk memperbesar peluang.</li>
+<li><b>Tunjukkan ketertarikan pada PhD</b> — ini DNA program Amgen Scholars.</li>
+<li><b>Submit lebih awal:</b> jangan menunggu deadline; sistem bisa padat di hari terakhir.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Hindari</span><h2>5 Kesalahan Umum</h2>
+<ol>
+<li><b>Tidak ada pengalaman riset sama sekali</b> — SOP jadi kosong dan tidak meyakinkan.</li>
+<li><b>Surat rekomendasi generik</b> dari dosen yang tidak mengenalmu dekat.</li>
+<li><b>Skor bahasa Inggris kedaluwarsa</b> atau di bawah syarat minimal.</li>
+<li><b>Hanya melamar satu kampus</b> — padahal peluang kecil dan kompetitif.</li>
+<li><b>Motivasi tidak jelas:</b> tidak menjelaskan kenapa ingin riset &amp; rencana studi lanjut.</li>
+</ol></div></section>
+<section class="slide"><div class="content"><span class="kicker">Selama</span><h2>Selama Program: Yang Diharapkan</h2>
+<ul>
+<li><b>Riset penuh waktu</b> di lab di bawah bimbingan profesor + mentor.</li>
+<li>Mengikuti <b>seminar, workshop, dan sesi pengembangan karier</b>.</li>
+<li>Membuat <b>presentasi poster &amp; laporan riset akhir</b>.</li>
+<li>Menghadiri <b>Amgen Scholars Asia Symposium</b> — presentasi &amp; networking dengan peserta se-Asia.</li>
+<li>Mengikuti kegiatan budaya &amp; eksplorasi (short trip).</li>
+<li><b>Manfaatkan untuk:</b> membangun relasi dengan profesor (calon pembimbing S3!), memahami budaya riset kelas dunia.</li>
+</ul></div></section>
+<section class="slide"><div class="content" style="max-width:1000px"><span class="kicker">Video Panduan</span><h2>Video Panduan Amgen Scholars</h2><div class="vidgrid"><div class="vid"><iframe src="https://www.youtube.com/embed/6NEBK_FmjuY" title="NUS Amgen Scholars Program 2026 - Summer Research Opportunity" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>NUS Amgen Scholars Program 2026</b><br>Cara daftar #1 — Panduan program Amgen Scholars Asia di NUS Singapura: syarat, benefit, dan timeline.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/M1qv7sw1zsQ" title="Answering YOUR questions about the Amgen scholars program" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Q&amp;A Seputar Amgen Scholars</b><br>Cara daftar #2 — Tanya-jawab lengkap tentang program Amgen Scholars: seleksi, pengalaman, dan tips.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/As0BSXSwW9w" title="Stanford SSRP-Amgen Scholars Program Overview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Gambaran Program Amgen Scholars</b><br>Suasana program — Penjelasan resmi model program Amgen Scholars: riset intensif 8 minggu di lab kelas dunia.</p></div><div class="vid"><iframe src="https://www.youtube.com/embed/OCLxYAow9U0" title="Testimonials from UTokyo Amgen Scholars" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe><p><b>Testimoni Amgen Scholars UTokyo</b><br>Testimoni — Cerita peserta Amgen Scholars di University of Tokyo: pengalaman riset &amp; kehidupan di Jepang.</p></div></div></div></section>
+<section class="slide"><div class="content"><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (1)</h2>
+<div class="faq"><b>1. Apakah mahasiswa Indonesia bisa mendaftar?</b>Ya! Program Asia terbuka untuk mahasiswa S1 dari seluruh Asia, termasuk Indonesia.</div>
+<div class="faq"><b>2. Apakah harus dari jurusan biologi?</b>Tidak harus — bidang terkait seperti bioteknologi, neurosains, teknik hayati, dan life sciences lainnya juga diterima. Cek ketentuan tiap kampus.</div>
+<div class="faq"><b>3. Apakah program ini berbayar?</b>Tidak — <b>fully funded</b>: stipend, tiket, akomodasi, dan simposium ditanggung.</div>
+<div class="faq"><b>4. Apakah perlu bisa bahasa Jepang/Mandarin?</b>Tidak — bahasa kerja program adalah <b>bahasa Inggris</b>.</div>
+<div class="faq"><b>5. Apakah cocok untuk yang tidak mau S3?</b>Program ini dirancang untuk calon peneliti; ketertarikan pada studi lanjut (S2/S3) adalah nilai plus besar.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">FAQ</span><h2>Pertanyaan yang Sering Ditanyakan (2)</h2>
+<div class="faq"><b>6. Kapan pendaftaran dibuka?</b>Setiap <b>1 November</b>; deadline Kyoto/UTokyo sekitar 1 Februari, Tsinghua sekitar 15 Maret.</div>
+<div class="faq"><b>7. Bisakah melamar ke dua kampus sekaligus?</b>Bisa — tiap universitas punya aplikasi terpisah. Manfaatkan untuk memperbesar peluang.</div>
+<div class="faq"><b>8. Berapa lama programnya?</b><b>8 minggu</b> (Juni–Agustus), penuh waktu di laboratorium.</div>
+<div class="faq"><b>9. Apa itu Asia Symposium?</b>Acara penutup di mana peserta dari NUS, Kyoto, UTokyo, dan Tsinghua mempresentasikan hasil risetnya.</div>
+<div class="faq"><b>10. Apakah pengalaman riset wajib?</b>Tidak wajib, tapi <b>sangat disarankan</b> — pendaftar dengan pengalaman asisten riset jauh lebih kompetitif.</div></div></section>
+<section class="slide"><div class="content"><span class="kicker">Link Resmi</span><h2>Link Resmi &amp; Kontak</h2>
+<ul>
+<li><b>Website global:</b> amgenscholars.com (daftar universitas tuan rumah &amp; info program)</li>
+<li><b>NUS Amgen Scholars:</b> situs resmi NUS — cari "NUS Amgen Scholars Program"</li>
+<li><b>Kyoto / UTokyo:</b> website masing-masing universitas (aplikasi via portal TAO untuk UTokyo)</li>
+<li><b>Tsinghua:</b> aplikasi via email ke panitia (cek website resmi untuk alamat terbaru)</li>
+<li><b>Tips:</b> selalu cek website resmi tiap kampus untuk deadline &amp; syarat tahun berjalan</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Checklist</span><h2>Checklist Persiapan</h2>
+<ul>
+<li>☐ Ikut proyek/asisten riset di lab kampus</li>
+<li>☐ Jaga IPK setinggi mungkin</li>
+<li>☐ Ikut tes TOEFL iBT / IELTS (target di atas minimal)</li>
+<li>☐ Siapkan CV akademik yang rapi</li>
+<li>☐ Minta transkrip resmi ke akademik</li>
+<li>☐ Tulis draf Statement of Purpose + minta review</li>
+<li>☐ Hubungi 2 dosen untuk surat rekomendasi (sejak awal!)</li>
+<li>☐ Riset lab &amp; topik riset di kampus tujuan</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Rangkuman</span><h2>Rangkuman 60 Detik</h2>
+<div class="card"><b>Amgen Scholars Asia = riset musim panas 8 minggu GRATIS</b> di NUS / Kyoto / UTokyo / Tsinghua — stipend, tiket, akomodasi, simposium ditanggung.</div>
+<ul>
+<li><b>Untuk:</b> mahasiswa S1 Asia (min. 1 tahun selesai), IPK kuat, TOEFL iBT 72/IELTS 5.5, minat riset &amp; S3.</li>
+<li><b>Kunci lolos:</b> pengalaman riset + SOP yang spesifik + rekomendasi dosen pembimbing.</li>
+<li><b>Daftar:</b> dibuka 1 November tiap tahun (deadline Feb–Mar tergantung kampus).</li>
+<li><b>Plus:</b> batu loncatan emas untuk aplikasi PhD di kampus top dunia.</li>
+</ul></div></section>
+<section class="slide"><div class="content"><span class="kicker">Penutup</span><h2>Siap Jadi Ilmuwan Muda?</h2>
+<p>Amgen Scholars adalah <b>pintu masuk ke dunia riset global</b>: 8 minggu di lab kelas dunia, dibimbing profesor top, pulang dengan pengalaman yang mengubah CV-mu selamanya.</p>
+<div class="card"><b>Mulai hari ini:</b> dekati dosen untuk jadi asisten riset, kejar skor TOEFL/IELTS, dan siapkan SOP terbaikmu sebelum November tiba.</div>
+<p style="text-align:center;margin-top:16px">🔬 <b>Peneliti hebat lahir dari pengalaman riset pertamamu!</b></p></div></section>
+</div>
+<div class="nav">
+<button id="prev" onclick="go(cur-1)">&#8592; Sebelumnya</button>
+<span id="counter">1 / 21</span>
+<button id="next" onclick="go(cur+1)">Lanjut &#8594;</button>
+</div>
+<div class="hint">Geser / panah &#8592; &#8594; untuk navigasi</div>
+<script>
+var cur=0;
+var slides=document.querySelectorAll('.slide');
+var N=slides.length;
+function go(n){cur=((n%N)+N)%N;
+slides.forEach(function(s,i){s.classList.toggle('active',i===cur)});
+document.getElementById('counter').textContent=(cur+1)+' / '+N;
+document.getElementById('bar').style.width=((cur+1)/N*100)+'%';
+document.getElementById('prev').disabled=(cur===0);
+document.getElementById('next').disabled=(cur===N-1);
+slides[cur].scrollTop=0;}
+document.addEventListener('keydown',function(e){
+if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(cur+1);}
+if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+if(e.key==='Home'){go(0);} if(e.key==='End'){go(N-1);}});
+var tx=0,ty=0;
+document.getElementById('deck').addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.getElementById('deck').addEventListener('touchend',function(e){
+var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){if(dx<0)go(cur+1);else go(cur-1);}},{passive:true});
+go(0);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 14 panduan grant ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/grant/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan AIESEC Global Talent", "slug": "deck-grant-aiesec-talent"},{"label": "Panduan AIESEC Global Volunteer", "slug": "deck-grant-aiesec-volunteer"},{"label": "Panduan Amgen Scholars Asia", "slug": "deck-grant-amgen-asia"},{"label": "Panduan Au Pair", "slug": "deck-grant-aupair"},{"label": "Panduan Ausbildung Jerman", "slug": "deck-grant-ausbildung"},{"label": "Panduan DAAD RISE Jerman", "slug": "deck-grant-rise-jerman"},{"label": "Panduan Erasmus+", "slug": "deck-grant-erasmus"},{"label": "Panduan Global UGRAD AS", "slug": "deck-grant-ugrad-as"},{"label": "Panduan IISMA", "slug": "deck-grant-iisma"},{"label": "Panduan IISMAVO", "slug": "deck-grant-iismavo"},{"label": "Panduan JET Programme", "slug": "deck-grant-jet"},{"label": "Panduan MITACS Globalink Kanada", "slug": "deck-grant-mitacs-kanada"},{"label": "Panduan OIST Research Internship", "slug": "deck-grant-oist-jepang"},{"label": "Panduan Short Course Luar Negeri", "slug": "deck-grant-shortcourse"},{"label": "Panduan Summer/Winter School", "slug": "deck-grant-summerschool"},{"label": "Panduan Travel Grant", "slug": "deck-grant-travel"},{"label": "Panduan Work & Travel USA", "slug": "deck-grant-worktravel"},{"label": "Panduan Working Holiday Visa", "slug": "deck-grant-whv"},{"label": "Panduan YSEALI Fellowship", "slug": "deck-grant-yseali-as"},{"label": "Panduan Youth Summit", "slug": "deck-grant-summit"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script>
+</body>
+</html>

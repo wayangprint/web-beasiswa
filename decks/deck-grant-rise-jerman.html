@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DAAD RISE Jerman: Research Internship — Portal Beasiswa</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+    background:#0f0c29; color:#f4f1ff;
+    overflow:hidden;
+  }
+  #deck { position:relative; width:100vw; height:100vh; }
+  .slide {
+    position:absolute; inset:0;
+    display:none; flex-direction:column; justify-content:center;
+    padding:56px 8vw;
+    background:linear-gradient(135deg,#0f0c29 0%,#1a1446 60%,#241b58 100%);
+  }
+  .slide.active { display:flex; }
+  h1 { font-size:clamp(2rem,5.5vw,3.6rem); color:#ffd75e; margin-bottom:14px; line-height:1.15; }
+  h2 { font-size:clamp(1.4rem,3.4vw,2.2rem); color:#ffd75e; margin-bottom:18px; border-left:5px solid #ffd75e; padding-left:16px; }
+  h3 { font-size:1.1rem; color:#ffd75e; margin:12px 0 6px; }
+  p, li { font-size:clamp(0.95rem,2vw,1.15rem); line-height:1.65; color:#e8e4ff; }
+  ul { margin:10px 0 10px 22px; }
+  li { margin-bottom:8px; }
+  .accent { color:#ffd75e; font-weight:700; }
+  .card {
+    background:rgba(255,215,94,0.07); border:1px solid rgba(255,215,94,0.35);
+    border-radius:14px; padding:18px 20px; margin:10px 0;
+  }
+  .card p, .card li { font-size:clamp(0.9rem,1.9vw,1.05rem); }
+  .badge {
+    display:inline-block; background:#ffd75e; color:#0f0c29; font-weight:800;
+    padding:8px 20px; border-radius:999px; margin-top:18px; font-size:1rem;
+  }
+  /* cover */
+  #cover { padding:0; justify-content:flex-end; }
+  .cover-bg {
+    position:absolute; inset:0;
+    background:url('https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+  }
+  .cover-overlay {
+    position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(15,12,41,0.95) 20%, rgba(15,12,41,0.45) 60%, rgba(15,12,41,0.25) 100%);
+  }
+  .cover-content { position:relative; padding:0 8vw 9vh; }
+  .cover-content h1 { font-size:clamp(2.2rem,6.5vw,4.2rem); text-shadow:0 3px 18px rgba(0,0,0,.6); }
+  .cover-sub { font-size:clamp(1.05rem,2.6vw,1.6rem); color:#fff; margin-top:8px; }
+  /* nav */
+  #nav {
+    position:fixed; bottom:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 20px;
+    background:rgba(10,8,26,0.85); backdrop-filter:blur(6px);
+    border-top:1px solid rgba(255,215,94,0.25);
+  }
+  #nav button {
+    background:#ffd75e; color:#0f0c29; border:none; font-weight:800;
+    padding:10px 22px; border-radius:10px; cursor:pointer; font-size:1rem;
+  }
+  #nav button:disabled { opacity:0.3; cursor:default; }
+  #counter { color:#ffd75e; font-weight:700; font-size:1.05rem; letter-spacing:1px; }
+  .slide-number { position:absolute; top:18px; right:26px; color:rgba(255,215,94,.5); font-size:.9rem; }
+  /* video grid */
+  .video-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:10px; }
+  .video-item { background:rgba(0,0,0,.35); border-radius:12px; overflow:hidden; border:1px solid rgba(255,215,94,.25); }
+  .video-item iframe { width:100%; aspect-ratio:16/9; border:0; display:block; }
+  .video-item p { padding:8px 12px; font-size:.85rem; color:#ffd75e; font-weight:600; }
+  /* faq */
+  .faq-q { font-weight:700; color:#ffd75e; margin-top:14px; }
+  .faq-a { margin-bottom:6px; }
+  table { width:100%; border-collapse:collapse; margin-top:12px; font-size:clamp(.85rem,1.9vw,1.02rem); }
+  th, td { border:1px solid rgba(255,215,94,.3); padding:10px 12px; text-align:left; }
+  th { background:rgba(255,215,94,.12); color:#ffd75e; }
+  a { color:#ffd75e; }
+  .warn { border:1px solid #ff8a8a; background:rgba(255,80,80,.08); border-radius:14px; padding:18px 20px; margin:10px 0; }
+  .warn p, .warn li { color:#ffd9d9; }
+  @media (max-width:640px) {
+    .slide { padding:40px 6vw 90px; }
+    .video-grid { grid-template-columns:1fr; gap:10px; }
+    #nav button { padding:8px 14px; font-size:.9rem; }
+    table { font-size:.82rem; }
+  }
+</style>
+</head>
+<body>
+<div id="deck">
+
+<!-- 1. COVER -->
+<section class="slide active" id="cover">
+  <div class="cover-bg"></div>
+  <div class="cover-overlay"></div>
+  <div class="cover-content">
+    <h1>DAAD RISE Jerman</h1>
+    <p class="cover-sub">Research Internship — Magang Riset Musim Panas</p>
+    <span class="badge">🇩🇪 Jerman</span>
+  </div>
+</section>
+
+<!-- 2. SEKILAS -->
+<section class="slide">
+  <span class="slide-number">2 / 21</span>
+  <h2>Sekilas Program</h2>
+  <div class="card">
+    <p><span class="accent">DAAD RISE Germany</span> — <em>Research Internships in Science and Engineering</em> — adalah program magang riset musim panas yang didanai DAAD (German Academic Exchange Service).</p>
+  </div>
+  <ul>
+    <li>Durasi <span class="accent">10–12 minggu</span>, dilaksanakan <span class="accent">Mei hingga Juli</span> setiap tahun</li>
+    <li>Magang di <span class="accent">universitas & institut riset top Jerman</span> (misalnya kelompok riset di TU Munich, RWTH Aachen, Max Planck, Fraunhofer, dan ratusan institusi lainnya)</li>
+    <li>Dibimbing langsung oleh <span class="accent">mahasiswa doktoral / peneliti</span> di kelompok riset tuan rumah</li>
+    <li>Bahasa kerja: <span class="accent">Inggris</span> — kemampuan bahasa Jerman <span class="accent">TIDAK wajib</span></li>
+    <li>Sekitar <span class="accent">300 penerima</span> per tahun — sangat kompetitif</li>
+  </ul>
+</section>
+
+<!-- 3. KENAPA ISTIMEWA -->
+<section class="slide">
+  <span class="slide-number">3 / 21</span>
+  <h2>Kenapa RISE Istimewa?</h2>
+  <ul>
+    <li><span class="accent">Riset nyata, bukan magang administratif</span> — kamu terlibat langsung dalam proyek penelitian aktif di lab Jerman</li>
+    <li><span class="accent">Didanai penuh</span> — stipend bulanan, asuransi, bantuan akomodasi, dan dana perjalanan internasional</li>
+    <li><span class="accent">Mentor doktoral</span> — pembimbing yang dekat dengan keseharian riset, bukan sekadar supervisor formal</li>
+    <li><span class="accent">Jaringan global</span> — bertemu ratusan intern RISE dari berbagai negara dalam satu musim panas</li>
+    <li><span class="accent">Pintu masuk karier riset</span> — pengalaman ini sangat dihargai untuk aplikasi S2/S3, terutama di Eropa</li>
+    <li><span class="accent">Tanpa syarat bahasa Jerman</span> — hambatan bahasa yang biasanya menakutkan dihilangkan total</li>
+  </ul>
+</section>
+
+<!-- 4. CAKUPAN & FUNDING -->
+<section class="slide">
+  <span class="slide-number">4 / 21</span>
+  <h2>Cakupan & Funding Detail</h2>
+  <table>
+    <tr><th>Komponen</th><th>Detail</th></tr>
+    <tr><td>Stipend bulanan</td><td><span class="accent">€934/bulan</span> selama ±3 bulan</td></tr>
+    <tr><td>Asuransi</td><td>Kesehatan, kecelakaan, dan tanggung jawab pribadi</td></tr>
+    <tr><td>Akomodasi</td><td>Bantuan mencarikan tempat tinggal (host membantu)</td></tr>
+    <tr><td>Perjalanan</td><td>Dana perjalanan internasional (tiket pesawat)</td></tr>
+    <tr><td>Durasi</td><td>10–12 minggu (Mei–Juli)</td></tr>
+  </table>
+  <div class="card">
+    <p>Catatan: besaran stipend mengikuti standar DAAD dan dapat disesuaikan tiap tahun — selalu cek pengumuman resmi terbaru di <span class="accent">daad.de/rise</span>.</p>
+  </div>
+</section>
+
+<!-- 5. SYARAT -->
+<section class="slide">
+  <span class="slide-number">5 / 21</span>
+  <h2>Syarat Pendaftaran (Resmi)</h2>
+  <ul>
+    <li>Terdaftar sebagai <span class="accent">mahasiswa S1</span> di universitas di <span class="accent">Amerika Serikat, Kanada, Inggris, atau Irlandia</span></li>
+    <li>Sudah <span class="accent">menyelesaikan minimal 2 tahun kuliah</span> saat internship dimulai</li>
+    <li><span class="accent">Tetap berstatus mahasiswa S1</span> setelah internship selesai (belum lulus)</li>
+    <li>Bidang studi: <span class="accent">biologi, kimia, fisika, ilmu bumi, teknik, ilmu komputer</span> — atau bidang terkait</li>
+    <li>Kemampuan bahasa Inggris yang baik (bahasa kerja program)</li>
+  </ul>
+  <div class="warn">
+    <p><span class="accent">Penting:</span> syarat kewarganegaraan/tempat kuliah ini ketat dan resmi dari DAAD. Detail lengkap ada di slide 19.</p>
+  </div>
+</section>
+
+<!-- 6. DOKUMEN -->
+<section class="slide">
+  <span class="slide-number">6 / 21</span>
+  <h2>Dokumen yang Dibutuhkan</h2>
+  <ul>
+    <li><span class="accent">Motivation letter untuk SETIAP proyek</span> yang dilamar (wajib dibuat khusus per proyek — bukan satu surat untuk semua)</li>
+    <li><span class="accent">CV</span> (format akademik, fokus pada pengalaman riset & keterampilan teknis)</li>
+    <li><span class="accent">Transkrip resmi</span> dari universitas</li>
+    <li><span class="accent">Daftar mata kuliah</span> yang sudah/diambil</li>
+    <li><span class="accent">Certificate of enrollment</span> — bukti masih terdaftar sebagai mahasiswa S1</li>
+    <li><span class="accent">Surat referensi akademik</span> dari dosen (diunggah terpisah oleh pemberi referensi, batas s/d 15 Desember)</li>
+  </ul>
+</section>
+
+<!-- 7. MEMILIH PROYEK -->
+<section class="slide">
+  <span class="slide-number">7 / 21</span>
+  <h2>Cara Memilih Proyek Riset yang Tepat</h2>
+  <p>Database RISE berisi ratusan proyek. Strateginya:</p>
+  <ul>
+    <li><span class="accent">Pilih berdasarkan kecocokan riset, bukan kota.</span> Jangan pilih proyek hanya karena di Berlin atau Munich — pilih yang topiknya paling nyambung dengan latar belakangmu.</li>
+    <li>Baca deskripsi proyek dengan teliti: metode, keterampilan yang dibutuhkan, dan ekspektasi mentor.</li>
+    <li>Prioritaskan proyek di mana <span class="accent">mata kuliah & pengalamanmu benar-benar relevan</span> — ini yang dinilai mentor saat ranking.</li>
+    <li>Lamar ke <span class="accent">beberapa proyek</span> (maksimal sesuai ketentuan tahun berjalan) untuk memperbesar peluang.</li>
+    <li>Catat nama mentor & kelompok risetnya — riset singkat profil mereka sebelum menulis motivation letter.</li>
+  </ul>
+</section>
+
+<!-- 8. TAHAPAN SELEKSI -->
+<section class="slide">
+  <span class="slide-number">8 / 21</span>
+  <h2>Tahapan Seleksi</h2>
+  <ul>
+    <li><span class="accent">1. Aplikasi online</span> — isi formulir, unggah dokumen, pilih proyek (15 Okt – 30 Nov)</li>
+    <li><span class="accent">2. Surat referensi</span> — dosen mengunggah langsung via sistem (batas 15 Desember)</li>
+    <li><span class="accent">3. Ranking oleh mentor</span> — setiap mentor proyek me-ranking pelamarnya (Januari)</li>
+    <li><span class="accent">4. Pencocokan & pengumuman</span> — DAAD mencocokkan ranking dengan preferensi pelamar, hasil diumumkan sekitar <span class="accent">Februari/Maret</span></li>
+    <li><span class="accent">5. Persiapan keberangkatan</span> — visa, tiket, akomodasi (Maret–April)</li>
+    <li><span class="accent">6. Internship</span> — Mei hingga Juli di Jerman 🎉</li>
+  </ul>
+</section>
+
+<!-- 9. TIMELINE -->
+<section class="slide">
+  <span class="slide-number">9 / 21</span>
+  <h2>Timeline & Jadwal</h2>
+  <table>
+    <tr><th>Periode</th><th>Kegiatan</th></tr>
+    <tr><td>15 Okt – 30 Nov</td><td>Aplikasi online dibuka</td></tr>
+    <tr><td>s/d 15 Desember</td><td>Batas unggah surat referensi</td></tr>
+    <tr><td>Januari</td><td>Mentor me-ranking pelamar</td></tr>
+    <tr><td>Februari / Maret</td><td>Pengumuman hasil</td></tr>
+    <tr><td>Maret – April</td><td>Urus visa, tiket, akomodasi</td></tr>
+    <tr><td>Mei – Juli</td><td>Internship di Jerman</td></tr>
+  </table>
+  <div class="card">
+    <p>Jadwal <span class="accent">bisa berubah tiap tahun</span> — selalu cek halaman resmi <span class="accent">daad.de/rise</span> untuk tanggal terbaru sebelum mendaftar.</p>
+  </div>
+</section>
+
+<!-- 10. STRATEGI: MOTIVATION LETTER -->
+<section class="slide">
+  <span class="slide-number">10 / 21</span>
+  <h2>Strategi Lolos: Motivation Letter per Proyek</h2>
+  <ul>
+    <li><span class="accent">Satu surat per proyek — wajib.</span> Surat generik yang dikirim ke semua proyek mudah terdeteksi dan langsung gugur.</li>
+    <li>Sebutkan <span class="accent">spesifik</span>: topik proyek, metode yang dipakai, dan kenapa kamu cocok (mata kuliah, pengalaman lab, skill pemrograman, dsb).</li>
+    <li>Tunjukkan kamu sudah <span class="accent">membaca publikasi/riset mentor</span> — satu-dua kalimat yang tepat jauh lebih kuat dari pujian umum.</li>
+    <li>Struktur: paragraf pembuka (kenapa proyek ini) → kualifikasi relevan → apa yang ingin dipelajari → penutup singkat.</li>
+    <li>Panjang ideal: <span class="accent">satu halaman</span>, bahasa Inggris yang jelas dan bebas typo.</li>
+  </ul>
+</section>
+
+<!-- 11. STRATEGI: CV & TRANSKRIP -->
+<section class="slide">
+  <span class="slide-number">11 / 21</span>
+  <h2>Strategi Lolos: CV & Transkrip</h2>
+  <ul>
+    <li><span class="accent">CV akademik, bukan CV kerja.</span> Tonjolkan: pengalaman riset/lab, proyek kuliah, keterampilan teknis (mis. Python, MATLAB, teknik lab), publikasi/poster jika ada.</li>
+    <li>Susun dari yang <span class="accent">paling relevan dengan proyek</span> ke yang kurang relevan — mentor hanya melirik beberapa detik pertama.</li>
+    <li><span class="accent">Transkrip:</span> nilai mata kuliah yang relevan dengan proyek jadi sorotan utama — pastikan transkrip resmi dan terbaca jelas.</li>
+    <li><span class="accent">Daftar mata kuliah:</span> cantumkan yang mendukung kualifikasimu untuk proyek yang dilamar.</li>
+    <li>Jujur soal skill — mentor akan menguji klaimmu saat wawancara/persiapan.</li>
+  </ul>
+</section>
+
+<!-- 12. STRATEGI: REKOMENDASI -->
+<section class="slide">
+  <span class="slide-number">12 / 21</span>
+  <h2>Strategi Lolos: Surat Rekomendasi</h2>
+  <ul>
+    <li>Minta ke <span class="accent">dosen yang benar-benar mengenalmu</span> — idealnya dosen pembimbing riset/proyek, bukan sekadar dosen mata kuliah besar.</li>
+    <li>Minta <span class="accent">minimal 1 bulan sebelum tenggat</span> (15 Desember) — dosen sibuk, jangan dadakan.</li>
+    <li>Bekali dosen dengan: CV-mu, daftar proyek yang dilamar, dan poin-poin yang ingin ditonjolkan.</li>
+    <li>Surat yang kuat berisi <span class="accent">contoh konkret</span> kemampuan risetmu, bukan sekadar "mahasiswa yang baik".</li>
+    <li>Pastikan dosen tahu cara mengunggah via sistem DAAD — ingatkan tenggatnya dengan sopan.</li>
+  </ul>
+</section>
+
+<!-- 13. VIDEO -->
+<section class="slide">
+  <span class="slide-number">13 / 21</span>
+  <h2>Video Panduan & Testimoni</h2>
+  <div class="video-grid">
+    <div class="video-item">
+      <iframe src="https://www.youtube-nocookie.com/embed/URlCN8g9ttQ" title="Panduan Beasiswa DAAD: Cara Daftar & Menang" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      <p>📝 Panduan Beasiswa DAAD: Cara Daftar &amp; Menang</p>
+    </div>
+    <div class="video-item">
+      <iframe src="https://www.youtube-nocookie.com/embed/YFnBAoYmmdk" title="Dapat Internship di Jerman: Strategi & Tips" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      <p>💡 Dapat Internship di Jerman: Strategi &amp; Tips</p>
+    </div>
+    <div class="video-item">
+      <iframe src="https://www.youtube-nocookie.com/embed/NPQA7XEotbg" title="Setahun Jadi Mahasiswa Internasional di Jerman" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      <p>🎓 Setahun Jadi Mahasiswa Internasional di Jerman</p>
+    </div>
+    <div class="video-item">
+      <iframe src="https://www.youtube-nocookie.com/embed/iYGql9_y8qM" title="Kehidupan Mahasiswa di Jerman" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      <p>🏙️ Kehidupan Mahasiswa di Jerman</p>
+    </div>
+  </div>
+</section>
+
+<!-- 14. FAQ -->
+<section class="slide">
+  <span class="slide-number">14 / 21</span>
+  <h2>FAQ</h2>
+  <p class="faq-q">1. Apakah harus bisa bahasa Jerman?</p>
+  <p class="faq-a">Tidak. Bahasa kerja program ini adalah bahasa Inggris. Tentu saja, bisa sedikit bahasa Jerman membantu kehidupan sehari-hari.</p>
+  <p class="faq-q">2. Apakah mahasiswa S2/S3 boleh mendaftar?</p>
+  <p class="faq-a">Tidak. Program ini khusus mahasiswa S1 yang belum lulus saat internship selesai.</p>
+  <p class="faq-q">3. Berapa proyek yang boleh dilamar?</p>
+  <p class="faq-a">Bisa melamar ke beberapa proyek sekaligus (jumlah maksimal mengikuti ketentuan tahun berjalan). Setiap proyek butuh motivation letter tersendiri.</p>
+  <p class="faq-q">4. Apakah ada biaya pendaftaran?</p>
+  <p class="faq-a">Tidak ada. Pendaftaran gratis, dan penerima justru mendapatkan stipend.</p>
+</section>
+
+<!-- 15. FAQ LANJUTAN -->
+<section class="slide">
+  <span class="slide-number">15 / 21</span>
+  <h2>FAQ Lanjutan</h2>
+  <p class="faq-q">1. Bagaimana akomodasi diatur?</p>
+  <p class="faq-a">Kelompok riset tuan rumah membantu mencarikan tempat tinggal — biasanya asrama mahasiswa atau apartemen sementara di kota tersebut.</p>
+  <p class="faq-q">2. Apakah boleh memilih kota/universitas tertentu?</p>
+  <p class="faq-a">Kamu memilih <em>proyek</em>, bukan kota. Lokasi mengikuti proyek yang diterima — itulah kenapa strategi memilih proyek (slide 7) sangat penting.</p>
+  <p class="faq-q">3. Apakah internship ini bisa dikonversi jadi SKS?</p>
+  <p class="faq-a">Tergantung kebijakan kampus masing-masing. Konsultasikan dengan bagian akademik/kemahasiswaan kampusmu sebelum berangkat.</p>
+</section>
+
+<!-- 16. KESALAHAN UMUM -->
+<section class="slide">
+  <span class="slide-number">16 / 21</span>
+  <h2>Kesalahan Umum Pendaftar</h2>
+  <ul>
+    <li>❌ <span class="accent">Satu motivation letter untuk semua proyek</span> — kesalahan paling fatal dan paling sering.</li>
+    <li>❌ Memilih proyek berdasarkan <span class="accent">kota impian</span>, bukan kecocokan riset.</li>
+    <li>❌ Meminta surat rekomendasi <span class="accent">terlalu mepet tenggat</span> 15 Desember.</li>
+    <li>❌ CV terlalu umum — tidak menonjolkan <span class="accent">skill teknis yang relevan</span> dengan proyek.</li>
+    <li>❌ Typo dan bahasa Inggris yang berantakan di dokumen aplikasi.</li>
+    <li>❌ Tidak membaca deskripsi proyek dengan teliti — melamar proyek yang syarat skill-nya tidak dipenuhi.</li>
+    <li>❌ Mendaftar di <span class="accent">menit-menit terakhir</span> — risiko gangguan sistem & dokumen kurang lengkap.</li>
+  </ul>
+</section>
+
+<!-- 17. CHECKLIST -->
+<section class="slide">
+  <span class="slide-number">17 / 21</span>
+  <h2>Checklist Persiapan 3 Bulan</h2>
+  <div class="card">
+    <h3>Bulan 1 (mis. Agustus)</h3>
+    <p>☐ Riset database proyek RISE · ☐ Minta transkrip resmi & certificate of enrollment · ☐ Hubungi calon pemberi rekomendasi</p>
+    <h3>Bulan 2 (September)</h3>
+    <p>☐ Finalisasi daftar proyek target · ☐ Tulis motivation letter per proyek · ☐ Rapikan CV akademik · ☐ Ingatkan dosen soal tenggat referensi</p>
+    <h3>Bulan 3 (Oktober–November)</h3>
+    <p>☐ Submit aplikasi sebelum 30 November (jangan mepet!) · ☐ Pastikan surat referensi terunggah s/d 15 Desember · ☐ Siapkan paspor yang masih berlaku</p>
+  </div>
+</section>
+
+<!-- 18. INFO PRAKTIS -->
+<section class="slide">
+  <span class="slide-number">18 / 21</span>
+  <h2>Info Praktis: Visa, Biaya Hidup, Bahasa</h2>
+  <ul>
+    <li><span class="accent">Visa:</span> umumnya membutuhkan visa Schengen/kunjungan untuk riset singkat — DAAD memberikan surat undangan resmi untuk pengajuan visa. Urus segera setelah pengumuman.</li>
+    <li><span class="accent">Biaya hidup:</span> stipend €934/bulan umumnya cukup untuk kota universitas di Jerman (sewa kamar ±€300–500/bulan di kebanyakan kota). Kota besar seperti Munich/Berlin lebih mahal.</li>
+    <li><span class="accent">Bahasa:</span> bahasa kerja Inggris; pelajari frasa Jerman dasar untuk kehidupan sehari-hari (belanja, transportasi, sopan santun).</li>
+    <li><span class="accent">Asuransi:</span> sudah termasuk dari DAAD (kesehatan, kecelakaan, tanggung jawab pribadi).</li>
+    <li><span class="accent">Cuaca:</span> Mei–Juli adalah musim panas — suhu nyaman 18–28°C, siang hari panjang.</li>
+  </ul>
+</section>
+
+<!-- 19. CATATAN JUJUR -->
+<section class="slide">
+  <span class="slide-number">19 / 21</span>
+  <h2>⚠️ Catatan Jujur untuk Mahasiswa Indonesia</h2>
+  <div class="warn">
+    <p><span class="accent">Syarat resmi DAAD RISE Germany:</span> pendaftar harus mahasiswa S1 yang kuliah di <span class="accent">Amerika Serikat, Kanada, Inggris, atau Irlandia</span>.</p>
+    <p style="margin-top:10px;">Artinya: <span class="accent">mahasiswa yang kuliah di Indonesia TIDAK memenuhi syarat jalur RISE Germany ini.</span> Kami tidak akan menjanjikan sesuatu yang tidak ada.</p>
+  </div>
+  <h3>Alternatif yang realistis:</h3>
+  <ul>
+    <li><span class="accent">1. Kuliah S1 di Jerman?</span> → daftar lewat jalur <span class="accent">RISE Worldwide</span> (untuk mahasiswa dari Jerman yang ingin riset ke luar negeri, atau cek skema DAAD lain yang relevan).</li>
+    <li><span class="accent">2. Program DAAD lain untuk Indonesia:</span> beasiswa <span class="accent">DAAD EPOS</span> untuk S2/S3, serta berbagai beasiswa S1 untuk studi di Jerman — cek daad.de dan Perwakilan DAAD Jakarta.</li>
+    <li><span class="accent">3. Magang riset yang terbuka untuk Indonesia:</span> contohnya program riset internasional seperti <span class="accent">OIST Research Internship (Jepang)</span> yang menerima mahasiswa dari seluruh dunia termasuk Indonesia.</li>
+  </ul>
+</section>
+
+<!-- 20. LINK RESMI -->
+<section class="slide">
+  <span class="slide-number">20 / 21</span>
+  <h2>Link Resmi</h2>
+  <div class="card">
+    <h3>🌐 Situs resmi program</h3>
+    <p><a href="https://www.daad.de/rise/en/rise-germany/" target="_blank" rel="noopener">daad.de/rise/en/rise-germany/</a></p>
+  </div>
+  <div class="card">
+    <h3>🔍 Database proyek & pendaftaran</h3>
+    <p>Tersedia di situs resmi DAAD RISE saat periode aplikasi dibuka (15 Oktober – 30 November).</p>
+  </div>
+  <div class="card">
+    <h3>🏛️ DAAD Regional Office Jakarta</h3>
+    <p>Untuk konsultasi program DAAD yang terbuka bagi pelamar Indonesia: <a href="https://www.daad.id" target="_blank" rel="noopener">daad.id</a></p>
+  </div>
+  <p style="margin-top:12px;">Selalu verifikasi syarat & jadwal terbaru langsung dari sumber resmi — informasi dapat berubah tiap tahun.</p>
+</section>
+
+<!-- 21. PENUTUP -->
+<section class="slide">
+  <span class="slide-number">21 / 21</span>
+  <h2>Penutup</h2>
+  <div class="card">
+    <p>DAAD RISE Germany adalah salah satu <span class="accent">magang riset musim panas paling prestisius di Eropa</span> — 10–12 minggu riset nyata di Jerman, didanai penuh, tanpa syarat bahasa Jerman.</p>
+  </div>
+  <ul>
+    <li>Kunci lolos: <span class="accent">motivation letter yang spesifik per proyek</span> + kecocokan riset yang nyata</li>
+    <li>Mulai persiapan <span class="accent">3 bulan sebelum tenggat</span> 30 November</li>
+    <li>Untuk mahasiswa Indonesia: jujur pada syaratnya, dan kejar <span class="accent">alternatif yang memang terbuka</span> untukmu</li>
+  </ul>
+  <p style="margin-top:18px;">Semoga sukses! 🚀</p>
+  <span class="badge">🇩🇪 DAAD RISE Jerman</span>
+</section>
+
+</div>
+
+<nav id="nav">
+  <button id="prevBtn" onclick="go(-1)">← Prev</button>
+  <span id="counter">1 / 21</span>
+  <button id="nextBtn" onclick="go(1)">Next →</button>
+</nav>
+
+<script>
+  var slides = document.querySelectorAll('.slide');
+  var idx = 0;
+  function show(n) {
+    idx = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function(s, i) { s.classList.toggle('active', i === idx); });
+    document.getElementById('counter').textContent = (idx + 1) + ' / ' + slides.length;
+    document.getElementById('prevBtn').disabled = idx === 0;
+    document.getElementById('nextBtn').disabled = idx === slides.length - 1;
+    window.scrollTo(0, 0);
+  }
+  function go(d) { show(idx + d); }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') go(1);
+    if (e.key === 'ArrowLeft') go(-1);
+  });
+  var tx = 0;
+  document.addEventListener('touchstart', function(e) { tx = e.changedTouches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - tx;
+    if (dx < -50) go(1); else if (dx > 50) go(-1);
+  }, {passive:true});
+  show(0);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 14 panduan grant ini.');
+  var DEVICE_BODY=lockBody('Batas 5 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun dipakai di lebih dari 5 perangkat. Masuk kembali lewat situs utama untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<div id="dnav-root">
+<style>
+#dnav-root{position:fixed;top:0;left:0;right:0;z-index:2147483647;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+#dnav-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;}
+#dnav-root a.dnav-pill,#dnav-root button.dnav-pill{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+#dnav-root a.dnav-pill:hover,#dnav-root button.dnav-pill:hover{background:rgba(124,58,237,.92);}
+#dnav-panel{pointer-events:auto;position:fixed;top:52px;right:10px;width:min(330px,88vw);max-height:min(70vh,560px);display:none;flex-direction:column;background:#17143a;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);}
+#dnav-panel.dnav-open{display:flex;}
+#dnav-search{margin:10px 10px 6px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:#221d52;color:#fff;font-size:13px;outline:none;}
+#dnav-search::placeholder{color:#9d99c4;}
+#dnav-list{overflow-y:auto;padding:4px 6px 10px;-webkit-overflow-scrolling:touch;}
+#dnav-list a{display:block;padding:9px 12px;border-radius:10px;color:#e9e7ff;text-decoration:none;font-size:13px;line-height:1.4;}
+#dnav-list a:hover{background:rgba(124,58,237,.28);}
+#dnav-list a.dnav-current{background:rgba(124,58,237,.45);font-weight:700;}
+#dnav-empty{padding:14px;text-align:center;color:#9d99c4;font-size:13px;display:none;}
+</style>
+<div id="dnav-bar">
+<a class="dnav-pill" href="https://wayangprint.github.io/web-beasiswa/#/grant/">&#8592; Indeks</a>
+<button class="dnav-pill" id="dnav-toggle" type="button">&#9776; Deck <span id="dnav-count"></span></button>
+</div>
+<div id="dnav-panel" role="dialog" aria-label="Pilih deck">
+<input id="dnav-search" type="search" placeholder="Cari deck..." autocomplete="off" aria-label="Cari deck">
+<div id="dnav-list"></div>
+<div id="dnav-empty">Tidak ada deck yang cocok.</div>
+</div>
+</div>
+<script>
+(function(){
+if(document.getElementById('dnav-built'))return;
+var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
+var ITEMS=[{"label": "Panduan AIESEC Global Talent", "slug": "deck-grant-aiesec-talent"},{"label": "Panduan AIESEC Global Volunteer", "slug": "deck-grant-aiesec-volunteer"},{"label": "Panduan Amgen Scholars Asia", "slug": "deck-grant-amgen-asia"},{"label": "Panduan Au Pair", "slug": "deck-grant-aupair"},{"label": "Panduan Ausbildung Jerman", "slug": "deck-grant-ausbildung"},{"label": "Panduan DAAD RISE Jerman", "slug": "deck-grant-rise-jerman"},{"label": "Panduan Erasmus+", "slug": "deck-grant-erasmus"},{"label": "Panduan Global UGRAD AS", "slug": "deck-grant-ugrad-as"},{"label": "Panduan IISMA", "slug": "deck-grant-iisma"},{"label": "Panduan IISMAVO", "slug": "deck-grant-iismavo"},{"label": "Panduan JET Programme", "slug": "deck-grant-jet"},{"label": "Panduan MITACS Globalink Kanada", "slug": "deck-grant-mitacs-kanada"},{"label": "Panduan OIST Research Internship", "slug": "deck-grant-oist-jepang"},{"label": "Panduan Short Course Luar Negeri", "slug": "deck-grant-shortcourse"},{"label": "Panduan Summer/Winter School", "slug": "deck-grant-summerschool"},{"label": "Panduan Travel Grant", "slug": "deck-grant-travel"},{"label": "Panduan Work & Travel USA", "slug": "deck-grant-worktravel"},{"label": "Panduan Working Holiday Visa", "slug": "deck-grant-whv"},{"label": "Panduan YSEALI Fellowship", "slug": "deck-grant-yseali-as"},{"label": "Panduan Youth Summit", "slug": "deck-grant-summit"}];
+var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
+var list=document.getElementById('dnav-list');
+var empty=document.getElementById('dnav-empty');
+var search=document.getElementById('dnav-search');
+document.getElementById('dnav-count').textContent='('+ITEMS.length+')';
+function render(q){
+  q=(q||'').toLowerCase(); list.innerHTML=''; var n=0;
+  ITEMS.forEach(function(it){
+    if(q && it.label.toLowerCase().indexOf(q)<0) return;
+    n++;
+    var a=document.createElement('a');
+    a.href=BASE+it.slug+'.html'; a.textContent=it.label;
+    if(it.slug+'.html'===here) a.className='dnav-current';
+    list.appendChild(a);
+  });
+  empty.style.display=n?'none':'block';
+}
+render('');
+search.addEventListener('input',function(){render(search.value);});
+var panel=document.getElementById('dnav-panel');
+var toggle=document.getElementById('dnav-toggle');
+toggle.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('dnav-open');if(panel.classList.contains('dnav-open'))search.focus();});
+document.addEventListener('click',function(e){if(!document.getElementById('dnav-root').contains(e.target))panel.classList.remove('dnav-open');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')panel.classList.remove('dnav-open');});
+var marker=document.createElement('span');marker.id='dnav-built';marker.style.display='none';document.body.appendChild(marker);
+})();
+</script>
+</body>
+</html>
