@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+<script>
+/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 3 per akun) */
+(function(){
+  var HOME='https://wayangprint.github.io/web-beasiswa/';
+  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
+  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
+  var de=document.documentElement;
+  try{ de.style.display='none'; }catch(e){}
+  function lockBody(title, desc){
+    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
+  }
+  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka panduan PPDB SMA Unggul Garuda ini beserta seluruh panduan Portal Beasiswa.');
+  var DEVICE_BODY=lockBody('Batas 3 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun sudah dipakai di 3 perangkat. Pindah device tidak diizinkan \u2014 daftar akun baru untuk memakai perangkat ini.');
+  function doLock(body){
+    try{
+      document.title='Terkunci \u2014 Web Beasiswa';
+      if(document.body){ document.body.innerHTML=body; }
+      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
+      de.style.display='';
+    }catch(e){}
+  }
+  function lockPage(kind){
+    var applied=false;
+    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
+    try{
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', apply);
+        setTimeout(apply, 5000);
+      } else { apply(); }
+    }catch(e){ apply(); }
+  }
+  function unlock(){ try{ de.style.display=''; }catch(e){} }
+  var done=false;
+  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
+  setTimeout(function(){ fail('member'); }, 12000);
+  function init(){
+    var client, uid;
+    try{
+      if(typeof supabase==='undefined'){ fail('member'); return; }
+      client=supabase.createClient(URL, KEY);
+    }catch(e){ fail('member'); return; }
+    client.auth.getSession().then(function(res){
+      var s=res && res.data && res.data.session;
+      if(!s){ fail('member'); return; }
+      uid=s.user.id;
+      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
+    }).then(function(r){
+      if(!r){ return; }
+      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
+      var deviceId=null;
+      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
+      if(!deviceId){ fail('device'); return; }
+      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
+        if(done) return; done=true;
+        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
+      }).catch(function(){ if(done) return; done=true; unlock(); });
+    }).catch(function(){ fail('member'); });
+  }
+  setTimeout(init, 60);
+})();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan PPDB SMA Unggul Garuda 2027/2028 — Portal Beasiswa</title>
+<style>
+:root{--accent:#047857;--ink:#1e293b;--mut:#64748b;}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;background:#0f172a;color:var(--ink);overflow:hidden}
+.deck{position:relative;height:100dvh;width:100%}
+.slide{display:none;height:100dvh;width:100%;overflow-y:auto;padding:64px 22px 120px;background:#f8fafc;animation:fade .35s ease}
+.slide.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.wrap{max-width:920px;margin:0 auto}
+.kicker{display:inline-block;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,white);border:1px solid color-mix(in srgb,var(--accent) 30%,white);padding:6px 14px;border-radius:999px;margin-bottom:14px}
+h2.st{font-size:clamp(24px,4vw,34px);line-height:1.25;margin-bottom:6px;color:#0f172a}
+.lede{color:var(--mut);font-size:16px;margin-bottom:22px;line-height:1.6}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px 22px;margin-bottom:16px;box-shadow:0 2px 10px rgba(15,23,42,.05)}
+.card h3{font-size:18px;margin-bottom:10px;color:var(--accent)}
+.card p,.card li{font-size:15.5px;line-height:1.7}
+.card ul{padding-left:20px}
+.card li{margin-bottom:6px}
+.card li::marker{color:var(--accent)}
+b,strong{color:#0f172a}
+.note{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 18px;font-size:14.5px;line-height:1.65;color:#92400e;margin-bottom:16px}
+.note b{color:#92400e}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr 1fr;gap:10px}.card{padding:16px}}
+.pill{display:inline-block;background:color-mix(in srgb,var(--accent) 12%,white);color:var(--accent);font-weight:700;font-size:13px;padding:5px 12px;border-radius:999px;margin:0 6px 8px 0}
+table.t{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff;border-radius:12px;overflow:hidden;margin-bottom:16px;box-shadow:0 2px 10px rgba(15,23,42,.05)}
+table.t th{background:var(--accent);color:#fff;text-align:left;padding:10px 12px}
+table.t td{padding:10px 12px;border-bottom:1px solid #eef2f7;vertical-align:top;line-height:1.6}
+.check{padding-left:4px}
+.check li{list-style:none;padding-left:30px;position:relative;margin-bottom:8px;font-size:15.5px;line-height:1.7}
+.check li::before{content:"☑";position:absolute;left:0;color:var(--accent);font-weight:700}
+a{color:var(--accent);font-weight:600;word-break:break-all}
+/* cover */
+.slide.cover{padding:0;overflow:hidden;background:linear-gradient(150deg,#062e25,#065f46 55%,#0b3d2e)}
+.cover-shade{position:absolute;inset:0;background:radial-gradient(circle at 85% 12%,rgba(245,200,107,.28),transparent 42%),linear-gradient(180deg,rgba(2,20,14,.25) 0%,rgba(2,20,14,.05) 40%,rgba(2,20,14,.55) 100%)}
+.cover-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:48px 28px 120px;max-width:920px}
+.cover-kicker{color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);display:inline-block;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:7px 16px;border-radius:999px;margin-bottom:16px;backdrop-filter:blur(4px);align-self:flex-start}
+.cover-content h1{color:#fff;font-size:clamp(30px,6vw,52px);line-height:1.15;margin-bottom:14px;text-shadow:0 2px 18px rgba(0,0,0,.35)}
+.cover-content p{color:#d1fae5;font-size:clamp(15px,2.5vw,19px);line-height:1.65;max-width:640px}
+.cover-content p b{color:#F5C86B}
+.cover-hint{margin-top:22px;color:#fff;font-size:14px;opacity:.85}
+.deadline-chip{align-self:flex-start;margin-top:20px;background:#dc2626;color:#fff;font-weight:800;font-size:14px;letter-spacing:.4px;padding:9px 18px;border-radius:999px}
+/* nav */
+.navbar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(15,23,42,.96);backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,.12);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.navrow{max-width:920px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.nbtn{flex:0 0 auto;background:var(--accent);color:#fff;border:0;border-radius:12px;padding:12px 20px;font-size:15px;font-weight:700;cursor:pointer;min-width:110px}
+.nbtn:disabled{opacity:.35;cursor:default}
+.nbtn.ghost{background:rgba(255,255,255,.12)}
+.nmid{flex:1;text-align:center;color:#cbd5e1;font-size:13.5px;font-weight:600}
+.pbar{height:4px;background:rgba(255,255,255,.15);border-radius:99px;margin-top:8px;overflow:hidden;max-width:920px;margin-left:auto;margin-right:auto}
+.pbar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+.faq{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;margin-bottom:12px}
+.faq h4{font-size:16px;color:var(--accent);margin-bottom:6px}
+.faq p{font-size:15px;line-height:1.7;color:#334155}
+.end{text-align:center;padding:30px 10px}
+.end .big{font-size:clamp(26px,5vw,40px);color:#0f172a;margin-bottom:12px}
+/* top bar */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;justify-content:space-between;align-items:center;padding:8px 10px;pointer-events:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+#topbar a{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(26,20,70,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#topbar a:hover{background:rgba(124,58,237,.92)}
+</style>
+</head>
+<body>
+<div id="topbar">
+<a href="../index.html#/dalam-negeri/">&#8592; Indeks Dalam Negeri</a>
+<a href="../index.html#/">Portal Beasiswa</a>
+</div>
+<div class="deck">
+<section class="slide cover"><div class="cover-shade"></div><div class="cover-content"><span class="cover-kicker">Panduan Beasiswa Dalam Negeri</span><h1>Panduan PPDB SMA Unggul Garuda 2027/2028</h1><p>SMA berasrama fokus <b>STEM</b> dengan <b>beasiswa penuh</b> dari pemerintah (Kemdiktisaintek) — khusus siswa <b>kelas IX SMP/MTs</b>/sederajat. Kuota 640 siswa di 4 lokasi.</p><span class="deadline-chip">DITUTUP JUMAT, 13 NOVEMBER 2026 · 23.59 WIB</span><div class="cover-hint">Klik Next / geser / tombol panah → untuk mulai membaca</div></div></section>
+
+<section class="slide"><div class="wrap"><span class="kicker">Status</span><h2 class="st">Pendaftaran Sedang Dibuka — Jangan Tunggu Deadline</h2><p class="lede">Fakta terpenting dari panduan ini, baca dulu sebelum yang lain.</p><div class="card"><h3>Jendela Pendaftaran</h3><ul><li>PPDB SMA Unggul Garuda Baru Tahun Ajaran <b>2027/2028</b> resmi dibuka.</li><li>Pendaftaran ditutup <b>Jumat, 13 November 2026 pukul 23.59 WIB</b>.</li><li>Sasaran: siswa <b>kelas IX SMP/MTs/sederajat</b> di seluruh Indonesia.</li><li>Daftar jauh sebelum hari terakhir — verifikasi administrasi berjalan setelah pendaftaran, berkas yang kurang lengkap tidak bisa diperbaiki setelah gerbang ditutup.</li></ul></div><div class="note"><b>Jangan tertukar:</b> ini program <b>SMA berasrama</b> untuk yang masih SMP — <b>bukan</b> Beasiswa Garuda S1 (beasiswa kuliah Kemdiktisaintek). Keduanya sama-sama bernama "Garuda", tetapi jenjang dan sasarannya berbeda.</div></div></section>
+
+<section class="slide"><div class="wrap"><span class="kicker">Sekilas</span><h2 class="st">Sekilas SMA Unggul Garuda</h2><p class="lede">Sekolah berasrama pemerintah dengan fokus sains dan teknologi.</p><div class="card"><h3>Gambaran Program</h3><ul><li><b>Model:</b> SMA berasrama (boarding school) — siswa tinggal di asrama selama masa studi.</li><li><b>Fokus:</b> STEM (sains, teknologi, teknik, dan matematika).</li><li><b>Pembiayaan:</b> beasiswa <b>penuh</b> dari pemerintah.</li><li><b>Kelas kecil:</b> maksimal <b>20 siswa per kelas</b> — pendampingan jauh lebih intensif dibanding kelas reguler.</li><li><b>Penyelenggara:</b> program pemerintah melalui Kemdiktisaintek.</li></ul></div></div></section>
+
+<section class="slide"><div class="wrap"><span class="kicker">Cakupan</span><h2 class="st">Apa yang Ditanggung Beasiswanya?</h2><p class="lede">Inti program ini: siswa terpilih sekolah dan tinggal di asrama tanpa dibebani biaya program.</p><div class="grid2"><div class="card"><h3>Beasiswa Penuh</h3><ul><li>Beasiswa <b>penuh</b> dari pemerintah untuk siswa yang lolos seleksi.</li><li>Tidak ada pungutan biaya program di luar ketentuan resmi PPDB.</li></ul></div><div class="card"><h3>Tinggal di Asrama</h3><ul><li>Siswa <b>wajib tinggal di asrama</b> selama menempuh pendidikan.</li><li>Lingkungan berasrama membentuk kemandirian, disiplin, dan kebiasaan belajar terstruktur.</li></ul></div></div><div class="note"><b>Catatan:</b> rincian komponen pembiayaan mengikuti pedoman resmi PPDB SMA Unggul Garuda 2027/2028 — selalu cek dokumen resmi program sebelum mengambil keputusan.</div></div></section>
+
+<section class="slide"><div class="wrap"><span class="kicker">Lokasi &amp; Kuota</span><h2 class="st">4 Lokasi, Kuota Total 640 Siswa</h2><p class="lede">Setiap sekolah menerima 160 siswa baru untuk tahun ajaran 2027/2028.</p><table class="t"><tr><th>Lokasi Sekolah</th><th>Kuota</th></tr><tr><td>Belitung Timur</td><td>160 siswa</td></tr><tr><td>Bulungan</td><td>160 siswa</td></tr><tr><td>Konawe Selatan</td><td>160 siswa</td></tr><tr><td>Timor Tengah Selatan</td><td>160 siswa</td></tr><tr><td><b>Total</b></td><td><b>640 siswa</b></td></tr></table><div class="card"><h3>Artinya untuk Pendaftar</h3><ul><li>Pendaftar harus <b>bersedia ditempatkan di seluruh lokasi</b> — bukan hanya sekolah terdekat dari rumah.</li><li>Dengan kelas maksimal 20 siswa, tiap sekolah membuka sekitar 8 kelas paralel.</li></ul></div></div></section>
+
+<section class="slide"><div class="wrap"><span class="kicker">Syarat</span><h2 class="st">Syarat Pendaftar</h2><p class="lede">Pastikan semua syarat dasar ini terpenuhi sebelum mendaftar.</p><div class="card"><h3>Persyaratan</h3><ul><li><b>Warga Negara Indonesia (WNI).</b></li><li>Siswa <b>kelas IX SMP/MTs/sederajat</b>.</li><li>Usia maksimal <b>21 tahun per 1 Juli 2027</b>.</li><li><b>Bersedia tinggal di asrama</b> selama masa pendidikan.</li><li><b>Bersedia ditempatkan di seluruh lokasi</b> SMA Unggul Garuda.</li><li>Prioritas bagi siswa <b>berprestasi</b> dari <b>keluarga kurang mampu</b>.</li></ul></div><div class="note"><b>Untuk orang tua:</b> karena modelnya berasrama dan penempatannya bisa lintas pulau, diskusikan kesiapan anak tinggal jauh dari rumah sejak sebelum mendaftar — bukan setelah dinyatakan lolos.</div></div></section>
+
+<section class="slide"><div class="wrap"><span class="kicker">Tahapan &amp; Jadwal</span><h2 class="st">Tahapan Seleksi dan Tanggal Penting</h2><p class="lede">Catat semua tanggal ini di kalender keluarga.</p><table class="t"><tr><th>Tahapan</th><th>Jadwal</th></tr><tr><td>Pendaftaran PPDB</td><td>Ditutup <b>13 November 2026</b>, 23.59 WIB</td></tr><tr><td>Verifikasi administrasi</td><td>Setelah pendaftaran ditutup</td></tr><tr><td>Tes Potensi Akademik</td><td><b>15 Desember 2026</b></td></tr><tr><td>Wawancara</td><td><b>9–10 Januari 2027</b></td></tr><tr><td>Pengumuman akhir</td><td><b>29 Januari 2027</b></td></tr></table><div class="card"><h3>Cara Membaca Jadwal Ini</h3><ul><li>Jarak pendaftaran ke Tes Potensi Akademik hanya sekitar <b>satu bulan</b> — persiapan tes tidak bisa menunggu dinyatakan lolos administrasi.</li><li>Wawancara jatuh di awal Januari: siapkan pendampingan orang tua sejak libur akhir tahun.</li></ul></div></div></section>
+
+<section class="slide"><div class="wrap"><span class="kicker">Cara Daftar</span><h2 class="st">Langkah Pendaftaran</h2><p class="lede">Ikuti urutan ini agar tidak ada tahap yang terlewat.</p><ul class="check"><li>Baca pedoman resmi PPDB SMA Unggul Garuda 2027/2028 dari kanal resmi Kemdiktisaintek sampai selesai.</li><li>Siapkan dokumen identitas dan berkas sekolah kelas IX dalam format digital yang jelas terbaca.</li><li>Kumpulkan bukti prestasi dan — bila ada — dokumen kondisi ekonomi keluarga, karena program memprioritaskan siswa berprestasi dari keluarga kurang mampu.</li><li>Isi formulir pendaftaran melalui kanal resmi program dan periksa ulang semua data sebelum mengirim.</li><li>Kirim pendaftaran jauh sebelum 13 November 2026 pukul 23.59 WIB, lalu simpan bukti pendaftarannya.</li><li>Pantau pengumuman verifikasi administrasi dan jadwal tahap berikutnya.</li></ul></div></section>
+
+<section class="slide"><div class="wrap"><span class="kicker">Persiapan</span><h2 class="st">Menyiapkan Tes Potensi Akademik &amp; Wawancara</h2><p class="lede">Dua tahap penentu setelah administrasi — mulai bersiap sejak hari pendaftaran.</p><div class="grid2"><div class="card"><h3>Tes Potensi Akademik (15 Des 2026)</h3><ul><li>Latih kemampuan penalaran, logika, dan pemahaman bacaan secara rutin — sedikit setiap hari lebih efektif daripada maraton semalam.</li><li>Perkuat dasar matematika dan sains kelas VII–IX, selaras fokus STEM sekolah ini.</li><li>Simulasi dengan batas waktu agar terbiasa bekerja cepat dan tepat.</li></ul></div><div class="card"><h3>Wawancara (9–10 Jan 2027)</h3><ul><li>Latih menjawab dengan jujur dan terstruktur: alasan memilih sekolah berasrama STEM, cita-cita, dan cara beradaptasi jauh dari rumah.</li><li>Tunjukkan kesiapan tinggal di asrama dan ditempatkan di lokasi mana pun.</li><li>Libatkan orang tua — dukungan keluarga adalah bagian dari kesiapan berasrama.</li></ul></div></div></div></section>
+
+<section class="slide"><div class="wrap"><span class="kicker">Hindari Ini</span><h2 class="st">Kesalahan Umum Pendaftar</h2><p class="lede"></p><div class="card"><h3>Jangan Lakukan Ini</h3><ul><li>Mengira ini beasiswa kuliah — program ini untuk <b>masuk SMA</b>, sasarannya siswa kelas IX SMP/MTs.</li><li>Mendaftar di hari terakhir; gangguan teknis dan berkas kurang lengkap tidak menyisakan waktu perbaikan.</li><li>Hanya bersedia ditempatkan di satu lokasi — syaratnya bersedia ditempatkan di <b>seluruh lokasi</b>.</li><li>Baru mulai belajar setelah pengumuman administrasi; Tes Potensi Akademik digelar 15 Desember 2026.</li><li>Anak belum siap berasrama tetapi tetap dipaksakan — kesiapan mental sama pentingnya dengan nilai.</li></ul></div></div></section>
+
+<section class="slide"><div class="wrap"><span class="kicker">FAQ</span><h2 class="st">Pertanyaan yang Sering Ditanyakan (1)</h2><p class="lede"></p><div class="faq"><h4>Siapa yang boleh mendaftar?</h4><p>Warga Negara Indonesia yang sedang duduk di kelas IX SMP/MTs/sederajat, dengan usia maksimal 21 tahun per 1 Juli 2027.</p></div><div class="faq"><h4>Apakah sekolahnya benar-benar gratis?</h4><p>Ya — program ini berbeasiswa penuh dari pemerintah, dan siswanya tinggal di asrama. Rincian komponen pembiayaan mengikuti pedoman resmi PPDB 2027/2028.</p></div><div class="faq"><h4>Berapa kuota dan di mana saja lokasinya?</h4><p>Total 640 siswa: masing-masing 160 di Belitung Timur, Bulungan, Konawe Selatan, dan Timor Tengah Selatan.</p></div></div></section>
+
+<section class="slide"><div class="wrap"><span class="kicker">FAQ</span><h2 class="st">Pertanyaan yang Sering Ditanyakan (2)</h2><p class="lede"></p><div class="faq"><h4>Bolehkah memilih lokasi sekolah sendiri?</h4><p>Pendaftar wajib bersedia ditempatkan di seluruh lokasi SMA Unggul Garuda. Jangan mendaftar bila hanya bersedia di satu kota saja.</p></div><div class="faq"><h4>Kapan hasil akhirnya diumumkan?</h4><p>Pengumuman akhir dijadwalkan 29 Januari 2027, setelah Tes Potensi Akademik (15 Desember 2026) dan wawancara (9–10 Januari 2027).</p></div><div class="faq"><h4>Apa bedanya dengan Beasiswa Garuda?</h4><p>Beasiswa Garuda adalah beasiswa kuliah S1 Kemdiktisaintek untuk siswa kelas 12. PPDB SMA Unggul Garuda adalah penerimaan SMA berasrama untuk siswa kelas IX SMP/MTs. Programnya berbeda — panduannya juga terpisah di Portal Beasiswa.</p></div></div></section>
+
+<section class="slide"><div class="wrap"><span class="kicker">Aksi</span><h2 class="st">Langkah Selanjutnya</h2><p class="lede"></p><ul class="check"><li>Diskusikan dengan orang tua dan guru: kesiapan berasrama dan penempatan lintas daerah.</li><li>Siapkan dokumen digital dan bukti prestasi dari sekarang.</li><li>Daftar sebelum 13 November 2026 — jangan menunggu hari terakhir.</li><li>Mulai latihan Tes Potensi Akademik minggu ini juga.</li><li>Tandai kalender: 15 Des 2026 (tes), 9–10 Jan 2027 (wawancara), 29 Jan 2027 (pengumuman akhir).</li></ul></div></section>
+
+<section class="slide"><div class="wrap"><div class="end"><div class="kicker">Penutup</div><div class="big">640 Kursi. Satu Kesempatan Masuk SMA Berasrama Gratis. 🎓</div><p class="lede" style="text-align:center;max-width:640px;margin:0 auto">SMA Unggul Garuda adalah jalan pintas yang sah menuju pendidikan STEM berkualitas tanpa beban biaya — untuk yang siap belajar jauh dari rumah dan berjuang sejak kelas IX.<br><br><b>Daftar sebelum 13 November 2026, dan siapkan tesnya mulai hari ini.</b></p></div></div></section>
+</div>
+<div class="navbar">
+  <div class="navrow">
+    <button class="nbtn ghost" id="prevBtn" aria-label="Slide sebelumnya">← Prev</button>
+    <div class="nmid"><span id="cnt">1 / 14</span><div class="pbar"><i id="bar" style="width:0%"></i></div></div>
+    <button class="nbtn" id="nextBtn" aria-label="Slide berikutnya">Next →</button>
+  </div>
+</div>
+<script>
+(function(){
+var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+var cur=0,cnt=document.getElementById('cnt'),bar=document.getElementById('bar'),
+    prev=document.getElementById('prevBtn'),next=document.getElementById('nextBtn');
+function go(n){
+  cur=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach(function(s,i){s.classList.toggle('active',i===cur);if(i===cur)s.scrollTop=0;});
+  cnt.textContent=(cur+1)+' / '+slides.length;
+  bar.style.width=((cur+1)/slides.length*100)+'%';
+  prev.disabled=(cur===0);next.disabled=(cur===slides.length-1);
+  window.scrollTo(0,0);
+}
+prev.addEventListener('click',function(){go(cur-1);});
+next.addEventListener('click',function(){go(cur+1);});
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  else if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+  else if(e.key==='Home')go(0);
+  else if(e.key==='End')go(slides.length-1);
+});
+var tx=0,ty=0;
+document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',function(e){
+  var dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.4){if(dx<0)go(cur+1);else go(cur-1);}
+},{passive:true});
+go(0);
+})();
+</script>
+</body>
+</html>
