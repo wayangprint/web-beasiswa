@@ -1,65 +1,5 @@
-<!DOCTYPE html><html lang="id"><head><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
-<script>
-/* deck-guard-v4: hanya member terverifikasi dari device terdaftar (maks 5 per akun) */
-(function(){
-  var HOME='https://wayangprint.github.io/web-beasiswa/';
-  var URL='https://fjjdgybpglirsaozpvww.supabase.co';
-  var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqamRneWJwZ2xpcnNhb3pwdnd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxMjY5OTgsImV4cCI6MjEwNzcwMjk5OH0.1dgp5bmIEBDtANx9KBwlSJyYdYTNEXysWN-YHizrNIU';
-  var de=document.documentElement;
-  try{ de.style.display='none'; }catch(e){}
-  function lockBody(title, desc){
-    return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1446;color:#fff;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box;"><div style="max-width:430px;"><div style="font-size:54px;margin-bottom:18px;">\uD83D\uDD12</div><h1 style="margin:0 0 12px;font-size:28px;">'+title+'</h1><p style="opacity:.78;margin:0 0 28px;line-height:1.65;">'+desc+'</p><a href="'+HOME+'" style="display:inline-block;background:#7c3aed;color:#fff;padding:15px 38px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;">Masuk / Daftar</a></div></div>';
-  }
-  var MEMBER_BODY=lockBody('Deck ini khusus member','Daftar akun dan selesaikan pembayaran Rp100.000 untuk membuka 56 panduan beasiswa ini.');
-  var DEVICE_BODY=lockBody('Batas 3 perangkat tercapai','Perangkat ini sudah tidak terdaftar karena akun sudah dipakai di 3 perangkat. Pindah device tidak diizinkan \u2014 daftar akun baru untuk memakai perangkat ini.');
-  function doLock(body){
-    try{
-      document.title='Terkunci \u2014 Web Beasiswa';
-      if(document.body){ document.body.innerHTML=body; }
-      else{ de.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terkunci \u2014 Web Beasiswa</title></head><body style="margin:0;">'+body+'</body>'; }
-      de.style.display='';
-    }catch(e){}
-  }
-  function lockPage(kind){
-    var applied=false;
-    function apply(){ if(applied) return; applied=true; doLock(kind==='device'?DEVICE_BODY:MEMBER_BODY); }
-    try{
-      if(document.readyState==='loading'){
-        document.addEventListener('DOMContentLoaded', apply);
-        setTimeout(apply, 5000);
-      } else { apply(); }
-    }catch(e){ apply(); }
-  }
-  function unlock(){ try{ de.style.display=''; }catch(e){} }
-  var done=false;
-  function fail(kind){ if(!done){ done=true; lockPage(kind||'member'); } }
-  setTimeout(function(){ fail('member'); }, 12000);
-  function init(){
-    var client, uid;
-    try{
-      if(typeof supabase==='undefined'){ fail('member'); return; }
-      client=supabase.createClient(URL, KEY);
-    }catch(e){ fail('member'); return; }
-    client.auth.getSession().then(function(res){
-      var s=res && res.data && res.data.session;
-      if(!s){ fail('member'); return; }
-      uid=s.user.id;
-      return client.from('profiles').select('verified').eq('id', uid).maybeSingle();
-    }).then(function(r){
-      if(!r){ return; }
-      if(!(r.data && r.data.verified===true)){ fail('member'); return; }
-      var deviceId=null;
-      try{ deviceId=localStorage.getItem('wb_device_id'); }catch(e){}
-      if(!deviceId){ fail('device'); return; }
-      return client.from('devices').select('id').eq('user_id', uid).eq('device_id', deviceId).maybeSingle().then(function(dr){
-        if(done) return; done=true;
-        if(dr && dr.data){ unlock(); } else { lockPage('device'); }
-      }).catch(function(){ if(done) return; done=true; unlock(); });
-    }).catch(function(){ fail('member'); });
-  }
-  setTimeout(init, 60);
-})();
-</script>
+<!DOCTYPE html><html lang="id"><head>
+
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Beasiswa S2 World in Serbia — Panduan Lengkap (Serbia, FULL)</title>
 <meta name="description" content="Panduan 20 slide beasiswa S2 World in Serbia: full funded pemerintah Serbia untuk WNI — syarat usia <25, jadwal, cara daftar, dan link resmi.">
@@ -140,7 +80,7 @@
 (function(){
 if(document.getElementById('dnav-built'))return;
 var BASE='https://wayangprint.github.io/web-beasiswa/decks/';
-var ITEMS=[{"label": "ADB-Japan Scholarship S2 — Jepang", "slug": "deck-s2-adb-jsp"}, {"label": "AMCI Moroccan Government Scholarship S2 — Maroko", "slug": "deck-s2-maroko"}, {"label": "ANSO S2 — Tiongkok", "slug": "deck-s2-anso"}, {"label": "AUS Graduate Assistantship S2 — UEA", "slug": "deck-s2-uea"}, {"label": "Aalto Excellence S2 — Finlandia", "slug": "deck-s2-finlandia"}, {"label": "Australia Awards Scholarship S2 — Australia", "slug": "deck-s2-australia-awards"}, {"label": "BDGS S2 — Brunei Darussalam", "slug": "deck-s2-bdgs"}, {"label": "CSC Pascasarjana — Tiongkok", "slug": "deck-s2-csc"}, {"label": "Chevening Scholarship S2 — Inggris", "slug": "deck-s2-chevening"}, {"label": "Chulalongkorn Graduate Scholarship S2 — Thailand", "slug": "deck-s2-thailand"}, {"label": "Coimbra Incentive Scholarship S2 — Portugal", "slug": "deck-s2-portugal"}, {"label": "DAAD EPOS S2 — Jerman", "slug": "deck-s2-daad"}, {"label": "DAAD Helmut-Schmidt S2 — Jerman", "slug": "deck-s2-daad-helmut-schmidt"}, {"label": "DSU Toscana Scholarship S2 — Italia", "slug": "deck-s2-italia"}, {"label": "Danish Government Scholarship S2 — Denmark", "slug": "deck-s2-denmark"}, {"label": "ESADE MSc Scholarships S2 — Spanyol", "slug": "deck-s2-spanyol"}, {"label": "ETH Zurich ESOP S2 — Swiss", "slug": "deck-s2-eth-esop"}, {"label": "Eiffel Excellence S2 — Prancis", "slug": "deck-s2-eiffel"}, {"label": "Erasmus Mundus S2 — Eropa", "slug": "deck-s2-erasmus-mundus"}, {"label": "Fulbright Master's S2 — Amerika Serikat", "slug": "deck-s2-fulbright"}, {"label": "GKS Pascasarjana — Korea Selatan", "slug": "deck-s2-gks"}, {"label": "Gates Cambridge S2 — Inggris", "slug": "deck-s2-gates-cambridge"}, {"label": "Heydar Aliyev Grant S2 — Azerbaijan", "slug": "deck-s2-azerbaijan"}, {"label": "Honjo S2 — Jepang", "slug": "deck-s2-honjo"}, {"label": "ICCR Scholarship S2 — India", "slug": "deck-s2-india"}, {"label": "Invest Your Talent S2 — Italia", "slug": "deck-s2-invest-talent-italy"}, {"label": "KAUST Fellowship S2 — Arab Saudi", "slug": "deck-s2-arab-saudi"}, {"label": "Kazakhstan Government Scholarship S2 — Kazakhstan", "slug": "deck-s2-kazakhstan"}, {"label": "Knight-Hennessy S2 — Amerika Serikat", "slug": "deck-s2-knight-hennessy"}, {"label": "LPDP Reguler S2 — Indonesia", "slug": "deck-s2-lpdp"}, {"label": "MEXT Pascasarjana — Jepang", "slug": "deck-s2-mext"}, {"label": "MOE Taiwan S2 — Taiwan", "slug": "deck-s2-moe-taiwan"}, {"label": "Malaysia International Scholarship S2 — Malaysia", "slug": "deck-s2-mis-malaysia"}, {"label": "Manaaki New Zealand S2 — Selandia Baru", "slug": "deck-s2-manaaki"}, {"label": "McCall MacBain Scholarships S2 — Kanada", "slug": "deck-s2-kanada"}, {"label": "NAWA Banach S2 — Polandia", "slug": "deck-s2-nawa-banach"}, {"label": "NL Scholarship S2 — Belanda", "slug": "deck-s2-nl-scholarship"}, {"label": "NUS Research Scholarship S2 — Singapura", "slug": "deck-s2-nus"}, {"label": "Qatar University Graduate Scholarships S2 — Qatar", "slug": "deck-s2-qatar"}, {"label": "Romanian MFA Scholarship S2 — Rumania", "slug": "deck-s2-rumania"}, {"label": "Royal Thai Gov S2 — Thailand", "slug": "deck-s2-ait-thailand"}, {"label": "Russian Government Quota S2 — Rusia", "slug": "deck-s2-rusia"}, {"label": "SEARCA S2 — Asia Tenggara", "slug": "deck-s2-searca"}, {"label": "Schwarzman S2 — Tiongkok", "slug": "deck-s2-schwarzman"}, {"label": "Stipendium Hungaricum Master's — Hungaria", "slug": "deck-s2-hungaricum"}, {"label": "Swedish Institute S2 — Swedia", "slug": "deck-s2-swedish-institute"}, {"label": "TDTU Graduate Scholarship S2 — Vietnam", "slug": "deck-s2-vietnam"}, {"label": "TaiwanICDF Scholarship S2 — Taiwan", "slug": "deck-s2-taiwan"}, {"label": "Türkiye Burslari Pascasarjana — Turki", "slug": "deck-s2-turkiye-burslari"}, {"label": "UCD Global Excellence S2 — Irlandia", "slug": "deck-s2-irlandia"}, {"label": "UniMelb MPhil S2 — Australia", "slug": "deck-s2-unimelb-mphil"}, {"label": "VLIR-UOS S2 — Belgia", "slug": "deck-s2-vlir-uos"}, {"label": "VU Tuition Fee Waiver S2 — Lithuania", "slug": "deck-s2-lithuania"}, {"label": "Weidenfeld-Hoffmann S2 — Inggris", "slug": "deck-s2-weidenfeld-hoffmann"}, {"label": "World Bank Scholarship S2 — Internasional", "slug": "deck-s2-jjwbgsp"}, {"label": "World in Serbia S2 — Serbia", "slug": "deck-s2-serbia"}];
+var ITEMS=[{"label": "AMCI Moroccan Government Scholarship S2 — Maroko", "slug": "deck-s2-maroko"},{"label": "AUS Graduate Assistantship S2 — UEA", "slug": "deck-s2-uea"},{"label": "Aalto Excellence S2 — Finlandia", "slug": "deck-s2-finlandia"},{"label": "Australia Awards Scholarship S2 — Australia", "slug": "deck-s2-australia-awards"},{"label": "BDGS S2 — Brunei Darussalam", "slug": "deck-s2-bdgs"},{"label": "CSC Pascasarjana — Tiongkok", "slug": "deck-s2-csc"},{"label": "Chevening Scholarship S2 — Inggris", "slug": "deck-s2-chevening"},{"label": "Chulalongkorn Graduate Scholarship S2 — Thailand", "slug": "deck-s2-thailand"},{"label": "Coimbra Incentive Scholarship S2 — Portugal", "slug": "deck-s2-portugal"},{"label": "DAAD EPOS S2 — Jerman", "slug": "deck-s2-daad"},{"label": "DSU Toscana Scholarship S2 — Italia", "slug": "deck-s2-italia"},{"label": "Danish Government Scholarship S2 — Denmark", "slug": "deck-s2-denmark"},{"label": "ESADE MSc Scholarships S2 — Spanyol", "slug": "deck-s2-spanyol"},{"label": "Eiffel Excellence S2 — Prancis", "slug": "deck-s2-eiffel"},{"label": "Fulbright Master's S2 — Amerika Serikat", "slug": "deck-s2-fulbright"},{"label": "GKS Pascasarjana — Korea Selatan", "slug": "deck-s2-gks"},{"label": "Heydar Aliyev Grant S2 — Azerbaijan", "slug": "deck-s2-azerbaijan"},{"label": "ICCR Scholarship S2 — India", "slug": "deck-s2-india"},{"label": "KAUST Fellowship S2 — Arab Saudi", "slug": "deck-s2-arab-saudi"},{"label": "Kazakhstan Government Scholarship S2 — Kazakhstan", "slug": "deck-s2-kazakhstan"},{"label": "LPDP Reguler S2 — Indonesia", "slug": "deck-s2-lpdp"},{"label": "MEXT Pascasarjana — Jepang", "slug": "deck-s2-mext"},{"label": "Malaysia International Scholarship S2 — Malaysia", "slug": "deck-s2-mis-malaysia"},{"label": "McCall MacBain Scholarships S2 — Kanada", "slug": "deck-s2-kanada"},{"label": "NL Scholarship S2 — Belanda", "slug": "deck-s2-nl-scholarship"},{"label": "NUS Research Scholarship S2 — Singapura", "slug": "deck-s2-nus"},{"label": "Qatar University Graduate Scholarships S2 — Qatar", "slug": "deck-s2-qatar"},{"label": "Romanian MFA Scholarship S2 — Rumania", "slug": "deck-s2-rumania"},{"label": "Russian Government Quota S2 — Rusia", "slug": "deck-s2-rusia"},{"label": "Stipendium Hungaricum Master's — Hungaria", "slug": "deck-s2-hungaricum"},{"label": "Swedish Institute S2 — Swedia", "slug": "deck-s2-swedish-institute"},{"label": "TDTU Graduate Scholarship S2 — Vietnam", "slug": "deck-s2-vietnam"},{"label": "TaiwanICDF Scholarship S2 — Taiwan", "slug": "deck-s2-taiwan"},{"label": "Türkiye Burslari Pascasarjana — Turki", "slug": "deck-s2-turkiye-burslari"},{"label": "UCD Global Excellence S2 — Irlandia", "slug": "deck-s2-irlandia"},{"label": "VU Tuition Fee Waiver S2 — Lithuania", "slug": "deck-s2-lithuania"},{"label": "World in Serbia S2 — Serbia", "slug": "deck-s2-serbia"}];
 var here=(location.pathname.split('/').pop()||'').replace(/\?.*$/,'');
 var list=document.getElementById('dnav-list');
 var empty=document.getElementById('dnav-empty');
