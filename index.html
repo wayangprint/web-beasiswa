@@ -1045,6 +1045,10 @@
     .sayembara-banner p { margin:0; font-size:.98rem; line-height:1.55; color:#4A3418; max-width:640px; }
     .sayembara-banner .sayembara-btn { background:#23131E; color:#F5C86B; box-shadow:0 12px 26px rgba(35,19,30,.28); flex:none; }
     .sayembara-banner .sayembara-btn:hover { box-shadow:0 17px 32px rgba(35,19,30,.34); }
+    .saudi-banner { background:linear-gradient(120deg, #0B3D2E, #065F46 55%, #047857); color:#F2F8F4; }
+    .saudi-banner p { color:#CFE8D8; }
+    .saudi-banner .sayembara-banner-tag { background:rgba(6,32,24,.85); color:#F5C86B; }
+    .saudi-banner .sayembara-btn { background:#F5C86B; color:#23131E; box-shadow:0 12px 26px rgba(4,40,28,.35); }
     .sayembara-hero h1 { font-size:clamp(2.05rem, 5.6vw, 4.1rem); line-height:1.04; letter-spacing:-.045em; }
     .sayembara-facts { display:flex; flex-wrap:wrap; gap:8px; margin-top:26px; }
     .sayembara-facts span {
@@ -2605,9 +2609,9 @@
 
     function homeView() {
       const items = [
-        {title:'Beasiswa S1', desc:'83 program beasiswa S1 luar negeri: Full & Partial.', route:'#/s1/', icon:'cap'},
-        {title:'Beasiswa S2', desc:'56 program beasiswa magister populer: 42 Full & 14 Partial', route:'#/s2/', icon:'cap'},
-        {title:'Beasiswa S3', desc:'55 program beasiswa doktoral luar negeri: 50 Full & 5 Partial', route:'#/s3/', icon:'cap'},
+        {title:'Beasiswa S1 Luar Negeri', desc:'92 program beasiswa S1 luar negeri: Full & Partial.', route:'#/s1/', icon:'cap'},
+        {title:'Beasiswa S2 Luar Negeri', desc:'65 program beasiswa magister populer: 51 Full & 14 Partial', route:'#/s2/', icon:'cap'},
+        {title:'Beasiswa S3 Luar Negeri', desc:'63 program beasiswa doktoral luar negeri: 58 Full & 5 Partial', route:'#/s3/', icon:'cap'},
         {title:'Persiapan Bahasa', desc:'10 panduan IELTS, TOEFL iBT, JLPT, TOPIK, HSK, bahasa Eropa, dan strategi belajar mandiri.', route:'#/bahasa/', icon:'language'},
         {title:'Pra Beasiswa', desc:'7 panduan untuk menyiapkan dokumen, esai, CV, rekomendasi, wawancara, LoA, dan pilihan studi.', route:'#/pra/', icon:'compass'},
         {title:'Beasiswa Dalam Negeri', desc:'16 panduan beasiswa dalam negeri untuk SMA, S1, S2, dan S3: PPDB SMA Unggul Garuda, LPDP, Beasiswa Unggulan, KIP Kuliah, Garuda 2027, dan lainnya.', route:'#/dalam-negeri/', icon:'cap'},
@@ -2627,6 +2631,13 @@
       const bannerBtn = element('a','sayembara-btn','Ikut Sayembara'); bannerBtn.href = '#/sayembara/';
       sayembaraBanner.append(bannerText, bannerBtn);
       page.append(sayembaraBanner);
+      const saudiBanner = element('section','sayembara-banner saudi-banner');
+      saudiBanner.setAttribute('aria-label','Indeks Beasiswa Arab Saudi');
+      const saudiText = element('div','sayembara-banner-text');
+      saudiText.innerHTML = '<span class="sayembara-banner-tag">Koleksi Khusus</span><h3>Beasiswa Arab Saudi: 14 Universitas (S1, S2, S3)</h3><p>Indeks khusus Arab Saudi \u2014 panduan per universitas: Princess Nourah, Universitas Islam Madinah, King Saud, King Abdulaziz, KFUPM, KAUST, dan lainnya, lewat portal Study in Saudi.</p>';
+      const saudiBtn = element('a','sayembara-btn','Lihat Indeks Arab Saudi'); saudiBtn.href = 'https://wayangprint.github.io/web-beasiswa/decks/indeks-beasiswa-arab-saudi.html';
+      saudiBanner.append(saudiText, saudiBtn);
+      page.append(saudiBanner);
       const head = element('div','section-heading'); head.id='pilih';
       head.innerHTML = '<div><h2>Mulai dari tujuanmu</h2></div><p>Pilih jenjang atau tahap persiapan yang ingin kamu pelajari.</p>';
       page.append(head);
