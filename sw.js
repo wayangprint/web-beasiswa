@@ -1,7 +1,10 @@
 /* Portal Beasiswa — Service Worker
    Aman untuk paywall: TIDAK PERNAH meng-cache halaman deck/sampel
-   dan TIDAK PERNAH meng-cache request ke Supabase (auth/data member). */
-const CACHE = 'portal-beasiswa-v1';
+   dan TIDAK PERNAH meng-cache request ke Supabase (auth/data member).
+   Perbaikan v2 (3 Nov 2026): navigasi HANYA di-cache bila respons OK
+   DAN bila URL-nya memang shell aplikasi (root/index.html) — halaman
+   artikel dan halaman error tidak pernah lagi menimpa cache shell. */
+const CACHE = 'portal-beasiswa-v2';
 const PRECACHE = [
   './',
   './index.html',
@@ -47,12 +50,20 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Navigasi halaman: network-first, fallback ke shell dari cache (offline).
+  // Hanya shell aplikasi yang di-cache, dan hanya bila responsnya OK —
+  // halaman artikel / halaman error tidak boleh menimpa cache shell.
   if (req.mode === 'navigate') {
     event.respondWith(
       fetch(req)
         .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((cache) => cache.put('./index.html', copy));
+          const shellBase = new URL('./', self.location).pathname;
+          const isShell =
+            res.ok &&
+            (url.pathname === shellBase || url.pathname === shellBase + 'index.html');
+          if (isShell) {
+            const copy = res.clone();
+            caches.open(CACHE).then((cache) => cache.put('./index.html', copy));
+          }
           return res;
         })
         .catch(() => caches.match('./index.html'))
