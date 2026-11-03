@@ -1845,7 +1845,7 @@
     }); // link publik deck; kartu member terverifikasi membuka tujuan masing-masing
 
     // Deck sampel gratis: terbuka untuk semua pengunjung tanpa login atau
-    // verifikasi member. Tepat satu deck per menu, dikumpulkan di #/sampel/.
+    // verifikasi member. Tepat satu deck per menu, dikumpulkan di /sampel/.
     const FREE_SAMPLE_SLUGS = new Set([
       'deck-dn-sma-unggul-garuda',
       'deck-beasiswa-s1-italia',
@@ -1896,10 +1896,57 @@
     let sb = null;
 
     function formatIdr(value) { return new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', maximumFractionDigits:0}).format(value); }
+    // Clean-URL routing (tanpa hash). Basis aplikasi dideteksi dari path:
+    // GitHub Pages dilayani dari /web-beasiswa/, beasiswa.online dari /.
+    function appBase() {
+      const p = window.location.pathname;
+      if (p === '/web-beasiswa' || p.indexOf('/web-beasiswa/') === 0) return '/web-beasiswa/';
+      return '/';
+    }
+    function routeUrl(path) {
+      let clean = String(path || '/');
+      if (clean.charAt(0) === '#') clean = clean.slice(1);
+      if (clean.charAt(0) !== '/') clean = '/' + clean;
+      const base = appBase();
+      return (base === '/' ? '' : base.slice(0, -1)) + clean;
+    }
+    function currentRoutePath() {
+      let p = window.location.pathname;
+      const base = appBase();
+      if (base !== '/' && p.indexOf(base) === 0) p = p.slice(base.length - 1);
+      if (p.endsWith('index.html')) p = p.slice(0, -'index.html'.length) || '/';
+      if (p === '') p = '/';
+      return p;
+    }
+    function isAuthHash(hash) {
+      return /access_token|refresh_token|type=|code=/.test(hash || '');
+    }
+    // Link lama bertanda hash (mis. dari deck, share page, atau chat WA) dialihkan
+    // ke URL bersih. Hash token login Supabase TIDAK disentuh agar login tetap jalan.
+    function redirectLegacyHash() {
+      const h = window.location.hash;
+      if (!h || h.charAt(1) !== '/') return false;
+      if (isAuthHash(h)) return false;
+      const raw = h.slice(1);
+      const qi = raw.indexOf('?');
+      const p = qi >= 0 ? raw.slice(0, qi) : raw;
+      const q = qi >= 0 ? raw.slice(qi) : '';
+      const known = ['/', '/s1/', '/s2/', '/s3/', '/pra/', '/bahasa/', '/dalam-negeri/', '/grant/', '/sampel/', '/sayembara/', '/komisi/', '/auth', '/auth/', '/paywall', '/paywall/', '/persiapan-bahasa/', '/pra-beasiswa/', '/sukses/'];
+      if (known.indexOf(p) < 0 && p !== '' && p.indexOf('/r/') !== 0) return false;
+      window.location.replace(routeUrl(p === '' ? '/' : p) + q);
+      return true;
+    }
     function navigate(path) {
-      const next = path.startsWith('#') ? path : `#${path}`;
-      if (window.location.hash === next) renderRoute();
-      else window.location.hash = next;
+      let clean = String(path || '/');
+      if (clean.charAt(0) === '#') clean = clean.slice(1);
+      const qi = clean.indexOf('?');
+      const q = qi >= 0 ? clean.slice(qi) : '';
+      let p = qi >= 0 ? clean.slice(0, qi) : clean;
+      if (p.charAt(0) !== '/') p = '/' + p;
+      const target = routeUrl(p) + q;
+      const current = window.location.pathname + window.location.search;
+      if (current === target) renderRoute();
+      else { window.history.pushState(null, '', target); renderRoute(); }
     }
     function element(tag, className, text) {
       const node = document.createElement(tag);
@@ -2045,7 +2092,7 @@
       if (currentUser) {
         wrap.append(element('span','account-name',profileName()));
         const komisiLink = element('a','account-button','Komisi');
-        komisiLink.href = '#/komisi/';
+        komisiLink.href = routeUrl('/komisi/');
         wrap.append(komisiLink);
         const out = element('button','account-button','Keluar');
         out.type = 'button';
@@ -2059,7 +2106,7 @@
         wrap.append(out);
       } else {
         const link = element('a','account-link','Masuk / Daftar');
-        link.href = '#/auth';
+        link.href = routeUrl('/auth');
         wrap.append(link);
       }
       return wrap;
@@ -2067,14 +2114,14 @@
     function siteNav() {
       const nav = element('nav','site-nav');
       nav.setAttribute('aria-label','Navigasi utama');
-      const destinations = [['#/','Halaman Utama']];
+      const destinations = [['/','Halaman Utama']];
       destinations.forEach(([href,label],index)=>{
-        const link=element('a','',label); link.href=href; if(index===0) link.setAttribute('aria-current','page'); nav.append(link);
+        const link=element('a','',label); link.href=routeUrl(href); if(index===0) link.setAttribute('aria-current','page'); nav.append(link);
       });
       const menuButton = element('button','mobile-nav-toggle','Menu');
       menuButton.type='button'; menuButton.setAttribute('aria-expanded','false'); menuButton.setAttribute('aria-controls','mobile-main-menu');
       const mobileMenu = element('div','mobile-nav-menu'); mobileMenu.id='mobile-main-menu';
-      destinations.slice(1).forEach(([href,label])=>{ const link=element('a','',label); link.href=href; mobileMenu.append(link); });
+      destinations.slice(1).forEach(([href,label])=>{ const link=element('a','',label); link.href=routeUrl(href); mobileMenu.append(link); });
       menuButton.addEventListener('click',()=>{
         const open=menuButton.getAttribute('aria-expanded')==='true';
         menuButton.setAttribute('aria-expanded',String(!open)); mobileMenu.classList.toggle('is-open',!open);
@@ -2091,7 +2138,7 @@
     }
     function topLine(backText, backHref, statText='') {
       const top = element('div','topline');
-      if (backText) { const back = element('a','back',backText); back.href = backHref; top.append(back); }
+      if (backText) { const back = element('a','back',backText); back.href = routeUrl(backHref); top.append(back); }
       if (statText) top.append(element('span','mini-stat',statText));
       top.append(memberActions());
       return top;
@@ -2148,7 +2195,7 @@
           ? '⏳ Bukti pembayaranmu sedang diverifikasi admin — biasanya selesai maks. 1×24 jam.'
           : '💳 Pembayaranmu belum selesai — selesaikan sekarang untuk membuka semua 207 panduan beasiswa.'));
         const cta = element('a','pay-reminder-btn', waiting ? 'Cek Status' : 'Bayar Sekarang');
-        cta.href = '#/paywall';
+        cta.href = routeUrl('/paywall');
         bar.append(cta);
       }
       bar.hidden = false;
@@ -2203,7 +2250,7 @@
       refCard.append(element('h2','','Link Referral Kamu'));
       const refCode = currentProfile?.referral_code || '';
       if (refCode) {
-        const refLink = `https://wayangprint.github.io/web-beasiswa/#/r/${refCode}`;
+        const refLink = `${window.location.origin}${routeUrl('/r/' + refCode)}`;
         const row = element('div','ref-link-row');
         const input = document.createElement('input');
         input.type = 'text'; input.readOnly = true; input.value = refLink;
@@ -2247,7 +2294,7 @@
       const progressNote = element('p','sayembara-progress-note','100 member lagi menuju trip gratis');
       const progressCopy = element('p','sayembara-progress-copy','Capai 100 member baru terverifikasi lewat link referral kamu → berangkat GRATIS trip Malaysia–Singapura senilai Rp6.000.000. Bukan undian: siapa mencapai 100, otomatis dapat.');
       const progressCta = element('a','sayembara-btn','Lihat detail Sayembara →');
-      progressCta.href = '#/sayembara/';
+      progressCta.href = routeUrl('/sayembara/');
       progressCard.append(progressTitle, progressWins, progressCount, progressBar, progressNote, progressCopy, progressCta);
       page.append(progressCard);
 
@@ -2401,7 +2448,7 @@
       copy.append(element('h1','','Raih 100 member baru → kamu berangkat GRATIS'));
       copy.append(element('p','','Ajak 100 member baru terverifikasi lewat kode referralmu, dan private trip Malaysia & Singapura otomatis jadi milikmu. Bukan undian — siapa pun yang mencapai 100 pasti dapat.'));
       const heroActions = element('div','hero-actions');
-      const heroCta = element('a','hero-action primary','Ikut Sayembara'); heroCta.href = '#/komisi/';
+      const heroCta = element('a','hero-action primary','Ikut Sayembara'); heroCta.href = routeUrl('/komisi/');
       heroActions.append(heroCta);
       copy.append(heroActions);
       const facts = element('div','sayembara-facts');
@@ -2537,7 +2584,7 @@
       pBar.append(document.createElement('i'));
       shell.append(pTop, pBar, element('p','sayembara-progress-note','Ilustrasi/contoh — angka di atas hanya contoh, bukan data member siapa pun.'));
       progress.append(shell);
-      const progressLink = element('a','sayembara-btn','Lihat Progres di Halaman Komisi'); progressLink.href = '#/komisi/';
+      const progressLink = element('a','sayembara-btn','Lihat Progres di Halaman Komisi'); progressLink.href = routeUrl('/komisi/');
       progress.append(progressLink);
       page.append(progress);
 
@@ -2601,7 +2648,7 @@
         element('h2','','Siap Kejar 100 Member?'),
         element('p','','Mulai dari kode referralmu di halaman Komisi, lalu sebarkan ke teman, keluarga, dan komunitasmu. Trip Malaysia–Singapura menunggu di angka 100.')
       );
-      const ctaBtn = element('a','sayembara-btn','Ikut Sayembara'); ctaBtn.href = '#/komisi/';
+      const ctaBtn = element('a','sayembara-btn','Ikut Sayembara'); ctaBtn.href = routeUrl('/komisi/');
       ctaPanel.append(ctaBtn);
       page.append(ctaPanel, footerNode());
       app.append(page);
@@ -2609,13 +2656,13 @@
 
     function homeView() {
       const items = [
-        {title:'Beasiswa S1 Luar Negeri', desc:'92 program beasiswa S1 luar negeri: Full & Partial.', route:'#/s1/', icon:'cap'},
-        {title:'Beasiswa S2 Luar Negeri', desc:'65 program beasiswa magister populer: 51 Full & 14 Partial', route:'#/s2/', icon:'cap'},
-        {title:'Beasiswa S3 Luar Negeri', desc:'63 program beasiswa doktoral luar negeri: 58 Full & 5 Partial', route:'#/s3/', icon:'cap'},
-        {title:'Persiapan Bahasa', desc:'10 panduan IELTS, TOEFL iBT, JLPT, TOPIK, HSK, bahasa Eropa, dan strategi belajar mandiri.', route:'#/bahasa/', icon:'language'},
-        {title:'Pra Beasiswa', desc:'7 panduan untuk menyiapkan dokumen, esai, CV, rekomendasi, wawancara, LoA, dan pilihan studi.', route:'#/pra/', icon:'compass'},
-        {title:'Beasiswa Dalam Negeri', desc:'16 panduan beasiswa dalam negeri untuk SMA, S1, S2, dan S3: PPDB SMA Unggul Garuda, LPDP, Beasiswa Unggulan, KIP Kuliah, Garuda 2027, dan lainnya.', route:'#/dalam-negeri/', icon:'cap'},
-        {title:'Magang, Volunteer & Student Exchange', desc:'20 panduan magang, volunteer, dan student exchange: IISMA, travel grant, Ausbildung, Au Pair, Erasmus+, summer school, dan lainnya.', route:'#/grant/', icon:'compass'}
+        {title:'Beasiswa S1 Luar Negeri', desc:'92 program beasiswa S1 luar negeri: Full & Partial.', route:'/s1/', icon:'cap'},
+        {title:'Beasiswa S2 Luar Negeri', desc:'65 program beasiswa magister populer: 51 Full & 14 Partial', route:'/s2/', icon:'cap'},
+        {title:'Beasiswa S3 Luar Negeri', desc:'63 program beasiswa doktoral luar negeri: 58 Full & 5 Partial', route:'/s3/', icon:'cap'},
+        {title:'Persiapan Bahasa', desc:'10 panduan IELTS, TOEFL iBT, JLPT, TOPIK, HSK, bahasa Eropa, dan strategi belajar mandiri.', route:'/bahasa/', icon:'language'},
+        {title:'Pra Beasiswa', desc:'7 panduan untuk menyiapkan dokumen, esai, CV, rekomendasi, wawancara, LoA, dan pilihan studi.', route:'/pra/', icon:'compass'},
+        {title:'Beasiswa Dalam Negeri', desc:'16 panduan beasiswa dalam negeri untuk SMA, S1, S2, dan S3: PPDB SMA Unggul Garuda, LPDP, Beasiswa Unggulan, KIP Kuliah, Garuda 2027, dan lainnya.', route:'/dalam-negeri/', icon:'cap'},
+        {title:'Magang, Volunteer & Student Exchange', desc:'20 panduan magang, volunteer, dan student exchange: IISMA, travel grant, Ausbildung, Au Pair, Erasmus+, summer school, dan lainnya.', route:'/grant/', icon:'compass'}
       ];
       app.innerHTML = '';
       const page = element('div','page');
@@ -2623,12 +2670,13 @@
       const hero = element('section','hero');
       const copy = element('div','hero-copy');
       copy.innerHTML = '<h1>Portal Beasiswa</h1><p>Panduan lengkap beasiswa luar &amp; dalam negeri — dari persiapan bahasa, dokumen, sampai lolos seleksi. 207 panduan: S1, S2, S3, beasiswa dalam negeri, magang, volunteer &amp; student exchange, dan program kerja ke luar negeri.</p><div class=\"hero-actions\"><a class=\"hero-action primary\" href=\"#/sampel/\">🎓 Lihat Sampel Gratis</a><a class=\"hero-action secondary\" href=\"https://wayangprint.github.io/web-beasiswa/kuis/\" target=\"_blank\" rel=\"noopener\">🎯 Ikuti Kuis Beasiswa</a></div>';
+      copy.querySelectorAll('a[href^="#"]').forEach(a => { const h = a.getAttribute('href'); if (h && h.charAt(1) === '/') a.href = routeUrl(h); });
       hero.append(copy); page.append(hero);
       const sayembaraBanner = element('section','sayembara-banner');
       sayembaraBanner.setAttribute('aria-label','Program Sayembara 100 Member');
       const bannerText = element('div','sayembara-banner-text');
       bannerText.innerHTML = '<span class="sayembara-banner-tag">Program Baru</span><h3>Sayembara 100 Member: Ajak 100 Member, Trip Gratis Malaysia–Singapura!</h3><p>Bukan undian — setiap member terverifikasi yang mencapai 100 member baru otomatis berangkat. Hadiah private trip senilai Rp6.000.000 untuk pemenang.</p>';
-      const bannerBtn = element('a','sayembara-btn','Ikut Sayembara'); bannerBtn.href = '#/sayembara/';
+      const bannerBtn = element('a','sayembara-btn','Ikut Sayembara'); bannerBtn.href = routeUrl('/sayembara/');
       sayembaraBanner.append(bannerText, bannerBtn);
       page.append(sayembaraBanner);
       const saudiBanner = element('section','sayembara-banner saudi-banner');
@@ -2643,7 +2691,7 @@
       page.append(head);
       const grid = element('section','menu-grid'); grid.setAttribute('aria-label','Menu utama beasiswa');
       items.forEach(item => {
-        const card = element('a','menu-card'); card.href = item.route;
+        const card = element('a','menu-card'); card.href = routeUrl(item.route);
         const top = element('div'); top.append(iconNode(item.icon), element('h3','',item.title), element('p','',item.desc));
         const action = element('div','card-action'); action.innerHTML = '<span>Buka</span><span aria-hidden="true">→</span>';
         card.append(top,action); grid.append(card);
@@ -2952,15 +3000,14 @@
         element('h2','','Buka semua panduan Portal Beasiswa'),
         element('p','','Kelima sampel di atas hanya sebagian kecil dari koleksi panduan kami. Sekali bayar Rp100.000, semua deck S1, S2, S3, dalam negeri, magang, pra beasiswa, dan persiapan bahasa terbuka untukmu selamanya.')
       );
-      const ctaLink=element('a','primary-link','Jadi Member'); ctaLink.href='#/paywall';
+      const ctaLink=element('a','primary-link','Jadi Member'); ctaLink.href = routeUrl('/paywall');
       cta.append(ctaLink);
       page.append(cta, footerNode());
       app.append(page);
     }
 
     function parseRoute() {
-      const raw=(window.location.hash || '#/').slice(1); const [path,query='']=raw.split('?');
-      return {path:path || '/', params:new URLSearchParams(query)};
+      return {path: currentRoutePath(), params: new URLSearchParams(window.location.search)};
     }
 
     function renderPaymentMethod(panel,method) {
@@ -3064,15 +3111,15 @@
     function normalizePath(path) { if (path==='/' || path.endsWith('/')) return path; return `${path}/`; }
     function placeholderView(data) {
       app.innerHTML=''; const page=element('div','page narrow'); page.append(topLine('← Kembali','#/'));
-      const holder=element('div','placeholder'); const box=element('section','placeholder-box'); box.append(iconNode('clock','placeholder-icon'),element('span','pill count-pill',data.title),element('h1','', 'Segera Hadir'),element('p','',data.desc)); const back=element('a','primary-link','← Kembali'); back.href='#/'; box.append(back); holder.append(box); page.append(holder,footerNode()); app.append(page);
+      const holder=element('div','placeholder'); const box=element('section','placeholder-box'); box.append(iconNode('clock','placeholder-icon'),element('span','pill count-pill',data.title),element('h1','', 'Segera Hadir'),element('p','',data.desc)); const back=element('a','primary-link','← Kembali'); back.href = routeUrl('/'); box.append(back); holder.append(box); page.append(holder,footerNode()); app.append(page);
     }
     function successView() {
       app.innerHTML=''; const page=element('div','page narrow'); const holder=element('div','placeholder'); const box=element('section','placeholder-box');
-      box.append(element('div','success-mark','✓'),element('h1','', 'Akses kamu sudah aktif!'),element('p','', 'Kamu sekarang bisa membuka seluruh deck beasiswa.')); const link=element('a','primary-link','Buka Indeks S1'); link.href='#/s1/'; box.append(link); holder.append(box); page.append(holder,footerNode()); app.append(page);
+      box.append(element('div','success-mark','✓'),element('h1','', 'Akses kamu sudah aktif!'),element('p','', 'Kamu sekarang bisa membuka seluruh deck beasiswa.')); const link=element('a','primary-link','Buka Indeks S1'); link.href = routeUrl('/s1/'); box.append(link); holder.append(box); page.append(holder,footerNode()); app.append(page);
     }
 
     async function renderRoute() {
-      clearPaywallPolling(); clearSayembaraCountdown(); updatePayReminder(); const {path,params}=parseRoute(); const normalized=normalizePath(path); window.scrollTo(0,0);
+      clearPaywallPolling(); clearSayembaraCountdown(); updatePayReminder(); const {path,params}=parseRoute(); const normalized=normalizePath(path); window.scrollTo(0,0); const ROUTE_TITLES = {'/':'Portal Beasiswa \u2014 Panduan Beasiswa S1\u2013S3, Dalam & Luar Negeri','/s1/':'Indeks Beasiswa S1 | Portal Beasiswa','/s2/':'Indeks Beasiswa S2 | Portal Beasiswa','/s3/':'Indeks Beasiswa S3 | Portal Beasiswa','/pra/':'Indeks Pra Beasiswa | Portal Beasiswa','/bahasa/':'Indeks Persiapan Bahasa | Portal Beasiswa','/dalam-negeri/':'Indeks Beasiswa Dalam Negeri | Portal Beasiswa','/grant/':'Indeks Magang, Volunteer & Student Exchange | Portal Beasiswa','/sampel/':'Sampel Gratis | Portal Beasiswa','/sayembara/':'Sayembara 100 Member | Portal Beasiswa','/komisi/':'Komisi Referral | Portal Beasiswa','/auth':'Masuk / Daftar | Portal Beasiswa','/auth/':'Masuk / Daftar | Portal Beasiswa','/paywall':'Aktifkan Akses Member | Portal Beasiswa','/paywall/':'Aktifkan Akses Member | Portal Beasiswa','/sukses/':'Akses Aktif | Portal Beasiswa'}; document.title = ROUTE_TITLES[normalized] || ROUTE_TITLES[path] || 'Portal Beasiswa';
       if (path.startsWith('/r/')) {
         const refCode = decodeURIComponent(path.slice(3)).split('/')[0].trim().toUpperCase();
         if (refCode) { try { localStorage.setItem('wb_ref_code', refCode); } catch (error) {} }
@@ -3164,7 +3211,7 @@
     function bindLifecycleListeners() {
       if (lifecycleListenersBound) return;
       lifecycleListenersBound=true;
-      window.addEventListener('hashchange',renderRoute);
+      window.addEventListener('popstate',renderRoute);
       window.addEventListener('pageshow',event=>{
         if (event.persisted || !app.firstElementChild) void renderRoute();
         checkDeviceValidThrottled();
@@ -3192,6 +3239,7 @@
     }
 
     async function initApp() {
+      if (redirectLegacyHash()) return;
       bindLifecycleListeners();
       if (sb) {
         try {
@@ -3199,6 +3247,7 @@
           if (error) throw error;
           currentSession=data.session || null;
           currentUser=data.session?.user || null;
+        if (window.location.hash && isAuthHash(window.location.hash)) { try { window.history.replaceState(null, '', routeUrl(currentRoutePath())); } catch (e) {} }
         } catch (error) {
           supabaseConnectionError=error;
           currentSession=null;
@@ -3295,7 +3344,7 @@
       const {path}=parseRoute();
       const normalized=normalizePath(path);
       if (path==='/' || path==='') homeView();
-      else if (normalized==='/s1/') indexView();
+      else if (normalized==='/s1/') indexView({programs:PROGRAMS,level:'S1',stat:'83 program terkurasi',countText:'83 Program \u00b7 28 Full \u00b7 55 Partial',indexRoute:'/s1/'});
     })();
 
     bootstrapApp();
